@@ -235,9 +235,11 @@ bot.on('message', msg => {
 			case 'leave':
 				msg.delete({ timeout: 0 }); //Delete message
 
+				console.log(guild);
+
 				//Grab bot voice channel
 				var memberVoice = member.voice.channel;
-				var voiceConnection = guild.voice.connection;
+				var voiceConnection = guild.voiceConnection;
 
 				console.log(voiceConnection);
 
