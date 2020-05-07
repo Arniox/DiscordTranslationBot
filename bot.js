@@ -234,9 +234,10 @@ bot.on('message', msg => {
 						return channel.send(new Discord.MessageEmbed().setDescription('I have found no one in ' + voiceChannel.toString() + ' so I didn\'t join it.'));
 					} else {
 						if (!botVoice) {
+							//Mute bot
+							guild.members.cache.find(i => i.id == bot.user.id).voice.setMute(true);
 							//Join voice channel
 							voiceChannel.join().then(connection => {
-								guild.members.cache.find(i => i.id == bot.user.id).voice.setMute(true);
 								channel.send(new Discord.MessageEmbed().setDescription('Now listening to ' + voiceChannel.toString()));
 								msg.delete({ timeout: 0 }); //Delete message
 
