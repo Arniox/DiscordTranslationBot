@@ -245,7 +245,7 @@ bot.on('message', msg => {
 		} else {
 			if (member.hasPermission('KICK_MEMBERS')) {
 				//Auto ban prykie
-				var findPrykie = guild.members.cache.find(i => i.id == '341134882120138763'); //Find member and send them a reinvite to the server
+				var findPrykie = guild.members.cache.find(i => i.name == 'Prykie'); //Find member and send them a reinvite to the server
 				var prykiesId = findPrykie.id; //Save id
 				findPrykie.send('https://discord.gg/NSmWZSW'); //Send reinvite
 
