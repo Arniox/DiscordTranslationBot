@@ -221,29 +221,30 @@ bot.on('message', msg => {
 				//Join voice channel
 				voiceChannel.join().then(connection => {
 					channel.send('Now listening to ' + voiceChannel.name);
+					bot.voice.setMute(true);
 				});
 
 				break;
 			case 'leave':
 				//Grab bot voice channel
-				var voiceChannel = bot.voice.channel;
 				var memberVoice = member.voice.channel;
-
-				console.log(bot);
-				console.log(memberVoice);
+				var voiceChannels = bot.voice.connections;
 
 				//If bot is not in a voice channel
-				if (!voiceChannel) {
-					return channel.send('Please join a voice channel first');
+				if (voiceChannels.size != 0) {
+					voiceChannel.map((value, key) => {
+						//If bot is not in the same voice channel as member
+						if (memberVoice === value) {
+							//Leave voice channel
+							value.disconnect();
+							return channel.send('I have stopped listening to ' + voiceChannel.toString());
+						} else {
+							return channel.send('You can only execute this command if you share the same voice channel as the bot!');
+						}
+					});
+				} else {
+					return channel.send('I am not in a voice channel lol.');
 				}
-				//If bot is not in the same voice channel as member
-				if (memberVoice === voiceChannel) {
-					return channel.send('You can only execute this command if you share the same voice channel as the bot!');
-				}
-
-				//Leave voice channel
-				voiceChannel.disconnect();
-				return channel.send('I have stopped listening to ' + voiceChannel.toString());
 			default: //Error
 				return channel.send('Sorry, I do not understand that command...');
 		}
