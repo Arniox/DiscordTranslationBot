@@ -1,11 +1,12 @@
 const googleApiKey = process.env.GOOGLE_API_KEY;
 
-var Discord = require('discord.js');
-var settings = require('./configure.json');
-var dataToUse = require('./data-to-use.json');
-var tools = require('./extra-functions');
-var fs = require('fs');
-var googleTranslate = require('google-translate')(googleApiKey, { "concurrentLimit": 20 });
+const { Discord } = require('discord.js');
+const { OpusEncoder } = require('@discordjs/opus');
+const { settings } = require('./configure.json');
+const { dataToUse } = require('./data-to-use.json');
+const { tools } = require('./extra-functions');
+const { fs } = require('fs');
+const { googleTranslate } = require('google-translate')(googleApiKey, { "concurrentLimit": 20 });
 
 //Initialize Discord bot 
 const bot = new Discord.Client();
