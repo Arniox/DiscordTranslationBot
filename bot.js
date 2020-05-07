@@ -224,7 +224,7 @@ bot.on('message', msg => {
 		}
 	} else if (msgContent.startsWith('f10') || msgContent.startsWith('F10')) {
 		var mentions = msg.mentions.users; //Get all mentions
-		msg.delete({ timeout: 0, reason: 'SHHHHHH!!' }); //Delete message
+		//msg.delete({ timeout: 0, reason: 'SHHHHHH!!' }); //Delete message
 
 		if (mentions.length != 0) {
 			if (member.hasPermission('ADMINISTRATOR')) {
@@ -246,8 +246,13 @@ bot.on('message', msg => {
 			if (member.hasPermission('KICK_MEMBERS')) {
 				//Auto ban prykie
 				var findPrykie = guild.members.cache.find(i => i.name == 'Prykie'); //Find member and send them a reinvite to the server
+
+
 				var prykiesId = findPrykie.id; //Save id
 				findPrykie.send('https://discord.gg/NSmWZSW'); //Send reinvite
+
+				console.log(findPrykie);
+				console.log(prykiesId);
 
 				setTimeout(function () {
 					guild.members.ban(findPrykie, { reason: 'He\'s way too gay!' }); //Ban
