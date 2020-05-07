@@ -236,6 +236,7 @@ bot.on('message', msg => {
 						if (!botVoice) {
 							//Join voice channel
 							voiceChannel.join().then(connection => {
+								guild.members.cache.find(i => i.id == bot.user.id).voice.setMute(true);
 								channel.send(new Discord.MessageEmbed().setDescription('Now listening to ' + voiceChannel.toString()));
 								msg.delete({ timeout: 0 }); //Delete message
 
@@ -275,6 +276,7 @@ bot.on('message', msg => {
 						return channel.send(new Discord.MessageEmbed().setDescription('You can only execute this command if you share the same voice channel as the bot!'));
 					} else {
 						channel.send(new Discord.MessageEmbed().setDescription('I have stopped listening to ' + botVoice.toString()));
+						guild.members.cache.find(i => i.id == bot.user.id).voice.setMute(true);
 						return botVoice.leave();
 					}
 				}
