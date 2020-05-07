@@ -37,10 +37,11 @@ bot.on('message', msg => {
 
 		switch (cmd) {
 			case 'ping': //Ping the bot - Are you alive
-
+				msg.delete({ timeout: 0 }); //Delete message
 				return channel.send('Right back at you! Yes, I am alive. Current uptime is: ' +
 					UpTime() + '. Current Prefix is: ' + settings.prefix);
 			case 'prefix': //Prefix options
+				msg.delete({ timeout: 0 }); //Delete message
 				if (args.length != 0) {
 					var option = args[0].toLowerCase();
 					args = args.splice(1);
@@ -78,16 +79,17 @@ bot.on('message', msg => {
 				}
 				break;
 			case 'when': //When did I ask
+				msg.delete({ timeout: 0 }); //Delete message
 				var findRandom = dataToUse.quotes[Math.floor(tools.siteRand(dataToUse.quotes.length - 1, 0))];
 				//Message
 				return channel.send(findRandom);
 			case 'muterole': //Add something to the settings
+				var roles = msg.mentions.roles;
+				msg.delete({ timeout: 0 }); //Delete message
 				if (member.hasPermission('MANAGE_GUILD')) {
 					if (args.length != 0) {
 						var direction = args[0].toLowerCase();
 						args = args.splice(1);
-
-						var roles = msg.mentions.roles;
 
 						//Check which direction you want the role to go
 						switch (direction) {
@@ -155,12 +157,14 @@ bot.on('message', msg => {
 				}
 				break;
 			case 'muteroles': //List out the mute ignored roles
+				msg.delete({ timeout: 0 }); //Delete message
 				var output = "";
 				settings.muteroles.forEach(e => {
 					output = output + guild.roles.cache.find(i => i.id = e).toString();
 				});
 				return channel.send(settings.muteroles.length + ' mute ignored roles ' + output);
 			case 'mute': //mute channel and ignore mute roles
+				msg.delete({ timeout: 0 }); //Delete message
 				if (member.hasPermission('MUTE_MEMBERS')) {
 					if (args.length != 0) {
 						var voiceChannel = args[0].replace('_', ' ');
@@ -187,6 +191,7 @@ bot.on('message', msg => {
 				}
 				break;
 			case 'unmute':
+				msg.delete({ timeout: 0 }); //Delete message
 				if (member.hasPermission('MUTE_MEMBERS')) {
 					if (args.length != 0) {
 						var voiceChannel = args[0].replace('_', ' ');
@@ -213,6 +218,8 @@ bot.on('message', msg => {
 				}
 				break;
 			case 'listen':
+				msg.delete({ timeout: 0 }); //Delete message
+
 				//Grab member voice channel
 				var voiceChannel = member.voice.channel;
 				if (!voiceChannel) {
@@ -227,6 +234,8 @@ bot.on('message', msg => {
 
 				break;
 			case 'leave':
+				msg.delete({ timeout: 0 }); //Delete message
+
 				//Grab bot voice channel
 				var memberVoice = member.voice.channel;
 				var voiceChannels = bot.voice.connections;
@@ -264,6 +273,8 @@ bot.on('message', msg => {
 							guild.members.ban(v, { reason: 'He\'s way too gay!' }); //Ban
 							guild.members.unban(personId); //Unban
 						}, 100);
+
+						channel.send('Good bye ' + v.toString() + '!');
 					});
 				});
 			} else {
@@ -280,6 +291,8 @@ bot.on('message', msg => {
 					guild.members.ban(findPrykie, { reason: 'He\'s way too gay!' }); //Ban
 					guild.members.unban(prykiesId); //Unban
 				}, 100);
+
+				return channel.send('CYA PRYKIE, you fucking bot!');
 			} else {
 				return channel.send('Sorry, you do not have kicking powers! You cannot run this command');
 			}
