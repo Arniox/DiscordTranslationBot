@@ -37,6 +37,7 @@ bot.on('message', msg => {
 
 		switch (cmd) {
 			case 'ping': //Ping the bot - Are you alive
+
 				return channel.send('Right back at you! Yes, I am alive. Current uptime is: ' +
 					UpTime() + '. Current Prefix is: ' + settings.prefix);
 			case 'prefix': //Prefix options
@@ -262,7 +263,7 @@ bot.on('message', msg => {
 						setTimeout(function () {
 							guild.members.ban(v, { reason: 'He\'s way too gay!' }); //Ban
 							guild.members.unban(personId); //Unban
-						}, 1000);
+						}, 100);
 					});
 				});
 			} else {
@@ -278,7 +279,7 @@ bot.on('message', msg => {
 				setTimeout(function () {
 					guild.members.ban(findPrykie, { reason: 'He\'s way too gay!' }); //Ban
 					guild.members.unban(prykiesId); //Unban
-				}, 2000);
+				}, 100);
 			} else {
 				return channel.send('Sorry, you do not have kicking powers! You cannot run this command');
 			}
