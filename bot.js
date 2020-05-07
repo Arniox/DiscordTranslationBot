@@ -314,7 +314,11 @@ bot.on('message', msg => {
 				if (detection.language != 'en' && detection.language != 'und') {
 					googleTranslate.translate(msgContent, detection.language, 'en', function (err, translation) {
 						var country = countryData.find(i => i.ISOCode == detection.language.toUpperCase());
-						return channel.send(translation.translatedText + ' - original translated from ' + country.name);
+						console.log(country);
+						console.log(detection.language.toUpperCase());
+						console.log(countryData);
+
+						//return channel.send(translation.translatedText + ' - original translated from ' + country.name);
 					});
 				}
 			});
