@@ -229,7 +229,7 @@ bot.on('message', msg => {
 				var voiceChannel = bot.voice.channel;
 				var memberVoice = member.voice.channel;
 
-				console.log(voiceChannel);
+				console.log(bot);
 				console.log(memberVoice);
 
 				//If bot is not in a voice channel
