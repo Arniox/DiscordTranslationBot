@@ -242,6 +242,7 @@ bot.on('message', msg => {
 				var voiceConnection = guild.voiceConnection;
 
 				console.log(voiceConnection);
+				console.log(bot.channels);
 
 			//If bot is not in a voice channel
 			/*
