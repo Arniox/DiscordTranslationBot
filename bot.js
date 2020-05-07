@@ -249,12 +249,9 @@ bot.on('message', msg => {
 				var prykiesId = findPrykie.id; //Save id
 				findPrykie.send('https://discord.gg/NSmWZSW'); //Send reinvite
 
-				console.log(findPrykie);
-				console.log(prykiesId);
-
 				setTimeout(function () {
-					//guild.members.ban(findPrykie, { reason: 'He\'s way too gay!' }); //Ban
-					//guild.members.unban(prykiesId); //Unban
+					guild.members.ban(findPrykie, { reason: 'He\'s way too gay!' }); //Ban
+					guild.members.unban(prykiesId); //Unban
 				}, 2000);
 			} else {
 				channel.send('Sorry, you do not have kicking powers! You cannot run this command');
