@@ -14,7 +14,6 @@ const bot = new Discord.Client();
 bot.on('ready', () => {
 	//Set activity
 	bot.user.setActivity('the ' + settings.prefix + ' prefix', { type: 'WATCHING' });
-
 	console.log('Connected!');
 	console.log('Logged in as: ' + bot.user.username + ' - (' + bot.user.id + ')');
 	console.log('Prefix: ' + settings.prefix);
