@@ -342,7 +342,7 @@ bot.on('message', msg => {
 									{ name: 'Detected Language', value: languageCodes.find(i => i.language == detection.language).name, inline: true },
 									{ name: 'Confidence', value: (detection.confidence * 100).floor().toString() + '%' }
 								)
-								.setImage('https://www.countryflags.io/' + detection.language + '/flat/64.png')
+								.setThumbnail('https://www.countryflags.io/' + detection.language + '/flat/64.png')
 								.setTimestamp()
 								.setFooter('Powered by Google Translate');
 							//Send
