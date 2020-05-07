@@ -313,12 +313,12 @@ bot.on('message', msg => {
 				//Translate if not english or link
 				if (detection.language != 'en' && detection.language != 'und') {
 					googleTranslate.translate(msgContent, detection.language, 'en', function (err, translation) {
-						var country = countryData.find(i => i.ISOCode == detection.language.toUpperCase());
-						console.log(country);
-						console.log(detection.language.toUpperCase());
-						console.log(countryData);
-
-						//return channel.send(translation.translatedText + ' - original translated from ' + country.name);
+						var country = countryData.find(i => i.ISOCode.split('-')[1] == detection.language.toUpperCase());
+						if (!country) {
+							return channel.send(translation.translatedText);
+						} else {
+							return channel.send(translation.translatedText + ' - original translated from ' + country.name);
+						}
 					});
 				}
 			});
