@@ -1,14 +1,13 @@
 const googleApiKey = process.env.GOOGLE_API_KEY;
-const googleApiOptions = process.env.GOOGLE_API_OPTIONS;
 
 var Discord = require('discord.js');
 var settings = require('./configure.json');
 var dataToUse = require('./data-to-use.json');
 var tools = require('./extra-functions');
 var fs = require('fs');
-var googleTranslate = require('google-translate')(googleApiKey, googleApiOptions);
+var googleTranslate = require('google-translate')(googleApiKey, { "concurrentLimit": 20 });
 
-//Initialize Discord bot
+//Initialize Discord bot 
 const bot = new Discord.Client();
 
 bot.on('ready', () => {
@@ -240,7 +239,7 @@ bot.on('message', msg => {
 		}
 	}
 });
-bot.login(auth.token);
+bot.login(process.env.BOT_TOKEN);
 
 //----------------FUNCTIONS--------------------------------
 //Find uptime
