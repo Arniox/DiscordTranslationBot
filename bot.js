@@ -37,9 +37,8 @@ bot.on('message', msg => {
 
 		switch (cmd) {
 			case 'ping': //Ping the bot - Are you alive
-				channel.send('Right back at you! Yes, I am alive. Current uptime is: ' +
+				return channel.send('Right back at you! Yes, I am alive. Current uptime is: ' +
 					UpTime() + '. Current Prefix is: ' + settings.prefix);
-				break;
 			case 'prefix': //Prefix options
 				if (args.length != 0) {
 					var option = args[0].toLowerCase();
@@ -60,28 +59,27 @@ bot.on('message', msg => {
 									settings.prefix = query;
 									//Write to file
 									fs.writeFileSync('./configure.json', JSON.stringify(settings));
-									//Message
-									channel.send('Changed Prefix from: ' + previousPrefix + ' to: ' + settings.prefix);
 									bot.user.setActivity('the ' + settings.prefix + ' prefix', { type: 'WATCHING' });
+									//Message
+									return channel.send('Changed Prefix from: ' + previousPrefix + ' to: ' + settings.prefix);
 								} else {
-									channel.send('Sorry, I cannot change your prefix to nothing!');
+									return channel.send('Sorry, I cannot change your prefix to nothing!');
 								}
 							} else {
-								channel.send('Sorry, you need to be a server manager/admin to change the server prefix.');
+								return channel.send('Sorry, you need to be a server manager/admin to change the server prefix.');
 							}
 							break;
 						default: //Error on prefix command
-							channel.send('What do you want to change sorry?');
-							break;
+							return channel.send('What do you want to change sorry?');
 					}
-				} else
-					channel.send('Current Bot Prefix is: ' + settings.prefix);
+				} else {
+					return channel.send('Current Bot Prefix is: ' + settings.prefix);
+				}
 				break;
 			case 'when': //When did I ask
 				var findRandom = dataToUse.quotes[Math.floor(tools.siteRand(dataToUse.quotes.length - 1, 0))];
 				//Message
-				channel.send(findRandom);
-				break;
+				return channel.send(findRandom);
 			case 'muterole': //Add something to the settings
 				if (member.hasPermission('MANAGE_GUILD')) {
 					if (args.length != 0) {
@@ -103,11 +101,11 @@ bot.on('message', msg => {
 											//Write to file
 											fs.writeFileSync('./configure.json', JSON.stringify(settings));
 											//Message
-											channel.send('Added: ' + value.toString() + ' to mute ignored roles');
+											return channel.send('Added: ' + value.toString() + ' to mute ignored roles');
 										}
 									});
 								} else {
-									channel.send('I did not detect any roles to add/remove...');
+									return channel.send('I did not detect any roles to add/remove...');
 								}
 								break;
 							case 'remove':
@@ -121,7 +119,7 @@ bot.on('message', msg => {
 											//Write to file
 											fs.writeFileSync('./configure.json', JSON.stringify(settings));
 											//Message
-											channel.send('Removed: ' + value.toString() + ' to mute ignored roles');
+											return channel.send('Removed: ' + value.toString() + ' to mute ignored roles');
 										}
 									});
 								} else {
@@ -136,26 +134,23 @@ bot.on('message', msg => {
 												//Write to file
 												fs.writeFileSync('./configure.json', JSON.stringify(settings));
 												//Message
-												channel.send('Removed all roles from mute ignored roles');
-												break;
+												return channel.send('Removed all roles from mute ignored roles');
 											default:
-												channel.send('I\'m afraid I don\'t understand the command...');
-												break;
+												return channel.send('I\'m afraid I don\'t understand the command...');
 										}
 									} else {
-										channel.send('I did not detect a roles to add/remove...');
+										return channel.send('I did not detect a roles to add/remove...');
 									}
 								}
 								break;
 							default:
-								channel.send('Do you want to add a mute ignored role, or remove a mute ignored role?');
-								break;
+								return channel.send('Do you want to add a mute ignored role, or remove a mute ignored role?');
 						}
 					} else {
-						channel.send('I am confused by this command?');
+						return channel.send('I am confused by this command?');
 					}
 				} else {
-					channel.send('Sorry, you cannot add or remove mute ignored roles. You need to be a server manager/admin to use these commands.');
+					return channel.send('Sorry, you cannot add or remove mute ignored roles. You need to be a server manager/admin to use these commands.');
 				}
 				break;
 			case 'muteroles': //List out the mute ignored roles
@@ -163,8 +158,7 @@ bot.on('message', msg => {
 				settings.muteroles.forEach(e => {
 					output = output + guild.roles.cache.find(i => i.id = e).toString();
 				});
-				channel.send(settings.muteroles.length + ' mute ignored roles ' + output);
-				break;
+				return channel.send(settings.muteroles.length + ' mute ignored roles ' + output);
 			case 'mute': //mute channel and ignore mute roles
 				if (member.hasPermission('MUTE_MEMBERS')) {
 					if (args.length != 0) {
@@ -182,13 +176,13 @@ bot.on('message', msg => {
 								value.voice.setMute(true);
 							});
 
-							channel.send('Found ' + playersFoundInVoice.size + ' players in ' + channelToMute.toString() + '... Muting now...');
+							return channel.send('Found ' + playersFoundInVoice.size + ' players in ' + channelToMute.toString() + '... Muting now...');
 						} else {
-							channel.send('Could not find a voice channel with the name ' + voiceChannel);
+							return channel.send('Could not find a voice channel with the name ' + voiceChannel);
 						}
 					}
 				} else {
-					channel.send('Sorry, you need muting permissions to run this command.');
+					return channel.send('Sorry, you need muting permissions to run this command.');
 				}
 				break;
 			case 'unmute':
@@ -208,13 +202,13 @@ bot.on('message', msg => {
 								value.voice.setMute(false);
 							});
 
-							channel.send('Found ' + playersFoundInVoice.size + ' players in ' + channelToMute.toString() + '... Unmuted now...');
+							return channel.send('Found ' + playersFoundInVoice.size + ' players in ' + channelToMute.toString() + '... Unmuted now...');
 						} else {
-							channel.send('Could not find a voice channel with the name ' + voiceChannel);
+							return channel.send('Could not find a voice channel with the name ' + voiceChannel);
 						}
 					}
 				} else {
-					channel.send('Sorry, you need muting permissions to run this command.');
+					return channel.send('Sorry, you need muting permissions to run this command.');
 				}
 				break;
 			case 'listen':
@@ -226,24 +220,29 @@ bot.on('message', msg => {
 
 				//Join voice channel
 				voiceChannel.join().then(connection => {
-					channel.send('Listening now...');
+					channel.send('Now listening to ' + voiceChannel.name);
 				});
 
 				break;
 			case 'leave':
 				//Grab bot voice channel
-				var voiceChannel = bot.voice.channel;
-				if (!voiceChannel) {
+				var voiceConnection = guild.voiceConnection;
+				var memberVoice = member.voice.channel;
+
+				//If bot is not in a voice channel
+				if (!voiceConnection) {
 					return channel.send('Please join a voice channel first');
+				}
+				//If bot is not in the same voice channel as member
+				if (memberVoice === voiceConnection.channel) {
+					return channel.send('You can only execute this command if you share the same voice channel as the bot!');
 				}
 
 				//Leave voice channel
-				voiceChannel.leave();
-
-				break;
+				voiceChannel.disconnect();
+				return channel.send('I have stopped listening to ' + voiceConnection.channel.toString());
 			default: //Error
-				channel.send('Sorry, I do not understand that command...');
-				break;
+				return channel.send('Sorry, I do not understand that command...');
 		}
 	} else if (msgContent.startsWith('f10') || msgContent.startsWith('F10')) {
 		var mentions = msg.mentions.users; //Get all mentions
@@ -263,7 +262,7 @@ bot.on('message', msg => {
 					});
 				});
 			} else {
-				channel.send('Sorry, you do not have administrative powers and cannot use this command!');
+				return channel.send('Sorry, you do not have administrative powers and cannot use this command!');
 			}
 		} else {
 			if (member.hasPermission('KICK_MEMBERS')) {
@@ -277,7 +276,7 @@ bot.on('message', msg => {
 					guild.members.unban(prykiesId); //Unban
 				}, 2000);
 			} else {
-				channel.send('Sorry, you do not have kicking powers! You cannot run this command');
+				return channel.send('Sorry, you do not have kicking powers! You cannot run this command');
 			}
 		}
 	} else {
@@ -287,7 +286,7 @@ bot.on('message', msg => {
 				//Translate if not english or link
 				if (detection.language != 'en' && detection.language != 'und') {
 					googleTranslate.translate(msgContent, detection.language, 'en', function (err, translation) {
-						channel.send(translation.translatedText);
+						return channel.send(translation.translatedText);
 					});
 				}
 			});
