@@ -1,7 +1,7 @@
 const googleApiKey = process.env.GOOGLE_API_KEY;
 
 const { Discord } = require('discord.js');
-const { OpusEncoder } = require('@discordjs/opus');
+//const { OpusEncoder } = require('@discordjs/opus');
 const { settings } = require('./configure.json');
 const { dataToUse } = require('./data-to-use.json');
 const { tools } = require('./extra-functions');
@@ -216,7 +216,7 @@ bot.on('message', msg => {
 					return channel.send(new Discord.MessageEmbed().setDescription('Sorry, you need muting permissions to run this command.'));
 				}
 				break;
-			case 'listen':
+			/*case 'listen':
 				//Grab member voice channel
 				var voiceChannel = member.voice.channel;
 				if (!voiceChannel) {
@@ -262,7 +262,7 @@ bot.on('message', msg => {
 						channel.send(new Discord.MessageEmbed().setDescription('I have stopped listening to ' + voiceChannel.toString()));
 						return botVoice.leave();
 					}
-				}
+				}*/
 			default: //Error
 				return channel.send(new Discord.MessageEmbed().setDescription('Sorry, I do not understand that command...'));
 		}
