@@ -228,6 +228,7 @@ bot.on('message', msg => {
 				//Join voice channel
 				voiceChannel.join().then(connection => {
 					channel.send(new Discord.MessageEmbed().setDescription('Now listening to ' + voiceChannel.toString()));
+
 				});
 
 				break;
@@ -236,28 +237,26 @@ bot.on('message', msg => {
 
 				//Grab bot voice channel
 				var memberVoice = member.voice.channel;
-				var voiceChannels = bot.voice.connections;
+				var voiceConnection = guild.voice.connection;
 
-				console.log(bot);
-				console.log(bot.voice);
-				console.log(voiceChannel);
-				console.log(voiceChannel.size);
+				console.log(voiceConnection);
 
-				//If bot is not in a voice channel
-				if (voiceChannels.size != 0) {
-					voiceChannel.map((value, key) => {
-						//If bot is not in the same voice channel as member
-						if (memberVoice === value) {
-							//Leave voice channel
-							value.disconnect();
-							return channel.send(new Discord.MessageEmbed().setDescription('I have stopped listening to ' + voiceChannel.toString()));
-						} else {
-							return channel.send(new Discord.MessageEmbed().setDescription('You can only execute this command if you share the same voice channel as the bot!'));
-						}
-					});
-				} else {
-					return channel.send(new Discord.MessageEmbed().setDescription('I am not in a voice channel sorry.'));
-				}
+			//If bot is not in a voice channel
+			/*
+			if (voiceChannels.size != 0) {
+				voiceChannel.map((value, key) => {
+					//If bot is not in the same voice channel as member
+					if (memberVoice === value) {
+						//Leave voice channel
+						value.disconnect();
+						return channel.send(new Discord.MessageEmbed().setDescription('I have stopped listening to ' + voiceChannel.toString()));
+					} else {
+						return channel.send(new Discord.MessageEmbed().setDescription('You can only execute this command if you share the same voice channel as the bot!'));
+					}
+				});
+			} else {
+				return channel.send(new Discord.MessageEmbed().setDescription('I am not in a voice channel sorry.'));
+			}*/
 			default: //Error
 				return channel.send(new Discord.MessageEmbed().setDescription('Sorry, I do not understand that command...'));
 		}
