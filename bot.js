@@ -235,33 +235,22 @@ bot.on('message', msg => {
 			case 'leave':
 				msg.delete({ timeout: 0 }); //Delete message
 
-				console.log(guild);
-
 				//Grab bot voice channel
 				var memberVoice = member.voice.channel;
-				var voiceConnection = guild.voiceConnection;
+				var botVoice = guild.members.cache.find(i => i.id == bot.user.id).voice.channel;
 
-				console.log(voiceConnection);
-				console.log(bot.channels);
-
-				console.log(guild.members.cache.find(i => i.id == bot.user.id));
-
-			//If bot is not in a voice channel
-			/*
-			if (voiceChannels.size != 0) {
-				voiceChannel.map((value, key) => {
-					//If bot is not in the same voice channel as member
-					if (memberVoice === value) {
-						//Leave voice channel
-						value.disconnect();
-						return channel.send(new Discord.MessageEmbed().setDescription('I have stopped listening to ' + voiceChannel.toString()));
-					} else {
+				//If bot is not in voice
+				if (!botVoice) {
+					return channel.send(new Discord.MessageEmbed().setDescription('I am not in a voice channel sorry.'));
+				} else {
+					//If member and bot are not in the same voice
+					if (memberVoice !== botVoice) {
 						return channel.send(new Discord.MessageEmbed().setDescription('You can only execute this command if you share the same voice channel as the bot!'));
+					} else {
+						botVoice.disconnect();
+						return channel.send(new Discord.MessageEmbed().setDescription('I have stopped listening to ' + voiceChannel.toString()));
 					}
-				});
-			} else {
-				return channel.send(new Discord.MessageEmbed().setDescription('I am not in a voice channel sorry.'));
-			}*/
+				}
 			default: //Error
 				return channel.send(new Discord.MessageEmbed().setDescription('Sorry, I do not understand that command...'));
 		}
