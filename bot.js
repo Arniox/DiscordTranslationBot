@@ -313,7 +313,7 @@ bot.on('message', msg => {
 				//Translate if not english or link
 				if (detection.language != 'en' && detection.language != 'und') {
 					googleTranslate.translate(msgContent, detection.language, 'en', function (err, translation) {
-						var country = countryData.find(i => i.ISOCode == detection.language);
+						var country = countryData.find(i => i.ISOCode == detection.language.toUpperCase());
 						return channel.send(translation.translatedText + ' - original translated from ' + country.name);
 					});
 				}
