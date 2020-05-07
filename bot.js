@@ -228,8 +228,6 @@ bot.on('message', msg => {
 				//Join voice channel
 				voiceChannel.join().then(connection => {
 					channel.send(new Discord.MessageEmbed().setDescription('Now listening to ' + voiceChannel.toString()));
-					console.log(bot);
-					console.log(member);
 				});
 
 				break;
@@ -240,10 +238,10 @@ bot.on('message', msg => {
 				var memberVoice = member.voice.channel;
 				var voiceChannels = bot.voice.connections;
 
-				console.log(voiceChannel);
-				console.log(voiceChannel.size);
 				console.log(bot);
 				console.log(bot.voice);
+				console.log(voiceChannel);
+				console.log(voiceChannel.size);
 
 				//If bot is not in a voice channel
 				if (voiceChannels.size != 0) {
