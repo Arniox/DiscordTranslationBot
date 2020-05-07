@@ -77,7 +77,6 @@ bot.on('message', msg => {
 				} else {
 					return channel.send('Current Bot Prefix is: ' + settings.prefix);
 				}
-				break;
 			case 'when': //When did I ask
 				msg.delete({ timeout: 0 }); //Delete message
 				var findRandom = dataToUse.quotes[Math.floor(tools.siteRand(dataToUse.quotes.length - 1, 0))];
@@ -239,6 +238,11 @@ bot.on('message', msg => {
 				//Grab bot voice channel
 				var memberVoice = member.voice.channel;
 				var voiceChannels = bot.voice.connections;
+
+				console.log(voiceChannel);
+				console.log(voiceChannel.size);
+				console.log(bot);
+				console.log(bot.voice);
 
 				//If bot is not in a voice channel
 				if (voiceChannels.size != 0) {
