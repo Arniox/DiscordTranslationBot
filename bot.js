@@ -315,9 +315,9 @@ bot.on('message', msg => {
 					googleTranslate.translate(msgContent, detection.language, 'en', function (err, translation) {
 						var country = countryData.find(i => (i.ISOCode.split('-').length > 1 ? i.ISOCode.split('-')[1] : i.ISOCode) == detection.language.toUpperCase());
 						if (!country) {
-							return channel.send(translation.translatedText);
+							return channel.send(translation.translatedText + ' translated with a ' + (detection.confidence * 100).floor().toString() + '% confidence rating');
 						} else {
-							return channel.send(translation.translatedText + ' - original translated from ' + country.Name);
+							return channel.send(translation.translatedText + ' - original translated from ' + country.Name + ' with a ' + (detection.confidence * 100).floor().toString() + '% confidence rating');
 						}
 					});
 				}
