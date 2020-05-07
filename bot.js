@@ -314,6 +314,8 @@ bot.on('message', msg => {
 				if (detection.language != 'en' && detection.language != 'und') {
 					googleTranslate.translate(msgContent, detection.language, 'en', function (err, translation) {
 						var country = countryData.find(i => (i.ISOCode.split('-').length > 1 ? i.ISOCode.split('-')[1] : i.ISOCode) == detection.language.toUpperCase());
+						console.log(country);
+
 						if (!country) {
 							return channel.send(translation.translatedText);
 						} else {
