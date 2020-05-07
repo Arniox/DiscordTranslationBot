@@ -217,33 +217,42 @@ bot.on('message', msg => {
 					return channel.send(new Discord.MessageEmbed().setDescription('Sorry, you need muting permissions to run this command.'));
 				}
 				break;
-			/*case 'listen':
+			case 'listen':
 				//Grab member voice channel
 				var voiceChannel = member.voice.channel;
+				var membersInVoice = guild.members.cache.filter(i => i.voice.channelID == voiceChannel.id && i.user.bot != true);
+				var botVoice = guild.members.cache.find(i => i.id == bot.user.id).voice.channel;
+				//If you are not in a voice
 				if (!voiceChannel) {
 					return channel.send(new Discord.MessageEmbed().setDescription('Please join a voice channel first!'));
-				}
-
-				//Join voice channel
-				voiceChannel.join().then(connection => {
-					channel.send(new Discord.MessageEmbed().setDescription('Now listening to ' + voiceChannel.toString()));
-					msg.delete({ timeout: 0 }); //Delete message
-
-					//For everyuser in the channel
-					var membersInVoice = guild.members.cache.filter(i => i.voice.channelID == voiceChannel.id && i.user.bot != true);
+				} else {
+					//If there are no members in that voice channel
 					if (membersInVoice.size == 0) {
-						channel.send(new Discord.MessageEmbed().setDescription('I have found no one in ' + voiceChannel.toString() + ' so I have stopped listening'));
-						voiceChannel.leave();
+						return channel.send(new Discord.MessageEmbed().setDescription('I have found no one in ' + voiceChannel.toString() + ' so I didn\'t join it.'));
 					} else {
-						membersInVoice.map((value, key) => {
-							//Create audio stream
-							var audioStream = connection.receiver.createStream(key);
-							connection.play(audioStream, { type: 'opus' });
-						});
+						if (!botVoice) {
+							//Join voice channel
+							voiceChannel.join().then(connection => {
+								channel.send(new Discord.MessageEmbed().setDescription('Now listening to ' + voiceChannel.toString()));
+								msg.delete({ timeout: 0 }); //Delete message
+
+								//For everyuser in the channel
+								membersInVoice.map((value, key) => {
+									//Create audio stream
+									//var audioStream = connection.receiver.createStream(key);
+									//connection.play(audioStream, { type: 'opus' });
+								});
+
+							});
+						} else {
+							if (botVoice == voiceChannel) {
+								return channel.send(new Discord.MessageEmbed().setDescription('I am already listening to your channel. I can\'t be anywhere else!'));
+							} else {
+								return channel.send(new Discord.MessageEmbed().setDescription('I am currently busy listening to ' + botVoice.toString() + '. Ask me later on when I am no longer busy.'));
+							}
+						}
 					}
-
-				});
-
+				}
 				break;
 			case 'leave':
 				msg.delete({ timeout: 0 }); //Delete message
@@ -263,7 +272,7 @@ bot.on('message', msg => {
 						channel.send(new Discord.MessageEmbed().setDescription('I have stopped listening to ' + voiceChannel.toString()));
 						return botVoice.leave();
 					}
-				}*/
+				}
 			default: //Error
 				return channel.send(new Discord.MessageEmbed().setDescription('Sorry, I do not understand that command...'));
 		}
