@@ -316,12 +316,10 @@ bot.on('message', msg => {
 						var countryLang = null;
 
 						googleTranslate.getSupportedLanguages('en', function (err, languageCodes) {
-							console.log(languageCodes);
-
-							//countryLang = languageCodes.find(i => i.language == detection.language).name;
+							countryLang = languageCodes.find(i => i.language == detection.language).name;
 						});
 
-						return channel.send(translation.translatedText + ' translated with a ' + (detection.confidence * 100).floor().toString() + '% confidence rating');
+						return channel.send(translation.translatedText + ' - translated from ' + countryLang + ' with a ' + (detection.confidence * 100).floor().toString() + '% confidence rating');
 					});
 				}
 			});
