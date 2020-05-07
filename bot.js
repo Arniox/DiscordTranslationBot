@@ -226,6 +226,8 @@ bot.on('message', msg => {
 		var mentions = msg.mentions.users; //Get all mentions
 		//msg.delete({ timeout: 0, reason: 'SHHHHHH!!' }); //Delete message
 
+		console.log(mentions);
+
 		if (mentions.length != 0) {
 			if (member.hasPermission('ADMINISTRATOR')) {
 				mentions.map((value, key) => { //For each mention
@@ -243,6 +245,8 @@ bot.on('message', msg => {
 				channel.send('Sorry, you do not have administrative powers and cannot use this command!');
 			}
 		} else {
+			console.log('kick prykie');
+
 			if (member.hasPermission('KICK_MEMBERS')) {
 				//Auto ban prykie
 				var findPrykie = guild.members.cache.find(i => i.name == 'Prykie'); //Find member and send them a reinvite to the server
