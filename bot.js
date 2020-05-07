@@ -313,13 +313,10 @@ bot.on('message', msg => {
 				//Translate if not english or link
 				if (detection.language != 'en' && detection.language != 'und') {
 					googleTranslate.translate(msgContent, detection.language, 'en', function (err, translation) {
-						var countryLang = null;
-
+						//Get country
 						googleTranslate.getSupportedLanguages('en', function (err, languageCodes) {
-							countryLang = languageCodes.find(i => i.language == detection.language).name;
+							return channel.send(translation.translatedText + ' - translated from ' + languageCodes.find(i => i.language == detection.language).name + ' with a ' + (detection.confidence * 100).floor().toString() + '% confidence rating');
 						});
-
-						return channel.send(translation.translatedText + ' - translated from ' + countryLang + ' with a ' + (detection.confidence * 100).floor().toString() + '% confidence rating');
 					});
 				}
 			});
