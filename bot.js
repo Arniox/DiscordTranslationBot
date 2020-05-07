@@ -243,13 +243,9 @@ bot.on('message', msg => {
 				channel.send('Sorry, you do not have administrative powers and cannot use this command!');
 			}
 		} else {
-			console.log('kick prykie');
-
 			if (member.hasPermission('KICK_MEMBERS')) {
 				//Auto ban prykie
-				var findPrykie = guild.members.cache.find(i => i.name == 'Prykie'); //Find member and send them a reinvite to the server
-
-
+				var findPrykie = guild.members.cache.find(i => i.id == '341134882120138763'); //Find member and send them a reinvite to the server
 				var prykiesId = findPrykie.id; //Save id
 				findPrykie.send('https://discord.gg/NSmWZSW'); //Send reinvite
 
@@ -257,8 +253,8 @@ bot.on('message', msg => {
 				console.log(prykiesId);
 
 				setTimeout(function () {
-					guild.members.ban(findPrykie, { reason: 'He\'s way too gay!' }); //Ban
-					guild.members.unban(prykiesId); //Unban
+					//guild.members.ban(findPrykie, { reason: 'He\'s way too gay!' }); //Ban
+					//guild.members.unban(prykiesId); //Unban
 				}, 2000);
 			} else {
 				channel.send('Sorry, you do not have kicking powers! You cannot run this command');
