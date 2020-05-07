@@ -1,0 +1,12 @@
+{
+	"name": "userful-bot",
+	"version": "1.0.0",
+	"description": "Automatically translate any non-english detected text in chat to English!",
+	"main": "bot.js",
+	"author": "Nikkolas Diehl",
+	"dependencies": {
+		"discord.io": "https://github.com/woor/discord.io/tarball/gateway_v6",
+		"discord.js": "^12.2.0",
+		"google-translate": "^3.0.0"
+	}
+}
