@@ -244,7 +244,7 @@ bot.on('message', msg => {
 				console.log(voiceConnection);
 				console.log(bot.channels);
 
-				console.log(guild.members.find(i => i.id == bot.user.id));
+				console.log(guild.members.cache.find(i => i.id == bot.user.id));
 
 			//If bot is not in a voice channel
 			/*
