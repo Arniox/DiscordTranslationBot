@@ -226,7 +226,7 @@ bot.on('message', msg => {
 				break;
 			case 'leave':
 				//Grab bot voice channel
-				var voiceConnection = bot.voiceConnection;
+				var voiceConnection = bot.voiceChannel;
 				var memberVoice = member.voice.channel;
 
 				console.log(voiceConnection);
