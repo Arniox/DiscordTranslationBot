@@ -229,10 +229,10 @@ bot.on('message', msg => {
 					msg.delete({ timeout: 0 }); //Delete message
 
 					//For everyuser in the channel
-					var membersInVoice = guild.members.cache.filter(i => i.voice.channelID == channel.id && i.user.bot != true);
+					var membersInVoice = guild.members.cache.filter(i => i.voice.channelID == voiceChannel.id && i.user.bot != true);
 					if (membersInVoice.size == 0) {
 						channel.send(new Discord.MessageEmbed().setDescription('I have found no one in ' + voiceChannel.toString() + ' so I have stopped listening'));
-						channel.leave();
+						voiceChannel.leave();
 					} else {
 						membersInVoice.map((value, key) => {
 							//Create audio stream
