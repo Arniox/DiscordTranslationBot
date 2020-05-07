@@ -332,14 +332,21 @@ bot.on('message', msg => {
 					googleTranslate.translate(msgContent, detection.language, 'en', function (err, translation) {
 						//Get country
 						googleTranslate.getSupportedLanguages('en', function (err, languageCodes) {
-							/*var embeddedTranslation = new Discord.MessageEmbed()
+							//Create embedded message
+							var embeddedTranslation = new Discord.MessageEmbed()
 								.setColor('#0099ff')
-								.setAuthor(author.name)*/
-
-							console.log(member);
-							console.log(author);
-
-							return channel.send(translation.translatedText + ' - translated from ' + languageCodes.find(i => i.language == detection.language).name + ' with a ' + (detection.confidence * 100).floor().toString() + '% confidence rating');
+								.setAuthor(author.name, author.avatarURL())
+								.setDescription(translation.translatedText)
+								.addFields(
+									{ name: 'Original text', value: msgContent, inline: true },
+									{ name: 'Detected Language', value: languageCodes.find(i => i.language == detection.language).name, inline: true },
+									{ name: 'Confidence', value: (detection.confidence * 100).floor().toString() + '%' }
+								)
+								.setImage('https://www.countryflags.io/' + detection.language + '/flat/64.png')
+								.setTimestamp()
+								.setFooter('Powered by Google Translate');
+							//Send
+							return channel.send(embeddedTranslation);
 						});
 					});
 				}
