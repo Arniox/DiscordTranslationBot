@@ -16,6 +16,7 @@
   "dependencies": {
     "@discordjs/opus": "^0.3.2",
     "discord.js": "^12.2.0",
-    "google-translate": "^3.0.0"
+    "google-translate": "^3.0.0",
+    "libopus.js": "0.0.1"
   }
 }
