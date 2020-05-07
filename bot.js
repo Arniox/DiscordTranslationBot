@@ -25,7 +25,6 @@ bot.on('message', msg => {
 	var member = msg.member;
 	var guild = msg.guild;
 
-
 	//Make sure commands are not DM
 	if (!guild) return;
 
@@ -33,7 +32,7 @@ bot.on('message', msg => {
 	if (msgContent.startsWith(settings.prefix)) {
 		var args = msgContent.substring(settings.prefix.length).split(' ');
 
-		var cmd = args[0];
+		var cmd = args[0].toLowerCase();
 		args = args.splice(1);
 
 		switch (cmd) {
@@ -43,7 +42,7 @@ bot.on('message', msg => {
 				break;
 			case 'prefix': //Prefix options
 				if (args.length != 0) {
-					var option = args[0];
+					var option = args[0].toLowerCase();
 					args = args.splice(1);
 
 					//Check which option you want
@@ -86,7 +85,7 @@ bot.on('message', msg => {
 			case 'muterole': //Add something to the settings
 				if (member.hasPermission('MANAGE_GUILD')) {
 					if (args.length != 0) {
-						var direction = args[0];
+						var direction = args[0].toLowerCase();
 						args = args.splice(1);
 
 						var roles = msg.mentions.roles;
@@ -127,7 +126,7 @@ bot.on('message', msg => {
 									});
 								} else {
 									if (args.length != 0) {
-										var isAll = args[0];
+										var isAll = args[0].toLowerCase();
 										args = args.splice(1);
 
 										//Check if the user wants to remove all roles
