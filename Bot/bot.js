@@ -7,7 +7,7 @@ var tools = require('./extra-functions');
 var fs = require('fs');
 var googleTranslate = require('google-translate')(googleApiKey, { "concurrentLimit": 20 });
 
-//Initialize Discord bot
+//Initialize Discord bot 
 const bot = new Discord.Client();
 
 bot.on('ready', () => {
