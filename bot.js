@@ -5,8 +5,8 @@ var Discord = require('discord.js');
 var settings = require('./configure.json');
 var dataToUse = require('./data-to-use.json');
 var tools = require('./extra-functions');
+var countryData = require('./country-data.json');
 var fs = require('fs');
-const https = require('https');
 var googleTranslate = require('google-translate')(googleApiKey, { "concurrentLimit": 20 });
 
 //Initialize Discord bot 
@@ -313,19 +313,10 @@ bot.on('message', msg => {
 				//Translate if not english or link
 				if (detection.language != 'en' && detection.language != 'und') {
 					googleTranslate.translate(msgContent, detection.language, 'en', function (err, translation) {
-						var countryData;
-						https.get('https://restcountries.eu/rest/v2/alpha/' + detection.language, (resp) => {
-							countryData = resp;
-						}).on('error', (err) => {
-							break;
-						});
-
+						var country = countryData.find(i => i.ISOCode == detection.language.toUpperCase());
+						console.log(country);
+						console.log(detection.language.toUpperCase());
 						console.log(countryData);
-
-						//var country = countryData.find(i => i.ISOCode == detection.language.toUpperCase());
-						//console.log(country);
-						//console.log(detection.language.toUpperCase());
-						//console.log(countryData);
 
 						//return channel.send(translation.translatedText + ' - original translated from ' + country.name);
 					});
