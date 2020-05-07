@@ -335,12 +335,12 @@ bot.on('message', msg => {
 							//Create embedded message
 							var embeddedTranslation = new Discord.MessageEmbed()
 								.setColor('#0099ff')
-								.setAuthor(author.name, author.avatarURL())
+								.setAuthor(author.username, author.avatarURL())
 								.setDescription(translation.translatedText)
 								.addFields(
-									{ name: 'Original text', value: msgContent, inline: true },
 									{ name: 'Detected Language', value: languageCodes.find(i => i.language == detection.language).name, inline: true },
-									{ name: 'Confidence', value: (detection.confidence * 100).floor().toString() + '%' }
+									{ name: 'Confidence', value: (detection.confidence * 100).floor().toString() + '%', inline: true },
+									{ name: 'Original text', value: msgContent, inline: false }
 								)
 								.setThumbnail('https://www.countryflags.io/' + detection.language + '/flat/64.png')
 								.setTimestamp()
