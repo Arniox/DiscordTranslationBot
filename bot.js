@@ -5,7 +5,7 @@ var Discord = require('discord.js');
 var settings = require('./configure.json');
 var dataToUse = require('./data-to-use.json');
 var tools = require('./extra-functions');
-var countryData = require('country-data.json');
+var countryData = require('./country-data.json');
 var fs = require('fs');
 var googleTranslate = require('google-translate')(googleApiKey, { "concurrentLimit": 20 });
 
