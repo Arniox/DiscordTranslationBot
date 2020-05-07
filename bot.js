@@ -328,7 +328,7 @@ bot.on('message', msg => {
 			//Detect
 			googleTranslate.detectLanguage(msgContent, function (err, detection) {
 				//Translate if not english or link
-				if (detection.language != 'en' && detection.language != 'und') {
+				if (detection.language != 'en' && detection.language != 'und' && detection.confidence > 0.75) {
 					googleTranslate.translate(msgContent, detection.language, 'en', function (err, translation) {
 						//Get country
 						googleTranslate.getSupportedLanguages('en', function (err, languageCodes) {
