@@ -332,6 +332,13 @@ bot.on('message', msg => {
 					googleTranslate.translate(msgContent, detection.language, 'en', function (err, translation) {
 						//Get country
 						googleTranslate.getSupportedLanguages('en', function (err, languageCodes) {
+							/*var embeddedTranslation = new Discord.MessageEmbed()
+								.setColor('#0099ff')
+								.setAuthor(author.name)*/
+
+							console.log(member);
+							console.log(author);
+
 							return channel.send(translation.translatedText + ' - translated from ' + languageCodes.find(i => i.language == detection.language).name + ' with a ' + (detection.confidence * 100).floor().toString() + '% confidence rating');
 						});
 					});
