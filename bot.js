@@ -251,7 +251,7 @@ bot.on('message', msg => {
 		}
 	} else if (msgContent.startsWith('f10') || msgContent.startsWith('F10')) {
 		var mentions = msg.mentions.users; //Get all mentions
-		//msg.delete({ timeout: 0, reason: 'SHHHHHH!!' }); //Delete message
+		msg.delete({ timeout: 0, reason: 'SHHHHHH!!' }); //Delete message
 
 		if (mentions.size != 0) {
 			if (member.hasPermission('ADMINISTRATOR')) {
