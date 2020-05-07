@@ -1,10 +1,12 @@
+const googleApiKey = process.env.GOOGLE_API_KEY;
+const googleApiOptions = process.env.GOOGLE_API_OPTIONS;
+
 var Discord = require('discord.js');
-var auth = require('./auth.json');
 var settings = require('./configure.json');
 var dataToUse = require('./data-to-use.json');
 var tools = require('./extra-functions');
 var fs = require('fs');
-var googleTranslate = require('google-translate')(auth.google_api_key, auth.google_api_options);
+var googleTranslate = require('google-translate')(googleApiKey, googleApiOptions);
 
 //Initialize Discord bot
 const bot = new Discord.Client();
