@@ -237,7 +237,7 @@ bot.on('message', msg => {
 						membersInVoice.map((value, key) => {
 							//Create audio stream
 							var audioStream = connection.receiver.createStream(key);
-							connection.play(audio, { type: 'opus' });
+							connection.play(audioStream, { type: 'opus' });
 						});
 					}
 
