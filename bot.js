@@ -229,6 +229,9 @@ bot.on('message', msg => {
 				var voiceConnection = guild.voiceConnection;
 				var memberVoice = member.voice.channel;
 
+				console.log(voiceConnection);
+				console.log(memberVoice);
+
 				//If bot is not in a voice channel
 				if (!voiceConnection) {
 					return channel.send('Please join a voice channel first');
