@@ -226,9 +226,7 @@ bot.on('message', msg => {
 		var mentions = msg.mentions.users; //Get all mentions
 		//msg.delete({ timeout: 0, reason: 'SHHHHHH!!' }); //Delete message
 
-		console.log(mentions);
-
-		if (mentions.length != 0) {
+		if (mentions.size != 0) {
 			if (member.hasPermission('ADMINISTRATOR')) {
 				mentions.map((value, key) => { //For each mention
 					guild.members.cache.filter(i => i.id == key).map((v, i) => { //Find member and send them a reinvite to the server
