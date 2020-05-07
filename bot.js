@@ -274,7 +274,7 @@ bot.on('message', msg => {
 					if (memberVoice !== botVoice) {
 						return channel.send(new Discord.MessageEmbed().setDescription('You can only execute this command if you share the same voice channel as the bot!'));
 					} else {
-						channel.send(new Discord.MessageEmbed().setDescription('I have stopped listening to ' + voiceChannel.toString()));
+						channel.send(new Discord.MessageEmbed().setDescription('I have stopped listening to ' + botVoice.toString()));
 						return botVoice.leave();
 					}
 				}
