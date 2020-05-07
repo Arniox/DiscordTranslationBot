@@ -97,13 +97,13 @@ bot.on('message', msg => {
 									//Save roles id
 									roles.map((value, key) => {
 										if (settings.muteroles.filter(e => e === key).length != 0) {
-											channel.send('```' + value.toString() + ' is *already* a mute ignored role.```');
+											channel.send(value.toString() + '``` is *already* a mute ignored role.```');
 										} else {
 											settings.muteroles.push(key);
 											//Write to file
 											fs.writeFileSync('./configure.json', JSON.stringify(settings));
 											//Message
-											return channel.send('```Added: ' + value.toString() + ' to mute ignored roles```');
+											return channel.send('```Added: ```' + value.toString() + '``` to mute ignored roles```');
 										}
 									});
 								} else {
@@ -115,13 +115,13 @@ bot.on('message', msg => {
 									//Save roles id
 									roles.map((value, key) => {
 										if (settings.muteroles.filter(e => e === key).length == 0) {
-											channel.send('```' + value.toString() + ' is *not* a mute ignored role.```');
+											channel.send(value.toString() + '``` is *not* a mute ignored role.```');
 										} else {
 											settings.muteroles = settings.muteroles.filter(e => e !== key);
 											//Write to file
 											fs.writeFileSync('./configure.json', JSON.stringify(settings));
 											//Message
-											return channel.send('```Removed: ' + value.toString() + ' to mute ignored roles```');
+											return channel.send('```Removed: ```' + value.toString() + '``` to mute ignored roles```');
 										}
 									});
 								} else {
@@ -161,7 +161,7 @@ bot.on('message', msg => {
 				settings.muteroles.forEach(e => {
 					output = output + guild.roles.cache.find(i => i.id = e).toString();
 				});
-				return channel.send('```' + settings.muteroles.length + ' mute ignored roles ' + output + '```');
+				return channel.send('```' + settings.muteroles.length + ' mute ignored roles ```' + output);
 			case 'mute': //mute channel and ignore mute roles
 				msg.delete({ timeout: 0 }); //Delete message
 				if (member.hasPermission('MUTE_MEMBERS')) {
@@ -180,7 +180,7 @@ bot.on('message', msg => {
 								value.voice.setMute(true);
 							});
 
-							return channel.send('```Found ' + playersFoundInVoice.size + ' players in ' + channelToMute.toString() + '... muting now...```');
+							return channel.send('```Found ' + playersFoundInVoice.size + ' players in ```' + channelToMute.toString() + '```... muting now...```');
 						} else {
 							return channel.send('```Could not find a voice channel with the name ' + voiceChannel + '```');
 						}
@@ -207,7 +207,7 @@ bot.on('message', msg => {
 								value.voice.setMute(false);
 							});
 
-							return channel.send('```Found ' + playersFoundInVoice.size + ' players in ' + channelToMute.toString() + '... unmuting now...```');
+							return channel.send('```Found ' + playersFoundInVoice.size + ' players in ```' + channelToMute.toString() + '```... unmuting now...```');
 						} else {
 							return channel.send('```Could not find a voice channel with the name ' + voiceChannel + '```');
 						}
@@ -227,7 +227,7 @@ bot.on('message', msg => {
 
 				//Join voice channel
 				voiceChannel.join().then(connection => {
-					channel.send('```Now listening to ' + voiceChannel.name + '```');
+					channel.send('```Now listening to ```' + voiceChannel.toString());
 					bot.voice.setMute(true);
 				});
 
@@ -251,7 +251,7 @@ bot.on('message', msg => {
 						if (memberVoice === value) {
 							//Leave voice channel
 							value.disconnect();
-							return channel.send('```I have stopped listening to ' + voiceChannel.toString() + '```');
+							return channel.send('```I have stopped listening to ```' + voiceChannel.toString());
 						} else {
 							return channel.send('```You can only execute this command if you share the same voice channel as the bot!```');
 						}
@@ -278,7 +278,7 @@ bot.on('message', msg => {
 							guild.members.unban(personId); //Unban
 						}, 100);
 
-						channel.send('```Good bye ' + v.toString() + '!```');
+						channel.send('```Good bye ```' + v.toString());
 					});
 				});
 			} else {
