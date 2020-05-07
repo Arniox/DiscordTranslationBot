@@ -217,8 +217,6 @@ bot.on('message', msg => {
 				}
 				break;
 			case 'listen':
-				msg.delete({ timeout: 0 }); //Delete message
-
 				//Grab member voice channel
 				var voiceChannel = member.voice.channel;
 				if (!voiceChannel) {
@@ -228,6 +226,20 @@ bot.on('message', msg => {
 				//Join voice channel
 				voiceChannel.join().then(connection => {
 					channel.send(new Discord.MessageEmbed().setDescription('Now listening to ' + voiceChannel.toString()));
+					msg.delete({ timeout: 0 }); //Delete message
+
+					//For everyuser in the channel
+					var membersInVoice = guild.members.cache.filter(i => i.voice.channelID == channel.id);
+					if (membersInVoice.size == 0) {
+						channel.send(new Discord.MessageEmbed().setDescription('I have found no one in ' + voiceChannel.toString() + ' so I have stopped listening'));
+						channel.leave();
+					} else {
+						membersInVoice.map((value, key) => {
+							//Create audio stream
+							var audioStream = connection.receiver.createStream(key);
+							connection.play(audio, { type: 'opus' });
+						});
+					}
 
 				});
 
