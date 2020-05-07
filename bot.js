@@ -223,12 +223,14 @@ bot.on('message', msg => {
 				var botVoice = guild.members.cache.find(i => i.id == bot.user.id).voice.channel;
 				//If you are not in a voice
 				if (!voiceChannel) {
+					msg.delete({ timeout: 0 }); //Delete message
 					return channel.send(new Discord.MessageEmbed().setDescription('Please join a voice channel first!'));
 				} else {
 					//Check how many users in channel
 					var membersInVoice = guild.members.cache.filter(i => i.voice.channelID == voiceChannel.id && i.user.bot != true);
 					//If there are no members in that voice channel
 					if (membersInVoice.size == 0) {
+						msg.delete({ timeout: 0 }); //Delete message
 						return channel.send(new Discord.MessageEmbed().setDescription('I have found no one in ' + voiceChannel.toString() + ' so I didn\'t join it.'));
 					} else {
 						if (!botVoice) {
@@ -247,8 +249,10 @@ bot.on('message', msg => {
 							});
 						} else {
 							if (botVoice == voiceChannel) {
+								msg.delete({ timeout: 0 }); //Delete message
 								return channel.send(new Discord.MessageEmbed().setDescription('I am already listening to your channel. I can\'t be anywhere else!'));
 							} else {
+								msg.delete({ timeout: 0 }); //Delete message
 								return channel.send(new Discord.MessageEmbed().setDescription('I am currently busy listening to ' + botVoice.toString() + '. Ask me later on when I am no longer busy.'));
 							}
 						}
