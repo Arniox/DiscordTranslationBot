@@ -228,7 +228,8 @@ bot.on('message', msg => {
 				//Join voice channel
 				voiceChannel.join().then(connection => {
 					channel.send(new Discord.MessageEmbed().setDescription('Now listening to ' + voiceChannel.toString()));
-					bot.voice.setMute(true);
+					console.log(bot);
+					console.log(member);
 				});
 
 				break;
