@@ -220,12 +220,13 @@ bot.on('message', msg => {
 			case 'listen':
 				//Grab member voice channel
 				var voiceChannel = member.voice.channel;
-				var membersInVoice = guild.members.cache.filter(i => i.voice.channelID == voiceChannel.id && i.user.bot != true);
 				var botVoice = guild.members.cache.find(i => i.id == bot.user.id).voice.channel;
 				//If you are not in a voice
 				if (!voiceChannel) {
 					return channel.send(new Discord.MessageEmbed().setDescription('Please join a voice channel first!'));
 				} else {
+					//Check how many users in channel
+					var membersInVoice = guild.members.cache.filter(i => i.voice.channelID == voiceChannel.id && i.user.bot != true);
 					//If there are no members in that voice channel
 					if (membersInVoice.size == 0) {
 						return channel.send(new Discord.MessageEmbed().setDescription('I have found no one in ' + voiceChannel.toString() + ' so I didn\'t join it.'));
