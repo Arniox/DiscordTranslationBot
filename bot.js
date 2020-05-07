@@ -217,6 +217,30 @@ bot.on('message', msg => {
 					channel.send('Sorry, you need muting permissions to run this command.');
 				}
 				break;
+			case 'listen':
+				//Grab member voice channel
+				var voiceChannel = member.voice.channel;
+				if (!voiceChannel) {
+					return channel.send('Please join a voice channel first!');
+				}
+
+				//Join voice channel
+				voiceChannel.join().then(connection => {
+					channel.send('Listening now...');
+				});
+
+				break;
+			case 'leave':
+				//Grab bot voice channel
+				var voiceChannel = bot.voice.channel;
+				if (!voiceChannel) {
+					return channel.send('Please join a voice channel first');
+				}
+
+				//Leave voice channel
+				voiceChannel.leave();
+
+				break;
 			default: //Error
 				channel.send('Sorry, I do not understand that command...');
 				break;
