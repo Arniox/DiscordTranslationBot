@@ -479,6 +479,7 @@ bot.on('message', msg => {
 				} else {
 					return channel.send(new Discord.MessageEmbed().setDescription('Sorry, you need moving powers to run this command.'));
 				}
+				break;
 			default: //Error
 				return channel.send(new Discord.MessageEmbed().setDescription('Sorry, I do not understand that command...'));
 		}
