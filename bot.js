@@ -516,7 +516,10 @@ bot.on('message', msg => {
 		}
 	} else {
 		if (!author.bot) {
+			console.log(msgContent);
 			msgContent = tools.removeByMatches(msgContent, settings["translate-ignored-patterns"]);
+			console.log(msgContent);
+
 			if (!msgContent) { return; }
 			//Detect
 			googleTranslate.detectLanguage(msgContent, function (err, detection) {
