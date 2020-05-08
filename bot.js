@@ -365,7 +365,7 @@ bot.on('message', msg => {
 										image.src = b64; //Set image 
 
 										//Wait for image
-										const imageToSet = await Canvas.loadImage(image);
+										const imageToSet = await CanvasP.loadImage(image);
 										//Draw new image
 										ctx.drawImage(image, 0, 0, canvas.width, canvas.height);
 										//Attach to the message
