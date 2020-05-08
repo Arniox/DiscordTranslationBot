@@ -351,40 +351,18 @@ bot.on('message', msg => {
 							axios.get('https://restcountries.eu/rest/v2/lang/' + (detection.language.split('-').length > 1 ? detection.language.split('-')[0] : detection.language)).then(response => {
 								//Find flag if one country, otherwise list out contries
 								if (response.data.length > 1) {
-									console.log('Countries that use ' + languageCodes.find(i => i.language == detection.language).name);
-									console.log(response.data.map(i => i.name).join(','));
-
-									//Add all the countries
-									embeddedTranslation.addField(
-										'Countries that use ' + languageCodes.find(i => i.language == detection.language).name,
-										response.data.map(i => i.name).join(', ')
-									);
-
+									embeddedTranslation.setThumbnail('https://www.countryflags.io/' + response.data.first().alpha2Code + '/flat/64.png');
 									//Send
 									return channel.send(embeddedTranslation);
 								} else {
-									console.log('Country: ' + languageCodes.find(i => i.language == detection.language).name);
-									console.log(response.data.name);
-
 									//Set thumbnail
-									embeddedTranslation.setThumbnail('https://www.countryflags.io/' + response.data.alpha2Code + '/flat/64.png');
-									//Add all the one country
-									embeddedTranslation.addField(
-										'Countries that use ' + languageCodes.find(i => i.language == detection.language).name,
-										response.data.map(i => i.name).join(', ')
-									);
-
+									embeddedTranslation.setThumbnail('https://www.countryflags.io/' + response.data.map(i => i.alpha2Code).join('') + '/flat/64.png');
 									//Send
 									return channel.send(embeddedTranslation);
 								}
 							}).catch(error => {
-								console.log('Failed...', 'Could not find country or countries with the language code: ');
-								console.log(detection.language);
 								//Failed embed
-								embeddedTranslation.addField(
-									'Failed...', 'Could not find country or countries with the language code: ' + detection.language
-								);
-
+								embeddedTranslation.addField('Failed...', 'Could not find country or countries with the language code: ' + detection.language);
 								//Send
 								return channel.send(embeddedTranslation);
 							});
