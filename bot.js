@@ -362,7 +362,7 @@ bot.on('message', msg => {
 										response.data.map(i => i.name).join('\n')
 									);
 								} else {
-									console.log('Countries that use ' + languageCodes.find(i => i.language == detection.language).name);
+									console.log('Country that use ' + languageCodes.find(i => i.language == detection.language).name);
 									console.log(response.data.name);
 
 									//Set thumbnail
