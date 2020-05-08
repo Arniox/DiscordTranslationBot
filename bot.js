@@ -351,12 +351,18 @@ bot.on('message', msg => {
 							axios.get('https://restcountries.eu/rest/v2/lang/' + (detection.language.split('-').length > 1 ? detection.language.split('-')[0] : detection.language)).then(response => {
 								//Find flag if one country, otherwise list out contries
 								if (response.data.length > 1) {
+									console.log('Countries that use ' + languageCodes.find(i => i.language == detection.language).name);
+									console.log(response.data.map(i => i.name).join('\n'));
+
 									//Add all the countries
 									embeddedTranslation.addField(
 										'Countries that use ' + languageCodes.find(i => i.language == detection.language).name,
 										response.data.map(i => i.name).join('\n')
 									);
 								} else {
+									console.log('Countries that use ' + languageCodes.find(i => i.language == detection.language).name);
+									console.log(response.data.name);
+
 									//Set thumbnail
 									embeddedTranslation.setThumbnail('https://www.countryflags.io/' + response.data.alpha2Code + '/flat/64.png');
 									//Add all the one country
@@ -367,7 +373,8 @@ bot.on('message', msg => {
 								}
 
 							}).catch(error => {
-								console.log('failed');
+								console.log('Failed...', 'Could not find country or countries with the language code: ');
+								console.log(detection.language);
 								//Failed embed
 								embeddedTranslation.addField(
 									'Failed...', 'Could not find country or countries with the language code: ' + detection.language
