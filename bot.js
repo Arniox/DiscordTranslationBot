@@ -100,7 +100,7 @@ bot.on('message', msg => {
 									//Save roles id
 									roles.map((value, key) => {
 										if (settings.muteroles.filter(e => e === key).length != 0) {
-											channel.send(new Discord.MessageEmbed().setDescription(value.toString() + ' is *already* a mute ignored role.'));
+											return channel.send(new Discord.MessageEmbed().setDescription(value.toString() + ' is *already* a mute ignored role.'));
 										} else {
 											settings.muteroles.push(key);
 											//Write to file
@@ -110,7 +110,7 @@ bot.on('message', msg => {
 										}
 									});
 								} else {
-									return channel.send('I did not detect any roles to add/remove...');
+									return channel.send(new Discord.MessageEmbed().setDescription('I did not detect any roles to add/remove...'));
 								}
 								break;
 							case 'remove':
