@@ -2,14 +2,14 @@ const googleApiKey = process.env.GOOGLE_API_KEY;
 
 //const { OpusEncoder } = require('@discordjs/opus');
 const axios = require('axios');
+const mergeImages = require('merge-images');
+const { Canvas, Image } = require('canvas');
 var Discord = require('discord.js');
 var settings = require('./configure.json');
 var dataToUse = require('./data-to-use.json');
 var tools = require('./extra-functions');
-var countryData = require('./country-data.json');
 var fs = require('fs');
 var googleTranslate = require('google-translate')(googleApiKey, { "concurrentLimit": 20 });
-var mergeImages = require('merge-images');
 
 //Initialize Discord bot 
 const bot = new Discord.Client();
@@ -352,7 +352,10 @@ bot.on('message', msg => {
 							axios.get('https://restcountries.eu/rest/v2/lang/' + (detection.language.split('-').length > 1 ? detection.language.split('-')[0] : detection.language)).then(response => {
 								//Find flag if one country, otherwise list out contries
 								if (response.data.length > 1) {
-									mergeImages(response.data.map(i => 'https://www.countryflags.io/' + i.alpha2Code + '/flat/64.png')).then(b64 => {
+									mergeImages(response.data.map(i => 'https://www.countryflags.io/' + i.alpha2Code + '/flat/64.png'), {
+										Canvas: Canvas,
+										Image: Image
+									}).then(b64 => {
 										const imageStream = new Buffer(image, 'base64');
 										const attachment = new Discord.MessageAttachment(imageStream, 'flagArray.png');
 
