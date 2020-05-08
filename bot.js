@@ -421,9 +421,13 @@ bot.on('message', msg => {
 					}
 				} else { //Set random prykie quote
 					msg.delete({ timeout: 0 }); //Delete message
-					var findRandom = dataToUse["prykie-quotes"][Math.floor(tools.siteRand(dataToUse["prykie-quotes"].length - 1, 0))];
-					//Message
-					return channel.send(findRandom);
+					if (dataToUse["prykie-quotes"].length != 0) {
+						var findRandom = dataToUse["prykie-quotes"][Math.floor(tools.siteRand(dataToUse["prykie-quotes"].length - 1, 0))];
+						//Message
+						return channel.send(findRandom);
+					} else {
+						return channel.send(new Discord.MessageEmbed().setDescription('Sorry, I didn\'t find any prykie quotes to use :('));
+					}
 				}
 			default: //Error
 				return channel.send(new Discord.MessageEmbed().setDescription('Sorry, I do not understand that command...'));
