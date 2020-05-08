@@ -22,7 +22,7 @@ bot.on('ready', () => {
 	console.log('Logged in as: ' + bot.user.username + ' - (' + bot.user.id + ')');
 	console.log('Prefix: ' + settings.prefix);
 });
-bot.on('message', msg => {
+bot.on('message', async msg => {
 	var msgContent = msg.content;
 	var channel = msg.channel;
 	var author = msg.author;
