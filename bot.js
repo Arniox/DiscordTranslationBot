@@ -359,7 +359,7 @@ bot.on('message', msg => {
 									//Add all the countries
 									embeddedTranslation.addField(
 										'Countries that use ' + languageCodes.find(i => i.language == detection.language).name,
-										response.data.map(i => i.name).join('\n')
+										response.data.map(i => i.name).join(',')
 									);
 								} else {
 									console.log('Country that use ' + languageCodes.find(i => i.language == detection.language).name);
