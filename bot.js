@@ -445,7 +445,7 @@ bot.on('message', msg => {
 
 						if (voiceChannelFrom == '*') {
 							//Grab every player
-							var playersFoundAll = guild.members.cache.filter(i => i.voice.channel !== undefined);
+							var playersFoundAll = guild.members.cache.filter(i => i.voice.channel);
 							if (playersFoundAll.size != 0) {
 								//Check that there's a channel to move to
 								if (args.length != 0) {
