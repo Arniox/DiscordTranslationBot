@@ -463,7 +463,7 @@ bot.on('message', msg => {
 											value.voice.setChannel(channelToMoveTo);
 										});
 										//Message
-										return channel.send(new Discord.MessageEmbed().setDescription('Moved ' + playersFoundInVoice.size + ' players to ' + channelToMoveTo.toString()));
+										return channel.send(new Discord.MessageEmbed().setDescription('Moved ' + playersFoundAll.size + ' players to ' + channelToMoveTo.toString()));
 									} else {
 										return channel.send(new Discord.MessageEmbed().setDescription('Could not find a voice channel with the name ' + voiceChannelTo));
 									}
