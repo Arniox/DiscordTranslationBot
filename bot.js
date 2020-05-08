@@ -291,7 +291,7 @@ bot.on('message', msg => {
 					args = args.splice(1);
 
 					//Check if has perms
-					if (member.hasPermission('MANAGER_GUILD')) {
+					if (member.hasPermission('MANAGE_GUILD')) {
 						//Check which option you want
 						switch (option) {
 							case 'add': //Add a pattern
