@@ -359,10 +359,10 @@ bot.on('message', msg => {
 									//Add all the countries
 									embeddedTranslation.addField(
 										'Countries that use ' + languageCodes.find(i => i.language == detection.language).name,
-										response.data.map(i => i.name).join(',')
+										response.data.map(i => i.name).join(','), false
 									);
 								} else {
-									console.log('Country that use ' + languageCodes.find(i => i.language == detection.language).name);
+									console.log('Country: ' + languageCodes.find(i => i.language == detection.language).name);
 									console.log(response.data.name);
 
 									//Set thumbnail
@@ -370,7 +370,7 @@ bot.on('message', msg => {
 									//Add all the one country
 									embeddedTranslation.addField(
 										'Countries that use ' + languageCodes.find(i => i.language == detection.language).name,
-										response.data.name
+										response.data.name, false
 									);
 								}
 							}).catch(error => {
@@ -378,7 +378,7 @@ bot.on('message', msg => {
 								console.log(detection.language);
 								//Failed embed
 								embeddedTranslation.addField(
-									'Failed...', 'Could not find country or countries with the language code: ' + detection.language
+									'Failed...', 'Could not find country or countries with the language code: ' + detection.language, false
 								);
 							});
 
