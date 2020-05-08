@@ -162,9 +162,9 @@ bot.on('message', msg => {
 				msg.delete({ timeout: 0 }); //Delete message
 				var output = "";
 				settings.muteroles.forEach(e => {
-					output = output + guild.roles.cache.find(i => i.id = e).toString();
+					output = output + guild.roles.cache.find(i => i.id = e).toString() + '\n';
 				});
-				return channel.send(new Discord.MessageEmbed().setDescription(settings.muteroles.length + ' mute ignored roles ' + output));
+				return channel.send(new Discord.MessageEmbed().setDescription(settings.muteroles.length + ' mute ignored roles.\n' + output));
 			case 'mute': //mute channel and ignore mute roles
 				msg.delete({ timeout: 0 }); //Delete message
 				if (member.hasPermission('MUTE_MEMBERS')) {
@@ -283,7 +283,7 @@ bot.on('message', msg => {
 						return botVoice.leave();
 					}
 				}
-			case 'translate':
+			case 'translate': //Translate commands for ignored patterns
 				msg.delete({ timeout: 0 }); //Delete message
 
 				if (args.length != 0) {
@@ -294,7 +294,7 @@ bot.on('message', msg => {
 					if (member.hasPermission('MANAGER_GUILD')) {
 						//Check which option you want
 						switch (option) {
-							case 'add':
+							case 'add': //Add a pattern
 								var query = args[0];
 								args = args.splice(1);
 
@@ -309,7 +309,7 @@ bot.on('message', msg => {
 								} else {
 									return channel.send(new Discord.MessageEmbed().setDescription('I did not see any pattern to add sorry.'));
 								}
-							case 'remove':
+							case 'remove': //Remove specific pattern
 								var query = args[0];
 								args = args.splice(1);
 
@@ -330,6 +330,13 @@ bot.on('message', msg => {
 								} else {
 									return channel.send(new Discord.MessageEmbed().setDescription('I did not see any pattern to remove sorry.'));
 								}
+							case 'patterns': //List out current patterns
+								msg.delete({ timeout: 0 }); //Delete message
+								var output = "";
+								settings["translate-ignored-patterns"].forEach(e => {
+									output = output + ' - ' + e.toString() + '\n';
+								});
+								return channel.send(new Discord.MessageEmbed().setDescription(settings["translate-ignored-patterns"].length + ' mute ignored roles.\n' + output));
 							default:
 								return channel.send(new Discord.MessageEmbed().setDescription('Did you want to add or remove a translation pattern?'));
 						}
