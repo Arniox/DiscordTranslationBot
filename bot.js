@@ -22,7 +22,7 @@ bot.on('ready', () => {
 	console.log('Logged in as: ' + bot.user.username + ' - (' + bot.user.id + ')');
 	console.log('Prefix: ' + settings.prefix);
 });
-bot.on('message', async msg => {
+bot.on('message', msg => {
 	var msgContent = msg.content;
 	var channel = msg.channel;
 	var author = msg.author;
@@ -358,7 +358,7 @@ bot.on('message', async msg => {
 										Image: Image,
 										width: response.data.length * 64,
 										height: response.data.length * 64
-									}).then(b64 => {
+									}).then(async b64 => {
 										const canvas = CanvasP.createCanvas(response.data.length * 64, response.data.length * 64); //Create canvas
 										const ctx = canvas.getContext('2d'); //Get canvas context
 										const image = new Image(); //Create image object
