@@ -354,7 +354,9 @@ bot.on('message', msg => {
 								if (response.data.length > 1) {
 									mergeImages(response.data.map(i => 'https://www.countryflags.io/' + i.alpha2Code + '/flat/64.png'), {
 										Canvas: Canvas,
-										Image: Image
+										Image: Image,
+										width: response.data.length * 64,
+										height: response.data.length * 64
 									}).then(b64 => {
 										const imageStream = new Buffer(image, 'base64');
 										const attachment = new Discord.MessageAttachment(imageStream, 'flagArray.png');
