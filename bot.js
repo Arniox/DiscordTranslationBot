@@ -330,11 +330,7 @@ bot.on('message', msg => {
 			googleTranslate.detectLanguage(msgContent, function (err, detection) {
 				//Translate if not english or link
 				if (detection.language != 'en' && detection.language != 'und' && detection.confidence > 0.75) {
-					//Get language country
-					axios.get('https://restcountries.eu/rest/v2/lang/' + (detection.language.split('-').length > 1 ? detection.language.split('-')[0] : detection.language)).then(response => {
-						console.log(response.data);
-					}).catch(error => { console.log('Failed to find country'); });
-
+					//Translate
 					googleTranslate.translate(msgContent, detection.language, 'en', function (err, translation) {
 						//Get country
 						googleTranslate.getSupportedLanguages('en', function (err, languageCodes) {
@@ -348,14 +344,31 @@ bot.on('message', msg => {
 									{ name: 'Confidence', value: (detection.confidence * 100).floor().toString() + '%', inline: true },
 									{ name: 'Original text', value: msgContent, inline: false }
 								)
-								.setThumbnail('https://www.countryflags.io/' + (detection.language) + '/flat/64.png') //Fix for china, 
 								.setTimestamp()
 								.setFooter('Powered by Google Translate');
 
+							//Get language country
+							axios.get('https://restcountries.eu/rest/v2/lang/' + (detection.language.split('-').length > 1 ? detection.language.split('-')[0] : detection.language)).then(response => {
+								//Find flag if one country, otherwise list out contries
+								if (response.data.length > 1) {
+									embeddedTranslation.addField(
+										{
+											name: 'Countries that use ' + languageCodes.find(i => i.language == detection.language).name,
+											value: response.data.map(i => i.name).join('\n')
+										}
+									);
+								} else {
+									embeddedTranslation.setThumbnail('https://www.countryflags.io/' + response.data.alpha2Code + '/flat/64.png');
+									embeddedTranslation.addField(
+										{ name: 'Countries that use ' + languageCodes.find(i => i.language == detection.language).name, value: response.data.name }
+									);
+								}
 
-
-							//var languageCountry = require('https://restcountries.eu/rest/v2/alpha/' + detection.language);
-							//console.log(languageCountry);
+							}).catch(error => {
+								embeddedTranslation.addField(
+									{ name: 'Could not find country or countries with the language code: ' + detection.language }
+								);
+							});
 
 							//Send
 							return channel.send(embeddedTranslation);
