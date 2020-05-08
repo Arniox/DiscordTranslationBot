@@ -1,9 +1,6 @@
 {
     "prefix": "$",
-    "muteroles": [
-        "671186737237590037",
-        "671184885612019712"
-    ],
+    "muteroles": [],
     "translate-ignored-patterns": [
         "/(<:[A-Za-z]+:\\d+>)/gi"
     ]
