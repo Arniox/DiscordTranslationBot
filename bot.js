@@ -341,7 +341,7 @@ bot.on('message', msg => {
 						case 'patterns': //List out current patterns
 							var output = "";
 							settings["translate-ignored-patterns"].forEach(e => {
-								output = output + ' - ' + e.toString() + '\n';
+								output = output + '`' + e.toString() + '`\n';
 							});
 							return channel.send(new Discord.MessageEmbed().setDescription(settings["translate-ignored-patterns"].length + ' mute ignored roles.\n' + output));
 						default:
