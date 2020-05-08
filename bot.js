@@ -461,6 +461,8 @@ bot.on('message', msg => {
 										playersFoundInVoice.map((value, key) => {
 											value.voice.setChannel(channelToMoveTo);
 										});
+
+										return channel.send(new Discord.MessageEmbed().setDescription('Moved ' + playersFoundInVoice.size + ' players from ' + channelToMoveFrom.toString() + ' to ' + channelToMoveTo.toString()));
 									} else {
 										return channel.send(new Discord.MessageEmbed().setDescription('Could not find a voice channel with the name ' + voiceChannelTo));
 									}
@@ -479,7 +481,6 @@ bot.on('message', msg => {
 				} else {
 					return channel.send(new Discord.MessageEmbed().setDescription('Sorry, you need moving powers to run this command.'));
 				}
-				break;
 			default: //Error
 				return channel.send(new Discord.MessageEmbed().setDescription('Sorry, I do not understand that command...'));
 		}
