@@ -348,10 +348,8 @@ bot.on('message', msg => {
 								.setTimestamp()
 								.setFooter('Powered by Google Translate');
 
-
-							embeddedTranslation.setThumbnail('https://www.countryflags.io/' + (detection.language.split('-').length > 1 ? detection.language.split('-')[1] : detection.language) + '/flat/64.png');
 							//Get language country
-							/*axios.get('https://restcountries.eu/rest/v2/lang/' + (detection.language.split('-').length > 1 ? detection.language.split('-')[0] : detection.language)).then(response => {
+							axios.get('https://restcountries.eu/rest/v2/alpha/' + (detection.language.split('-').length > 1 ? detection.language.split('-')[0] : detection.language)).then(response => {
 								//Find flag if one country, otherwise list out contries
 								if (response.data.length > 1) {
 									embeddedTranslation.setThumbnail('https://www.countryflags.io/' + response.data.first().alpha2Code + '/flat/64.png');
@@ -367,7 +365,7 @@ bot.on('message', msg => {
 								embeddedTranslation.addField('Failed...', 'Could not find country or countries with the language code: ' + detection.language);
 								//Send
 								return channel.send(embeddedTranslation);
-							});*/
+							});
 						});
 					});
 				}
