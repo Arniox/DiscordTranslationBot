@@ -43,7 +43,7 @@ bot.on('message', msg => {
 
 		switch (cmd) {
 			case 'ping': //Ping the bot - Are you alive
-				return Ping.ping(msg, msgContent, channel, author, member, guild);
+				return Ping.ping(msg, Discord);
 			case 'prefix': //Prefix options
 				msg.delete({ timeout: 0 }); //Delete message
 				if (args.length != 0) {
