@@ -331,7 +331,6 @@ bot.on('message', msg => {
 									return channel.send(new Discord.MessageEmbed().setDescription('I did not see any pattern to remove sorry.'));
 								}
 							case 'patterns': //List out current patterns
-								msg.delete({ timeout: 0 }); //Delete message
 								var output = "";
 								settings["translate-ignored-patterns"].forEach(e => {
 									output = output + ' - ' + e.toString() + '\n';
