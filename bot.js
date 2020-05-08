@@ -352,7 +352,7 @@ bot.on('message', msg => {
 							axios.get('https://restcountries.eu/rest/v2/lang/' + (detection.language.split('-').length > 1 ? detection.language.split('-')[0] : detection.language)).then(response => {
 								//Find flag if one country, otherwise list out contries
 								if (response.data.length > 1) {
-									var possibleFlag = response.data.find(i => i.alpha2Code == (detection.language.split('-').length > 1 ? detection.language.split('-')[0] : detection.language));
+									var possibleFlag = response.data.find(i => i.alpha2Code == (detection.language.split('-').length > 1 ? detection.language.split('-')[0] : detection.language).toUpperCase());
 									if (possibleFlag) {
 										embeddedTranslation.setThumbnail('https://www.countryflags.io/' + possibleFlag.alpha2Code + '/flat/64.png');
 									} else {
