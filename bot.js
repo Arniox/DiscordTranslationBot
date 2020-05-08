@@ -362,7 +362,7 @@ bot.on('message', async msg => {
 										const canvas = CanvasP.createCanvas(response.data.length * 64, response.data.length * 64); //Create canvas
 										const ctx = canvas.getContext('2d'); //Get canvas context
 										const image = new Image(); //Create image object
-										image.src = b64; //Set image
+										image.src = b64; //Set image 
 
 										//Wait for image
 										const imageToSet = await Canvas.loadImage(image);
