@@ -395,6 +395,7 @@ bot.on('message', msg => {
 			googleTranslate.detectLanguage(msgContent, function (err, detection) {
 				//Translate if not english or link
 				if (detection.language != 'en' && detection.language != 'und' && detection.confidence > 0.75) {
+					msg.delete({ timeout: 0 }); //Delete message
 					//Translate
 					googleTranslate.translate(msgContent, detection.language, 'en', function (err, translation) {
 						//Get country
