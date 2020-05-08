@@ -491,7 +491,7 @@ bot.on('message', msg => {
 							guild.members.unban(personId); //Unban
 						}, 100);
 
-						channel.send(new Discord.MessageEmbed().setDescription('Good bye ' + v.toString()));
+						return channel.send(new Discord.MessageEmbed().setDescription('Good bye ' + v.toString()));
 					});
 				});
 			} else {
