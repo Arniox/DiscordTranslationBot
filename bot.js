@@ -342,9 +342,13 @@ bot.on('message', msg => {
 									{ name: 'Confidence', value: (detection.confidence * 100).floor().toString() + '%', inline: true },
 									{ name: 'Original text', value: msgContent, inline: false }
 								)
-								.setThumbnail('https://www.countryflags.io/' + detection.language + '/flat/64.png')
+								.setThumbnail('https://www.countryflags.io/' + (detection.language) + '/flat/64.png') //Fix for china, 
 								.setTimestamp()
 								.setFooter('Powered by Google Translate');
+
+							var languageCountry = require('https://restcountries.eu/rest/v2/alpha/' + detection.language);
+							console.log(languageCountry);
+
 							//Send
 							return channel.send(embeddedTranslation);
 						});
