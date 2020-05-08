@@ -364,10 +364,15 @@ bot.on('message', msg => {
 										const image = new Image(); //Create image object
 										image.src = b64; //Set image 
 
+										console.loge(canvas);
+										console.loge(ctx);
+										console.log(image);
+
 										//Wait for image
 										const imageToSet = await CanvasP.loadImage(image);
+
 										//Draw new image
-										ctx.drawImage(image, 0, 0, canvas.width, canvas.height);
+										ctx.drawImage(imageToSet, 0, 0, canvas.width, canvas.height);
 										//Attach to the message
 										const attachment = new Discord.MessageAttachment(canvas.toBuffer(), 'flagArray.png');
 										//Set thumbnail with attachment
