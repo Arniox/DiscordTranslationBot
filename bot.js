@@ -192,7 +192,7 @@ bot.on('message', msg => {
 					return channel.send(new Discord.MessageEmbed().setDescription('Sorry, you need muting permissions to run this command.'));
 				}
 				break;
-			case 'unmute':
+			case 'unmute': //Unmute everyone in a voice chat
 				msg.delete({ timeout: 0 }); //Delete message
 				if (member.hasPermission('MUTE_MEMBERS')) {
 					if (args.length != 0) {
@@ -219,7 +219,7 @@ bot.on('message', msg => {
 					return channel.send(new Discord.MessageEmbed().setDescription('Sorry, you need muting permissions to run this command.'));
 				}
 				break;
-			case 'listen':
+			case 'listen': //Join voice chat
 				//Grab member voice channel
 				var voiceChannel = member.voice.channel;
 				var botVoice = guild.members.cache.find(i => i.id == bot.user.id).voice.channel;
@@ -263,7 +263,7 @@ bot.on('message', msg => {
 					}
 				}
 				break;
-			case 'leave':
+			case 'leave': //Leave voice chat
 				msg.delete({ timeout: 0 }); //Delete message
 
 				//Grab bot voice channel
@@ -350,7 +350,7 @@ bot.on('message', msg => {
 				} else {
 					return channel.send(new Discord.MessageEmbed().setDescription('What are you trying to do?'));
 				}
-			case 'prykie':
+			case 'prykie': //Prykie commands
 				msg.delete({ timeout: 0 });
 
 				//If no option was selected
@@ -361,7 +361,7 @@ bot.on('message', msg => {
 
 					//Check which option you want
 					switch (option) {
-						case 'add':
+						case 'add': //Add prykie quote
 							var query = args[0];
 							args = args.splice(1);
 
@@ -381,7 +381,7 @@ bot.on('message', msg => {
 							} else {
 								return channel.send(new Discord.MessageEmbed().setDescription('You didn\'t write any Prykie quote to add.'));
 							}
-						case 'remove':
+						case 'remove': //Remove prykie quote
 							if (member.hasPermission('MANAGE_GUILD')) {
 								var query = args[0];
 								args = args.splice(1);
@@ -410,7 +410,7 @@ bot.on('message', msg => {
 							} else {
 								return channel.send(new Discord.MessageEmbed().setDescription('Sorry, you need to be a server manager/admin to remove a prykie quote.'));
 							}
-						case 'list':
+						case 'list': //List all prykie quotes
 							var output = "";
 							for (var i = 0; i < dataToUse["prykie-quotes"].length; ++i) {
 								output = output + i + ' - `' + dataToUse["prykie-quotes"][0] + '`\n';
@@ -419,8 +419,11 @@ bot.on('message', msg => {
 						default:
 							return channel.send(new Discord.MessageEmbed().setDescription('Did you want to list all/add/remove a prykie quote?'));
 					}
-				} else {
-					return channel.send(new Discord.MessageEmbed().setDescription('Sorry, I do not understand this command.'));
+				} else { //Set random prykie quote
+					msg.delete({ timeout: 0 }); //Delete message
+					var findRandom = dataToUse["prykie-quotes"][Math.floor(tools.siteRand(dataToUse["prykie-quotes"].length - 1, 0))];
+					//Message
+					return channel.send(findRandom);
 				}
 			default: //Error
 				return channel.send(new Discord.MessageEmbed().setDescription('Sorry, I do not understand that command...'));
