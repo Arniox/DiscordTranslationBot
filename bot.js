@@ -252,6 +252,8 @@ bot.on('message', msg => {
 								});
 
 								return channel.send(new Discord.MessageEmbed().setDescription('Now listening to ' + voiceChannel.toString()));
+							}).catch(error => {
+								return channel.send(new Discord.MessageEmbed().setDescription('For some reason, I have failed to join this channel. Please try again later or contact the bot developer'))
 							});
 						} else {
 							if (botVoice == voiceChannel) {
