@@ -335,76 +335,59 @@ bot.on('message', msg => {
 						//Get country
 						googleTranslate.getSupportedLanguages('en', function (err, languageCodes) {
 							//Create embedded message
-							var emeddedMsg = {
-								color: 0x0099ff,
-								author: {
-									name: 'Arniox',
-									icon_url: author.avatarURL(),
-								},
-								description: translation.translatedText,
-								thumbnail: {
-									url: ''
-								},
-								fields: [
-									{
-										name: 'Detected Language', value: languageCodes.find(i => i.language == detection.language).name, inline: true
-									}, {
-										name: 'Confidence', value: (detection.confidence * 100).floor().toString() + '%', inline: true
-									}, {
-										name: 'Original text', value: msgContent, inline: false
-									}
-								],
-								timestamp: new Date(),
-								footer: {
-									text: 'Powered by Google Translate'
-								},
-							};
+							var embeddedTranslation = new Discord.MessageEmbed()
+								.setColor('#0099ff')
+								.setAuthor(author.username, author.avatarURL())
+								.setDescription(translation.translatedText)
+								.addFields(
+									{ name: 'Detected Language', value: languageCodes.find(i => i.language == detection.language).name, inline: true },
+									{ name: 'Confidence', value: (detection.confidence * 100).floor().toString() + '%', inline: true },
+									{ name: 'Original text', value: msgContent, inline: false }
+								)
+								.setTimestamp()
+								.setFooter('Powered by Google Translate');
 
 							//Get language country
 							axios.get('https://restcountries.eu/rest/v2/lang/' + (detection.language.split('-').length > 1 ? detection.language.split('-')[0] : detection.language)).then(response => {
-								console.log((detection.language.split('-').length > 1 ? detection.language.split('-')[0] : detection.language));
-								console.log(response);
-								console.log(response.data.length);
-
-								//Find flag if one country, otherwise list out countries
+								//Find flag if one country, otherwise list out contries
 								if (response.data.length > 1) {
-									console.log('Many countries');
 									console.log('Countries that use ' + languageCodes.find(i => i.language == detection.language).name);
 									console.log(response.data.map(i => i.name).join(','));
 
+									//Add all the countries
+									embeddedTranslation.addField(
+										'Countries that use ' + languageCodes.find(i => i.language == detection.language).name,
+										response.data.map(i => i.name).join(',')
+									);
 
-									//Add all countries
-									emeddedMsg.fields.push({
-										name: 'Countries that use ' + languageCodes.find(i => i.language == detection.language).name,
-										value: response.data.map(i => i.name).join(',')
-									});
-
-									console.log(emeddedMsg);
+									//Send
+									return channel.send(embeddedTranslation);
 								} else {
-									console.log('One country');
-									console.log('https://www.countryflags.io/' + response.data.alpha2Code + '/flat/64.png');
-									console.log('Countries that use ' + languageCodes.find(i => i.language == detection.language).name);
+									console.log('Country: ' + languageCodes.find(i => i.language == detection.language).name);
 									console.log(response.data.name);
 
-									emeddedMsg.thumbnail.url = 'https://www.countryflags.io/' + response.data.alpha2Code + '/flat/64.png';
-									emeddedMsg.fields.push({
-										name: 'Countries that use ' + languageCodes.find(i => i.language == detection.language).name,
-										value: response.data.name
-									});
+									//Set thumbnail
+									embeddedTranslation.setThumbnail('https://www.countryflags.io/' + response.data.alpha2Code + '/flat/64.png');
+									//Add all the one country
+									embeddedTranslation.addField(
+										'Countries that use ' + languageCodes.find(i => i.language == detection.language).name,
+										response.data.name
+									);
 
-									console.log(emeddedMsg);
+									//Send
+									return channel.send(embeddedTranslation);
 								}
 							}).catch(error => {
+								console.log('Failed...', 'Could not find country or countries with the language code: ');
+								console.log(detection.language);
 								//Failed embed
-								emeddedMsg.fields.push({
-									name: 'Failed...', value: 'Could not find country or countries with the language code: ' + detection.language
-								});
+								embeddedTranslation.addField(
+									'Failed...', 'Could not find country or countries with the language code: ' + detection.language
+								);
+
+								//Send
+								return channel.send(embeddedTranslation);
 							});
-
-							console.log(emeddedMsg);
-
-							//Send
-							return channel.send({ embed: emeddedMsg });
 						});
 					});
 				}
