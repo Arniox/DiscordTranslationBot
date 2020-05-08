@@ -330,10 +330,9 @@ bot.on('message', msg => {
 			googleTranslate.detectLanguage(msgContent, function (err, detection) {
 				//Translate if not english or link
 				if (detection.language != 'en' && detection.language != 'und' && detection.confidence > 0.75) {
-
 					//Get language country
 					axios.get('https://restcountries.eu/rest/v2/alpha/' + detection.language).then(response => {
-						console.log(response);
+						console.log(response.data);
 					}).catch(error => { console.log('Failed to find country'); });
 
 					googleTranslate.translate(msgContent, detection.language, 'en', function (err, translation) {
