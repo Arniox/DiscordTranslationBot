@@ -334,47 +334,48 @@ bot.on('message', msg => {
 					googleTranslate.translate(msgContent, detection.language, 'en', function (err, translation) {
 						//Get country
 						googleTranslate.getSupportedLanguages('en', function (err, languageCodes) {
-							//Create embedded message
-							var embeddedTranslation = new Discord.MessageEmbed()
-								.setColor('#0099ff')
-								.setAuthor(author.username, author.avatarURL())
-								.setDescription(translation.translatedText)
-								.addFields(
-									{ name: 'Detected Language', value: languageCodes.find(i => i.language == detection.language).name, inline: true },
-									{ name: 'Confidence', value: (detection.confidence * 100).floor().toString() + '%', inline: true },
-									{ name: 'Original text', value: msgContent, inline: false }
-								)
-								.setTimestamp()
-								.setFooter('Powered by Google Translate');
+							var field = null;
+							var image = '';
 
 							//Get language country
 							axios.get('https://restcountries.eu/rest/v2/lang/' + (detection.language.split('-').length > 1 ? detection.language.split('-')[0] : detection.language)).then(response => {
 								//Find flag if one country, otherwise list out contries
 								if (response.data.length > 1) {
 									//Add all the countries
-									embeddedTranslation.addFields(
-										{
-											name: 'Countries that use ' + languageCodes.find(i => i.language == detection.language).name,
-											value: response.data.map(i => i.name).join('\n'),
-											inline: false
-										}
-									);
+									field = {
+										name: 'Countries that use ' + languageCodes.find(i => i.language == detection.language).name,
+										value: response.data.map(i => i.name).join(', ')
+									};
 								} else {
 									//Set thumbnail
-									embeddedTranslation.setThumbnail('https://www.countryflags.io/' + response.data.alpha2Code + '/flat/64.png');
+									image = 'https://www.countryflags.io/' + response.data.alpha2Code + '/flat/64.png';
 									//Add all the one country
-									embeddedTranslation.addFields(
-										{ name: 'Countries that use ' + languageCodes.find(i => i.language == detection.language).name, value: response.data.name, inline: false }
-									);
+									field = {
+										name: 'Countries that use ' + languageCodes.find(i => i.language == detection.language).name, value: response.data.name
+									};
 								}
-
 							}).catch(error => {
-								console.log('failed');
 								//Failed embed
-								embeddedTranslation.addFields(
-									{ name: 'Could not find country or countries with the language code: ' + detection.language, inline: false }
-								);
+								field = { name: 'Could not find country or countries with the language code: ' + detection.language };
 							});
+
+
+							//Create embedded message
+							var embeddedTranslation = new Discord.MessageEmbed()
+								.setColor('#0099ff')
+								.setAuthor(author.username, author.avatarURL())
+								.setDescription(translation.translatedText)
+								.setThumbnail(image)
+								.addFields(
+									{ name: 'Detected Language', value: languageCodes.find(i => i.language == detection.language).name, inline: true },
+									{ name: 'Confidence', value: (detection.confidence * 100).floor().toString() + '%', inline: true },
+									{ name: 'Original text', value: msgContent, inline: false },
+									field
+								)
+								.setTimestamp()
+								.setFooter('Powered by Google Translate');
+
+
 
 							//Send
 							return channel.send(embeddedTranslation);
