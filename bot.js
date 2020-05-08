@@ -242,7 +242,6 @@ bot.on('message', msg => {
 							guild.members.cache.find(i => i.id == bot.user.id).voice.setMute(true);
 							//Join voice channel
 							voiceChannel.join().then(connection => {
-								channel.send(new Discord.MessageEmbed().setDescription('Now listening to ' + voiceChannel.toString()));
 								msg.delete({ timeout: 0 }); //Delete message
 
 								//For everyuser in the channel
@@ -252,6 +251,7 @@ bot.on('message', msg => {
 									//connection.play(audioStream, { type: 'opus' });
 								});
 
+								return channel.send(new Discord.MessageEmbed().setDescription('Now listening to ' + voiceChannel.toString()));
 							});
 						} else {
 							if (botVoice == voiceChannel) {
@@ -264,6 +264,7 @@ bot.on('message', msg => {
 						}
 					}
 				}
+				break;
 			case 'leave': //Leave voice chat
 				msg.delete({ timeout: 0 }); //Delete message
 
