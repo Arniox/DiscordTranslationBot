@@ -1,7 +1,8 @@
 const googleApiKey = process.env.GOOGLE_API_KEY;
 
-var Discord = require('discord.js');
 //const { OpusEncoder } = require('@discordjs/opus');
+const axios = require('axios');
+var Discord = require('discord.js');
 var settings = require('./configure.json');
 var dataToUse = require('./data-to-use.json');
 var tools = require('./extra-functions');
@@ -329,6 +330,12 @@ bot.on('message', msg => {
 			googleTranslate.detectLanguage(msgContent, function (err, detection) {
 				//Translate if not english or link
 				if (detection.language != 'en' && detection.language != 'und' && detection.confidence > 0.75) {
+
+					//Get language country
+					axios.get('https://restcountries.eu/rest/v2/alpha/' + detection.language).then(response => {
+						console.log(response);
+					}).catch(error => { console.log('Failed to find country'); });
+
 					googleTranslate.translate(msgContent, detection.language, 'en', function (err, translation) {
 						//Get country
 						googleTranslate.getSupportedLanguages('en', function (err, languageCodes) {
