@@ -358,7 +358,7 @@ bot.on('message', msg => {
 										width: response.data.length * 64,
 										height: response.data.length * 64
 									}).then(b64 => {
-										const imageStream = new Buffer(b64, 'base64');
+										const imageStream = new Buffer.from(b64, 'base64');
 										const attachment = new Discord.MessageAttachment(imageStream, 'flagArray.png');
 
 										embeddedTranslation.attachFiles(attachment);
