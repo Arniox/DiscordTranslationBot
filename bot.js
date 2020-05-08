@@ -352,27 +352,10 @@ bot.on('message', msg => {
 							axios.get('https://restcountries.eu/rest/v2/lang/' + (detection.language.split('-').length > 1 ? detection.language.split('-')[0] : detection.language)).then(response => {
 								//Find flag if one country, otherwise list out contries
 								if (response.data.length > 1) {
-									mergeImages(response.data.map(i => 'https://www.countryflags.io/' + i.alpha2Code + '/flat/24.png'), {
-										Canvas: Canvas,
-										Image: Image,
-										width: response.data.length * 24,
-										height: response.data.length * 24
-									}).then(b64 => {
-										const imageStream = new Buffer.from(b64, 'base64');
-										const attachment = new Discord.MessageAttachment(imageStream, 'flagArray.png');
-
-										console.log(attachment);
-
-										embeddedTranslation.attachFiles([attachment]);
-
-										console.log(embeddedTranslation);
-										//embeddedTranslation.setThumbnail('https://www.countryflags.io/' + response.data.first().alpha2Code + '/flat/64.png');
-										embeddedTranslation.setThumbnail('attachment://flagArray.png');
-										//Send
-										return channel.send(embeddedTranslation, attachment);
-									});
+									embeddedTranslation.setThumbnail('https://www.countryflags.io/' + response.data.first().alpha2Code + '/flat/64.png');
+									//Send
+									return channel.send(embeddedTranslation);
 								} else {
-									//Set thumbnail
 									embeddedTranslation.setThumbnail('https://www.countryflags.io/' + response.data.map(i => i.alpha2Code).join('') + '/flat/64.png');
 									//Send
 									return channel.send(embeddedTranslation);
