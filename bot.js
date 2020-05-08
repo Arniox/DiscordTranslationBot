@@ -327,6 +327,7 @@ bot.on('message', msg => {
 		}
 	} else {
 		if (!author.bot) {
+			msgContent = tools.removeByMatches(msgContent, settings["translate-ignored-patterns"]);
 			//Detect
 			googleTranslate.detectLanguage(msgContent, function (err, detection) {
 				//Translate if not english or link

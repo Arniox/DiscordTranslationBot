@@ -11,6 +11,29 @@ module.exports = {
     floor: function (num) {
         return Math.floor(num);
     },
+    //Matches in array
+    matchInArray: function (string, expressions) {
+        if (expression.length == 0) {
+            return string.match(expressions);
+        } else {
+            for (var i = 0; i < expressions.length; ++i) {
+                if (string.match(expressions[i])) {
+                    return true;
+                }
+            }
+        }
+    },
+    //Remove from mathes
+    removeByMatches: function (string, expressions) {
+        if (expressions.length == 0) {
+            return string.replace(expressions, "");
+        } else {
+            var outPut = '';
+            for (var i = 0; i < expressions.length; ++i) {
+                outPut += string.replace(expressions[i], "");
+            }
+        }
+    },
 }
 
 //Number Ordinal
