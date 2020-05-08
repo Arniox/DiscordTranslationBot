@@ -283,6 +283,62 @@ bot.on('message', msg => {
 						return botVoice.leave();
 					}
 				}
+			case 'translate':
+				msg.delete({ timeout: 0 }); //Delete message
+
+				if (args.length != 0) {
+					var option = args[0].toLowerCase();
+					args = args.splice(1);
+
+					//Check if has perms
+					if (member.hasPermission('MANAGER_GUILD')) {
+						//Check which option you want
+						switch (option) {
+							case 'add':
+								var query = args[0];
+								args = args.splice(1);
+
+								//Check if query exists
+								if (query) {
+									//Add pattern
+									settings["translate-ignored-patterns"].push(query);
+									//Write to file
+									fs.writeFileSync('./configure.json', JSON.stringify(settings));
+									//Message
+									return channel.send(new Discord.MessageEmbed().setDescription('Add new pattern to translation ignored patterns: ' + query));
+								} else {
+									return channel.send(new Discord.MessageEmbed().setDescription('I did not see any pattern to add sorry.'));
+								}
+							case 'remove':
+								var query = args[0];
+								args = args.splice(1);
+
+								//Check if query exists
+								if (query) {
+									//Find existsing
+									var existingPattern = settings["translate-ignored-patterns"].find(i => i === query);
+									if (existingPattern) {
+										//Remove pattern
+										settings["translate-ignored-patterns"] = settings["translate-ignored-patterns"].filter(i => i !== query);
+										//Write to file
+										fs.writeFileSync('./configure.json', JSON.stringify(settings));
+										//Message
+										return channel.send(new Discord.MessageEmbed().setDescription('Removed ' + query + ' from the translation ignored patterns.'));
+									} else {
+										return channel.send(new Discord.MessageEmbed().setDescription(query + ' already doesn\'t exist in the database.'));
+									}
+								} else {
+									return channel.send(new Discord.MessageEmbed().setDescription('I did not see any pattern to remove sorry.'));
+								}
+							default:
+								return channel.send(new Discord.MessageEmbed().setDescription('Did you want to add or remove a translation pattern?'));
+						}
+					} else {
+						return channel.send(new Discord.MessageEmbed().setDescription('Sorry, you need to be a server manager/admin to add or remove translation ignore patterns.'));
+					}
+				} else {
+					return channel.send(new Discord.MessageEmbed().setDescription('What are you trying to do?'));
+				}
 			default: //Error
 				return channel.send(new Discord.MessageEmbed().setDescription('Sorry, I do not understand that command...'));
 		}
