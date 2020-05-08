@@ -275,16 +275,20 @@ bot.on('message', msg => {
 				var botVoice = guild.members.cache.find(i => i.id == bot.user.id).voice.channel;
 
 				//If bot is not in voice
-				if (!botVoice) {
-					return channel.send(new Discord.MessageEmbed().setDescription('I am not in a voice channel sorry.'));
+				if (!memberVoice) {
+					return channel.send(new Discord.MessageEmbed().setDescription('You can only execute this command if you are in a voice channel and share the same voice channel as the bot!'));
 				} else {
-					//If member and bot are not in the same voice
-					if (memberVoice !== botVoice) {
-						return channel.send(new Discord.MessageEmbed().setDescription('You can only execute this command if you share the same voice channel as the bot!'));
+					if (!botVoice) {
+						return channel.send(new Discord.MessageEmbed().setDescription('I am not in a voice channel sorry.'));
 					} else {
-						channel.send(new Discord.MessageEmbed().setDescription('I have stopped listening to ' + botVoice.toString()));
-						guild.members.cache.find(i => i.id == bot.user.id).voice.setMute(true);
-						return botVoice.leave();
+						//If member and bot are not in the same voice
+						if (memberVoice !== botVoice) {
+							return channel.send(new Discord.MessageEmbed().setDescription('You can only execute this command if you share the same voice channel as the bot!'));
+						} else {
+							channel.send(new Discord.MessageEmbed().setDescription('I have stopped listening to ' + botVoice.toString()));
+							guild.members.cache.find(i => i.id == bot.user.id).voice.setMute(false);
+							return botVoice.leave();
+						}
 					}
 				}
 			case 'translate': //Translate commands for ignored patterns
