@@ -369,7 +369,7 @@ bot.on('message', msg => {
 										//embeddedTranslation.setThumbnail('https://www.countryflags.io/' + response.data.first().alpha2Code + '/flat/64.png');
 										embeddedTranslation.setThumbnail('attachment://flagArray.png');
 										//Send
-										return channel.send(embeddedTranslation);
+										return channel.send(embeddedTranslation, attachment);
 									});
 								} else {
 									//Set thumbnail
