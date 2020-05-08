@@ -355,7 +355,7 @@ bot.on('message', msg => {
 
 								//Find flag if one country, otherwise list out contries
 								if (response.data.length > 1) {
-									embeddedTranslation.addField(
+									embeddedTranslation.addFields(
 										{
 											name: 'Countries that use ' + languageCodes.find(i => i.language == detection.language).name,
 											value: response.data.map(i => i.name).join('\n')
@@ -363,7 +363,7 @@ bot.on('message', msg => {
 									);
 								} else {
 									embeddedTranslation.setThumbnail('https://www.countryflags.io/' + response.data.alpha2Code + '/flat/64.png');
-									embeddedTranslation.addField(
+									embeddedTranslation.addFields(
 										{ name: 'Countries that use ' + languageCodes.find(i => i.language == detection.language).name, value: response.data.name }
 									);
 								}
@@ -371,7 +371,7 @@ bot.on('message', msg => {
 							}).catch(error => {
 								console.log('failed');
 
-								embeddedTranslation.addField(
+								embeddedTranslation.addFields(
 									{ name: 'Could not find country or countries with the language code: ' + detection.language }
 								);
 							});
