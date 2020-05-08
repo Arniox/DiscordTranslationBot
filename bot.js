@@ -203,8 +203,8 @@ bot.on('message', msg => {
 						//Channel name, find the voice channel
 						var channelToMute = guild.channels.cache.find(i => i.name.toLowerCase() == voiceChannel.toLowerCase() && i.type == 'voice');
 						if (channelToMute) {
-							//Grab all players in this voice that aren't ignored
-							var playersFoundInVoice = guild.members.cache.filter(i => i.voice.channelID == channelToMute.id && !i._roles.some(r => settings.muteroles.includes(r)));
+							//Grab all players in this voice
+							var playersFoundInVoice = guild.members.cache.filter(i => i.voice.channelID == channelToMute.id);
 
 							//Unmute everyone that we found
 							playersFoundInVoice.map((value, key) => {
