@@ -4,5 +4,7 @@
         "671186737237590037",
         "671184885612019712"
     ],
-    "translate-ignored-patterns": []
+    "translate-ignored-patterns": [
+        "/(<:[A-Za-z]+:\\d+>)/gi"
+    ]
 }
