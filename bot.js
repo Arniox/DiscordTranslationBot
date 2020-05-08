@@ -362,19 +362,37 @@ bot.on('message', msg => {
 
 							//Get language country
 							axios.get('https://restcountries.eu/rest/v2/lang/' + (detection.language.split('-').length > 1 ? detection.language.split('-')[0] : detection.language)).then(response => {
+								console.log((detection.language.split('-').length > 1 ? detection.language.split('-')[0] : detection.language));
+								console.log(response);
+								console.log(response.data.length);
+
 								//Find flag if one country, otherwise list out countries
 								if (response.data.length > 1) {
+									console.log('Many countries');
+									console.log('Countries that use ' + languageCodes.find(i => i.language == detection.language).name);
+									console.log(response.data.map(i => i.name).join(','));
+
+
 									//Add all countries
 									emeddedMsg.fields.push({
 										name: 'Countries that use ' + languageCodes.find(i => i.language == detection.language).name,
 										value: response.data.map(i => i.name).join(',')
 									});
+
+									console.log(emeddedMsg);
 								} else {
+									console.log('One country');
+									console.log('https://www.countryflags.io/' + response.data.alpha2Code + '/flat/64.png');
+									console.log('Countries that use ' + languageCodes.find(i => i.language == detection.language).name);
+									console.log(response.data.name);
+
 									emeddedMsg.thumbnail.url = 'https://www.countryflags.io/' + response.data.alpha2Code + '/flat/64.png';
 									emeddedMsg.fields.push({
 										name: 'Countries that use ' + languageCodes.find(i => i.language == detection.language).name,
 										value: response.data.name
 									});
+
+									console.log(emeddedMsg);
 								}
 							}).catch(error => {
 								//Failed embed
