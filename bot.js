@@ -4,7 +4,6 @@ const googleApiKey = process.env.GOOGLE_API_KEY;
 const axios = require('axios');
 const mergeImages = require('merge-images');
 const { Canvas, Image } = require('canvas');
-const CanvasP = require('canvas');
 var Discord = require('discord.js');
 var settings = require('./configure.json');
 var dataToUse = require('./data-to-use.json');
@@ -358,26 +357,19 @@ bot.on('message', msg => {
 										Image: Image,
 										width: response.data.length * 64,
 										height: response.data.length * 64
-									}).then(async b64 => {
-										const canvas = CanvasP.createCanvas(response.data.length * 64, response.data.length * 64); //Create canvas
-										const ctx = canvas.getContext('2d'); //Get canvas context
+									}).then(b64 => {
+										const imageStream = new Buffer.from(b64, 'base64');
+										const attachment = new Discord.MessageAttachment(imageStream, 'flagArray.png');
 
-										//Wait for image
-										const imageToSet = await CanvasP.loadImage(b64);
-
-										console.log(imageToSet);
-
-										//Draw new image
-										ctx.drawImage(imageToSet, 0, 0, canvas.width, canvas.height);
-										//Attach to the message
-										const attachment = new Discord.MessageAttachment(canvas.toBuffer(), 'flagArray.png');
 										console.log(attachment);
 
-										//Set thumbnail with attachment
+										embeddedTranslation.attachFiles(attachment);
+
+										console.log(embeddedTranslation);
+										//embeddedTranslation.setThumbnail('https://www.countryflags.io/' + response.data.first().alpha2Code + '/flat/64.png');
 										embeddedTranslation.setThumbnail('attachment://flagArray.png');
 										//Send
 										return channel.send(embeddedTranslation);
-										//embeddedTranslation.setThumbnail('https://www.countryflags.io/' + response.data.first().alpha2Code + '/flat/64.png');
 									});
 								} else {
 									//Set thumbnail
