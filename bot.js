@@ -443,12 +443,10 @@ bot.on('message', msg => {
 						var voiceChannelFrom = args[0];
 						args = args.splice(1);
 
-						//Channel name, find the voice channel
-						var channelToMoveFrom = guild.channels.cache.find(i => i.name.toLowerCase() == voiceChannelFrom.toLowerCase() && i.type == 'voice');
-						if (channelToMoveFrom) {
-							//Grab all players in this voice
-							var playersFoundInVoice = guild.members.cache.filter(i => i.voice.channelID == channelToMoveFrom.id);
-							if (playersFoundInVoice.size != 0) {
+						if (voiceChannelFrom == '*') {
+							//Grab every player
+							var playersFoundAll = guild.members.cache.filter(i => i.voice.channel !== undefined);
+							if (playersFoundAll.size != 0) {
 								//Check that there's a channel to move to
 								if (args.length != 0) {
 									var voiceChannelTo = args[0];
@@ -457,12 +455,12 @@ bot.on('message', msg => {
 									//Channel name, find the voice channel to move to
 									var channelToMoveTo = guild.channels.cache.find(i => i.name.toLowerCase() == voiceChannelTo.toLowerCase() && i.type == 'voice');
 									if (channelToMoveTo) {
-										//Move all the players found in channel from to channel to
-										playersFoundInVoice.map((value, key) => {
+										//Move all the players found everywhere to channelTo
+										playersFoundAll.map((value, key) => {
 											value.voice.setChannel(channelToMoveTo);
 										});
-
-										return channel.send(new Discord.MessageEmbed().setDescription('Moved ' + playersFoundInVoice.size + ' players from ' + channelToMoveFrom.toString() + ' to ' + channelToMoveTo.toString()));
+										//Message
+										return channel.send(new Discord.MessageEmbed().setDescription('Moved ' + playersFoundInVoice.size + ' players to ' + channelToMoveTo.toString()));
 									} else {
 										return channel.send(new Discord.MessageEmbed().setDescription('Could not find a voice channel with the name ' + voiceChannelTo));
 									}
@@ -470,10 +468,41 @@ bot.on('message', msg => {
 									return channel.send(new Discord.MessageEmbed().setDescription('You didn\'t select any voice channel to move ' + playersFoundInVoice.size + ' players to.'));
 								}
 							} else {
-								return channel.send(new Discord.MessageEmbed().setDescription('There\'s noone in this voice channel to move sorry.'));
+								return channel.send(new Discord.MessageEmbed().setDescription('There\'s no one at all currently in a voice channel for this server.'));
 							}
 						} else {
-							return channel.send(new Discord.MessageEmbed().setDescription('Could not find a voice channel with the name ' + voiceChannelFrom));
+							//Channel name, find the voice channel
+							var channelToMoveFrom = guild.channels.cache.find(i => i.name.toLowerCase() == voiceChannelFrom.toLowerCase() && i.type == 'voice');
+							if (channelToMoveFrom) {
+								//Grab all players in this voice
+								var playersFoundInVoice = guild.members.cache.filter(i => i.voice.channelID == channelToMoveFrom.id);
+								if (playersFoundInVoice.size != 0) {
+									//Check that there's a channel to move to
+									if (args.length != 0) {
+										var voiceChannelTo = args[0];
+										args = args.splice(1);
+
+										//Channel name, find the voice channel to move to
+										var channelToMoveTo = guild.channels.cache.find(i => i.name.toLowerCase() == voiceChannelTo.toLowerCase() && i.type == 'voice');
+										if (channelToMoveTo) {
+											//Move all the players found in channel from to channelTo
+											playersFoundInVoice.map((value, key) => {
+												value.voice.setChannel(channelToMoveTo);
+											});
+											//Message
+											return channel.send(new Discord.MessageEmbed().setDescription('Moved ' + playersFoundInVoice.size + ' players from ' + channelToMoveFrom.toString() + ' to ' + channelToMoveTo.toString()));
+										} else {
+											return channel.send(new Discord.MessageEmbed().setDescription('Could not find a voice channel with the name ' + voiceChannelTo));
+										}
+									} else {
+										return channel.send(new Discord.MessageEmbed().setDescription('You didn\'t select any voice channel to move ' + playersFoundInVoice.size + ' players to.'));
+									}
+								} else {
+									return channel.send(new Discord.MessageEmbed().setDescription('There\'s no one in this voice channel to move sorry.'));
+								}
+							} else {
+								return channel.send(new Discord.MessageEmbed().setDescription('Could not find a voice channel with the name ' + voiceChannelFrom));
+							}
 						}
 					} else {
 						return channel.send(new Discord.MessageEmbed().setDescription('You didn\'t select any voice channel to move players from.'));
