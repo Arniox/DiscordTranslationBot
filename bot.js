@@ -371,7 +371,7 @@ bot.on('message', msg => {
 									//Add all the one country
 									embeddedTranslation.addField(
 										'Countries that use ' + languageCodes.find(i => i.language == detection.language).name,
-										response.data.name
+										response.data.map(i => i.name).join(',')
 									);
 
 									//Send
