@@ -439,7 +439,7 @@ bot.on('message', msg => {
 				msg.delete({ timeout: 0 });
 				if (member.hasPermission('MOVE_MEMBERS')) {
 					if (args.length != 0) {
-						args = args.join(' ').split('-');
+						args = args.join(' ').split('-').map(i => i.trim());
 						console.log(args);
 						var voiceChannelFrom = args[0];
 						console.log(voiceChannelFrom);
