@@ -362,8 +362,7 @@ bot.on('message', msg => {
 					//Check which option you want
 					switch (option) {
 						case 'add': //Add prykie quote
-							var query = args[0];
-							args = args.splice(1);
+							var query = args.join(' ');
 
 							//Check if query exists
 							if (query) {
@@ -383,8 +382,7 @@ bot.on('message', msg => {
 							}
 						case 'remove': //Remove prykie quote
 							if (member.hasPermission('MANAGE_GUILD')) {
-								var query = args[0];
-								args = args.splice(1);
+								var query = args.join(' ');
 
 								//Check if query exists
 								if (query) {
