@@ -4,6 +4,7 @@ const googleApiKey = process.env.GOOGLE_API_KEY;
 const axios = require('axios');
 const mergeImages = require('merge-images');
 const { Canvas, Image } = require('canvas');
+const CanvasP = require('canvas');
 var Discord = require('discord.js');
 var settings = require('./configure.json');
 var dataToUse = require('./data-to-use.json');
@@ -358,7 +359,7 @@ bot.on('message', msg => {
 										width: response.data.length * 64,
 										height: response.data.length * 64
 									}).then(b64 => {
-										const canvas = Canvas.createCanvas(response.data.length * 64, response.data.length * 64); //Create canvas
+										const canvas = CanvasP.createCanvas(response.data.length * 64, response.data.length * 64); //Create canvas
 										const ctx = canvas.getContext('2d'); //Get canvas context
 										const image = new Image(); //Create image object
 										console.log(b64);
