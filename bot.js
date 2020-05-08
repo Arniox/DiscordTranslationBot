@@ -364,8 +364,8 @@ bot.on('message', msg => {
 										const image = new Image(); //Create image object
 										image.src = b64; //Set image 
 
-										console.loge(canvas);
-										console.loge(ctx);
+										console.log(canvas);
+										console.log(ctx);
 										console.log(image);
 
 										//Wait for image
