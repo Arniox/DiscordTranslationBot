@@ -362,22 +362,18 @@ bot.on('message', msg => {
 										const canvas = CanvasP.createCanvas(response.data.length * 64, response.data.length * 64); //Create canvas
 										const ctx = canvas.getContext('2d'); //Get canvas context
 										const image = new Image(); //Create image object
-										console.log(b64);
-
 										image.src = b64; //Set image
 
 										//Wait for image
-										image.onload = function () {
-											//Draw new image
-											ctx.drawImage(image, 0, 0, canvas.width, canvas.height);
-											//Attach to the message
-											const attachment = new Discord.MessageAttachment(canvas.toBuffer(), 'flagArray.png');
-											//Set thumbnail with attachment
-											embeddedTranslation.setThumbnail('attachment://flagArray.png');
-											//Send
-											return channel.send(embeddedTranslation);
-
-										};
+										const imageToSet = await Canvas.loadImage(image);
+										//Draw new image
+										ctx.drawImage(image, 0, 0, canvas.width, canvas.height);
+										//Attach to the message
+										const attachment = new Discord.MessageAttachment(canvas.toBuffer(), 'flagArray.png');
+										//Set thumbnail with attachment
+										embeddedTranslation.setThumbnail('attachment://flagArray.png');
+										//Send
+										return channel.send(embeddedTranslation);
 										//embeddedTranslation.setThumbnail('https://www.countryflags.io/' + response.data.first().alpha2Code + '/flat/64.png');
 									});
 								} else {
