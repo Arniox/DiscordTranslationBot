@@ -343,7 +343,7 @@ bot.on('message', msg => {
 							settings["translate-ignored-patterns"].forEach(e => {
 								output = output + '`' + e.toString() + '`\n';
 							});
-							return channel.send(new Discord.MessageEmbed().setDescription(settings["translate-ignored-patterns"].length + ' mute ignored roles.\n' + output));
+							return channel.send(new Discord.MessageEmbed().setDescription(settings["translate-ignored-patterns"].length + ' translation ignored patterns.\n' + output));
 						default:
 							return channel.send(new Discord.MessageEmbed().setDescription('Did you want to add or remove a translation pattern?'));
 					}
