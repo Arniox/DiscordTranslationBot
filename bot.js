@@ -516,9 +516,7 @@ bot.on('message', msg => {
 		}
 	} else {
 		if (!author.bot) {
-			console.log(msgContent);
-			msgContent = tools.removeByMatches(msgContent, settings["translate-ignored-patterns"]);
-			console.log(msgContent);
+			//msgContent = tools.removeByMatches(msgContent, settings["translate-ignored-patterns"]);
 
 			if (!msgContent) { return; }
 			//Detect
