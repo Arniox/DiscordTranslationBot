@@ -331,7 +331,7 @@ bot.on('message', msg => {
 				//Translate if not english or link
 				if (detection.language != 'en' && detection.language != 'und' && detection.confidence > 0.75) {
 					//Get language country
-					axios.get('https://restcountries.eu/rest/v2/alpha/' + detection.language).then(response => {
+					axios.get('https://restcountries.eu/rest/v2/lang/' + detection.language).then(response => {
 						console.log(response.data);
 					}).catch(error => { console.log('Failed to find country'); });
 
