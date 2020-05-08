@@ -411,7 +411,7 @@ bot.on('message', msg => {
 						case 'list': //List all prykie quotes
 							var output = "";
 							for (var i = 0; i < dataToUse["prykie-quotes"].length; ++i) {
-								output = output + i + ' - `' + dataToUse["prykie-quotes"][0] + '`\n';
+								output = output + i + ' - `' + dataToUse["prykie-quotes"][i] + '`\n';
 							}
 							return channel.send(new Discord.MessageEmbed().setDescription(dataToUse["prykie-quotes"].length + ' prykie quotes.\n' + output));
 						default:
