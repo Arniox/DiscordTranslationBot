@@ -346,6 +346,8 @@ bot.on('message', msg => {
 								.setTimestamp()
 								.setFooter('Powered by Google Translate');
 
+
+
 							//var languageCountry = require('https://restcountries.eu/rest/v2/alpha/' + detection.language);
 							//console.log(languageCountry);
 
