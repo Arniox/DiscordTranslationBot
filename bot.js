@@ -361,7 +361,11 @@ bot.on('message', msg => {
 										const imageStream = new Buffer.from(b64, 'base64');
 										const attachment = new Discord.MessageAttachment(imageStream, 'flagArray.png');
 
+										console.log(attachment);
+
 										embeddedTranslation.attachFiles(attachment);
+
+										console.log(embeddedTranslation);
 										//embeddedTranslation.setThumbnail('https://www.countryflags.io/' + response.data.first().alpha2Code + '/flat/64.png');
 										embeddedTranslation.setThumbnail('attachment://flagArray.png');
 										//Send
