@@ -349,10 +349,12 @@ bot.on('message', msg => {
 
 							//Get language country
 							axios.get('https://restcountries.eu/rest/v2/lang/' + (detection.language.split('-').length > 1 ? detection.language.split('-')[0] : detection.language)).then(response => {
+								console.log(response.data.length);
+
 								//Find flag if one country, otherwise list out contries
 								if (response.data.length > 1) {
 									console.log('Countries that use ' + languageCodes.find(i => i.language == detection.language).name);
-									console.log(response.data.map(i => i.name).join('\n'));
+									console.log(response.data.map(i => i.name).join(','));
 
 									//Add all the countries
 									embeddedTranslation.addField(
@@ -371,7 +373,6 @@ bot.on('message', msg => {
 										response.data.name
 									);
 								}
-
 							}).catch(error => {
 								console.log('Failed...', 'Could not find country or countries with the language code: ');
 								console.log(detection.language);
