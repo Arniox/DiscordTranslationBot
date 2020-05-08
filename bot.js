@@ -363,7 +363,7 @@ bot.on('message', msg => {
 
 										console.log(attachment);
 
-										embeddedTranslation.attachFiles(attachment);
+										embeddedTranslation.attachFiles([attachment]);
 
 										console.log(embeddedTranslation);
 										//embeddedTranslation.setThumbnail('https://www.countryflags.io/' + response.data.first().alpha2Code + '/flat/64.png');
