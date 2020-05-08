@@ -34,33 +34,32 @@ module.exports = {
             }
         }
     },
-}
+    //Ordinal
+    ordinal: function (number) {
+        var ones = number % 10;
+        var tens = (number / 10).floor() % 10;
+        var stuff = "";
 
-//Number Ordinal
-Number.prototype.ordinal = function () {
-    var ones = this % 10;
-    var tens = (this / 10).floor() % 10;
-    var stuff = "";
-
-    if (tens == 1) {
-        stuff = "th";
-    } else {
-        switch (ones) {
-            case 1:
-                stuff = "st";
-                break;
-            case 2:
-                stuff = "nd";
-                break;
-            case 3:
-                stuff = "rd";
-                break;
-            default:
-                stuff = "th";
+        if (tens == 1) {
+            stuff = "th";
+        } else {
+            switch (ones) {
+                case 1:
+                    stuff = "st";
+                    break;
+                case 2:
+                    stuff = "nd";
+                    break;
+                case 3:
+                    stuff = "rd";
+                    break;
+                default:
+                    stuff = "th";
+            }
         }
-    }
 
-    return this.toString() + stuff;
+        return number.toString() + stuff;
+    },
 }
 
 //Pad a number and return as string

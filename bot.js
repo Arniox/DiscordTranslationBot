@@ -320,7 +320,7 @@ bot.on('message', msg => {
 
 								//Check if query exists
 								if (query) {
-									//Find existsing
+									//Find existing
 									var existingPattern = settings["translate-ignored-patterns"].find(i => i === query);
 									if (existingPattern) {
 										//Remove pattern
@@ -349,6 +349,78 @@ bot.on('message', msg => {
 					}
 				} else {
 					return channel.send(new Discord.MessageEmbed().setDescription('What are you trying to do?'));
+				}
+			case 'prykie':
+				msg.delete({ timeout: 0 });
+
+				//If no option was selected
+				if (args.length != 0) {
+					//Get option
+					var option = args[0].toLowerCase();
+					args = args.splice(1);
+
+					//Check which option you want
+					switch (option) {
+						case 'add':
+							var query = args[0];
+							args = args.splice(1);
+
+							//Check if query exists
+							if (query) {
+								//Check if already existing
+								if (!dataToUse["prykie-quotes"].find(i => i === query)) {
+									//Add quote
+									dataToUse["prykie-quotes"].push(query);
+									//Write to file
+									fs.writeFileSync('./data-to-use.json', JSON.stringify(dataToUse));
+									//Message
+									return channel.send(new Discord.MessageEmbed().setDescription('Added ' + query + ' to the data base.'));
+								} else {
+									return channel.send(new Discord.MessageEmbed().setDescription(query + ' already exists in the data base. You can use `' + settings.prefix + 'prykie list` to view the current list of Prykie quotes.'));
+								}
+							} else {
+								return channel.send(new Discord.MessageEmbed().setDescription('You didn\'t write any Prykie quote to add.'));
+							}
+						case 'remove':
+							if (member.hasPermission('MANAGE_GUILD')) {
+								var query = args[0];
+								args = args.splice(1);
+
+								//Check if query exists
+								if (query) {
+									//Find existing
+									if (parseInt(query) >= dataToUse["prykie-quotes"].length) {
+										var existingQuote = dataToUse["prykie-quotes"][parseInt(query)];
+										if (existingQuote) {
+											//Remove quote
+											dataToUse["prykie-quotes"] = dataToUse["prykie-quotes"].splice(parseInt(query), 1);
+											//Write to file
+											fs.writeFileSync('./data-to-use.json', JSON.stringify(dataToUse));
+											//Message
+											return channel.send(new Discord.MessageEmbed().setDescription('Removed `' + existingQuote + '` from the data base.'));
+										} else {
+											return channel.send(new Discord.MessageEmbed().setDescription('I couldn\'t find this quote for some reason...'));
+										}
+									} else {
+										return channel.send(new Discord.MessageEmbed().setDescription('The ' + tools.ordinal(parseInt(query)) + ' quote does not exist sorry.'));
+									}
+								} else {
+									return channel.send(new Discord.MessageEmbed().setDescription('You didn\'t select a quote number to remove. You can use `' + settings.prefix + 'prykie list` to view the current list of Prykie quotes.'));
+								}
+							} else {
+								return channel.send(new Discord.MessageEmbed().setDescription('Sorry, you need to be a server manager/admin to remove a prykie quote.'));
+							}
+						case 'list':
+							var output = "";
+							for (var i = 0; i < dataToUse["prykie-quotes"].length; ++i) {
+								output = output + i + ' - `' + dataToUse["prykie-quotes"][0] + '`\n';
+							}
+							return channel.send(new Discord.MessageEmbed().setDescription(dataToUse["prykie-quotes"].length + ' prykie quotes.\n' + output));
+						default:
+							return channel.send(new Discord.MessageEmbed().setDescription('Did you want to list all/add/remove a prykie quote?'));
+					}
+				} else {
+					return channel.send(new Discord.MessageEmbed().setDescription('Sorry, I do not understand this command.'));
 				}
 			default: //Error
 				return channel.send(new Discord.MessageEmbed().setDescription('Sorry, I do not understand that command...'));
