@@ -11,9 +11,6 @@ var tools = require('./extra-functions');
 var fs = require('fs');
 var googleTranslate = require('google-translate')(googleApiKey, { "concurrentLimit": 20 });
 
-//Functions
-const Ping = require('./Ping.js');
-
 //Initialize Discord bot 
 const bot = new Discord.Client();
 
@@ -43,7 +40,9 @@ bot.on('message', msg => {
 
 		switch (cmd) {
 			case 'ping': //Ping the bot - Are you alive
-				return Ping.ping(msg, Discord);
+				msg.delete({ timeout: 0 }); //Delete message
+				return channel.send(new Discord.MessageEmbed().setDescription('Right back at you! Yes, I am alive. Current uptime is: ' +
+					UpTime() + '. Current Prefix is: ' + settings.prefix));
 			case 'prefix': //Prefix options
 				msg.delete({ timeout: 0 }); //Delete message
 				if (args.length != 0) {
