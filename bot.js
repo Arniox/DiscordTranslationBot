@@ -169,11 +169,11 @@ bot.on('message', msg => {
 				msg.delete({ timeout: 0 }); //Delete message
 				if (member.hasPermission('MUTE_MEMBERS')) {
 					if (args.length != 0) {
-						var voiceChannel = args[0].replace('_', ' ');
+						var voiceChannel = args.join(' ');
 						args = args.splice(1);
 
 						//Channel name, find the voice channel
-						var channelToMute = guild.channels.cache.find(i => i.name == voiceChannel && i.type == 'voice');
+						var channelToMute = guild.channels.cache.find(i => i.name.toLowerCase() == voiceChannel.toLowerCase() && i.type == 'voice');
 						if (channelToMute) {
 							//Grab all players in this voice that aren't ignored
 							var playersFoundInVoice = guild.members.cache.filter(i => i.voice.channelID == channelToMute.id && !i._roles.some(r => settings.muteroles.includes(r)));
@@ -187,20 +187,21 @@ bot.on('message', msg => {
 						} else {
 							return channel.send(new Discord.MessageEmbed().setDescription('Could not find a voice channel with the name ' + voiceChannel));
 						}
+					} else {
+						return channel.send(new Discord.MessageEmbed().setDescription('You didn\'t select any voice channel to mute.'));
 					}
 				} else {
 					return channel.send(new Discord.MessageEmbed().setDescription('Sorry, you need muting permissions to run this command.'));
 				}
-				break;
 			case 'unmute': //Unmute everyone in a voice chat
 				msg.delete({ timeout: 0 }); //Delete message
 				if (member.hasPermission('MUTE_MEMBERS')) {
 					if (args.length != 0) {
-						var voiceChannel = args[0].replace('_', ' ');
+						var voiceChannel = args.join(' ');
 						args = args.splice(1);
 
 						//Channel name, find the voice channel
-						var channelToMute = guild.channels.cache.find(i => i.name == voiceChannel && i.type == 'voice');
+						var channelToMute = guild.channels.cache.find(i => i.name.toLowerCase() == voiceChannel.toLowerCase() && i.type == 'voice');
 						if (channelToMute) {
 							//Grab all players in this voice that aren't ignored
 							var playersFoundInVoice = guild.members.cache.filter(i => i.voice.channelID == channelToMute.id && !i._roles.some(r => settings.muteroles.includes(r)));
@@ -214,11 +215,12 @@ bot.on('message', msg => {
 						} else {
 							return channel.send(new Discord.MessageEmbed().setDescription('Could not find a voice channel with the name ' + voiceChannel));
 						}
+					} else {
+						return channel.send(new Discord.MessageEmbed().setDescription('You didn\'t select any voice channel to unmute.'));
 					}
 				} else {
 					return channel.send(new Discord.MessageEmbed().setDescription('Sorry, you need muting permissions to run this command.'));
 				}
-				break;
 			case 'listen': //Join voice chat
 				//Grab member voice channel
 				var voiceChannel = member.voice.channel;
@@ -262,7 +264,6 @@ bot.on('message', msg => {
 						}
 					}
 				}
-				break;
 			case 'leave': //Leave voice chat
 				msg.delete({ timeout: 0 }); //Delete message
 
@@ -426,6 +427,50 @@ bot.on('message', msg => {
 					} else {
 						return channel.send(new Discord.MessageEmbed().setDescription('Sorry, I didn\'t find any prykie quotes to use :('));
 					}
+				}
+			case 'move': //Move everyone from one voice channel to another channel
+				msg.delete({ timeout: 0 });
+				if (member.hasPermission('MOVE_MEMBERS')) {
+					if (args.length != 0) {
+						args = args.join(' ').split('-');
+						var voiceChannelFrom = args[0];
+						args = args.splice(1);
+
+						//Channel name, find the voice channel
+						var channelToMoveFrom = guild.channels.cache.find(i => i.name.toLowerCase() == voiceChannelFrom.toLowerCase() && i.type == 'voice');
+						if (channelToMoveFrom) {
+							//Grab all players in this voice
+							var playersFoundInVoice = guild.members.cache.filter(i => i.voice.channelID == channelToMoveFrom.id);
+							if (playersFoundInVoice.size != 0) {
+								//Check that there's a channel to move to
+								if (args.length != 0) {
+									var voiceChannelTo = args[0];
+									args = args.splice(1);
+
+									//Channel name, find the voice channel to move to
+									var channelToMoveTo = guild.channels.cache.find(i => i.name.toLowerCase() == voiceChannelTo.toLowerCase() && i.type == 'voice');
+									if (channelToMoveTo) {
+										//Move all the players found in channel from to channel to
+										playersFoundInVoice.map((value, key) => {
+											value.voice.setChannel(channelToMoveTo);
+										});
+									} else {
+										return channel.send(new Discord.MessageEmbed().setDescription('Could not find a voice channel with the name ' + voiceChannelTo));
+									}
+								} else {
+									return channel.send(new Discord.MessageEmbed().setDescription('You didn\'t select any voice channel to move ' + playersFoundInVoice.size + ' players to.'));
+								}
+							} else {
+								return channel.send(new Discord.MessageEmbed().setDescription('There\'s noone in this voice channel to move sorry.'));
+							}
+						} else {
+							return channel.send(new Discord.MessageEmbed().setDescription('Could not find a voice channel with the name ' + voiceChannelFrom));
+						}
+					} else {
+						return channel.send(new Discord.MessageEmbed().setDescription('You didn\'t select any voice channel to move players from.'));
+					}
+				} else {
+					return channel.send(new Discord.MessageEmbed().setDescription('Sorry, you need moving powers to run this command.'));
 				}
 			default: //Error
 				return channel.send(new Discord.MessageEmbed().setDescription('Sorry, I do not understand that command...'));
