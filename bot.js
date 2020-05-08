@@ -440,8 +440,11 @@ bot.on('message', msg => {
 				if (member.hasPermission('MOVE_MEMBERS')) {
 					if (args.length != 0) {
 						args = args.join(' ').split('-');
+						console.log(args);
 						var voiceChannelFrom = args[0];
+						console.log(voiceChannelFrom);
 						args = args.splice(1);
+						console.log(args);
 
 						//Channel name, find the voice channel
 						var channelToMoveFrom = guild.channels.cache.find(i => i.name.toLowerCase() == voiceChannelFrom.toLowerCase() && i.type == 'voice');
