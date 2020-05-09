@@ -725,6 +725,11 @@ bot.on('message', msg => {
 									//Check if selected code exists in the supported languages
 									googleTranslate.getSupportedLanguages('en', function (err, languageCodes) {
 										if (languageCodes.find(i => i.language == query.toLowerCase())) {
+											//Message
+											channel.send(new Discord.MessageEmbed().setDescription('Translating ' + guild.members.cache.filter(i => i.user.bot != true).size +
+												' members nickname\'s into ' + languageCodes.find(i => i.language == query.toLowerCase()).name) + '...\n This may take up to ' +
+												guild.members.cache.filter(i => i.user.bot != true).size + ' seconds on a good day...');
+
 											//For all members in the guild
 											guild.members.cache.filter(i => i.user.bot != true).map((value, key) => {
 												//Get current user nickname.
@@ -740,10 +745,10 @@ bot.on('message', msg => {
 															//channel.send(new Discord.MessageEmbed().setDescription(error.toString().split(':')[1] + '. I cannot translate ' + value.toString() + ' nickname.'));
 														});
 												});
+											}).then(() => {
+												channel.send(new Discord.MessageEmbed().setDescription('Finished translating ' + guild.members.cache.filter(i => i.user.bot != true).size +
+													' members nickname\'s into ' + languageCodes.find(i => i.language == query.toLowerCase()).name));
 											});
-											//Message
-											channel.send(new Discord.MessageEmbed().setDescription('I have finished translating ' + guild.members.cache.filter(i => i.user.bot != true).size +
-												' player\'s nickname\'s into ' + languageCodes.find(i => i.language == query.toLowerCase()).name));
 										} else {
 											channel.send(new Discord.MessageEmbed().setDescription('Unfortunately, my translation capabilities do not support ' + query + ' as a language.'));
 										}
