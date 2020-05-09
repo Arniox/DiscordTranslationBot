@@ -737,7 +737,7 @@ bot.on('message', msg => {
 														.setNickname(translation.translatedText, 'Translating name from ' + currentUserNickName + ' to ' +
 															translation.translatedText + ' in ' + languageCodes.find(i => i.language == query.toLowerCase()).name)
 														.catch(error => {
-															channel.send(new Discord.MessageEmbed().setDescription(error.toString().split(':')[1] + '. I cannot translate ' + value.toString() + ' nickname.'));
+															//channel.send(new Discord.MessageEmbed().setDescription(error.toString().split(':')[1] + '. I cannot translate ' + value.toString() + ' nickname.'));
 														});
 												});
 											});
