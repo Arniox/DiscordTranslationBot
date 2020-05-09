@@ -452,7 +452,7 @@ bot.on('message', msg => {
 								//Grab complex selector
 								var complexSelector = selector.split('>').map(i => i.trim());
 								var numberSelector = complexSelector[0];
-								complexSelector.splice(1);
+								complexSelector.splice(0);
 
 								console.log(complexSelector);
 								console.log(numberSelector);
