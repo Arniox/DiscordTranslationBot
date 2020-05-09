@@ -282,7 +282,7 @@ bot.on('message', msg => {
 									},
 									{
 										name: 'Examples: ',
-										value: 'f10\n\nf10 ' + guild.memebers.cache.random().toString() + guild.members.cache.random().toString()
+										value: 'f10\n\nf10 ' + guild.members.cache.random().toString() + guild.members.cache.random().toString()
 									}
 								)
 								.setTimestamp()
