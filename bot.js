@@ -727,8 +727,8 @@ bot.on('message', msg => {
 										if (languageCodes.find(i => i.language == query.toLowerCase())) {
 											//Message
 											channel.send(new Discord.MessageEmbed().setDescription('Translating ' + guild.members.cache.filter(i => i.user.bot != true).size +
-												' members nickname\'s into ' + languageCodes.find(i => i.language == query.toLowerCase()).name) + '...\n This may take up to ' +
-												guild.members.cache.filter(i => i.user.bot != true).size + ' seconds on a good day...');
+												' members nickname\'s into ' + languageCodes.find(i => i.language == query.toLowerCase()).name + '...\n This may take up to ' +
+												guild.members.cache.filter(i => i.user.bot != true).size + ' seconds on a good day...'));
 
 											//For all members in the guild
 											Promise.all(guild.members.cache.filter(i => i.user.bot != true).map((value, key) => {
@@ -737,13 +737,14 @@ bot.on('message', msg => {
 
 												//Translate
 												googleTranslate.translate(currentUserNickName, query, function (err, translation) {
-													//Change name
-													value
-														.setNickname(translation.translatedText, 'Translating name from ' + currentUserNickName + ' to ' +
-															translation.translatedText + ' in ' + languageCodes.find(i => i.language == query.toLowerCase()).name)
-														.catch(error => {
-															//channel.send(new Discord.MessageEmbed().setDescription(error.toString().split(':')[1] + '. I cannot translate ' + value.toString() + ' nickname.'));
-														});
+													//Check if the bot has perms
+													if (value.roles.highest().comparePositionTo(guild.members.cache.find(i => i.id == bot.user.id)) > 0) {
+														//Change name
+														value.setNickname(translation.translatedText, 'Translating name from ' + currentUserNickName + ' to ' +
+															translation.translatedText + ' in ' + languageCodes.find(i => i.language == query.toLowerCase()).name);
+													} else {
+														channel.send(new Discord.MessageEmbed().setDescription('I had a problem translating ' + value.toString() + ' nickname'));
+													}
 												});
 											})).then(() => {
 												channel.send(new Discord.MessageEmbed().setDescription('Finished translating ' + guild.members.cache.filter(i => i.user.bot != true).size +
