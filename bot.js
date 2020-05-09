@@ -239,7 +239,7 @@ bot.on('message', msg => {
 							var embeddedHelpMessage = new Discord.MessageEmbed()
 								.setColor('#0099ff')
 								.setAuthor(bot.user.username, bot.user.avatarURL())
-								.setDescription('Use selectors to move people in voice channels to other voice channels. This command has a lot of different options. It works find with spaces in the name and is case insensitive.')
+								.setDescription('Use selectors to move people in voice channels to other voice channels. This command has a lot of different options. It works fine with spaces in the name and is case insensitive.')
 								.addFields(
 									{ name: 'Required Permissions: ', value: 'Move Members' },
 									{
