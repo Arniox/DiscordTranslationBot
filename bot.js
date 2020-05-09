@@ -467,7 +467,7 @@ bot.on('message', msg => {
 										var voiceChannelFROM = guild.channels.cache.find(i => i.name.toLowerCase() == channelSelector.toLowerCase() && i.type == 'voice');
 										if (voiceChannelFROM) {
 											//Grab number of players in this voice
-											var playersFoundInVoice = tools.getRandomFromColl(guild.members.cache.filter(i => i.voice.channelID == voiceChannelFROM.id).map((value, key) => value), numberOfPlayers);
+											var playersFoundInVoice = guild.members.cache.filter(i => i.voice.channelID == voiceChannelFROM.id).map((value, key) => value).sort(() => Math.random() - Math.random()).slice(0, numberOfPlayers);
 											console.log(playersFoundInVoice);
 
 											if (playersFoundInVoice.size != 0) {
