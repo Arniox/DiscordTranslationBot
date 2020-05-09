@@ -273,7 +273,7 @@ bot.on('message', msg => {
 								.setColor('#0099ff')
 								.setAuthor(bot.user.username, bot.user.avatarURL())
 								.setDescription('This command is a meme. It will instantly ban Prykie and only Prykie. After banning, it will instantly unban and then send a reinvite to the server in a dm.')
-								.setDescription(
+								.addFields(
 									{ name: 'Required Permissions: ', value: 'Kick Members (for banning other players, you will need Administrative permissions' },
 									{ name: 'Info: ', value: 'This is the only command that does not require a prefix. It can just be run with f10 by itself in chat.' },
 									{
