@@ -62,7 +62,7 @@ module.exports = {
     },
     //Randomly grab a number of elements from an array
     getRandomFromArray: function (arr, n) {
-        return arr.sort(() => Math.random() - Math.random()).splice(0, n);
+        return arr.sort(() => Math.random() - Math.random()).slice(0, n);
     }
 }
 
