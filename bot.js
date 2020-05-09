@@ -234,8 +234,7 @@ bot.on('message', msg => {
 										}
 									)
 									.setTimestamp()
-									.setFooter('Thanks, and have a good day')
-									.catch(error => { console.log('Error. Ignored') });
+									.setFooter('Thanks, and have a good day');
 
 								//Send embedded message
 								return channel
