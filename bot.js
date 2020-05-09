@@ -603,6 +603,12 @@ bot.on('message', msg => {
 													var selectorSize = channelSelectors.length;
 													args = args.splice(1);
 
+													//Fix number of channels if there's too few players
+													while (Math.floor(playersFoundInVoice.length / selectorSize) < 1) {
+														channelSelectors = channelSelectors.splice(channelSelectors.length - 1, 1);
+														selectorSize = channelSelectors.length;
+													}
+
 													//For each channel
 													channelSelectors.forEach(e => {
 														//Get voice channel to move to with the channel selector (e) as name
@@ -614,6 +620,8 @@ bot.on('message', msg => {
 																playersToMoveInVoice.forEach(e => {
 																	e.voice.setChannel(voiceChannelTO);
 																});
+																//Remove already moved players
+																playersFoundInVoice = playersFoundInVoice.filter((value, key) => !playersToMoveInVoice.includes(value));
 															} //Ignore broken players
 														} else {
 															return channel.send(new Discord.MessageEmbed().setDescription('Could not find a voice channel with the name ' + e));
@@ -648,6 +656,12 @@ bot.on('message', msg => {
 											var selectorSize = channelSelectors.length;
 											args = args.splice(1);
 
+											//Fix number of channels if there's too few players
+											while (Math.floor(playersFoundAll.size / selectorSize) < 1) {
+												channelSelectors = channelSelectors.splice(channelSelectors.length - 1, 1);
+												selectorSize = channelSelectors.length;
+											}
+
 											//For each channel
 											channelSelectors.forEach(e => {
 												//Get voice channel to move to with the channel selector (e) as name
@@ -659,6 +673,8 @@ bot.on('message', msg => {
 														playersToMoveAll.forEach(e => {
 															e.voice.setChannel(voiceChannelTO);
 														});
+														//Remove already moved players
+														playersFoundAll = playersFoundAll.filter((value, key) => !playersToMoveAll.includes(value));
 													} //Ignore broken players
 												} else {
 													return channel.send(new Discord.MessageEmbed().setDescription('Could not find a voice channel with the name ' + e));
@@ -684,6 +700,12 @@ bot.on('message', msg => {
 												var selectorSize = channelSelectors.length;
 												args = args.splice(1);
 
+												//Fix number of channels if there's too few players
+												while (Math.floor(playersFoundInVoice.size / selectorSize) < 1) {
+													channelSelectors = channelSelectors.splice(channelSelectors.length - 1, 1);
+													selectorSize = channelSelectors.length;
+												}
+
 												//For each channel
 												channelSelectors.forEach(e => {
 													//Get voice channel to move to with the channel selector (e) as name
@@ -695,6 +717,8 @@ bot.on('message', msg => {
 															playersToMoveInVoice.forEach(e => {
 																e.voice.setChannel(voiceChannelTO);
 															});
+															//Remove already moved players
+															playersFoundInVoice = playersFoundInVoice.filter((value, key) => !playersToMoveInVoice.includes(value));
 														} //Ignore broken players
 													} else {
 														return channel.send(new Discord.MessageEmbed().setDescription('Could not find a voice channel with the name ' + e));
