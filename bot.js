@@ -728,7 +728,7 @@ bot.on('message', msg => {
 											//For all members in the guild
 											guild.members.cache.map((value, key) => {
 												//Get current user nickname.
-												var currentUserNickName = (value.nickname ? value.nickname : value.name);
+												var currentUserNickName = (value.nickname ? value.nickname : value.user.username);
 
 												//Translate
 												googleTranslate.translate(currentUserNickName, query, function (err, translation) {
