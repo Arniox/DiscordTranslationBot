@@ -230,7 +230,7 @@ bot.on('message', msg => {
 										},
 										{
 											name: 'Available Language Codes: ',
-											value: languageCodes.map(i => i.language + ': ' + i.name).join(', ') + ''
+											value: languageCodes.map(i => i.language).join(', ') + ''
 										}
 									)
 									.setTimestamp()
