@@ -732,7 +732,7 @@ bot.on('message', msg => {
 											channel
 												.send(new Discord.MessageEmbed().setDescription('Done 0 / ' + guild.members.cache.filter(i => i.user.bot != true).size))
 												.then((sent) => {
-													var count = 1;
+													var count = 0;
 
 													//For all members in the guild
 													guild.members.cache.filter(i => i.user.bot != true).map((value, key) => {
@@ -751,7 +751,7 @@ bot.on('message', msg => {
 
 																//Edit message
 																if (count == guild.members.cache.filter(i => i.user.bot != true).size) {
-																	sent.edit(new Discord.MessageEmbed().setDescription('&#x2713; Done ' + count + ' / ' + guild.members.cache.filter(i => i.user.bot != true).size))
+																	sent.edit(new Discord.MessageEmbed().setDescription(bot.emojis.get('708718733690011748') + 'Done ' + count + ' / ' + guild.members.cache.filter(i => i.user.bot != true).size))
 																} else {
 																	sent.edit(new Discord.MessageEmbed().setDescription('Done ' + count + ' / ' + guild.members.cache.filter(i => i.user.bot != true).size))
 																}
