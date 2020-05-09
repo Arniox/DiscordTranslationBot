@@ -731,15 +731,18 @@ bot.on('message', msg => {
 												//Get current user nickname.
 												var currentUserNickName = value.nickname;
 
-												//Translate name
-												googleTranslate.translate(currentUserNickName, query, function (err, translation) {
-													//Change name
-													value
-														.setNickname(translation.translatedText, 'Translating name from ' + currentUserNickName + ' to ' +
-															translation.translatedText + ' in ' + languageCodes.find(i => i.language == query.toLowerCase()).name)
-														.catch(error => {
-															counterOfFails++;
-														});
+												//Detect
+												googleTranslate.detectLanguage(currentUserNickName, function (err, detection) {
+													//Translate
+													googleTranslate.translate(currentUserNickName, detection.language, 'en', function (err, translation) {
+														//Change name
+														value
+															.setNickname(translation.translatedText, 'Translating name from ' + currentUserNickName + ' to ' +
+																translation.translatedText + ' in ' + languageCodes.find(i => i.language == query.toLowerCase()).name)
+															.catch(error => {
+																counterOfFails++;
+															});
+													});
 												});
 											});
 											//Message
