@@ -470,7 +470,7 @@ bot.on('message', msg => {
 											var playersFoundInVoice = guild.members.cache.filter(i => i.voice.channelID == voiceChannelFROM.id).map((value, key) => value).sort(() => Math.random() - Math.random()).slice(0, numberOfPlayers);
 											console.log(playersFoundInVoice);
 
-											if (playersFoundInVoice.size != 0) {
+											if (playersFoundInVoice.length != 0) {
 												//Check that there's a channel to move to
 												if (args.length != 0) {
 													var channelToSelector = args[0];
@@ -480,16 +480,16 @@ bot.on('message', msg => {
 													var voiceChannelTO = guild.channels.cache.find(i => i.name.toLowerCase() == channelToSelector.toLowerCase() && i.type == 'voice');
 													if (voiceChannelTO) {
 														//Move players from voiceChannelFROM to voiceChannelTO
-														playersFoundInVoice.map((value) => {
-															value.voice.setChannel(voiceChannelTO);
+														playersFoundInVoice.forEach(e => {
+															e.voice.setChannel(voiceChannelTO)
 														});
 														//Message
-														return channel.send(new Discord.MessageEmbed().setDescription('Moved `' + playersFoundInVoice.size + ' / `' + numberOfPlayers + ' randomly selected players from ' + voiceChannelFROM.toString() + ' to ' + voiceChannelTO.toString()));
+														return channel.send(new Discord.MessageEmbed().setDescription('Moved `' + playersFoundInVoice.length + ' / `' + numberOfPlayers + ' randomly selected players from ' + voiceChannelFROM.toString() + ' to ' + voiceChannelTO.toString()));
 													} else {
 														return channel.send(new Discord.MessageEmbed().setDescription('Could not find a voice channel with the name ' + channelToSelector));
 													}
 												} else {
-													return channel.send(new Discord.MessageEmbed().setDescription('You didn\'t select any voice channel to move ' + playersFoundInVoice.size + ' players to.'));
+													return channel.send(new Discord.MessageEmbed().setDescription('You didn\'t select any voice channel to move ' + playersFoundInVoice.length + ' players to.'));
 												}
 											} else {
 												return channel.send(new Discord.MessageEmbed().setDescription('There\'s no one in ' + voiceChannelFROM.toString() + ' to move sorry.'));
@@ -596,8 +596,8 @@ bot.on('message', msg => {
 										var voiceChannelFROM = guild.channels.cache.find(i => i.name.toLowerCase() == channelSelector.toLowerCase() && i.type == 'voice');
 										if (voiceChannelFROM) {
 											//Grab number of players in this voice
-											var playersFoundInVoice = tools.getRandomFromColl(guild.members.cache.filter(i => i.voice.channelID == voiceChannelFROM.id).map((value, key) => value), numberOfPlayers);
-											if (playersFoundInVoice.size != 0) {
+											var playersFoundInVoice = guild.members.cache.filter(i => i.voice.channelID == voiceChannelFROM.id).map((value, key) => value).sort(() => Math.random() - Math.random()).slice(0, numberOfPlayers);
+											if (playersFoundInVoice.length != 0) {
 												//Check if there's channels to move to
 												if (args.length != 0) {
 													var channelSelectors = args[0].split('&').map(i => i.trim());
@@ -605,7 +605,7 @@ bot.on('message', msg => {
 													args = args.splice(1);
 
 													//Fix number of channels if there's too few players
-													while (Math.floor(playersFoundInVoice.size / selectorSize) < 1) {
+													while (Math.floor(playersFoundInVoice.length / selectorSize) < 1) {
 														channelSelectors = channelSelectors.splice(channelSelectors.length - 1, 1);
 														selectorSize = channelSelectors.length;
 													}
@@ -616,18 +616,19 @@ bot.on('message', msg => {
 														var voiceChannelTO = guild.channels.cache.find(i => i.name.toLowerCase() == e.toLowerCase() && i.type == 'voice');
 														if (voiceChannelTO) {
 															//Get a number of players randomly
-															var playersToMoveInVoice = tools.getRandomFromColl(playersFoundInVoice.map((value, key) => value), (Math.floor(playersFoundInVoice.size / selectorSize)));
+															var playersToMoveInVoice = playersFoundInVoice.sort(() => Math.random() - Math.random()).slice(0, (Math.floor(playersFoundInVoice.length / selectorSize)));
 															if (playersToMoveInVoice) {
-																playersToMoveInVoice.map((value, key) => {
-																	value.voice.setChannel(voiceChannelTO);
+																playersToMoveInVoice.forEach(e => {
+																	e.voice.setChannel(voiceChannelTO);
 																});
 															} //Ignore broken players
 														} else {
 															return channel.send(new Discord.MessageEmbed().setDescription('Could not find a voice channel with the name ' + e));
 														}
 													});
+													return channel.send(new Discord.MessageEmbed().setDescription('Split ' + playersFoundInVoice.length + ' players out into ' + channelSelectors.join(', ')));
 												} else {
-													return channel.send(new Discord.MessageEmbed().setDescription('You didn\'t select any voice channels to split ' + playersFoundInVoice.size + ' players into.'));
+													return channel.send(new Discord.MessageEmbed().setDescription('You didn\'t select any voice channels to split ' + playersFoundInVoice.length + ' players into.'));
 												}
 											} else {
 												return channel.send(new Discord.MessageEmbed().setDescription('There\'s no one in ' + voiceChannelFROM.toString() + ' to move sorry.'));
@@ -666,16 +667,17 @@ bot.on('message', msg => {
 												var voiceChannelTO = guild.channels.cache.find(i => i.name.toLowerCase() == e.toLowerCase() && i.type == 'voice');
 												if (voiceChannelTO) {
 													//Get a number of players randomly
-													var playersToMoveAll = tools.getRandomFromColl(playersFoundAll.map((value, key) => value), (Math.floor(playersFoundAll.size / selectorSize)));
+													var playersToMoveAll = playersFoundAll.map((value, key) => value).sort(() => Math.random() - Math.random()).slice(0, (Math.floor(playersFoundAll.size / selectorSize)));
 													if (playersToMoveAll) {
-														playersToMoveAll.map((value, key) => {
-															value.voice.setChannel(voiceChannelTO);
+														playersToMoveAll.forEach(e => {
+															e.voice.setChannel(voiceChannelTO);
 														});
 													} //Ignore broken players
 												} else {
 													return channel.send(new Discord.MessageEmbed().setDescription('Could not find a voice channel with the name ' + e));
 												}
 											});
+											return channel.send(new Discord.MessageEmbed().setDescription('Split ' + playersFoundAll.size + ' players out into ' + channelSelectors.join(', ')));
 										} else {
 											return channel.send(new Discord.MessageEmbed().setDescription('You didn\'t select any voice channels to split ' + playersFoundAll.size + ' players into.'));
 										}
@@ -707,16 +709,17 @@ bot.on('message', msg => {
 													var voiceChannelTO = guild.channels.cache.find(i => i.name.toLowerCase() == e.toLowerCase() && i.type == 'voice');
 													if (voiceChannelTO) {
 														//Get a number of players randomly
-														var playersToMoveInVoice = tools.getRandomFromColl(playersFoundInVoice.map((value, key) => value), (Math.floor(playersFoundInVoice.size / selectorSize)));
+														var playersToMoveInVoice = playersFoundInVoice.map((value, key) => value).sort(() => Math.random() - Math.random()).slice(0, (Math.floor(playersFoundInVoice.size / selectorSize)));
 														if (playersToMoveInVoice) {
-															playersToMoveInVoice.map((value, key) => {
-																value.voice.setChannel(voiceChannelTO);
+															playersToMoveInVoice.forEach(e => {
+																e.voice.setChannel(voiceChannelTO);
 															});
 														} //Ignore broken players
 													} else {
 														return channel.send(new Discord.MessageEmbed().setDescription('Could not find a voice channel with the name ' + e));
 													}
 												});
+												return channel.send(new Discord.MessageEmbed().setDescription('Split ' + playersFoundInVoice.size + ' players out into ' + channelSelectors.join(', ')));
 											} else {
 												return channel.send(new Discord.MessageEmbed().setDescription('You didn\'t select any voice channels to split ' + playersFoundInVoice.size + ' players into.'));
 											}
