@@ -210,9 +210,11 @@ bot.on('message', msg => {
 							//Send embedded message
 							return channel.send(embeddedHelpMessage);
 						case 'nick':
+							//Emtpy embedd
+							var embeddedHelpMessage;
 							//Get all available language codes
 							googleTranslate.getSupportedLanguages(function (err, languageCodes) {
-								var embeddedHelpMessage = new Discord.MessageEmbed()
+								embeddedHelpMessage = new Discord.MessageEmbed()
 									.setColor('#0099ff')
 									.setAuthor(bot.user.username, bot.user.avatarURL())
 									.setDescription('Nick allows you to translate either you\'re own nickname into any supported language, or everyone\'s granted you have management permissions.')
@@ -235,13 +237,11 @@ bot.on('message', msg => {
 									)
 									.setTimestamp()
 									.setFooter('Thanks, and have a good day');
-
-								//Send embedded message
-								return channel
-									.send(embeddedHelpMessage)
-									.catch(error => { console.log('Error. Ignored') });
 							});
-							break;
+							//Send embedded message
+							return channel
+								.send(embeddedHelpMessage)
+								.catch(error => { console.log('Error. Ignored') });
 						case 'prykie':
 							var embeddedHelpMessage = new Discord.MessageEmbed()
 								.setColor('#0099ff')
