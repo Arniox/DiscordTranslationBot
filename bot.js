@@ -1158,7 +1158,7 @@ bot.on('message', msg => {
 															e.voice.setChannel(voiceChannelTO);
 														});
 														//Added counts
-														countOfMovedPlayers += playersToMoveInVoice.length;
+														countOfMovedPlayers += playersToMoveAll.length;
 														//Remove already moved players
 														playersFoundAll = playersFoundAll.filter((value, key) => !playersToMoveAll.includes(value));
 													} //Ignore broken players
