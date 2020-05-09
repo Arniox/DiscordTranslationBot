@@ -467,7 +467,7 @@ bot.on('message', msg => {
 										var voiceChannelFROM = guild.channels.cache.find(i => i.name.toLowerCase() == channelSelector.toLowerCase() && i.type == 'voice');
 										if (voiceChannelFROM) {
 											//Grab number of players in this voice
-											var playersFoundInVoice = guild.members.cache.filter(i => i.voice.channelID == voiceChannelFROM.id).sort(() => Math.random() - Math.random()).slice(0, numberOfPlayers);
+											var playersFoundInVoice = tools.getRandomFromColl(guild.members.cache.filter(i => i.voice.channelID == voiceChannelFROM.id).map((value, key) => value), numberOfPlayers);
 											if (playersFoundInVoice.size != 0) {
 												//Check that there's a channel to move to
 												if (args.length != 0) {
@@ -478,7 +478,7 @@ bot.on('message', msg => {
 													var voiceChannelTO = guild.channels.cache.find(i => i.name.toLowerCase() == channelToSelector.toLowerCase() && i.type == 'voice');
 													if (voiceChannelTO) {
 														//Move players from voiceChannelFROM to voiceChannelTO
-														playersFoundInVoice.map((value, key) => {
+														playersFoundInVoice.map((value) => {
 															value.voice.setChannel(voiceChannelTO);
 														});
 														//Message
@@ -594,7 +594,7 @@ bot.on('message', msg => {
 										var voiceChannelFROM = guild.channels.cache.find(i => i.name.toLowerCase() == channelSelector.toLowerCase() && i.type == 'voice');
 										if (voiceChannelFROM) {
 											//Grab number of players in this voice
-											var playersFoundInVoice = guild.members.cache.filter(i => i.voice.channelID == voiceChannelFROM.id).sort(() => Math.random() - Math.random()).slice(0, numberOfPlayers);
+											var playersFoundInVoice = tools.getRandomFromColl(guild.members.cache.filter(i => i.voice.channelID == voiceChannelFROM.id).map((value, key) => value), numberOfPlayers);
 											if (playersFoundInVoice.size != 0) {
 												//Check if there's channels to move to
 												if (args.length != 0) {
@@ -614,7 +614,7 @@ bot.on('message', msg => {
 														var voiceChannelTO = guild.channels.cache.find(i => i.name.toLowerCase() == e.toLowerCase() && i.type == 'voice');
 														if (voiceChannelTO) {
 															//Get a number of players randomly
-															var playersToMoveInVoice = playersFoundInVoice.sort(() => Math.random() - Math.random()).slice(0, (Math.floor(playersFoundInVoice.size / selectorSize)));
+															var playersToMoveInVoice = tools.getRandomFromColl(playersFoundInVoice.map((value, key) => value), (Math.floor(playersFoundInVoice.size / selectorSize)));
 															if (playersToMoveInVoice) {
 																playersToMoveInVoice.map((value, key) => {
 																	value.voice.setChannel(voiceChannelTO);
@@ -664,7 +664,7 @@ bot.on('message', msg => {
 												var voiceChannelTO = guild.channels.cache.find(i => i.name.toLowerCase() == e.toLowerCase() && i.type == 'voice');
 												if (voiceChannelTO) {
 													//Get a number of players randomly
-													var playersToMoveAll = playersFoundAll.sort(() => Math.random() - Math.random()).slice(0, (Math.floor(playersFoundAll.size / selectorSize)));
+													var playersToMoveAll = tools.getRandomFromColl(playersFoundAll.map((value, key) => value), (Math.floor(playersFoundAll.size / selectorSize)));
 													if (playersToMoveAll) {
 														playersToMoveAll.map((value, key) => {
 															value.voice.setChannel(voiceChannelTO);
@@ -705,7 +705,7 @@ bot.on('message', msg => {
 													var voiceChannelTO = guild.channels.cache.find(i => i.name.toLowerCase() == e.toLowerCase() && i.type == 'voice');
 													if (voiceChannelTO) {
 														//Get a number of players randomly
-														var playersToMoveInVoice = playersFoundInVoice.sort(() => Math.random() - Math.random()).slice(0, (Math.floor(playersFoundInVoice.size / selectorSize)));
+														var playersToMoveInVoice = tools.getRandomFromColl(playersFoundInVoice.map((value, key) => value), (Math.floor(playersFoundInVoice.size / selectorSize)));
 														if (playersToMoveInVoice) {
 															playersToMoveInVoice.map((value, key) => {
 																value.voice.setChannel(voiceChannelTO);
