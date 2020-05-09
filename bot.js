@@ -422,7 +422,7 @@ bot.on('message', msg => {
 								return channel.send(new Discord.MessageEmbed().setDescription('Sorry, you need to be a server manager/admin to change the server prefix.').setColor('#b50909'));
 							}
 						default: //Error on prefix command
-							return channel.send(new Discord.MessageEmbed().setDescription('What do you want to change sorry?')).setColor('#b50909');
+							return channel.send(new Discord.MessageEmbed().setDescription('What do you want to change sorry?').setColor('#b50909'));
 					}
 				} else {
 					return channel.send(new Discord.MessageEmbed().setDescription('Current Bot Prefix is: ' + settings.prefix).setColor('#0099ff'));
@@ -532,7 +532,7 @@ bot.on('message', msg => {
 							});
 
 							return channel.send(new Discord.MessageEmbed().setDescription('Found ' + playersFoundInVoice.size + ' players in ' +
-								channelToMute.toString() + '... muting now...')).setColor('#09b50c');
+								channelToMute.toString() + '... muting now...').setColor('#09b50c'));
 						} else {
 							return channel.send(new Discord.MessageEmbed().setDescription('Could not find a voice channel with the name ' +
 								voiceChannel).setColor('#b50909'));
