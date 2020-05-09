@@ -468,7 +468,6 @@ bot.on('message', msg => {
 										if (voiceChannelFROM) {
 											//Grab number of players in this voice
 											var playersFoundInVoice = guild.members.cache.filter(i => i.voice.channelID == voiceChannelFROM.id).map((value, key) => value).sort(() => Math.random() - Math.random()).slice(0, numberOfPlayers);
-											console.log(playersFoundInVoice);
 
 											if (playersFoundInVoice.length != 0) {
 												//Check that there's a channel to move to
