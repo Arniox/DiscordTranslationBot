@@ -209,6 +209,39 @@ bot.on('message', msg => {
 
 							//Send embedded message
 							return channel.send(embeddedHelpMessage);
+						case 'nick':
+							//Get all available language codes
+							var supportedLanguages = [];
+							googleTranslate.getSupportedLanguages('en', function (err, languageCodes) {
+								supportedLanguages = languageCodes;
+							});
+
+							var embeddedHelpMessage = new Discord.MessageEmbed()
+								.setColor('#0099ff')
+								.setAuthor(bot.user.username, bot.user.avatarURL())
+								.setDescription('Nick allows you to translate either you\'re own nickname into any supported language, or everyone\'s granted you have management permissions.')
+								.addFields(
+									{ name: 'Required Permissions: ', value: 'Manage Server (for translating eveyone\'s nickname).' },
+									{
+										name: 'Command Patterns: ',
+										value: settings.prefix + 'nick [me/all] [language code]'
+									},
+									{
+										name: 'Examples: ',
+										value: settings.prefix + 'nick me RU' + '\n\n' +
+											settings.prefix + 'nick me DE' + '\n\n' +
+											settings.prefix + 'nick all HE'
+									},
+									{
+										name: 'Available Language Codes: ',
+										value: supportedLanguages.map(i => i.language + ': ' + i.name).join(', ')
+									}
+								)
+								.setTimestamp()
+								.setFooter('Thanks, and have a good day');
+
+							//Send embedded message
+							return channel.send(embeddedHelpMessage);
 						case 'prykie':
 							var embeddedHelpMessage = new Discord.MessageEmbed()
 								.setColor('#0099ff')
@@ -330,6 +363,9 @@ bot.on('message', msg => {
 						}, {
 							name: settings.prefix + 'translate',
 							value: 'List, add or remove translation ignored patterns to the database for your server. Adding or removing needs the management permissions.'
+						}, {
+							name: settings.prefix + 'nick',
+							value: 'Translate your nickname into a specified language code. Use ' + settings.prefix + 'help nick to see all the available language codes.'
 						}, {
 							name: settings.prefix + 'prykie',
 							value: 'Used on it\'s own, it will post a random prykie quote. Otherwise, you can list, add or remove prykie quotes. Removing quotes needs the management permissions.'
@@ -668,8 +704,90 @@ bot.on('message', msg => {
 				} else {
 					return channel.send(new Discord.MessageEmbed().setDescription('What are you trying to do?'));
 				}
+			case 'nick':
+				msg.delete({ timeout: 0 }); //Delete the message
+
+				//If no option was selected
+				if (args.length != 0) {
+					//Get option
+					var option = args[0].toLowerCase();
+					args = args.splice(1);
+
+					//Check which option you want
+					switch (option) {
+						case 'all':
+							if (member.hasPermission('MANAGE_GUILD')) {
+								var query = args[0];
+								args = args.splice(1);
+
+								//Check if query exists
+								if (query) {
+									//Check if selected code exists in the supported languages
+									googleTranslate.getSupportedLanguages('en', function (err, languageCodes) {
+										if (languageCodes.find(i => i.language == query.toLowerCase())) {
+											//For all members in the guild
+											guild.members.cache.map((value, key) => {
+												//Get current user nickname.
+												var currentUserNickName = value.nickname;
+
+												//Translate name
+												googleTranslate.translate(currentUserNickName, query, function (err, translation) {
+													//Change name
+													value.setNickname(translation, 'Translating name from ' + currentUserNickName + ' to ' +
+														translation + ' in ' + languageCodes.find(i => i.language == query.toLowerCase()).name);
+												});
+											});
+											//Message
+											return channel.send(new Discord.MessageEmbed().setDescription('I have translated everyone\'s nickname into ' + languageCodes.find(i => i.language == query.toLowerCase()).name));
+										} else {
+											return channel.send(new Discord.MessageEmbed().setDescription('Unfortunately, my translation capabilities do not support ' + query + ' as a language.'));
+										}
+									});
+								} else {
+									return channel.send(new Discord.MessageEmbed().setDescription('Sorry, what language code did you want to use to translate everyone\'s name to?'))
+								}
+							} else {
+								return channel.send(new Discord.MessageEmbed().setDescription('Sorry, you need management perms to run this command.'));
+							}
+							break;
+						case 'me':
+							var query = args[0];
+							args = args.splice(1);
+
+							//Check if query exists
+							if (query) {
+								//Check if selected code exists in the supported languages
+								googleTranslate.getSupportedLanguages('en', function (err, languageCodes) {
+									if (languageCodes.find(i => i.language == query.toLowerCase())) {
+										//Get current member nickname.
+										var currentUserNickName = member.nickname;
+
+										//Translate name
+										googleTranslate.translate(currentUserNickName, query, function (err, translation) {
+											//Change name
+											member.setNickname(translation, 'Translating name from ' + currentUserNickName + ' to ' +
+												translation + ' in ' + languageCodes.find(i => i.language == query.toLowerCase()).name);
+											//Message
+											return channel.send(new Discord.MessageEmbed().setDescription('I have translated your nickname from ' + currentUserNickName + ' to ' +
+												translation + ' in ' + languageCodes.find(i => i.language == query.toLowerCase()).name));
+										});
+									} else {
+										return channel.send(new Discord.MessageEmbed().setDescription('Unfortunately, my translation capabilities do not support ' + query + ' as a language.'));
+									}
+								});
+							} else {
+								return channel.send(new Discord.MessageEmbed().setDescription('Sorry, what language code did you want to use to translate your name to?'));
+							}
+							break;
+						default:
+							return channel.send(new Discord.MessageEmbed().setDescription('Sorry, did you want to change your own nickname or everyone?'));
+					}
+				} else {
+					return channel.send(new Discord.MessageEmbed().setDescription('Sorry, what option did you want?'));
+				}
+				break;
 			case 'prykie': //Prykie commands
-				msg.delete({ timeout: 0 });
+				msg.delete({ timeout: 0 }); //Delete the message
 
 				//If no option was selected
 				if (args.length != 0) {
