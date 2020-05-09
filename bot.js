@@ -764,7 +764,6 @@ bot.on('message', msg => {
 							} else {
 								return channel.send(new Discord.MessageEmbed().setDescription('Sorry, you need management perms to run this command.'));
 							}
-							break;
 						case 'me':
 							var query = args[0];
 							args = args.splice(1);
@@ -788,7 +787,7 @@ bot.on('message', msg => {
 														translation.translatedText + ' in ' + languageCodes.find(i => i.language == query.toLowerCase()).name));
 												})
 												.catch(error => {
-													channel.send(new Discord.MessageEmbed().setDescription(error + ', I cannot translate the nickname of this person.'));
+													channel.send(new Discord.MessageEmbed().setDescription(error + ', I cannot translate your nickname ' + member.toString() + '.'));
 												});
 											return;
 										});
