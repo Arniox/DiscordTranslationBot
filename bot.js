@@ -777,8 +777,8 @@ bot.on('message', msg => {
 										googleTranslate.translate(currentUserNickName, query, function (err, translation) {
 											//Change name
 											member
-												.setNickname(translation.translatedText, 'Translating name from ' + currentUserNickName + ' to ' +
-													translation.translatedText + ' in ' + languageCodes.find(i => i.language == query.toLowerCase()).name)
+												.setNickname(translation.translatedText.substring(0, 33), 'Translating name from ' + currentUserNickName + ' to ' +
+													translation.translatedText.substring(0, 33) + ' in ' + languageCodes.find(i => i.language == query.toLowerCase()).name)
 												.then(() => {
 													channel.send(new Discord.MessageEmbed().setDescription('I have translated your nickname from ' + currentUserNickName + ' to ' +
 														translation.translatedText + ' in ' + languageCodes.find(i => i.language == query.toLowerCase()).name));
