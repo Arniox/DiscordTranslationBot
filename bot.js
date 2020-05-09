@@ -68,7 +68,7 @@ bot.on('message', msg => {
 								.setDescription('You can use prefix by running ' + settings.prefix + 'prefix to list the current prefix, or ' + settings.prefix + 'prefix change [new prefix] to change the prefix.')
 								.addFields(
 									{ name: 'Required Permissions: ', value: 'Manage Server' },
-									{ name: 'Example: ', value: settings.prefix + 'prefix\n' + settings.prefix + 'prefix change =' }
+									{ name: 'Example: ', value: settings.prefix + 'prefix\n\n' + settings.prefix + 'prefix change =' }
 								)
 								.setTimestamp()
 								.setFooter('Thanks, and have a good day');
@@ -98,8 +98,8 @@ bot.on('message', msg => {
 									},
 									{
 										name: 'Examples: ',
-										value: settings.prefix + 'muterole add ' + guild.roles.cache.random().toString() + '\n' +
-											settings.prefix + 'muterole remove ' + guild.roles.cache.random().toString() + '\n' +
+										value: settings.prefix + 'muterole add ' + guild.roles.cache.random().toString() + '\n\n' +
+											settings.prefix + 'muterole remove ' + guild.roles.cache.random().toString() + '\n\n' +
 											settings.prefix + 'muterole remove all'
 									}
 								)
@@ -127,7 +127,7 @@ bot.on('message', msg => {
 									{ name: 'Command Patterns: ', value: settings.prefix + 'mute [voice channel name]' },
 									{
 										name: 'Examples: ',
-										value: settings.prefix + 'mute ' + guild.channels.cache.filter(i => i.type == 'voice').random().name + '\n' +
+										value: settings.prefix + 'mute ' + guild.channels.cache.filter(i => i.type == 'voice').random().name + '\n\n' +
 											settings.prefix + 'mute ' + guild.channels.cache.filter(i => i.type == 'voice').random().name
 									}
 								)
@@ -145,7 +145,7 @@ bot.on('message', msg => {
 									{ name: 'Command Patterns: ', value: settings.prefix + 'unmute [voice channel name]' },
 									{
 										name: 'Examples: ',
-										value: settings.prefix + 'unmute ' + guild.channels.cache.filter(i => i.type == 'voice').random().name + '\n' +
+										value: settings.prefix + 'unmute ' + guild.channels.cache.filter(i => i.type == 'voice').random().name + '\n\n' +
 											settings.prefix + 'unmute ' + guild.channels.cache.filter(i => i.type == 'voice').random().name
 									}
 								)
@@ -194,13 +194,13 @@ bot.on('message', msg => {
 									{ name: 'Required Permissions: ', value: 'Manage Server (for adding and removing. Everyone else can use list the current patterns).' },
 									{
 										name: 'Command Patterns: ',
-										value: settings.prefix + 'translate [add/remove] [pattern]\n' +
+										value: settings.prefix + 'translate [add/remove] [pattern]\n\n' +
 											settings.prefix + 'translate -patterns-'
 									},
 									{
 										name: 'Examples: ',
-										value: settings.prefix + 'translate add /(<:[A-Za-z]+:\d+>)/gi' + '\n' +
-											settings.prefix + 'translate remove /(<:[A-Za-z]+:\d+>)/gi' + '\n' +
+										value: settings.prefix + 'translate add /(<:[A-Za-z]+:\d+>)/gi' + '\n\n' +
+											settings.prefix + 'translate remove /(<:[A-Za-z]+:\d+>)/gi' + '\n\n' +
 											settings.prefix + 'translate patterns'
 									}
 								)
@@ -218,15 +218,15 @@ bot.on('message', msg => {
 									{ name: 'Required Permissions: ', value: 'Just for removing quotes; Manage Server is needed.' },
 									{
 										name: 'Command Patterns: ',
-										value: settings.prefix + 'prykie\n' +
-											settings.prefix + 'prykie [add/remove] [quote]\n' +
+										value: settings.prefix + 'prykie\n\n' +
+											settings.prefix + 'prykie [add/remove] [quote]\n\n' +
 											settings.prefix + 'prykie -list-'
 									},
 									{
 										name: 'Examples: ',
-										value: settings.prefix + 'prykie\n' +
-											settings.prefix + 'prykie add I love massive black cocks!' +
-											settings.prefix + 'prykie remove I love massive black cocks!' +
+										value: settings.prefix + 'prykie\n\n' +
+											settings.prefix + 'prykie add I love massive black cocks!\n\n' +
+											settings.prefix + 'prykie remove I love massive black cocks!\n\n' +
 											settings.prefix + 'prykie list'
 									}
 								)
@@ -244,8 +244,8 @@ bot.on('message', msg => {
 									{ name: 'Required Permissions: ', value: 'Move Members' },
 									{
 										name: 'Command Patterns: ',
-										value: settings.prefix + 'move [Selector] [Split/Direct command prefix] [Channel(s)]\n' +
-											settings.prefix + 'move [Selector] - [Channel]\n' +
+										value: settings.prefix + 'move [Selector] [Split/Direct command prefix] [Channel(s)]\n\n' +
+											settings.prefix + 'move [Selector] - [Channel]\n\n' +
 											settings.prefix + 'move [Selector] = [Channel] & [Channel] & [Channel]'
 									},
 									{
@@ -278,11 +278,11 @@ bot.on('message', msg => {
 									{ name: 'Info: ', value: 'This is the only command that does not require a prefix. It can just be run with f10 by itself in chat.' },
 									{
 										name: 'Command Patterns: ',
-										value: 'f10\nf10 [@mention @mention @mention]'
+										value: 'f10\n\nf10 [@mention @mention @mention]'
 									},
 									{
 										name: 'Examples: ',
-										value: 'f10\nf10 ' + guild.memebers.cache.random().toString() + guild.members.cache.random().toString()
+										value: 'f10\n\nf10 ' + guild.memebers.cache.random().toString() + guild.members.cache.random().toString()
 									}
 								)
 								.setTimestamp()
