@@ -725,33 +725,39 @@ bot.on('message', msg => {
 									//Check if selected code exists in the supported languages
 									googleTranslate.getSupportedLanguages('en', function (err, languageCodes) {
 										if (languageCodes.find(i => i.language == query.toLowerCase())) {
-											var counterOfFails = 0;
 											//For all members in the guild
 											guild.members.cache.map((value, key) => {
 												//Get current user nickname.
 												var currentUserNickName = value.nickname;
 
+												console.log(currentUserNickName);
+
 												//Detect
 												googleTranslate.detectLanguage(currentUserNickName, function (err, detection) {
+													console.log(detection);
+
 													//Translate
-													googleTranslate.translate(currentUserNickName, detection.language, 'en', function (err, translation) {
+													googleTranslate.translate(currentUserNickName, detection.language, query, function (err, translation) {
+														console.log(translation);
+
 														//Change name
 														value
 															.setNickname(translation.translatedText, 'Translating name from ' + currentUserNickName + ' to ' +
 																translation.translatedText + ' in ' + languageCodes.find(i => i.language == query.toLowerCase()).name)
 															.catch(error => {
-																counterOfFails++;
+																channel.send(new Discord.MessageEmbed().setDescription(error + '. I cannot translate ' + value.toString() + ' nickname.'));
 															});
 													});
 												});
 											});
 											//Message
-											return channel.send(new Discord.MessageEmbed().setDescription('I encountered ' + counterOfFails + ' failures when translating everyone\'s nickname into ' +
-												languageCodes.find(i => i.language == query.toLowerCase()).name));
+											channel.send(new Discord.MessageEmbed().setDescription('I have finished translating ' + guild.members.cache.size() +
+												' player\'s nickname\'s into ' + languageCodes.find(i => i.language == query.toLowerCase()).name));
 										} else {
-											return channel.send(new Discord.MessageEmbed().setDescription('Unfortunately, my translation capabilities do not support ' + query + ' as a language.'));
+											channel.send(new Discord.MessageEmbed().setDescription('Unfortunately, my translation capabilities do not support ' + query + ' as a language.'));
 										}
 									});
+									return;
 								} else {
 									return channel.send(new Discord.MessageEmbed().setDescription('Sorry, what language code did you want to use to translate everyone\'s name to?'))
 								}
