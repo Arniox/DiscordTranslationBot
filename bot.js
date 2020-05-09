@@ -742,7 +742,7 @@ bot.on('message', msg => {
 												});
 											});
 											//Message
-											channel.send(new Discord.MessageEmbed().setDescription('I have finished translating ' + guild.members.cache.filter(i => i.user.bot != true).size() +
+											channel.send(new Discord.MessageEmbed().setDescription('I have finished translating ' + guild.members.cache.filter(i => i.user.bot != true).size +
 												' player\'s nickname\'s into ' + languageCodes.find(i => i.language == query.toLowerCase()).name));
 										} else {
 											channel.send(new Discord.MessageEmbed().setDescription('Unfortunately, my translation capabilities do not support ' + query + ' as a language.'));
