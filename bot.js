@@ -740,8 +740,8 @@ bot.on('message', msg => {
 													//Check if the bot has perms
 													if (guild.members.cache.find(i => i.id == bot.user.id).roles.highest.comparePositionTo(value.roles.highest) > 0) {
 														//Change name
-														value.setNickname(translation.translatedText, 'Translating name from ' + currentUserNickName + ' to ' +
-															translation.translatedText + ' in ' + languageCodes.find(i => i.language == query.toLowerCase()).name);
+														value.setNickname(translation.translatedText.substring(0, 33), 'Translating name from ' + currentUserNickName + ' to ' +
+															translation.translatedText.substring(0, 33) + ' in ' + languageCodes.find(i => i.language == query.toLowerCase()).name);
 													} else {
 														channel.send(new Discord.MessageEmbed().setDescription('I had a problem translating ' + value.toString() + ' nickname'));
 													}
