@@ -239,6 +239,7 @@ bot.on('message', msg => {
 								//Send embedded message
 								return channel.send(embeddedHelpMessage);
 							});
+							break;
 						case 'prykie':
 							var embeddedHelpMessage = new Discord.MessageEmbed()
 								.setColor('#0099ff')
