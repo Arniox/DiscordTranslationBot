@@ -60,6 +60,10 @@ module.exports = {
 
         return number.toString() + stuff;
     },
+    //Randomly grab a number of elements from an array
+    getRandomFromArray: function (arr, n) {
+        return arr.sort(() => Math.random() - Math.random()).splice(0, n);
+    }
 }
 
 //Pad a number and return as string
