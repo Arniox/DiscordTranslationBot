@@ -63,6 +63,20 @@ module.exports = {
     //Randomly grab a number of elements from an array
     getRandomFromArray: function (arr, n) {
         return arr.sort(() => Math.random() - Math.random()).slice(0, n);
+    },
+    //Randomly grab a number of elements from
+    getRandomFromColl: function (arr, n) {
+        var result = new Array(n),
+            len = arr.size,
+            taken = new Array(len);
+        if (n > len)
+            return arr;
+        while (n--) {
+            var x = Math.floor(Math.random() * len);
+            result[n] = arr[x in taken ? taken[x] : x];
+            taken[x] = --len in taken ? taken[len] : len;
+        }
+        return result;
     }
 }
 
