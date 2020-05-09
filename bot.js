@@ -44,63 +44,316 @@ bot.on('message', msg => {
 				return channel.send(new Discord.MessageEmbed().setDescription('Right back at you! Yes, I am alive. Current uptime is: ' +
 					UpTime() + '. Current Prefix is: ' + settings.prefix));
 			case 'help': //Help command
-				var embeddedHelpMessage = new Discord.MessageEmbed()
-					.setColor('#0099ff')
-					.setAuthor(bot.user.username, bot.user.avatarURL())
-					.setDescription('You asked for help? Well here it is. The following commands can be used. You can use *' + settings.prefix + 'help [command]* to view more settings on the command')
-					.addFields({
-						name: settings.prefix + 'ping',
-						value: 'Ping allows you to see the current uptime and current prefix of the server and double checks that the bot is running.'
-					}, {
-						name: settings.prefix + 'prefix',
-						value: 'Prefix allows you to view and edit the prefix of the server granted you have management permissions.'
-					}, {
-						name: settings.prefix + 'when',
-						value: 'Will post a randomly chosen sarcastic quote.'
-					}, {
-						name: settings.prefix + 'muterole',
-						value: 'Muterole allows you to add, remove (all or some) roles to a list that is ignored by the mute command, granted you have management permissions.'
-					}, {
-						name: settings.prefix + 'muteroles',
-						value: 'Lists out the current mute ignored roles.'
-					}, {
-						name: settings.prefix + 'mute',
-						value: 'Mute a voice channel but ignore the mute ignored roles, granted you have mute members permissions.'
-					}, {
-						name: settings.prefix + 'unmute',
-						value: 'Unmute a voice channel completely. This command wont ignore mute ignored roles. So everyone in the voice channel will be server unmuted, granted you have mute members permissions.'
-					}, {
-						name: settings.prefix + 'listen',
-						value: '[WIP] Currently this command wont do much. It\'ll simply connect the bot to your current voice channel.'
-					}, {
-						name: settings.prefix + 'leave',
-						value: '[WIP] Currently this command wont do much. It\'ll simply disconnect the bot from it\'s current voice channel.'
-					}, {
-						name: settings.prefix + 'translate',
-						value: 'List, add or remove translation ignored patterns to the database for your server. Adding or removing needs the management permissions.'
-					}, {
-						name: settings.prefix + 'prykie',
-						value: 'Used on it\'s own, it will post a random prykie quote. Otherwise, you can list, add or remove prykie quotes. Removing quotes needs the management permissions.'
-					}, {
-						name: settings.prefix + 'move',
-						value: 'Use a selector to move players from voice channels to voice channels all at once. Easy way to move players around, granted you have move member permissions.'
-					}, {
-						name: 'f10',
-						value: 'Instantly ban, unban and reinvite Prykie from the server, granted you have kick member permissions.',
-						inline: true
-					}, {
-						name: 'f10 [@mention @mention @mention ....]',
-						value: 'Instantly ban, unban and reinvite any mentioned players, granted you have administrator permissions.',
-						inline: true
-					}, {
-						name: 'Other Features',
-						value: bot.user.username + ' will automatically read all messages sent in any chat and detect message languages. If the bot has over 75% confidence that the language is not english, it will replace your message with an English translated version.'
-					})
-					.setTimestamp()
-					.setFooter('Thanks, and have a good day');
+				msg.delete({ timeout: 0 }); //Delete message
+				if (args.length != 0) {
+					var command = args[0].toLowerCase();
+					args = args.splice(1);
 
-				//Send embedded message
-				return channel.send(embeddedHelpMessage);
+					//Check which command you want help with
+					switch (command) {
+						case 'ping':
+							var embeddedHelpMessage = new Discord.MessageEmbed()
+								.setColor('#0099ff')
+								.setAuthor(bot.user.username, bot.user.avatarURL())
+								.setDescription('The ping command is very simple. It prints out the bot uptime and current server prefix. Just use ' + settings.prefix + 'ping to run this command.')
+								.setTimestamp()
+								.setFooter('Thanks, and have a good day');
+
+							//Send embedded message
+							return channel.send(embeddedHelpMessage);
+						case 'prefix':
+							var embeddedHelpMessage = new Discord.MessageEmbed()
+								.setColor('#0099ff')
+								.setAuthor(bot.user.username, bot.user.avatarURL())
+								.setDescription('You can use prefix by running ' + settings.prefix + 'prefix to list the current prefix, or ' + settings.prefix + 'prefix change [new prefix] to change the prefix.')
+								.addFields(
+									{ name: 'Required Permissions: ', value: 'Manage Server' },
+									{ name: 'Example: ', value: settings.prefix + 'prefix\n' + settings.prefix + 'prefix change =' }
+								)
+								.setTimestamp()
+								.setFooter('Thanks, and have a good day');
+
+							//Send embedded message
+							return channel.send(embeddedHelpMessage);
+						case 'when':
+							var embeddedHelpMessage = new Discord.MessageEmbed()
+								.setColor('#0099ff')
+								.setAuthor(bot.user.username, bot.user.avatarURL())
+								.setDescription('The when command is very simple. It just prints out a random sarcastic comment. Just use ' + settings.prefix + 'when to run this command.')
+								.setTimestamp()
+								.setFooter('Thanks, and have a good day');
+
+							//Send embedded message
+							return channel.send(embeddedHelpMessage);
+						case 'muterole':
+							var embeddedHelpMessage = new Discord.MessageEmbed()
+								.setColor('#0099ff')
+								.setAuthor(bot.user.username, bot.user.avatarURL())
+								.setDescription('The muterole command allows you to add or remove mute ignored roles to the server database.')
+								.addFields(
+									{ name: 'Required Permissions: ', value: 'Manage Server' },
+									{
+										name: 'Command Patterns: ',
+										value: settings.prefix + 'muterole [add/remove] [@role]\n' + settings.prefix + 'muterole [remove] {optional: all}'
+									},
+									{
+										name: 'Examples: ',
+										value: settings.prefix + 'muterole add ' + guild.roles.cache.random().toString() + '\n' +
+											settings.prefix + 'muterole remove ' + guild.roles.cache.random().toString() + '\n' +
+											settings.prefix + 'muterole remove all'
+									}
+								)
+								.setTimestamp()
+								.setFooter('Thanks, and have a good day');
+
+							//Send embedded message
+							return channel.send(embeddedHelpMessage);
+						case 'muteroles':
+							var embeddedHelpMessage = new Discord.MessageEmbed()
+								.setColor('#0099ff')
+								.setAuthor(bot.user.username, bot.user.avatarURL())
+								.setDescription('The muteroles command is very simple. It lists out current mute ignored roles. Just use ' + settings.prefix + 'muteroles to run this command.')
+								.setTimestamp()
+								.setFooter('Thanks, and have a good day');
+
+							//Send embedded message
+							return channel.send(embeddedHelpMessage);
+						case 'mute':
+							var embeddedHelpMessage = new Discord.MessageEmbed()
+								.setColor('#0099ff')
+								.setAuthor(bot.user.username, bot.user.avatarURL())
+								.setDescription('The mute command allows you to server mute everyone in a selected voice channel barring mute ignored roles. This works fine with spaces in the name and is case insensitive.')
+								.addFields(
+									{ name: 'Command Patterns: ', value: settings.prefix + 'mute [voice channel name]' },
+									{
+										name: 'Examples: ',
+										value: settings.prefix + 'mute ' + guild.channels.cache.filter(i => i.type == 'voice').random().name + '\n' +
+											settings.prefix + 'mute ' + guild.channels.cache.filter(i => i.type == 'voice').random().name
+									}
+								)
+								.setTimestamp()
+								.setFooter('Thanks, and have a good day');
+
+							//Send embedded message
+							return channel.send(embeddedHelpMessage);
+						case 'unmute':
+							var embeddedHelpMessage = new Discord.MessageEmbed()
+								.setColor('#0099ff')
+								.setAuthor(bot.user.username, bot.user.avatarURL())
+								.setDescription('The unmute command allows you to server unmute everyone in a selected voice channel barring mute ignored roles. This works fine with spaces in the name and is case insensitive.')
+								.addFields(
+									{ name: 'Command Patterns: ', value: settings.prefix + 'unmute [voice channel name]' },
+									{
+										name: 'Examples: ',
+										value: settings.prefix + 'unmute ' + guild.channels.cache.filter(i => i.type == 'voice').random().name + '\n' +
+											settings.prefix + 'unmute ' + guild.channels.cache.filter(i => i.type == 'voice').random().name
+									}
+								)
+								.setTimestamp()
+								.setFooter('Thanks, and have a good day');
+
+							//Send embedded message
+							return channel.send(embeddedHelpMessage);
+						case 'listen':
+							var embeddedHelpMessage = new Discord.MessageEmbed()
+								.setColor('#0099ff')
+								.setAuthor(bot.user.username, bot.user.avatarURL())
+								.setDescription('[WIP] This command is a work in progress. Currently it\'s a bit buggy and can cause bot crashes. It will simply connect the bot to the current voice channel you\'re in.')
+								.addFields(
+									{
+										name: 'Required: ',
+										value: 'You must be in a voice channel for this to work.' +
+											' If the bot is already listening to a channel, it wont move to a new one. You must ' +
+											settings.prefix + 'leave first and then ' + settings.prefix + 'listen for it to listen to your current voice channel.'
+									}
+								)
+								.setTimestamp()
+								.setFooter('Thanks, and have a good day');
+
+							//Send embedded message
+							return channel.send(embeddedHelpMessage);
+						case 'leave':
+							var embeddedHelpMessage = new Discord.MessageEmbed()
+								.setColor('#0099ff')
+								.setAuthor(bot.user.username, bot.user.avatarURL())
+								.setDescription('[WIP] This command is a work in progress. Currently it\'s a bit buggy and can cause bot crashes. It will simply disconnect the bot from it\'s current voice channel.')
+								.addFields(
+									{ name: 'Required: ', value: 'You must be in the same voice channel as the bot for this to work.' }
+								)
+								.setTimestamp()
+								.setFooter('Thanks, and have a good day');
+
+							//Send embedded message
+							return channel.send(embeddedHelpMessage);
+						case 'translate':
+							var embeddedHelpMessage = new Discord.MessageEmbed()
+								.setColor('#0099ff')
+								.setAuthor(bot.user.username, bot.user.avatarURL())
+								.setDescription('[WIP] Currently the command works, but the Regex patterns don\'t do anything. This command allows you to list, add, and remove Regex patterns for the translation to ignore.')
+								.addFields(
+									{ name: 'Required Permissions: ', value: 'Manage Server (for adding and removing. Everyone else can use list the current patterns).' },
+									{
+										name: 'Command Patterns: ',
+										value: settings.prefix + 'translate [add/remove] [pattern]\n' +
+											settings.prefix + 'translate -patterns-'
+									},
+									{
+										name: 'Examples: ',
+										value: settings.prefix + 'translate add /(<:[A-Za-z]+:\d+>)/gi' + '\n' +
+											settings.prefix + 'translate remove /(<:[A-Za-z]+:\d+>)/gi' + '\n' +
+											settings.prefix + 'translate patterns'
+									}
+								)
+								.setTimestamp()
+								.setFooter('Thanks, and have a good day');
+
+							//Send embedded message
+							return channel.send(embeddedHelpMessage);
+						case 'prykie':
+							var embeddedHelpMessage = new Discord.MessageEmbed()
+								.setColor('#0099ff')
+								.setAuthor(bot.user.username, bot.user.avatarURL())
+								.setDescription('The prykie command allows you to list, add, remove or print out a random prykie quote. Removing a quote needs server management permissions.')
+								.addFields(
+									{ name: 'Required Permissions: ', value: 'Just for removing quotes; Manage Server is needed.' },
+									{
+										name: 'Command Patterns: ',
+										value: settings.prefix + 'prykie\n' +
+											settings.prefix + 'prykie [add/remove] [quote]\n' +
+											settings.prefix + 'prykie -list-'
+									},
+									{
+										name: 'Examples: ',
+										value: settings.prefix + 'prykie\n' +
+											settings.prefix + 'prykie add I love massive black cocks!' +
+											settings.prefix + 'prykie remove I love massive black cocks!' +
+											settings.prefix + 'prykie list'
+									}
+								)
+								.setTimestamp()
+								.setFooter('Thanks, and have a good day');
+
+							//Send embedded message
+							return channel.send(embeddedHelpMessage);
+						case 'move':
+							var embeddedHelpMessage = new Discord.MessageEmbed()
+								.setColor('#0099ff')
+								.setAuthor(bot.user.username, bot.user.avatarURL())
+								.setDescription('Use selectors to move people in voice channels to other voice channels. This command has a lot of different options. It works find with spaces in the name and is case insensitive.')
+								.addFields(
+									{ name: 'Required Permissions: ', value: 'Move Members' },
+									{
+										name: 'Command Patterns: ',
+										value: settings.prefix + 'move [Selector] [Split/Direct command prefix] [Channel(s)]\n' +
+											settings.prefix + 'move [Selector] - [Channel]\n' +
+											settings.prefix + 'move [Selector] = [Channel] & [Channel] & [Channel]'
+									},
+									{
+										name: 'Examples: ',
+										value: settings.prefix + 'move ' + guild.channels.cache.filter(i => i.type == 'voice').random().name + ' - ' + guild.channels.cache.filter(i => i.type == 'voice').random().name +
+											' (Move everyone in one voice channel to another voice channel)\n' +
+											settings.prefix + 'move * - ' + guild.channels.cache.filter(i => i.type == 'voice').random().name + ' (Move everyone currently in any voice channel to a specific voice channel)\n' +
+											settings.prefix + 'move 5 > ' + guild.channels.cache.filter(i => i.type == 'voice').random().name + ' - ' + guild.channels.cache.filter(i => i.type == 'voice').random().name +
+											' (Move 5 randomly picked players from one voice channel to another voice channel)\n' +
+											settings.prefix + 'move ' + guild.channels.cache.filter(i => i.type == 'voice').random().name + ' = ' + guild.channels.cache.filter(i => i.type == 'voice').random().name + ' & ' +
+											guild.channels.cache.filter(i => i.type == 'voice').random().name + ' (Equally split everyone in one voice channel into any number of voice channels seperated by &)\n' +
+											settings.prefix + 'move * = ' + guild.channels.cache.filter(i => i.type == 'voice').random().name + ' & ' + guild.channels.cache.filter(i => i.type == 'voice').random().name +
+											' (Split everyone currently in any voice channel into any number of voice channels seperated by &)\n' +
+											settings.prefix + 'move 5 > ' + guild.channels.cache.filter(i => i.type == 'voice').random().name + ' = ' + guild.channels.cache.filter(i => i.type == 'voice').random().name + ' & ' +
+											guild.channels.cache.filter(i => i.type == 'voice').random().name + ' (Equally split 5 randomly picked players from one voice channel into any number of voice channels seperated by &).'
+									}
+								)
+								.setTimestamp()
+								.setFooter('Thanks, and have a good day');
+
+							//Send embedded message
+							return channel.send(embeddedHelpMessage);
+						case 'f10':
+							var embeddedHelpMessage = new Discord.MessageEmbed()
+								.setColor('#0099ff')
+								.setAuthor(bot.user.username, bot.user.avatarURL())
+								.setDescription('This command is a meme. It will instantly ban Prykie and only Prykie. After banning, it will instantly unban and then send a reinvite to the server in a dm.')
+								.setDescription(
+									{ name: 'Required Permissions: ', value: 'Kick Members (for banning other players, you will need Administrative permissions' },
+									{ name: 'Info: ', value: 'This is the only command that does not require a prefix. It can just be run with f10 by itself in chat.' },
+									{
+										name: 'Command Patterns: ',
+										value: 'f10\nf10 [@mention @mention @mention]'
+									},
+									{
+										name: 'Examples: ',
+										value: 'f10\nf10 ' + guild.memebers.cache.random().toString() + guild.members.cache.random().toString()
+									}
+								)
+								.setTimestamp()
+								.setFooter('Thanks, and have a good day');
+
+							//Send embedded message
+							return channel.send(embeddedHelpMessage);
+						default:
+							return channel.send(new Discord.MessageEmbed().setDescription('Sorry, ' + command + ' is not a command I can help you with.'));
+					}
+
+				} else {
+					//All help
+					var embeddedHelpMessage = new Discord.MessageEmbed()
+						.setColor('#0099ff')
+						.setAuthor(bot.user.username, bot.user.avatarURL())
+						.setDescription('You asked for help? Well here it is. The following commands can be used. You can use *' + settings.prefix + 'help [command]* to view more settings on the command')
+						.addFields({
+							name: settings.prefix + 'ping',
+							value: 'Ping allows you to see the current uptime and current prefix of the server and double checks that the bot is running.'
+						}, {
+							name: settings.prefix + 'prefix',
+							value: 'Prefix allows you to view and edit the prefix of the server granted you have management permissions.'
+						}, {
+							name: settings.prefix + 'when',
+							value: 'Will post a randomly chosen sarcastic quote.'
+						}, {
+							name: settings.prefix + 'muterole',
+							value: 'Muterole allows you to add, remove (all or some) roles to a list that is ignored by the mute command, granted you have management permissions.'
+						}, {
+							name: settings.prefix + 'muteroles',
+							value: 'Lists out the current mute ignored roles.'
+						}, {
+							name: settings.prefix + 'mute',
+							value: 'Mute a voice channel but ignore the mute ignored roles, granted you have mute members permissions.'
+						}, {
+							name: settings.prefix + 'unmute',
+							value: 'Unmute a voice channel completely. This command wont ignore mute ignored roles. So everyone in the voice channel will be server unmuted, granted you have mute members permissions.'
+						}, {
+							name: settings.prefix + 'listen',
+							value: '[WIP] Currently this command wont do much. It\'ll simply connect the bot to your current voice channel.'
+						}, {
+							name: settings.prefix + 'leave',
+							value: '[WIP] Currently this command wont do much. It\'ll simply disconnect the bot from it\'s current voice channel.'
+						}, {
+							name: settings.prefix + 'translate',
+							value: 'List, add or remove translation ignored patterns to the database for your server. Adding or removing needs the management permissions.'
+						}, {
+							name: settings.prefix + 'prykie',
+							value: 'Used on it\'s own, it will post a random prykie quote. Otherwise, you can list, add or remove prykie quotes. Removing quotes needs the management permissions.'
+						}, {
+							name: settings.prefix + 'move',
+							value: 'Use a selector to move players from voice channels to voice channels all at once. Easy way to move players around, granted you have move member permissions.'
+						}, {
+							name: 'f10',
+							value: 'Instantly ban, unban and reinvite Prykie from the server, granted you have kick member permissions.',
+							inline: true
+						}, {
+							name: 'f10 [@mention @mention @mention ....]',
+							value: 'Instantly ban, unban and reinvite any mentioned players, granted you have administrator permissions.',
+							inline: true
+						}, {
+							name: 'Other Features',
+							value: bot.user.username + ' will automatically read all messages sent in any chat and detect message languages. If the bot has over 75% confidence that the language is not english, it will replace your message with an English translated version.'
+						})
+						.setTimestamp()
+						.setFooter('Thanks, and have a good day');
+
+					//Send embedded message
+					return channel.send(embeddedHelpMessage);
+				}
 			case 'prefix': //Prefix options
 				msg.delete({ timeout: 0 }); //Delete message
 				if (args.length != 0) {
