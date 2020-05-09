@@ -624,7 +624,7 @@ bot.on('message', msg => {
 															return channel.send(new Discord.MessageEmbed().setDescription('Could not find a voice channel with the name ' + e));
 														}
 													});
-													return channel.send(new Discord.MessageEmbed().setDescription('Split `' + playersFoundInVoice.length + ' / ' + numberOfPlayers + '` players out into ' + channelSelectors.join(', and ')));
+													return channel.send(new Discord.MessageEmbed().setDescription('Split `' + countOfMovedPlayers + ' / ' + numberOfPlayers + '` players out into ' + channelSelectors.join(', and ')));
 												} else {
 													return channel.send(new Discord.MessageEmbed().setDescription('You didn\'t select any voice channels to split ' + playersFoundInVoice.length + ' players into.'));
 												}
@@ -674,7 +674,7 @@ bot.on('message', msg => {
 													return channel.send(new Discord.MessageEmbed().setDescription('Could not find a voice channel with the name ' + e));
 												}
 											});
-											return channel.send(new Discord.MessageEmbed().setDescription('Split ' + playersFoundAll.size + ' players out into ' + channelSelectors.join(', and ')));
+											return channel.send(new Discord.MessageEmbed().setDescription('Split ' + countOfMovedPlayers + ' players out into ' + channelSelectors.join(', and ')));
 										} else {
 											return channel.send(new Discord.MessageEmbed().setDescription('You didn\'t select any voice channels to split ' + playersFoundAll.size + ' players into.'));
 										}
@@ -715,7 +715,7 @@ bot.on('message', msg => {
 														return channel.send(new Discord.MessageEmbed().setDescription('Could not find a voice channel with the name ' + e));
 													}
 												});
-												return channel.send(new Discord.MessageEmbed().setDescription('Split ' + playersFoundInVoice.size + ' players out into ' + channelSelectors.join(', and ')));
+												return channel.send(new Discord.MessageEmbed().setDescription('Split ' + countOfMovedPlayers + ' players out into ' + channelSelectors.join(', and ')));
 											} else {
 												return channel.send(new Discord.MessageEmbed().setDescription('You didn\'t select any voice channels to split ' + playersFoundInVoice.size + ' players into.'));
 											}
