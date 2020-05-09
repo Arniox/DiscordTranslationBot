@@ -484,7 +484,7 @@ bot.on('message', msg => {
 															e.voice.setChannel(voiceChannelTO)
 														});
 														//Message
-														return channel.send(new Discord.MessageEmbed().setDescription('Moved `' + playersFoundInVoice.length + ' / `' + numberOfPlayers + ' randomly selected players from ' + voiceChannelFROM.toString() + ' to ' + voiceChannelTO.toString()));
+														return channel.send(new Discord.MessageEmbed().setDescription('Moved `' + playersFoundInVoice.length + ' / ' + numberOfPlayers + '` randomly selected players from ' + voiceChannelFROM.toString() + ' to ' + voiceChannelTO.toString()));
 													} else {
 														return channel.send(new Discord.MessageEmbed().setDescription('Could not find a voice channel with the name ' + channelToSelector));
 													}
@@ -626,7 +626,7 @@ bot.on('message', msg => {
 															return channel.send(new Discord.MessageEmbed().setDescription('Could not find a voice channel with the name ' + e));
 														}
 													});
-													return channel.send(new Discord.MessageEmbed().setDescription('Split ' + playersFoundInVoice.length + ' players out into ' + channelSelectors.join(', ')));
+													return channel.send(new Discord.MessageEmbed().setDescription('Split `' + playersFoundInVoice.length + ' / ' + numberOfPlayers + '` players out into ' + channelSelectors.join(', ')));
 												} else {
 													return channel.send(new Discord.MessageEmbed().setDescription('You didn\'t select any voice channels to split ' + playersFoundInVoice.length + ' players into.'));
 												}
