@@ -447,15 +447,15 @@ bot.on('message', msg => {
 							var selector = args[0];
 							args = args.splice(1);
 
-							console.log(args);
-							console.log(selector);
-
 							//If complex selector
 							if (selector.split('>').length > 1) {
 								//Grab complex selector
 								var complexSelector = selector.split('>').map(i => i.trim());
 								var numberSelector = complexSelector[0];
 								complexSelector.splice(1);
+
+								console.log(complexSelector);
+								console.log(numberSelector);
 
 								//Check if numberSelector is actually a number
 								if (/^\d+$/.test(numberSelector)) {
