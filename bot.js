@@ -732,7 +732,7 @@ bot.on('message', msg => {
 											channel
 												.send(new Discord.MessageEmbed().setDescription('Done 0 / ' + guild.members.cache.filter(i => i.user.bot != true).size))
 												.then((sent) => {
-													var count = 0;
+													var count = 1;
 
 													//For all members in the guild
 													guild.members.cache.filter(i => i.user.bot != true).map((value, key) => {
