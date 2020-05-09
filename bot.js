@@ -211,37 +211,34 @@ bot.on('message', msg => {
 							return channel.send(embeddedHelpMessage);
 						case 'nick':
 							//Get all available language codes
-							var supportedLanguages = [];
 							googleTranslate.getSupportedLanguages('en', function (err, languageCodes) {
-								supportedLanguages = languageCodes;
+								var embeddedHelpMessage = new Discord.MessageEmbed()
+									.setColor('#0099ff')
+									.setAuthor(bot.user.username, bot.user.avatarURL())
+									.setDescription('Nick allows you to translate either you\'re own nickname into any supported language, or everyone\'s granted you have management permissions.')
+									.addFields(
+										{ name: 'Required Permissions: ', value: 'Manage Server (for translating eveyone\'s nickname).' },
+										{
+											name: 'Command Patterns: ',
+											value: settings.prefix + 'nick [me/all] [language code]'
+										},
+										{
+											name: 'Examples: ',
+											value: settings.prefix + 'nick me RU' + '\n\n' +
+												settings.prefix + 'nick me DE' + '\n\n' +
+												settings.prefix + 'nick all HE'
+										},
+										{
+											name: 'Available Language Codes: ',
+											value: languageCodes.map(i => i.language + ': ' + i.name).join(', ') + ''
+										}
+									)
+									.setTimestamp()
+									.setFooter('Thanks, and have a good day');
+
+								//Send embedded message
+								return channel.send(embeddedHelpMessage);
 							});
-
-							var embeddedHelpMessage = new Discord.MessageEmbed()
-								.setColor('#0099ff')
-								.setAuthor(bot.user.username, bot.user.avatarURL())
-								.setDescription('Nick allows you to translate either you\'re own nickname into any supported language, or everyone\'s granted you have management permissions.')
-								.addFields(
-									{ name: 'Required Permissions: ', value: 'Manage Server (for translating eveyone\'s nickname).' },
-									{
-										name: 'Command Patterns: ',
-										value: settings.prefix + 'nick [me/all] [language code]'
-									},
-									{
-										name: 'Examples: ',
-										value: settings.prefix + 'nick me RU' + '\n\n' +
-											settings.prefix + 'nick me DE' + '\n\n' +
-											settings.prefix + 'nick all HE'
-									},
-									{
-										name: 'Available Language Codes: ',
-										value: supportedLanguages.map(i => i.language + ': ' + i.name).join(', ')
-									}
-								)
-								.setTimestamp()
-								.setFooter('Thanks, and have a good day');
-
-							//Send embedded message
-							return channel.send(embeddedHelpMessage);
 						case 'prykie':
 							var embeddedHelpMessage = new Discord.MessageEmbed()
 								.setColor('#0099ff')
