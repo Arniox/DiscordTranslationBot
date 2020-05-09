@@ -770,22 +770,18 @@ bot.on('message', msg => {
 
 										//Translate name
 										googleTranslate.translate(currentUserNickName, query, function (err, translation) {
-											var error = false;
-
 											//Change name
 											member
 												.setNickname(translation.translatedText, 'Translating name from ' + currentUserNickName + ' to ' +
 													translation.translatedText + ' in ' + languageCodes.find(i => i.language == query.toLowerCase()).name)
+												.then(() => {
+													channel.send(new Discord.MessageEmbed().setDescription('I have translated your nickname from ' + currentUserNickName + ' to ' +
+														translation.translatedText + ' in ' + languageCodes.find(i => i.language == query.toLowerCase()).name));
+												})
 												.catch(error => {
-													error = true;
+													channel.send(new Discord.MessageEmbed().setDescription(error + ', I cannot translate the nickname of this person.'));
 												});
-											//Message
-											if (error) {
-												return channel.send(new Discord.MessageEmbed().setDescription(error + ', I cannot translate the nickname of this person.'));
-											} else {
-												return channel.send(new Discord.MessageEmbed().setDescription('I have translated your nickname from ' + currentUserNickName + ' to ' +
-													translation.translatedText + ' in ' + languageCodes.find(i => i.language == query.toLowerCase()).name));
-											}
+											return;
 										});
 									} else {
 										return channel.send(new Discord.MessageEmbed().setDescription('Unfortunately, my translation capabilities do not support ' + query + ' as a language.'));
