@@ -43,6 +43,64 @@ bot.on('message', msg => {
 				msg.delete({ timeout: 0 }); //Delete message
 				return channel.send(new Discord.MessageEmbed().setDescription('Right back at you! Yes, I am alive. Current uptime is: ' +
 					UpTime() + '. Current Prefix is: ' + settings.prefix));
+			case 'help': //Help command
+				var embeddedHelpMessage = new Discord.MessageEmbed()
+					.setColor('#0099ff')
+					.setAuthor(bot.user.username, bot.user.avatarURL())
+					.setDescription('You asked for help? Well here it is. The following commands can be used. You can use *' + settings.prefix + 'help [command]* to view more settings on the command')
+					.addFields({
+						name: settings.prefix + 'ping',
+						value: 'Ping allows you to see the current uptime and current prefix of the server and double checks that the bot is running.'
+					}, {
+						name: settings.prefix + 'prefix',
+						value: 'Prefix allows you to view and edit the prefix of the server granted you have management permissions.'
+					}, {
+						name: settings.prefix + 'when',
+						value: 'Will post a randomly chosen sarcastic quote.'
+					}, {
+						name: settings.prefix + 'muterole',
+						value: 'Muterole allows you to add, remove (all or some) roles to a list that is ignored by the mute command, granted you have management permissions.'
+					}, {
+						name: settings.prefix + 'muteroles',
+						value: 'Lists out the current mute ignored roles.'
+					}, {
+						name: settings.prefix + 'mute',
+						value: 'Mute a voice channel but ignore the mute ignored roles, granted you have mute members permissions.'
+					}, {
+						name: settings.prefix + 'unmute',
+						value: 'Unmute a voice channel completely. This command wont ignore mute ignored roles. So everyone in the voice channel will be server unmuted, granted you have mute members permissions.'
+					}, {
+						name: settings.prefix + 'listen',
+						value: '[WIP] Currently this command wont do much. It\'ll simply connect the bot to your current voice channel.'
+					}, {
+						name: settings.prefix + 'leave',
+						value: '[WIP] Currently this command wont do much. It\'ll simply disconnect the bot from it\'s current voice channel.'
+					}, {
+						name: settings.prefix + 'translate',
+						value: 'List, add or remove translation ignored patterns to the database for your server. Adding or removing needs the management permissions.'
+					}, {
+						name: settings.prefix + 'prykie',
+						value: 'Used on it\'s own, it will post a random prykie quote. Otherwise, you can list, add or remove prykie quotes. Removing quotes needs the management permissions.'
+					}, {
+						name: settings.prefix + 'move',
+						value: 'Use a selector to move players from voice channels to voice channels all at once. Easy way to move players around, granted you have move member permissions.'
+					}, {
+						name: 'f10',
+						value: 'Instantly ban, unban and reinvite Prykie from the server, granted you have kick member permissions.',
+						inline: true
+					}, {
+						name: 'f10 [@mention @mention @mention ....]',
+						value: 'Instantly ban, unban and reinvite any mentioned players, granted you have administrator permissions.',
+						inline: true
+					}, {
+						name: 'Other Features',
+						value: bot.user.username + ' will automatically read all messages sent in any chat and detect message languages. If the bot has over 75% confidence that the language is not english, it will replace your message with an English translated version.'
+					})
+					.setTimestamp()
+					.setFooter('Thanks, and have a good day');
+
+				//Send embedded message
+				return channel.send(embeddedHelpMessage);
 			case 'prefix': //Prefix options
 				msg.delete({ timeout: 0 }); //Delete message
 				if (args.length != 0) {
@@ -73,7 +131,6 @@ bot.on('message', msg => {
 							} else {
 								return channel.send(new Discord.MessageEmbed().setDescription('Sorry, you need to be a server manager/admin to change the server prefix.'));
 							}
-							break;
 						default: //Error on prefix command
 							return channel.send(new Discord.MessageEmbed().setDescription('What do you want to change sorry?'));
 					}
