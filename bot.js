@@ -751,7 +751,7 @@ bot.on('message', msg => {
 
 																//Edit message
 																if (count == guild.members.cache.filter(i => i.user.bot != true).size) {
-																	sent.edit(new Discord.MessageEmbed().setDescription(bot.emojis.get('708718733690011748') + 'Done ' + count + ' / ' + guild.members.cache.filter(i => i.user.bot != true).size))
+																	sent.edit(new Discord.MessageEmbed().setDescription('✅ Done ' + count + ' / ' + guild.members.cache.filter(i => i.user.bot != true).size))
 																} else {
 																	sent.edit(new Discord.MessageEmbed().setDescription('Done ' + count + ' / ' + guild.members.cache.filter(i => i.user.bot != true).size))
 																}
