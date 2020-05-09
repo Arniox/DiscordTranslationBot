@@ -449,14 +449,10 @@ bot.on('message', msg => {
 
 							//If complex selector
 							if (selector.split('>').length > 1) {
-								console.log(selector);
 								//Grab complex selector
 								var complexSelector = selector.split('>').map(i => i.trim());
 								var numberSelector = complexSelector[0];
-								complexSelector.splice(1);
-
-								console.log(complexSelector);
-								console.log(numberSelector);
+								complexSelector = complexSelector.splice(1);
 
 								//Check if numberSelector is actually a number
 								if (/^\d+$/.test(numberSelector)) {
@@ -465,7 +461,7 @@ bot.on('message', msg => {
 									if (complexSelector.length != 0) {
 										//Grab channel selector
 										var channelSelector = complexSelector[0];
-										complexSelector.splice(1);
+										complexSelector = complexSelector.splice(1);
 
 										//Channel name, find the voice channel
 										var voiceChannelFROM = guild.channels.cache.find(i => i.name.toLowerCase() == channelSelector.toLowerCase() && i.type == 'voice');
@@ -583,7 +579,7 @@ bot.on('message', msg => {
 								//Grab complex selector
 								var complexSelector = selector.split('>').map(i => i.trim());
 								var numberSelector = complexSelector[0];
-								complexSelector.splice(1);
+								complexSelector = complexSelector.splice(1);
 
 								//Check if numberSelector is actually a number
 								if (/^\d+$/.test(numberSelector)) {
@@ -592,7 +588,7 @@ bot.on('message', msg => {
 									if (complexSelector.length != 0) {
 										//Grab channel selector
 										var channelSelector = complexSelector[0];
-										complexSelector.splice(1);
+										complexSelector = complexSelector.splice(1);
 
 										//Channel name, find the voice channel
 										var voiceChannelFROM = guild.channels.cache.find(i => i.name.toLowerCase() == channelSelector.toLowerCase() && i.type == 'voice');
