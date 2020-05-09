@@ -324,7 +324,7 @@ bot.on('message', msg => {
 							//Send embedded message
 							return channel.send(embeddedHelpMessage);
 						default:
-							return channel.send(new Discord.MessageEmbed().setDescription('Sorry, ' + command + ' is not a command I can help you with.'));
+							return channel.send(new Discord.MessageEmbed().setDescription('Sorry, ' + command + ' is not a command I can help you with.').setColor('#b50909'));
 					}
 
 				} else {
@@ -413,18 +413,19 @@ bot.on('message', msg => {
 									fs.writeFileSync('./configure.json', JSON.stringify(settings));
 									bot.user.setActivity('the ' + settings.prefix + ' prefix', { type: 'WATCHING' });
 									//Message
-									return channel.send(new Discord.MessageEmbed().setDescription('Changed Prefix from: ' + previousPrefix + ' to: ' + settings.prefix));
+									return channel.send(new Discord.MessageEmbed().setDescription('Changed Prefix from: ' + previousPrefix +
+										' to: ' + settings.prefix).setColor('#09b50c'));
 								} else {
-									return channel.send(new Discord.MessageEmbed().setDescription('Sorry, I cannot change your prefix to nothing!'));
+									return channel.send(new Discord.MessageEmbed().setDescription('Sorry, I cannot change your prefix to nothing!').setColor('#b50909'));
 								}
 							} else {
-								return channel.send(new Discord.MessageEmbed().setDescription('Sorry, you need to be a server manager/admin to change the server prefix.'));
+								return channel.send(new Discord.MessageEmbed().setDescription('Sorry, you need to be a server manager/admin to change the server prefix.').setColor('#b50909'));
 							}
 						default: //Error on prefix command
-							return channel.send(new Discord.MessageEmbed().setDescription('What do you want to change sorry?'));
+							return channel.send(new Discord.MessageEmbed().setDescription('What do you want to change sorry?')).setColor('#b50909');
 					}
 				} else {
-					return channel.send(new Discord.MessageEmbed().setDescription('Current Bot Prefix is: ' + settings.prefix));
+					return channel.send(new Discord.MessageEmbed().setDescription('Current Bot Prefix is: ' + settings.prefix).setColor('#0099ff'));
 				}
 			case 'when': //When did I ask
 				msg.delete({ timeout: 0 }); //Delete message
@@ -446,17 +447,17 @@ bot.on('message', msg => {
 									//Save roles id
 									roles.map((value, key) => {
 										if (settings.muteroles.filter(e => e === key).length != 0) {
-											return channel.send(new Discord.MessageEmbed().setDescription(value.toString() + ' is *already* a mute ignored role.'));
+											return channel.send(new Discord.MessageEmbed().setDescription(value.toString() + ' is *already* a mute ignored role.').setColor('#b50909'));
 										} else {
 											settings.muteroles.push(key);
 											//Write to file
 											fs.writeFileSync('./configure.json', JSON.stringify(settings));
 											//Message
-											return channel.send(new Discord.MessageEmbed().setDescription('Added: ' + value.toString() + ' to mute ignored roles'));
+											return channel.send(new Discord.MessageEmbed().setDescription('Added: ' + value.toString() + ' to mute ignored roles').setColor('#09b50c'));
 										}
 									});
 								} else {
-									return channel.send(new Discord.MessageEmbed().setDescription('I did not detect any roles to add/remove...'));
+									return channel.send(new Discord.MessageEmbed().setDescription('I did not detect any roles to add/remove...').setColor('#b50909'));
 								}
 								break;
 							case 'remove':
@@ -464,13 +465,14 @@ bot.on('message', msg => {
 									//Save roles id
 									roles.map((value, key) => {
 										if (settings.muteroles.filter(e => e === key).length == 0) {
-											channel.send(new Discord.MessageEmbed().setDescription(value.toString() + ' is *not* a mute ignored role.'));
+											channel.send(new Discord.MessageEmbed().setDescription(value.toString() + ' is *not* a mute ignored role.').setColor('#b50909'));
 										} else {
 											settings.muteroles = settings.muteroles.filter(e => e !== key);
 											//Write to file
 											fs.writeFileSync('./configure.json', JSON.stringify(settings));
 											//Message
-											return channel.send(new Discord.MessageEmbed().setDescription('Removed: ' + value.toString() + ' from mute ignored roles'));
+											return channel.send(new Discord.MessageEmbed().setDescription('Removed: ' + value.toString() +
+												' from mute ignored roles').setColor('#09b50c'));
 										}
 									});
 								} else {
@@ -485,23 +487,23 @@ bot.on('message', msg => {
 												//Write to file
 												fs.writeFileSync('./configure.json', JSON.stringify(settings));
 												//Message
-												return channel.send(new Discord.MessageEmbed().setDescription('Removed all roles from mute ignored roles'));
+												return channel.send(new Discord.MessageEmbed().setDescription('Removed all roles from mute ignored roles').setColor('#09b50c'));
 											default:
-												return channel.send(new Discord.MessageEmbed().setDescription('I\'m afraid I don\'t understand the command...'));
+												return channel.send(new Discord.MessageEmbed().setDescription('I\'m afraid I don\'t understand the command...').setColor('#b50909'));
 										}
 									} else {
-										return channel.send(new Discord.MessageEmbed().setDescription('I did not detect a roles to add/remove...'));
+										return channel.send(new Discord.MessageEmbed().setDescription('I did not detect a roles to add/remove...').setColor('#b50909'));
 									}
 								}
 								break;
 							default:
-								return channel.send(new Discord.MessageEmbed().setDescription('Do you want to add a mute ignored role, or remove a mute ignored role?'));
+								return channel.send(new Discord.MessageEmbed().setDescription('Do you want to add a mute ignored role, or remove a mute ignored role?').setColor('#b50909'));
 						}
 					} else {
-						return channel.send(new Discord.MessageEmbed().setDescription('I am confused by this command?'));
+						return channel.send(new Discord.MessageEmbed().setDescription('I am confused by this command?').setColor('#b50909'));
 					}
 				} else {
-					return channel.send(new Discord.MessageEmbed().setDescription('Sorry, you cannot add or remove mute ignored roles. You need to be a server manager/admin to use these commands.'));
+					return channel.send(new Discord.MessageEmbed().setDescription('Sorry, you cannot add or remove mute ignored roles. You need to be a server manager/admin to use these commands.').setColor('#b50909'));
 				}
 				break;
 			case 'muteroles': //List out the mute ignored roles
@@ -510,7 +512,7 @@ bot.on('message', msg => {
 				settings.muteroles.forEach(e => {
 					output = output + guild.roles.cache.find(i => i.id = e).toString() + '\n';
 				});
-				return channel.send(new Discord.MessageEmbed().setDescription(settings.muteroles.length + ' mute ignored roles.\n' + output));
+				return channel.send(new Discord.MessageEmbed().setDescription(settings.muteroles.length + ' mute ignored roles.\n' + output).setColor('#0099ff'));
 			case 'mute': //mute channel and ignore mute roles
 				msg.delete({ timeout: 0 }); //Delete message
 				if (member.hasPermission('MUTE_MEMBERS')) {
@@ -529,15 +531,17 @@ bot.on('message', msg => {
 								value.voice.setMute(true);
 							});
 
-							return channel.send(new Discord.MessageEmbed().setDescription('Found ' + playersFoundInVoice.size + ' players in ' + channelToMute.toString() + '... muting now...'));
+							return channel.send(new Discord.MessageEmbed().setDescription('Found ' + playersFoundInVoice.size + ' players in ' +
+								channelToMute.toString() + '... muting now...')).setColor('#09b50c');
 						} else {
-							return channel.send(new Discord.MessageEmbed().setDescription('Could not find a voice channel with the name ' + voiceChannel));
+							return channel.send(new Discord.MessageEmbed().setDescription('Could not find a voice channel with the name ' +
+								voiceChannel).setColor('#b50909'));
 						}
 					} else {
-						return channel.send(new Discord.MessageEmbed().setDescription('You didn\'t select any voice channel to mute.'));
+						return channel.send(new Discord.MessageEmbed().setDescription('You didn\'t select any voice channel to mute.').setColor('#b50909'));
 					}
 				} else {
-					return channel.send(new Discord.MessageEmbed().setDescription('Sorry, you need muting permissions to run this command.'));
+					return channel.send(new Discord.MessageEmbed().setDescription('Sorry, you need muting permissions to run this command.').setColor('#b50909'));
 				}
 			case 'unmute': //Unmute everyone in a voice chat
 				msg.delete({ timeout: 0 }); //Delete message
@@ -557,15 +561,17 @@ bot.on('message', msg => {
 								value.voice.setMute(false);
 							});
 
-							return channel.send(new Discord.MessageEmbed().setDescription('Found ' + playersFoundInVoice.size + ' players in ' + channelToMute.toString() + '... unmuting now...'));
+							return channel.send(new Discord.MessageEmbed().setDescription('Found ' + playersFoundInVoice.size + ' players in ' +
+								channelToMute.toString() + '... unmuting now...').setColor('#09b50c'));
 						} else {
-							return channel.send(new Discord.MessageEmbed().setDescription('Could not find a voice channel with the name ' + voiceChannel));
+							return channel.send(new Discord.MessageEmbed().setDescription('Could not find a voice channel with the name ' +
+								voiceChannel).setColor('#b50909'));
 						}
 					} else {
-						return channel.send(new Discord.MessageEmbed().setDescription('You didn\'t select any voice channel to unmute.'));
+						return channel.send(new Discord.MessageEmbed().setDescription('You didn\'t select any voice channel to unmute.').setColor('#b50909'));
 					}
 				} else {
-					return channel.send(new Discord.MessageEmbed().setDescription('Sorry, you need muting permissions to run this command.'));
+					return channel.send(new Discord.MessageEmbed().setDescription('Sorry, you need muting permissions to run this command.').setColor('#b50909'));
 				}
 			case 'listen': //Join voice chat
 				//Grab member voice channel
@@ -574,14 +580,15 @@ bot.on('message', msg => {
 				//If you are not in a voice
 				if (!voiceChannel) {
 					msg.delete({ timeout: 0 }); //Delete message
-					return channel.send(new Discord.MessageEmbed().setDescription('Please join a voice channel first!'));
+					return channel.send(new Discord.MessageEmbed().setDescription('Please join a voice channel first!').setColor('#b50909'));
 				} else {
 					//Check how many users in channel
 					var membersInVoice = guild.members.cache.filter(i => i.voice.channelID == voiceChannel.id && i.user.bot != true);
 					//If there are no members in that voice channel
 					if (membersInVoice.size == 0) {
 						msg.delete({ timeout: 0 }); //Delete message
-						return channel.send(new Discord.MessageEmbed().setDescription('I have found no one in ' + voiceChannel.toString() + ' so I didn\'t join it.'));
+						return channel.send(new Discord.MessageEmbed().setDescription('I have found no one in ' +
+							voiceChannel.toString() + ' so I didn\'t join it.').setColor('#b50909'));
 					} else {
 						if (!botVoice) {
 							//Mute bot
@@ -597,17 +604,19 @@ bot.on('message', msg => {
 									//connection.play(audioStream, { type: 'opus' });
 								});
 
-								return channel.send(new Discord.MessageEmbed().setDescription('Now listening to ' + voiceChannel.toString()));
+								return channel.send(new Discord.MessageEmbed().setDescription('Now listening to ' +
+									voiceChannel.toString()).setColor('#09b50c'));
 							}).catch(error => {
-								return channel.send(new Discord.MessageEmbed().setDescription('For some reason, I have failed to join this channel. Please try again later or contact the bot developer'))
+								return channel.send(new Discord.MessageEmbed().setDescription('For some reason, I have failed to join this channel. Please try again later or contact the bot developer').setColor('#b50909'))
 							});
 						} else {
 							if (botVoice == voiceChannel) {
 								msg.delete({ timeout: 0 }); //Delete message
-								return channel.send(new Discord.MessageEmbed().setDescription('I am already listening to your channel. I can\'t be anywhere else!'));
+								return channel.send(new Discord.MessageEmbed().setDescription('I am already listening to your channel. I can\'t be anywhere else!').setColor('#b50909'));
 							} else {
 								msg.delete({ timeout: 0 }); //Delete message
-								return channel.send(new Discord.MessageEmbed().setDescription('I am currently busy listening to ' + botVoice.toString() + '. Ask me later on when I am no longer busy.'));
+								return channel.send(new Discord.MessageEmbed().setDescription('I am currently busy listening to ' +
+									botVoice.toString() + '. Ask me later on when I am no longer busy.').setColor('#b50909'));
 							}
 						}
 					}
@@ -622,16 +631,16 @@ bot.on('message', msg => {
 
 				//If bot is not in voice
 				if (!memberVoice) {
-					return channel.send(new Discord.MessageEmbed().setDescription('You can only execute this command if you are in a voice channel and share the same voice channel as the bot!'));
+					return channel.send(new Discord.MessageEmbed().setDescription('You can only execute this command if you are in a voice channel and share the same voice channel as the bot!').setColor('#b50909'));
 				} else {
 					if (!botVoice) {
-						return channel.send(new Discord.MessageEmbed().setDescription('I am not in a voice channel sorry.'));
+						return channel.send(new Discord.MessageEmbed().setDescription('I am not in a voice channel sorry.').setColor('#b50909'));
 					} else {
 						//If member and bot are not in the same voice
 						if (memberVoice !== botVoice) {
-							return channel.send(new Discord.MessageEmbed().setDescription('You can only execute this command if you share the same voice channel as the bot!'));
+							return channel.send(new Discord.MessageEmbed().setDescription('You can only execute this command if you share the same voice channel as the bot!').setColor('#b50909'));
 						} else {
-							channel.send(new Discord.MessageEmbed().setDescription('I have stopped listening to ' + botVoice.toString()));
+							channel.send(new Discord.MessageEmbed().setDescription('I have stopped listening to ' + botVoice.toString()).setColor('#09b50c'));
 							guild.members.cache.find(i => i.id == bot.user.id).voice.setMute(false);
 							return botVoice.leave();
 						}
@@ -659,12 +668,13 @@ bot.on('message', msg => {
 									//Write to file
 									fs.writeFileSync('./configure.json', JSON.stringify(settings));
 									//Message
-									return channel.send(new Discord.MessageEmbed().setDescription('Add new pattern to translation ignored patterns: ' + query));
+									return channel.send(new Discord.MessageEmbed().setDescription('Add new pattern to translation ignored patterns: ' +
+										query).setColor('#09b50c'));
 								} else {
-									return channel.send(new Discord.MessageEmbed().setDescription('I did not see any pattern to add sorry.'));
+									return channel.send(new Discord.MessageEmbed().setDescription('I did not see any pattern to add sorry.').setColor('#b50909'));
 								}
 							} else {
-								return channel.send(new Discord.MessageEmbed().setDescription('Sorry, you need to be a server manager/admin to add or remove translation ignore patterns.'));
+								return channel.send(new Discord.MessageEmbed().setDescription('Sorry, you need to be a server manager/admin to add or remove translation ignore patterns.').setColor('#b50909'));
 							}
 						case 'remove': //Remove specific pattern
 							//Check if has perms
@@ -682,27 +692,29 @@ bot.on('message', msg => {
 										//Write to file
 										fs.writeFileSync('./configure.json', JSON.stringify(settings));
 										//Message
-										return channel.send(new Discord.MessageEmbed().setDescription('Removed ' + query + ' from the translation ignored patterns.'));
+										return channel.send(new Discord.MessageEmbed().setDescription('Removed ' + query +
+											' from the translation ignored patterns.').setColor('#09b50c'));
 									} else {
-										return channel.send(new Discord.MessageEmbed().setDescription(query + ' already doesn\'t exist in the database.'));
+										return channel.send(new Discord.MessageEmbed().setDescription(query + ' already doesn\'t exist in the database.').setColor('#b50909'));
 									}
 								} else {
-									return channel.send(new Discord.MessageEmbed().setDescription('I did not see any pattern to remove sorry.'));
+									return channel.send(new Discord.MessageEmbed().setDescription('I did not see any pattern to remove sorry.').setColor('#b50909'));
 								}
 							} else {
-								return channel.send(new Discord.MessageEmbed().setDescription('Sorry, you need to be a server manager/admin to add or remove translation ignore patterns.'));
+								return channel.send(new Discord.MessageEmbed().setDescription('Sorry, you need to be a server manager/admin to add or remove translation ignore patterns.').setColor('#b50909'));
 							}
 						case 'patterns': //List out current patterns
 							var output = "";
 							settings["translate-ignored-patterns"].forEach(e => {
 								output = output + '`' + e.toString() + '`\n';
 							});
-							return channel.send(new Discord.MessageEmbed().setDescription(settings["translate-ignored-patterns"].length + ' translation ignored patterns.\n' + output));
+							return channel.send(new Discord.MessageEmbed().setDescription(settings["translate-ignored-patterns"].length +
+								' translation ignored patterns.\n' + output).setColor('#0099ff'));
 						default:
-							return channel.send(new Discord.MessageEmbed().setDescription('Did you want to add or remove a translation pattern?'));
+							return channel.send(new Discord.MessageEmbed().setDescription('Did you want to add or remove a translation pattern?').setColor('#b50909'));
 					}
 				} else {
-					return channel.send(new Discord.MessageEmbed().setDescription('What are you trying to do?'));
+					return channel.send(new Discord.MessageEmbed().setDescription('What are you trying to do?').setColor('#b50909'));
 				}
 			case 'nick':
 				msg.delete({ timeout: 0 }); //Delete the message
@@ -728,9 +740,9 @@ bot.on('message', msg => {
 											//Message
 											channel.send(new Discord.MessageEmbed().setDescription('Translating ' + guild.members.cache.filter(i => i.user.bot != true).size +
 												' members nickname\'s into ' + languageCodes.find(i => i.language == query.toLowerCase()).name + '...\n This may take up to ' +
-												guild.members.cache.filter(i => i.user.bot != true).size + ' seconds on a good day...'));
+												guild.members.cache.filter(i => i.user.bot != true).size + ' seconds on a good day...').setColor('#0099ff'));
 											channel
-												.send(new Discord.MessageEmbed().setDescription('Done 0 / ' + guild.members.cache.filter(i => i.user.bot != true).size))
+												.send(new Discord.MessageEmbed().setDescription('Done 0 / ' + guild.members.cache.filter(i => i.user.bot != true).size).setColor('#FFCC00'))
 												.then((sent) => {
 													var count = 0;
 
@@ -751,26 +763,30 @@ bot.on('message', msg => {
 
 																//Edit message
 																if (count == guild.members.cache.filter(i => i.user.bot != true).size) {
-																	sent.edit(new Discord.MessageEmbed().setDescription('✅ Done ' + count + ' / ' + guild.members.cache.filter(i => i.user.bot != true).size))
+																	sent.edit(new Discord.MessageEmbed().setDescription('✅ Done ' + count + ' / ' +
+																		guild.members.cache.filter(i => i.user.bot != true).size).setColor('#09b50c'))
 																} else {
-																	sent.edit(new Discord.MessageEmbed().setDescription('Done ' + count + ' / ' + guild.members.cache.filter(i => i.user.bot != true).size))
+																	sent.edit(new Discord.MessageEmbed().setDescription('Done ' + count + ' / ' +
+																		guild.members.cache.filter(i => i.user.bot != true).size).setColor('#FFCC00'))
 																}
 															} else {
-																channel.send(new Discord.MessageEmbed().setDescription('I had a problem translating ' + value.toString() + ' nickname'));
+																channel.send(new Discord.MessageEmbed().setDescription('I had a problem translating ' + value.toString() +
+																	' nickname').setColor('#b50909'));
 															}
 														});
 													});
 												});
 										} else {
-											channel.send(new Discord.MessageEmbed().setDescription('Unfortunately, my translation capabilities do not support ' + query + ' as a language.'));
+											channel.send(new Discord.MessageEmbed().setDescription('Unfortunately, my translation capabilities do not support ' + query +
+												' as a language.').setColor('#b50909'));
 										}
 									});
 									return;
 								} else {
-									return channel.send(new Discord.MessageEmbed().setDescription('Sorry, what language code did you want to use to translate everyone\'s name to?'))
+									return channel.send(new Discord.MessageEmbed().setDescription('Sorry, what language code did you want to use to translate everyone\'s name to?').setColor('#b50909'))
 								}
 							} else {
-								return channel.send(new Discord.MessageEmbed().setDescription('Sorry, you need management perms to run this command.'));
+								return channel.send(new Discord.MessageEmbed().setDescription('Sorry, you need management perms to run this command.').setColor('#b50909'));
 							}
 						case 'me':
 							var query = args[0];
@@ -792,26 +808,28 @@ bot.on('message', msg => {
 													translation.translatedText.substring(0, 32) + ' in ' + languageCodes.find(i => i.language == query.toLowerCase()).name)
 												.then(() => {
 													channel.send(new Discord.MessageEmbed().setDescription('I have translated your nickname from ' + currentUserNickName + ' to ' +
-														translation.translatedText + ' in ' + languageCodes.find(i => i.language == query.toLowerCase()).name));
+														translation.translatedText + ' in ' + languageCodes.find(i => i.language == query.toLowerCase()).name).setColor('#09b50c'));
 												})
 												.catch(error => {
-													channel.send(new Discord.MessageEmbed().setDescription(error.toString().split(':')[1] + ', I cannot translate your nickname ' + member.toString() + '.'));
+													channel.send(new Discord.MessageEmbed().setDescription(error.toString().split(':')[1] + ', I cannot translate your nickname ' +
+														member.toString() + '.').setColor('#b50909'));
 												});
 											return;
 										});
 									} else {
-										return channel.send(new Discord.MessageEmbed().setDescription('Unfortunately, my translation capabilities do not support ' + query + ' as a language.'));
+										return channel.send(new Discord.MessageEmbed().setDescription('Unfortunately, my translation capabilities do not support ' +
+											query + ' as a language.').setColor('#b50909'));
 									}
 								});
 							} else {
-								return channel.send(new Discord.MessageEmbed().setDescription('Sorry, what language code did you want to use to translate your name to?'));
+								return channel.send(new Discord.MessageEmbed().setDescription('Sorry, what language code did you want to use to translate your name to?').setColor('#b50909'));
 							}
 							break;
 						default:
-							return channel.send(new Discord.MessageEmbed().setDescription('Sorry, did you want to change your own nickname or everyone?'));
+							return channel.send(new Discord.MessageEmbed().setDescription('Sorry, did you want to change your own nickname or everyone?').setColor('#b50909'));
 					}
 				} else {
-					return channel.send(new Discord.MessageEmbed().setDescription('Sorry, what option did you want?'));
+					return channel.send(new Discord.MessageEmbed().setDescription('Sorry, what option did you want?').setColor('#b50909'));
 				}
 				break;
 			case 'prykie': //Prykie commands
@@ -837,12 +855,13 @@ bot.on('message', msg => {
 									//Write to file
 									fs.writeFileSync('./data-to-use.json', JSON.stringify(dataToUse));
 									//Message
-									return channel.send(new Discord.MessageEmbed().setDescription('Added ' + query + ' to the data base.'));
+									return channel.send(new Discord.MessageEmbed().setDescription('Added ' + query + ' to the data base.').setColor('#09b50c'));
 								} else {
-									return channel.send(new Discord.MessageEmbed().setDescription(query + ' already exists in the data base. You can use `' + settings.prefix + 'prykie list` to view the current list of Prykie quotes.'));
+									return channel.send(new Discord.MessageEmbed().setDescription(query + ' already exists in the data base. You can use `' + settings.prefix +
+										'prykie list` to view the current list of Prykie quotes.').setColor('#b50909'));
 								}
 							} else {
-								return channel.send(new Discord.MessageEmbed().setDescription('You didn\'t write any Prykie quote to add.'));
+								return channel.send(new Discord.MessageEmbed().setDescription('You didn\'t write any Prykie quote to add.').setColor('#b50909'));
 							}
 						case 'remove': //Remove prykie quote
 							if (member.hasPermission('MANAGE_GUILD')) {
@@ -859,27 +878,30 @@ bot.on('message', msg => {
 											//Write to file
 											fs.writeFileSync('./data-to-use.json', JSON.stringify(dataToUse));
 											//Message
-											return channel.send(new Discord.MessageEmbed().setDescription('Removed `' + existingQuote + '` from the data base.'));
+											return channel.send(new Discord.MessageEmbed().setDescription('Removed `' + existingQuote + '` from the data base.').setColor('#09b50c'));
 										} else {
-											return channel.send(new Discord.MessageEmbed().setDescription('I couldn\'t find this quote for some reason...'));
+											return channel.send(new Discord.MessageEmbed().setDescription('I couldn\'t find this quote for some reason...').setColor('#b50909'));
 										}
 									} else {
-										return channel.send(new Discord.MessageEmbed().setDescription('The ' + tools.ordinal(parseInt(query)) + ' quote does not exist sorry.'));
+										return channel.send(new Discord.MessageEmbed().setDescription('The ' + tools.ordinal(parseInt(query)) +
+											' quote does not exist sorry.').setColor('#b50909'));
 									}
 								} else {
-									return channel.send(new Discord.MessageEmbed().setDescription('You didn\'t select a quote number to remove. You can use `' + settings.prefix + 'prykie list` to view the current list of Prykie quotes.'));
+									return channel.send(new Discord.MessageEmbed().setDescription('You didn\'t select a quote number to remove. You can use `' + settings.prefix +
+										'prykie list` to view the current list of Prykie quotes.').setColor('#b50909'));
 								}
 							} else {
-								return channel.send(new Discord.MessageEmbed().setDescription('Sorry, you need to be a server manager/admin to remove a prykie quote.'));
+								return channel.send(new Discord.MessageEmbed().setDescription('Sorry, you need to be a server manager/admin to remove a prykie quote.').setColor('#b50909'));
 							}
 						case 'list': //List all prykie quotes
 							var output = "";
 							for (var i = 0; i < dataToUse["prykie-quotes"].length; ++i) {
 								output = output + i + ' - `' + dataToUse["prykie-quotes"][i] + '`\n';
 							}
-							return channel.send(new Discord.MessageEmbed().setDescription(dataToUse["prykie-quotes"].length + ' prykie quotes.\n' + output));
+							return channel.send(new Discord.MessageEmbed().setDescription(dataToUse["prykie-quotes"].length +
+								' prykie quotes.\n' + output).setColor('#0099ff'));
 						default:
-							return channel.send(new Discord.MessageEmbed().setDescription('Did you want to list all/add/remove a prykie quote?'));
+							return channel.send(new Discord.MessageEmbed().setDescription('Did you want to list all/add/remove a prykie quote?').setColor('#b50909'));
 					}
 				} else { //Set random prykie quote
 					msg.delete({ timeout: 0 }); //Delete message
@@ -888,7 +910,7 @@ bot.on('message', msg => {
 						//Message
 						return channel.send(findRandom);
 					} else {
-						return channel.send(new Discord.MessageEmbed().setDescription('Sorry, I didn\'t find any prykie quotes to use :('));
+						return channel.send(new Discord.MessageEmbed().setDescription('Sorry, I didn\'t find any prykie quotes to use :(').setColor('#b50909'));
 					}
 				}
 			case 'move': //Move everyone from one voice channel to another channel
@@ -939,24 +961,30 @@ bot.on('message', msg => {
 															e.voice.setChannel(voiceChannelTO)
 														});
 														//Message
-														return channel.send(new Discord.MessageEmbed().setDescription('Moved `' + playersFoundInVoice.length + ' / ' + numberOfPlayers + '` randomly selected players from ' + voiceChannelFROM.toString() + ' to ' + voiceChannelTO.toString()));
+														return channel.send(new Discord.MessageEmbed().setDescription('Moved `' + playersFoundInVoice.length + ' / ' + numberOfPlayers +
+															'` randomly selected players from ' + voiceChannelFROM.toString() + ' to ' +
+															voiceChannelTO.toString()).setColor('#09b50c'));
 													} else {
-														return channel.send(new Discord.MessageEmbed().setDescription('Could not find a voice channel with the name ' + channelToSelector));
+														return channel.send(new Discord.MessageEmbed().setDescription('Could not find a voice channel with the name ' +
+															channelToSelector).setColor('#b50909'));
 													}
 												} else {
-													return channel.send(new Discord.MessageEmbed().setDescription('You didn\'t select any voice channel to move ' + playersFoundInVoice.length + ' players to.'));
+													return channel.send(new Discord.MessageEmbed().setDescription('You didn\'t select any voice channel to move ' +
+														playersFoundInVoice.length + ' players to.').setColor('#b50909'));
 												}
 											} else {
-												return channel.send(new Discord.MessageEmbed().setDescription('There\'s no one in ' + voiceChannelFROM.toString() + ' to move sorry.'));
+												return channel.send(new Discord.MessageEmbed().setDescription('There\'s no one in ' +
+													voiceChannelFROM.toString() + ' to move sorry.').setColor('#b50909'));
 											}
 										} else {
-											return channel.send(new Discord.MessageEmbed().setDescription('Could not find a voice channel with the name ' + channelSelector));
+											return channel.send(new Discord.MessageEmbed().setDescription('Could not find a voice channel with the name ' + channelSelector).setColor('#b50909'));
 										}
 									} else {
-										return channel.send(new Discord.MessageEmbed().setDescription('You didn\'t select any voice channel to move players from.'));
+										return channel.send(new Discord.MessageEmbed().setDescription('You didn\'t select any voice channel to move players from.').setColor('#b50909'));
 									}
 								} else {
-									return channel.send(new Discord.MessageEmbed().setDescription('Sorry, ' + numberSelector + ' is not a number of players I can operate on.'));
+									return channel.send(new Discord.MessageEmbed().setDescription('Sorry, ' + numberSelector +
+										' is not a number of players I can operate on.').setColor('#b50909'));
 								}
 							}//If simple selector
 							else {
@@ -979,15 +1007,18 @@ bot.on('message', msg => {
 													value.voice.setChannel(voiceChannelTO);
 												});
 												//Message
-												return channel.send(new Discord.MessageEmbed().setDescription('Moved ' + playersFoundAll.size + ' players to ' + voiceChannelTO.toString()));
+												return channel.send(new Discord.MessageEmbed().setDescription('Moved ' + playersFoundAll.size + ' players to ' +
+													voiceChannelTO.toString()).setColor('#09b50c'));
 											} else {
-												return channel.send(new Discord.MessageEmbed().setDescription('Could not find a voice channel with the name ' + channelSelector));
+												return channel.send(new Discord.MessageEmbed().setDescription('Could not find a voice channel with the name ' +
+													channelSelector).setColor('#b50909'));
 											}
 										} else {
-											return channel.send(new Discord.MessageEmbed().setDescription('You didn\'t select any voice channel to move ' + playersFoundAll.size + ' players to.'));
+											return channel.send(new Discord.MessageEmbed().setDescription('You didn\'t select any voice channel to move ' + playersFoundAll.size +
+												' players to.').setColor('#b50909'));
 										}
 									} else {
-										return channel.send(new Discord.MessageEmbed().setDescription('There\'s no one at all currently in a voice channel for this server.'));
+										return channel.send(new Discord.MessageEmbed().setDescription('There\'s no one at all currently in a voice channel for this server.').setColor('#b50909'));
 									}
 								} else {
 									//Channel name, find the voice channel
@@ -1009,18 +1040,21 @@ bot.on('message', msg => {
 														value.voice.setChannel(voiceChannelTO);
 													});
 													//Message
-													return channel.send(new Discord.MessageEmbed().setDescription('Moved ' + playersFoundInVoice.size + ' players from ' + voiceChannelFROM.toString() + ' to ' + voiceChannelTO.toString()));
+													return channel.send(new Discord.MessageEmbed().setDescription('Moved ' + playersFoundInVoice.size + ' players from ' +
+														voiceChannelFROM.toString() + ' to ' + voiceChannelTO.toString()).setColor('#09b50c'));
 												} else {
-													return channel.send(new Discord.MessageEmbed().setDescription('Could not find a voice channel with the name ' + channelSelector));
+													return channel.send(new Discord.MessageEmbed().setDescription('Could not find a voice channel with the name ' +
+														channelSelector).setColor('#b50909'));
 												}
 											} else {
-												return channel.send(new Discord.MessageEmbed().setDescription('You didn\'t select any voice channel to move ' + playersFoundInVoice.size + ' players to.'));
+												return channel.send(new Discord.MessageEmbed().setDescription('You didn\'t select any voice channel to move ' + playersFoundInVoice.size +
+													' players to.').setColor('#b50909'));
 											}
 										} else {
-											return channel.send(new Discord.MessageEmbed().setDescription('There\'s no one in ' + voiceChannelFROM.toString() + ' to move sorry.'));
+											return channel.send(new Discord.MessageEmbed().setDescription('There\'s no one in ' + voiceChannelFROM.toString() + ' to move sorry.').setColor('#b50909'));
 										}
 									} else {
-										return channel.send(new Discord.MessageEmbed().setDescription('Could not find a voice channel with the name ' + selector));
+										return channel.send(new Discord.MessageEmbed().setDescription('Could not find a voice channel with the name ' + selector).setColor('#b50909'));
 									}
 								}
 							}
@@ -1077,24 +1111,26 @@ bot.on('message', msg => {
 																playersFoundInVoice = playersFoundInVoice.filter((value, key) => !playersToMoveInVoice.includes(value));
 															} //Ignore broken players
 														} else {
-															return channel.send(new Discord.MessageEmbed().setDescription('Could not find a voice channel with the name ' + e));
+															return channel.send(new Discord.MessageEmbed().setDescription('Could not find a voice channel with the name ' + e).setColor('#b50909'));
 														}
 													});
-													return channel.send(new Discord.MessageEmbed().setDescription('Split `' + countOfMovedPlayers + ' / ' + numberOfPlayers + '` players out into ' + channelSelectors.join(', and ')));
+													return channel.send(new Discord.MessageEmbed().setDescription('Split `' + countOfMovedPlayers + ' / ' + numberOfPlayers +
+														'` players out into ' + channelSelectors.join(', and ')).setColor('#09b50c'));
 												} else {
-													return channel.send(new Discord.MessageEmbed().setDescription('You didn\'t select any voice channels to split ' + playersFoundInVoice.length + ' players into.'));
+													return channel.send(new Discord.MessageEmbed().setDescription('You didn\'t select any voice channels to split ' + playersFoundInVoice.length +
+														' players into.').setColor('#b50909'));
 												}
 											} else {
-												return channel.send(new Discord.MessageEmbed().setDescription('There\'s no one in ' + voiceChannelFROM.toString() + ' to move sorry.'));
+												return channel.send(new Discord.MessageEmbed().setDescription('There\'s no one in ' + voiceChannelFROM.toString() + ' to move sorry.').setColor('#b50909'));
 											}
 										} else {
-											return channel.send(new Discord.MessageEmbed().setDescription('Could not find a voice channel with the name ' + channelSelector));
+											return channel.send(new Discord.MessageEmbed().setDescription('Could not find a voice channel with the name ' + channelSelector).setColor('#b50909'));
 										}
 									} else {
-										return channel.send(new Discord.MessageEmbed().setDescription('You didn\'t select any voice channel to move players from.'));
+										return channel.send(new Discord.MessageEmbed().setDescription('You didn\'t select any voice channel to move players from.').setColor('#b50909'));
 									}
 								} else {
-									return channel.send(new Discord.MessageEmbed().setDescription('Sorry, ' + numberSelector + ' is not a number of players I can operate on.'));
+									return channel.send(new Discord.MessageEmbed().setDescription('Sorry, ' + numberSelector + ' is not a number of players I can operate on.').setColor('#b50909'));
 								}
 							} //If simple selector
 							else {
@@ -1127,15 +1163,17 @@ bot.on('message', msg => {
 														playersFoundAll = playersFoundAll.filter((value, key) => !playersToMoveAll.includes(value));
 													} //Ignore broken players
 												} else {
-													return channel.send(new Discord.MessageEmbed().setDescription('Could not find a voice channel with the name ' + e));
+													return channel.send(new Discord.MessageEmbed().setDescription('Could not find a voice channel with the name ' + e).setColor('#b50909'));
 												}
 											});
-											return channel.send(new Discord.MessageEmbed().setDescription('Split ' + countOfMovedPlayers + ' players out into ' + channelSelectors.join(', and ')));
+											return channel.send(new Discord.MessageEmbed().setDescription('Split ' + countOfMovedPlayers + ' players out into ' +
+												channelSelectors.join(', and ')).setColor('#09b50c'));
 										} else {
-											return channel.send(new Discord.MessageEmbed().setDescription('You didn\'t select any voice channels to split ' + playersFoundAll.size + ' players into.'));
+											return channel.send(new Discord.MessageEmbed().setDescription('You didn\'t select any voice channels to split ' + playersFoundAll.size +
+												' players into.').setColor('#b50909'));
 										}
 									} else {
-										return channel.send(new Discord.MessageEmbed().setDescription('There\'s no one at all currently in a voice channel for this server.'));
+										return channel.send(new Discord.MessageEmbed().setDescription('There\'s no one at all currently in a voice channel for this server.').setColor('#b50909'));
 									}
 								} else {
 									//Channel name, find the voice channel
@@ -1168,32 +1206,35 @@ bot.on('message', msg => {
 															playersFoundInVoice = playersFoundInVoice.filter((value, key) => !playersToMoveInVoice.includes(value));
 														} //Ignore broken players
 													} else {
-														return channel.send(new Discord.MessageEmbed().setDescription('Could not find a voice channel with the name ' + e));
+														return channel.send(new Discord.MessageEmbed().setDescription('Could not find a voice channel with the name ' + e).setColor('#b50909'));
 													}
 												});
-												return channel.send(new Discord.MessageEmbed().setDescription('Split ' + countOfMovedPlayers + ' players out into ' + channelSelectors.join(', and ')));
+												return channel.send(new Discord.MessageEmbed().setDescription('Split ' + countOfMovedPlayers + ' players out into ' +
+													channelSelectors.join(', and ')).setColor('#09b50c'));
 											} else {
-												return channel.send(new Discord.MessageEmbed().setDescription('You didn\'t select any voice channels to split ' + playersFoundInVoice.size + ' players into.'));
+												return channel.send(new Discord.MessageEmbed().setDescription('You didn\'t select any voice channels to split ' + playersFoundInVoice.size +
+													' players into.').setColor('#b50909'));
 											}
 										} else {
-											return channel.send(new Discord.MessageEmbed().setDescription('There\'s no one in ' + voiceChannelFROM.toString() + ' to move sorry.'));
+											return channel.send(new Discord.MessageEmbed().setDescription('There\'s no one in ' + voiceChannelFROM.toString() + ' to move sorry.').setColor('#b50909'));
 										}
 									} else {
-										return channel.send(new Discord.MessageEmbed().setDescription('Could not find a voice channel with the name ' + selector));
+										return channel.send(new Discord.MessageEmbed().setDescription('Could not find a voice channel with the name ' + selector).setColor('#b50909'));
 									}
 								}
 							}
 						} else {
-							return channel.send(new Discord.MessageEmbed().setDescription('Sorry, I do not understand ' + msgContent + '. You can either move a *[select]* to one [channel] with - or a *[selector]* split to multiple channels with ='));
+							return channel.send(new Discord.MessageEmbed().setDescription('Sorry, I do not understand ' + msgContent +
+								'. You can either move a *[select]* to one [channel] with - or a *[selector]* split to multiple channels with =').setColor('#b50909'));
 						}
 					} else {
-						return channel.send(new Discord.MessageEmbed().setDescription('Sorry, you didn\'t use any selector. I could not understand ' + msgContent));
+						return channel.send(new Discord.MessageEmbed().setDescription('Sorry, you didn\'t use any selector. I could not understand ' + msgContent).setColor('#b50909'));
 					}
 				} else {
-					return channel.send(new Discord.MessageEmbed().setDescription('Sorry, you need moving powers to run this command.'));
+					return channel.send(new Discord.MessageEmbed().setDescription('Sorry, you need moving powers to run this command.').setColor('#b50909'));
 				}
 			default: //Error
-				return channel.send(new Discord.MessageEmbed().setDescription('Sorry, I do not understand that command...'));
+				return channel.send(new Discord.MessageEmbed().setDescription('Sorry, I do not understand that command...').setColor('#b50909'));
 		}
 	} else if (msgContent.startsWith('f10') || msgContent.startsWith('F10')) {
 		var mentions = msg.mentions.users; //Get all mentions
@@ -1211,11 +1252,11 @@ bot.on('message', msg => {
 							guild.members.unban(personId); //Unban
 						}, 100);
 
-						return channel.send(new Discord.MessageEmbed().setDescription('Good bye ' + v.toString()));
+						return channel.send(new Discord.MessageEmbed().setDescription('Good bye ' + v.toString()).setColor('#09b50c'));
 					});
 				});
 			} else {
-				return channel.send(new Discord.MessageEmbed().setDescription('Sorry, you do not have administrative powers and cannot use this command!'));
+				return channel.send(new Discord.MessageEmbed().setDescription('Sorry, you do not have administrative powers and cannot use this command!').setColor('#b50909'));
 			}
 		} else {
 			if (member.hasPermission('KICK_MEMBERS')) {
@@ -1229,9 +1270,9 @@ bot.on('message', msg => {
 					guild.members.unban(prykiesId); //Unban
 				}, 100);
 
-				return channel.send(new Discord.MessageEmbed().setDescription('CYA PRYKIE, you fucking bot!'));
+				return channel.send(new Discord.MessageEmbed().setDescription('CYA PRYKIE, you fucking bot!').setColor('#09b50c'));
 			} else {
-				return channel.send(new Discord.MessageEmbed().setDescription('Sorry, you do not have kicking powers! You cannot run this command'));
+				return channel.send(new Discord.MessageEmbed().setDescription('Sorry, you do not have kicking powers! You cannot run this command').setColor('#b50909'));
 			}
 		}
 	} else {
