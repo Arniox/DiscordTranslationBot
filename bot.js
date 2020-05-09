@@ -741,15 +741,20 @@ bot.on('message', msg => {
 
 														//Translate
 														googleTranslate.translate(currentUserNickName, query, function (err, translation) {
+															//Increase count
+															count++
 															//Check if the bot has perms
 															if (guild.members.cache.find(i => i.id == bot.user.id).roles.highest.comparePositionTo(value.roles.highest) > 0) {
 																//Change name
 																value.setNickname(translation.translatedText.substring(0, 32), 'Translating name from ' + currentUserNickName + ' to ' +
 																	translation.translatedText.substring(0, 32) + ' in ' + languageCodes.find(i => i.language == query.toLowerCase()).name);
-																count++;
 
 																//Edit message
-																sent.edit(new Discord.MessageEmbed().setDescription('Done ' + count + ' / ' + guild.members.cache.filter(i => i.user.bot != true).size))
+																if (count == guild.members.cache.filter(i => i.user.bot != true).size) {
+																	sent.edit(new Discord.MessageEmbed().setDescription('&#x2713; Done ' + count + ' / ' + guild.members.cache.filter(i => i.user.bot != true).size))
+																} else {
+																	sent.edit(new Discord.MessageEmbed().setDescription('Done ' + count + ' / ' + guild.members.cache.filter(i => i.user.bot != true).size))
+																}
 															} else {
 																channel.send(new Discord.MessageEmbed().setDescription('I had a problem translating ' + value.toString() + ' nickname'));
 															}
