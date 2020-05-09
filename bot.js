@@ -723,6 +723,7 @@ bot.on('message', msg => {
 									//Check if selected code exists in the supported languages
 									googleTranslate.getSupportedLanguages('en', function (err, languageCodes) {
 										if (languageCodes.find(i => i.language == query.toLowerCase())) {
+											var counterOfFails = 0;
 											//For all members in the guild
 											guild.members.cache.map((value, key) => {
 												//Get current user nickname.
@@ -731,12 +732,17 @@ bot.on('message', msg => {
 												//Translate name
 												googleTranslate.translate(currentUserNickName, query, function (err, translation) {
 													//Change name
-													value.setNickname(translation.translatedText, 'Translating name from ' + currentUserNickName + ' to ' +
-														translation.translatedText + ' in ' + languageCodes.find(i => i.language == query.toLowerCase()).name);
+													value
+														.setNickname(translation.translatedText, 'Translating name from ' + currentUserNickName + ' to ' +
+															translation.translatedText + ' in ' + languageCodes.find(i => i.language == query.toLowerCase()).name)
+														.catch(error => {
+															counterOfFails++;
+														});
 												});
 											});
 											//Message
-											return channel.send(new Discord.MessageEmbed().setDescription('I have translated everyone\'s nickname into ' + languageCodes.find(i => i.language == query.toLowerCase()).name));
+											return channel.send(new Discord.MessageEmbed().setDescription('I encountered ' + counterOfFails + ' failures when translating everyone\'s nickname into ' +
+												languageCodes.find(i => i.language == query.toLowerCase()).name));
 										} else {
 											return channel.send(new Discord.MessageEmbed().setDescription('Unfortunately, my translation capabilities do not support ' + query + ' as a language.'));
 										}
@@ -763,8 +769,12 @@ bot.on('message', msg => {
 										//Translate name
 										googleTranslate.translate(currentUserNickName, query, function (err, translation) {
 											//Change name
-											member.setNickname(translation.translatedText, 'Translating name from ' + currentUserNickName + ' to ' +
-												translation.translatedText + ' in ' + languageCodes.find(i => i.language == query.toLowerCase()).name);
+											member
+												.setNickname(translation.translatedText, 'Translating name from ' + currentUserNickName + ' to ' +
+													translation.translatedText + ' in ' + languageCodes.find(i => i.language == query.toLowerCase()).name)
+												.catch(error => {
+													return channel.send(new Discord.MessageEmbed().setDescription(error + ', I cannot translate the nickname of this person.'));
+												});
 											//Message
 											return channel.send(new Discord.MessageEmbed().setDescription('I have translated your nickname from ' + currentUserNickName + ' to ' +
 												translation.translatedText + ' in ' + languageCodes.find(i => i.language == query.toLowerCase()).name));
