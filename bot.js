@@ -603,19 +603,13 @@ bot.on('message', msg => {
 													var selectorSize = channelSelectors.length;
 													args = args.splice(1);
 
-													//Fix number of channels if there's too few players
-													while (Math.floor(playersFoundInVoice.length / selectorSize) < 1) {
-														channelSelectors = channelSelectors.splice(channelSelectors.length - 1, 1);
-														selectorSize = channelSelectors.length;
-													}
-
 													//For each channel
 													channelSelectors.forEach(e => {
 														//Get voice channel to move to with the channel selector (e) as name
 														var voiceChannelTO = guild.channels.cache.find(i => i.name.toLowerCase() == e.toLowerCase() && i.type == 'voice');
 														if (voiceChannelTO) {
 															//Get a number of players randomly
-															var playersToMoveInVoice = playersFoundInVoice.sort(() => Math.random() - Math.random()).slice(0, (Math.floor(playersFoundInVoice.length / selectorSize)));
+															var playersToMoveInVoice = playersFoundInVoice.sort(() => Math.random() - Math.random()).slice(0, (Math.ceil(playersFoundInVoice.length / selectorSize)));
 															if (playersToMoveInVoice) {
 																playersToMoveInVoice.forEach(e => {
 																	e.voice.setChannel(voiceChannelTO);
@@ -656,19 +650,13 @@ bot.on('message', msg => {
 											var selectorSize = channelSelectors.length;
 											args = args.splice(1);
 
-											//Fix number of channels if there's too few players
-											while (Math.floor(playersFoundAll.size / selectorSize) < 1) {
-												channelSelectors = channelSelectors.splice(channelSelectors.length - 1, 1);
-												selectorSize = channelSelectors.length;
-											}
-
 											//For each channel
 											channelSelectors.forEach(e => {
 												//Get voice channel to move to with the channel selector (e) as name
 												var voiceChannelTO = guild.channels.cache.find(i => i.name.toLowerCase() == e.toLowerCase() && i.type == 'voice');
 												if (voiceChannelTO) {
 													//Get a number of players randomly
-													var playersToMoveAll = playersFoundAll.map((value, key) => value).sort(() => Math.random() - Math.random()).slice(0, (Math.floor(playersFoundAll.size / selectorSize)));
+													var playersToMoveAll = playersFoundAll.map((value, key) => value).sort(() => Math.random() - Math.random()).slice(0, (Math.ceil(playersFoundAll.size / selectorSize)));
 													if (playersToMoveAll) {
 														playersToMoveAll.forEach(e => {
 															e.voice.setChannel(voiceChannelTO);
@@ -700,19 +688,13 @@ bot.on('message', msg => {
 												var selectorSize = channelSelectors.length;
 												args = args.splice(1);
 
-												//Fix number of channels if there's too few players
-												while (Math.floor(playersFoundInVoice.size / selectorSize) < 1) {
-													channelSelectors = channelSelectors.splice(channelSelectors.length - 1, 1);
-													selectorSize = channelSelectors.length;
-												}
-
 												//For each channel
 												channelSelectors.forEach(e => {
 													//Get voice channel to move to with the channel selector (e) as name
 													var voiceChannelTO = guild.channels.cache.find(i => i.name.toLowerCase() == e.toLowerCase() && i.type == 'voice');
 													if (voiceChannelTO) {
 														//Get a number of players randomly
-														var playersToMoveInVoice = playersFoundInVoice.map((value, key) => value).sort(() => Math.random() - Math.random()).slice(0, (Math.floor(playersFoundInVoice.size / selectorSize)));
+														var playersToMoveInVoice = playersFoundInVoice.map((value, key) => value).sort(() => Math.random() - Math.random()).slice(0, (Math.ceil(playersFoundInVoice.size / selectorSize)));
 														if (playersToMoveInVoice) {
 															playersToMoveInVoice.forEach(e => {
 																e.voice.setChannel(voiceChannelTO);
