@@ -449,7 +449,7 @@ bot.on('message', msg => {
 
 							//If complex selector
 							if (selector.split('>').length > 1) {
-								console.log(complexSelector);
+								console.log(selector);
 								//Grab complex selector
 								var complexSelector = selector.split('>').map(i => i.trim());
 								var numberSelector = complexSelector[0];
