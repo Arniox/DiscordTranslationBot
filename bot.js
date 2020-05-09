@@ -731,7 +731,7 @@ bot.on('message', msg => {
 												guild.members.cache.filter(i => i.user.bot != true).size + ' seconds on a good day...');
 
 											//For all members in the guild
-											guild.members.cache.filter(i => i.user.bot != true).map((value, key) => {
+											Promise.all(guild.members.cache.filter(i => i.user.bot != true).map((value, key) => {
 												//Get current user nickname.
 												var currentUserNickName = (value.nickname ? value.nickname : value.user.username);
 
@@ -745,7 +745,7 @@ bot.on('message', msg => {
 															//channel.send(new Discord.MessageEmbed().setDescription(error.toString().split(':')[1] + '. I cannot translate ' + value.toString() + ' nickname.'));
 														});
 												});
-											}).then(() => {
+											})).then(() => {
 												channel.send(new Discord.MessageEmbed().setDescription('Finished translating ' + guild.members.cache.filter(i => i.user.bot != true).size +
 													' members nickname\'s into ' + languageCodes.find(i => i.language == query.toLowerCase()).name));
 											});
