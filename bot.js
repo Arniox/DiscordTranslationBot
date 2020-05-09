@@ -211,7 +211,7 @@ bot.on('message', msg => {
 							return channel.send(embeddedHelpMessage);
 						case 'nick':
 							//Get all available language codes
-							googleTranslate.getSupportedLanguages(function (err, languageCodes) {
+							googleTranslate.getSupportedLanguages('en', function (err, languageCodes) {
 								var embeddedHelpMessage = new Discord.MessageEmbed()
 									.setColor('#0099ff')
 									.setAuthor(bot.user.username, bot.user.avatarURL())
@@ -229,8 +229,81 @@ bot.on('message', msg => {
 												settings.prefix + 'nick all HE'
 										},
 										{
-											name: 'Available Language Codes: ',
-											value: languageCodes.join(', ') + ''
+											name: 'Available Language Codes - 1: ',
+											value: languageCodes
+												.slice(0, Math.floor(languageCodes.length / 11) * 1)
+												.map(i => i.language + ': ' + i.name)
+												.join(', ') + ''
+										},
+										{
+											name: 'Available Language Codes - 2: ',
+											value: languageCodes
+												.slice(Math.floor(languageCodes.length / 11) * 1, Math.floor(languageCodes.length / 11) * 2)
+												.map(i => i.language + ': ' + i.name)
+												.join(', ') + ''
+										},
+										{
+											name: 'Available Language Codes - 3: ',
+											value: languageCodes
+												.slice(Math.floor(languageCodes.length / 11) * 2, Math.floor(languageCodes.length / 11) * 3)
+												.map(i => i.language + ': ' + i.name)
+												.join(', ') + ''
+										},
+										{
+											name: 'Available Language Codes - 4: ',
+											value: languageCodes
+												.slice(Math.floor(languageCodes.length / 11) * 3, Math.floor(languageCodes.length / 11) * 4)
+												.map(i => i.language + ': ' + i.name)
+												.join(', ') + ''
+										},
+										{
+											name: 'Available Language Codes - 5: ',
+											value: languageCodes
+												.slice(Math.floor(languageCodes.length / 11) * 4, Math.floor(languageCodes.length / 11) * 5)
+												.map(i => i.language + ': ' + i.name)
+												.join(', ') + ''
+										},
+										{
+											name: 'Available Language Codes - 6: ',
+											value: languageCodes
+												.slice(Math.floor(languageCodes.length / 11) * 5, Math.floor(languageCodes.length / 11) * 6)
+												.map(i => i.language + ': ' + i.name)
+												.join(', ') + ''
+										},
+										{
+											name: 'Available Language Codes - 7: ',
+											value: languageCodes
+												.slice(Math.floor(languageCodes.length / 11) * 6, Math.floor(languageCodes.length / 11) * 7)
+												.map(i => i.language + ': ' + i.name)
+												.join(', ') + ''
+										},
+										{
+											name: 'Available Language Codes - 8: ',
+											value: languageCodes
+												.slice(Math.floor(languageCodes.length / 11) * 7, Math.floor(languageCodes.length / 11) * 8)
+												.map(i => i.language + ': ' + i.name)
+												.join(', ') + ''
+										},
+										{
+											name: 'Available Language Codes - 9: ',
+											value: languageCodes
+												.slice(Math.floor(languageCodes.length / 11) * 8, Math.floor(languageCodes.length / 11) * 9)
+												.map(i => i.language + ': ' + i.name)
+												.join(', ') + ''
+										},
+										{
+											name: 'Available Language Codes - 10: ',
+											value: languageCodes
+												.slice(Math.floor(languageCodes.length / 11) * 9, Math.floor(languageCodes.length / 11) * 10)
+												.map(i => i.language + ': ' + i.name)
+												.join(', ') + ''
+										},
+										{
+											name: 'Available Language Codes - 11: ',
+											value: languageCodes
+												.slice(Math.floor(languageCodes.length / 11) * 10, languageCodes.length)
+												.map(i => i.language + ': ' + i.name)
+												.join(', ') + ''
 										}
 									)
 									.setTimestamp()
