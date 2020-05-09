@@ -798,7 +798,7 @@ bot.on('message', msg => {
 								googleTranslate.getSupportedLanguages('en', function (err, languageCodes) {
 									if (languageCodes.find(i => i.language == query.toLowerCase())) {
 										//Get current member nickname.
-										var currentUserNickName = (value.nickname != null && typeof (value.nickname) !== undefined && value.nickname !== '' ? value.nickname : value.user.username);
+										var currentUserNickName = (member.nickname != null && typeof (member.nickname) !== undefined && member.nickname !== '' ? member.nickname : author.username);
 
 										//Translate name
 										googleTranslate.translate(currentUserNickName, query, function (err, translation) {
