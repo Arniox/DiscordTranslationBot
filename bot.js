@@ -738,7 +738,7 @@ bot.on('message', msg => {
 												//Translate
 												googleTranslate.translate(currentUserNickName, query, function (err, translation) {
 													//Check if the bot has perms
-													if (value.roles.highest.comparePositionTo(guild.members.cache.find(i => i.id == bot.user.id).roles.highest) > 0) {
+													if (guild.members.cache.find(i => i.id == bot.user.id).roles.highest.comparePositionTo(value.roles.highest) > 0) {
 														//Change name
 														value.setNickname(translation.translatedText, 'Translating name from ' + currentUserNickName + ' to ' +
 															translation.translatedText + ' in ' + languageCodes.find(i => i.language == query.toLowerCase()).name);
