@@ -251,14 +251,14 @@ bot.on('message', msg => {
 									{
 										name: 'Examples: ',
 										value: settings.prefix + 'move ' + guild.channels.cache.filter(i => i.type == 'voice').random().name + ' - ' + guild.channels.cache.filter(i => i.type == 'voice').random().name +
-											' (Move everyone in one voice channel to another voice channel)\n' +
-											settings.prefix + 'move * - ' + guild.channels.cache.filter(i => i.type == 'voice').random().name + ' (Move everyone currently in any voice channel to a specific voice channel)\n' +
+											' (Move everyone in one voice channel to another voice channel)\n\n' +
+											settings.prefix + 'move * - ' + guild.channels.cache.filter(i => i.type == 'voice').random().name + ' (Move everyone currently in any voice channel to a specific voice channel)\n\n' +
 											settings.prefix + 'move 5 > ' + guild.channels.cache.filter(i => i.type == 'voice').random().name + ' - ' + guild.channels.cache.filter(i => i.type == 'voice').random().name +
-											' (Move 5 randomly picked players from one voice channel to another voice channel)\n' +
+											' (Move 5 randomly picked players from one voice channel to another voice channel)\n\n' +
 											settings.prefix + 'move ' + guild.channels.cache.filter(i => i.type == 'voice').random().name + ' = ' + guild.channels.cache.filter(i => i.type == 'voice').random().name + ' & ' +
-											guild.channels.cache.filter(i => i.type == 'voice').random().name + ' (Equally split everyone in one voice channel into any number of voice channels seperated by &)\n' +
+											guild.channels.cache.filter(i => i.type == 'voice').random().name + ' (Equally split everyone in one voice channel into any number of voice channels seperated by &)\n\n' +
 											settings.prefix + 'move * = ' + guild.channels.cache.filter(i => i.type == 'voice').random().name + ' & ' + guild.channels.cache.filter(i => i.type == 'voice').random().name +
-											' (Split everyone currently in any voice channel into any number of voice channels seperated by &)\n' +
+											' (Split everyone currently in any voice channel into any number of voice channels seperated by &)\n\n' +
 											settings.prefix + 'move 5 > ' + guild.channels.cache.filter(i => i.type == 'voice').random().name + ' = ' + guild.channels.cache.filter(i => i.type == 'voice').random().name + ' & ' +
 											guild.channels.cache.filter(i => i.type == 'voice').random().name + ' (Equally split 5 randomly picked players from one voice channel into any number of voice channels seperated by &).'
 									}
