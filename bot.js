@@ -727,27 +727,20 @@ bot.on('message', msg => {
 										if (languageCodes.find(i => i.language == query.toLowerCase())) {
 											//For all members in the guild
 											guild.members.cache.map((value, key) => {
+												console.log(value);
+
 												//Get current user nickname.
 												var currentUserNickName = value.nickname;
 
-												console.log(currentUserNickName);
-
-												//Detect
-												googleTranslate.detectLanguage(currentUserNickName, function (err, detection) {
-													console.log(detection);
-
-													//Translate
-													googleTranslate.translate(currentUserNickName, detection.language, query, function (err, translation) {
-														console.log(translation);
-
-														//Change name
-														value
-															.setNickname(translation.translatedText, 'Translating name from ' + currentUserNickName + ' to ' +
-																translation.translatedText + ' in ' + languageCodes.find(i => i.language == query.toLowerCase()).name)
-															.catch(error => {
-																channel.send(new Discord.MessageEmbed().setDescription(error.toString().split(':')[1] + '. I cannot translate ' + value.toString() + ' nickname.'));
-															});
-													});
+												//Translate
+												googleTranslate.translate(currentUserNickName, query, function (err, translation) {
+													//Change name
+													value
+														.setNickname(translation.translatedText, 'Translating name from ' + currentUserNickName + ' to ' +
+															translation.translatedText + ' in ' + languageCodes.find(i => i.language == query.toLowerCase()).name)
+														.catch(error => {
+															channel.send(new Discord.MessageEmbed().setDescription(error.toString().split(':')[1] + '. I cannot translate ' + value.toString() + ' nickname.'));
+														});
 												});
 											});
 											//Message
