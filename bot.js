@@ -241,8 +241,6 @@ bot.on('message', msg => {
 								return channel
 									.send(embeddedHelpMessage)
 									.catch(error => { console.log('Error. Ignored') });
-							}).catch(error => {
-								return channel.send(new Discord.MessageEmbed().setDescription('There was an error requesting the supported languages...'));
 							});
 							break;
 						case 'prykie':
