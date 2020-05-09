@@ -603,6 +603,7 @@ bot.on('message', msg => {
 													var selectorSize = channelSelectors.length;
 													args = args.splice(1);
 
+													var countOfMovedPlayers = 0
 													//For each channel
 													channelSelectors.forEach(e => {
 														//Get voice channel to move to with the channel selector (e) as name
@@ -614,6 +615,8 @@ bot.on('message', msg => {
 																playersToMoveInVoice.forEach(e => {
 																	e.voice.setChannel(voiceChannelTO);
 																});
+																//Added counts
+																countOfMovedPlayers += playersToMoveInVoice.length;
 																//Remove already moved players
 																playersFoundInVoice = playersFoundInVoice.filter((value, key) => !playersToMoveInVoice.includes(value));
 															} //Ignore broken players
@@ -650,6 +653,7 @@ bot.on('message', msg => {
 											var selectorSize = channelSelectors.length;
 											args = args.splice(1);
 
+											var countOfMovedPlayers = 0
 											//For each channel
 											channelSelectors.forEach(e => {
 												//Get voice channel to move to with the channel selector (e) as name
@@ -661,6 +665,8 @@ bot.on('message', msg => {
 														playersToMoveAll.forEach(e => {
 															e.voice.setChannel(voiceChannelTO);
 														});
+														//Added counts
+														countOfMovedPlayers += playersToMoveInVoice.length;
 														//Remove already moved players
 														playersFoundAll = playersFoundAll.filter((value, key) => !playersToMoveAll.includes(value));
 													} //Ignore broken players
@@ -688,6 +694,7 @@ bot.on('message', msg => {
 												var selectorSize = channelSelectors.length;
 												args = args.splice(1);
 
+												var countOfMovedPlayers = 0
 												//For each channel
 												channelSelectors.forEach(e => {
 													//Get voice channel to move to with the channel selector (e) as name
@@ -699,6 +706,8 @@ bot.on('message', msg => {
 															playersToMoveInVoice.forEach(e => {
 																e.voice.setChannel(voiceChannelTO);
 															});
+															//Added counts
+															countOfMovedPlayers += playersToMoveInVoice.length;
 															//Remove already moved players
 															playersFoundInVoice = playersFoundInVoice.filter((value, key) => !playersToMoveInVoice.includes(value));
 														} //Ignore broken players
