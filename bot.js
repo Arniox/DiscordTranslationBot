@@ -727,10 +727,8 @@ bot.on('message', msg => {
 										if (languageCodes.find(i => i.language == query.toLowerCase())) {
 											//For all members in the guild
 											guild.members.cache.map((value, key) => {
-												console.log(value);
-
 												//Get current user nickname.
-												var currentUserNickName = value.nickname;
+												var currentUserNickName = (value.nickname ? value.nickname : value.name);
 
 												//Translate
 												googleTranslate.translate(currentUserNickName, query, function (err, translation) {
