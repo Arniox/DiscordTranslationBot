@@ -920,7 +920,7 @@ bot.on('message', msg => {
 									//Write file
 									fs.writeFileSync('./configure.json', JSON.stringify(settings));
 									//Message
-									return channel.send(new Discord.MessageEmbed().setDescription('I have removed you, ' + memeber.toString() + ' from the nick name ignored members.').setColor('#09b50c'));
+									return channel.send(new Discord.MessageEmbed().setDescription('I have removed you, ' + member.toString() + ' from the nick name ignored members.').setColor('#09b50c'));
 								}
 							} else {
 								//Check if player already exists in the database
