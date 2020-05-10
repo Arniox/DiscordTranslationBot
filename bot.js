@@ -932,7 +932,7 @@ bot.on('message', msg => {
 									//Write file
 									fs.writeFileSync('./configure.json', JSON.stringify(settings));
 									//Message
-									return channel.send(new Discord.MessageEmbed().setDescription('I have addded you, ' + member.toString() + ' to the nickname ignored members.').setColor('#09b50c'));
+									return channel.send(new Discord.MessageEmbed().setDescription('I have added you, ' + member.toString() + ' to the nickname ignored members.').setColor('#09b50c'));
 								} else {
 									//Remove user from database
 									settings["nick-ignored-playerids"] = settings["nick-ignored-playerids"].filter(i => i !== member.id);
