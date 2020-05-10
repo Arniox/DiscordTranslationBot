@@ -898,7 +898,46 @@ bot.on('message', msg => {
 								return channel.send(new Discord.MessageEmbed().setDescription('Sorry, what language code did you want to use to translate your name to?').setColor('#b50909'));
 							}
 							break;
+						case 'ignore':
+							var mentions = msg.mentions.users; //Get mentions
+							msg.delete({ timeout: 0 }); //Delete message
 
+							if (mentions.size == 0) {
+								//Check if you already exist in the database
+								if (!settings["nick-ignored-playerids"].find(i => i == member.id)) {
+									//Add user to database
+									settings["nick-ignored-playerids"].push(member.id);
+									//Write file
+									fs.writeFileSync('./configure.json', JSON.stringify(settings));
+									//Message
+									return channel.send(new Discord.MessageEmbed().setDescription('I have addded you, ' + member.toString() + ' to the nickname ignored members.').setColor('#09b50c'));
+								} else {
+									//Remove user from database
+									settings["nick-ignored-playerids"].find(i => i == member.id);
+									//Write file
+									fs.writeFileSync('./configure.json', JSON.stringify(settings));
+									//Message
+									return channel.send(new Discord.MessageEmbed().setDescription('I have removed you, ' + memeber.toString() + ' from the nick name ignored members.').setColor('#09b50c'));
+								}
+							} else {
+								//Check if player already exists in the database
+								if (!settings["nick-ignored-playerids"].find(i => mentions.map((value, key) => key).includes(i))) {
+									//Add user to database
+									settings["nick-ignored-playerids"] = settings["nick-ignored-playerids"].concat(mentions.map((value, key) => key));
+									//Write file
+									fs.writeFileSync('./configure.json', JSON.stringify(settings));
+									//Message
+									return channel.send(new Discord.MessageEmbed().setDescription('Added ' + mentions.map((value, key) => value.toString()).join(', ')).setColor('#09b50c'));
+								} else {
+									//Remove user from database
+									settings["nick-ignored-playerids"] = settings["nick-ignored-playerids"].filter(i => mentions.map((value, key) => key).includes(i));
+									//Write file
+									fs.writeFileSync('./configure.json', JSON.stringify(settings));
+									//Message
+									return channel.send(new Discord.MessageEmbed().setDescription('Removed ' + mentions.map((value, key) => value.toString()).join(', ')).setColor('#09b50c'));
+								}
+							}
+							break;
 						default:
 							return channel.send(new Discord.MessageEmbed().setDescription('Sorry, did you want to change your own nickname or everyone?').setColor('#b50909'));
 					}
