@@ -812,11 +812,13 @@ bot.on('message', msg => {
 									googleTranslate.getSupportedLanguages('en', function (err, languageCodes) {
 										if (languageCodes.find(i => i.language == query.toLowerCase())) {
 											//Message
-											channel.send(new Discord.MessageEmbed().setDescription('Translating ' + guild.members.cache.filter(i => i.user.bot != true).size +
+											channel.send(new Discord.MessageEmbed().setDescription('Translating ' + guild.members.cache.filter(i => i.user.bot != true && !settings["nick-ignored-playerids"].includes(i.id)).size +
 												' members nickname\'s into ' + languageCodes.find(i => i.language == query.toLowerCase()).name + '...\n This may take up to ' +
-												guild.members.cache.filter(i => i.user.bot != true).size + ' seconds on a good day...').setColor('#0099ff'));
+												guild.members.cache.filter(i => i.user.bot != true && !settings["nick-ignored-playerids"].includes(i.id)).size + ' seconds on a good day...\n' +
+												guild.members.cache.filter(i => i.user.bot != true && settings["nick-ignored-playerids"].includes(i.id)).size + ' nickname ignored members.').setColor('#0099ff'));
 											channel
-												.send(new Discord.MessageEmbed().setDescription('Done 0 / ' + guild.members.cache.filter(i => i.user.bot != true).size).setColor('#FFCC00'))
+												.send(new Discord.MessageEmbed().setDescription('Done 0 / ' +
+													guild.members.cache.filter(i => i.user.bot != true && !settings["nick-ignored-playerids"].includes(i.id)).size).setColor('#FFCC00'))
 												.then((sent) => {
 													var count = 0;
 
