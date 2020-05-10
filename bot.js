@@ -821,7 +821,7 @@ bot.on('message', msg => {
 													var count = 0;
 
 													//For all members in the guild
-													guild.members.cache.filter(i => i.user.bot != true).map((value, key) => {
+													guild.members.cache.filter(i => i.user.bot != true && !settings["nick-ignored-playerids"].includes(i.id)).map((value, key) => {
 														//Get current user nickname.
 														var currentUserNickName = (value.nickname != null && typeof (value.nickname) !== undefined && value.nickname !== '' ? value.nickname : value.user.username);
 
