@@ -913,7 +913,7 @@ bot.on('message', msg => {
 											.filter((value, key) => settings["nick-ignored-playerids"].includes(key))
 											.map((value, key) => value.toString());
 
-										return channel.send(new Discord.MessageEmbed().setDescription(membersList.length + ' members are being nickname ignored.\n' + membersList.join('\n')));
+										return channel.send(new Discord.MessageEmbed().setDescription(membersList.length + ' members are being nickname ignored.\n' + membersList.join('\n')).setColor('#0099ff'));
 									default:
 										return channel.send(new Discord.MessageEmbed().setDescription('Sorry, I am not sure what you want to do?').setColor('#b50909'));
 								}
@@ -936,7 +936,9 @@ bot.on('message', msg => {
 								}
 							}
 						default:
-							return channel.send(new Discord.MessageEmbed().setDescription('Sorry, did you want to change your own nickname or everyone?').setColor('#b50909'));
+							return channel.send(new Discord.MessageEmbed().setDescription('Sorry, did you want to change your own nickname or everyones? You can also use ' +
+								settings.prefix + 'nick ignore to exclude yourself from being nicknamed when someone runs the all command. Or run ' +
+								settings.prefix + 'nick ignore list to view nickname ignored members.').setColor('#b50909'));
 					}
 				} else {
 					return channel.send(new Discord.MessageEmbed().setDescription('Sorry, what option did you want?').setColor('#b50909'));
