@@ -1358,7 +1358,7 @@ bot.on('message', msg => {
 				if (detection.language != 'en' && detection.language != 'und' && detection.confidence > 0.75) {
 					//Translate
 					googleTranslate.translate(msgContent, detection.language, 'en', function (err, translation) {
-						if (translation !== msgContent) {
+						if (translation.translatedText !== msgContent) {
 							msg.delete({ timeout: 0 }); //Delete message
 							//Get country
 							googleTranslate.getSupportedLanguages('en', function (err, languageCodes) {
