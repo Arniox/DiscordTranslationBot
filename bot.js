@@ -913,14 +913,14 @@ bot.on('message', msg => {
 									//Write file
 									fs.writeFileSync('./configure.json', JSON.stringify(settings));
 									//Message
-									channel.send(new Discord.MessageEmbed().setDescription('I have addded you, ' + member.toString() + ' to the nickname ignored members.').setColor('#09b50c'));
+									return channel.send(new Discord.MessageEmbed().setDescription('I have addded you, ' + member.toString() + ' to the nickname ignored members.').setColor('#09b50c'));
 								} else {
 									//Remove user from database
 									settings["nick-ignored-playerids"].find(i => i == member.id);
 									//Write file
 									fs.writeFileSync('./configure.json', JSON.stringify(settings));
 									//Message
-									channel.send(new Discord.MessageEmbed().setDescription('I have removed you, ' + memeber.toString() + ' from the nick name ignored members.').setColor('#09b50c'));
+									return channel.send(new Discord.MessageEmbed().setDescription('I have removed you, ' + memeber.toString() + ' from the nick name ignored members.').setColor('#09b50c'));
 								}
 							} else {
 								//Check if player already exists in the database
@@ -930,17 +930,16 @@ bot.on('message', msg => {
 									//Write file
 									fs.writeFileSync('./configure.json', JSON.stringify(settings));
 									//Message
-									channel.send(new Discord.MessageEmbed().setDescription('Added ' + mentions.map((value, key) => value.toString()).join(', ')).setColor('#09b50c'));
+									return channel.send(new Discord.MessageEmbed().setDescription('Added ' + mentions.map((value, key) => value.toString()).join(', ')).setColor('#09b50c'));
 								} else {
 									//Remove user from database
 									settings["nick-ignored-playerids"] = settings["nick-ignored-playerids"].filter(i => mentions.map((value, key) => key).includes(i));
 									//Write file
 									fs.writeFileSync('./configure.json', JSON.stringify(settings));
 									//Message
-									channel.send(new Discord.MessageEmbed().setDescription('Removed ' + mentions.map((value, key) => value.toString()).join(', ')).setColor('#09b50c'));
+									return channel.send(new Discord.MessageEmbed().setDescription('Removed ' + mentions.map((value, key) => value.toString()).join(', ')).setColor('#09b50c'));
 								}
 							}
-							break;
 						default:
 							return channel.send(new Discord.MessageEmbed().setDescription('Sorry, did you want to change your own nickname or everyone?').setColor('#b50909'));
 					}
