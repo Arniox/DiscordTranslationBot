@@ -898,6 +898,7 @@ bot.on('message', msg => {
 								return channel.send(new Discord.MessageEmbed().setDescription('Sorry, what language code did you want to use to translate your name to?').setColor('#b50909'));
 							}
 							break;
+
 						default:
 							return channel.send(new Discord.MessageEmbed().setDescription('Sorry, did you want to change your own nickname or everyone?').setColor('#b50909'));
 					}
