@@ -900,21 +900,40 @@ bot.on('message', msg => {
 							}
 							break;
 						case 'ignore':
-							//Check if you already exist in the database
-							if (!settings["nick-ignored-playerids"].find(i => i === member.id)) {
-								//Add user to database
-								settings["nick-ignored-playerids"].push(member.id);
-								//Write file
-								fs.writeFileSync('./configure.json', JSON.stringify(settings));
-								//Message
-								return channel.send(new Discord.MessageEmbed().setDescription('I have addded you, ' + member.toString() + ' to the nickname ignored members.').setColor('#09b50c'));
+							var option = args[0];
+							args = args.splice(1);
+
+							//Check if option exists
+							if (option) {
+								//Check option
+								switch (option) {
+									case 'list':
+										//List out members
+										var membersList = guild.members.cache
+											.filter((value, key) => settings["nick-ignored-playerids"].includes(key))
+											.map((value, key) => value.toString());
+
+										return channel.send(new Discord.MessageEmbed().setDescription(membersList.length + ' members are being nickname ignored.\n' + membersList.join('\n')));
+									default:
+										return channel.send(new Discord.MessageEmbed().setDescription('Sorry, I am not sure what you want to do?').setColor('#b50909'));
+								}
 							} else {
-								//Remove user from database
-								settings["nick-ignored-playerids"] = settings["nick-ignored-playerids"].filter(i => i !== member.id);
-								//Write file
-								fs.writeFileSync('./configure.json', JSON.stringify(settings));
-								//Message
-								return channel.send(new Discord.MessageEmbed().setDescription('I have removed you, ' + member.toString() + ' from the nick name ignored members.').setColor('#09b50c'));
+								//Check if you already exist in the database
+								if (!settings["nick-ignored-playerids"].find(i => i === member.id)) {
+									//Add user to database
+									settings["nick-ignored-playerids"].push(member.id);
+									//Write file
+									fs.writeFileSync('./configure.json', JSON.stringify(settings));
+									//Message
+									return channel.send(new Discord.MessageEmbed().setDescription('I have addded you, ' + member.toString() + ' to the nickname ignored members.').setColor('#09b50c'));
+								} else {
+									//Remove user from database
+									settings["nick-ignored-playerids"] = settings["nick-ignored-playerids"].filter(i => i !== member.id);
+									//Write file
+									fs.writeFileSync('./configure.json', JSON.stringify(settings));
+									//Message
+									return channel.send(new Discord.MessageEmbed().setDescription('I have removed you, ' + member.toString() + ' from the nick name ignored members.').setColor('#09b50c'));
+								}
 							}
 						default:
 							return channel.send(new Discord.MessageEmbed().setDescription('Sorry, did you want to change your own nickname or everyone?').setColor('#b50909'));
