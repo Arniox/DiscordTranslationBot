@@ -443,7 +443,7 @@ bot.on('message', msg => {
 							value: 'List, add or remove translation ignored patterns to the database for your server. Adding or removing needs the management permissions.'
 						}, {
 							name: settings.prefix + 'nick',
-							value: 'Translate your nickname into a specified language code. Use ' + settings.prefix + 'help nick to see all the available language codes.'
+							value: 'Translate your nickname into a specified language code. Use ' + settings.prefix + 'help nick to see all the available language codes and more info.'
 						}, {
 							name: settings.prefix + 'prykie',
 							value: 'Used on it\'s own, it will post a random prykie quote. Otherwise, you can list, add or remove prykie quotes. Removing quotes needs the management permissions.'
