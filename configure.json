@@ -1,5 +1,6 @@
 {
     "prefix": "$",
     "muteroles": [],
-    "translate-ignored-patterns": []
+    "translate-ignored-patterns": [],
+    "nick-ignored-playerids": []
 }
