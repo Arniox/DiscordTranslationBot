@@ -816,19 +816,21 @@ bot.on('message', msg => {
 									//Check if selected code exists in the supported languages
 									googleTranslate.getSupportedLanguages('en', function (err, languageCodes) {
 										if (languageCodes.find(i => i.language == query.toLowerCase())) {
+											//Grab members
+											var members = guild.members.cache
+												.filter(i => i.user.bot != true && !settings["nick-ignored-playerids"].includes(i.id));
+
 											//Message
-											channel.send(new Discord.MessageEmbed().setDescription('Translating ' + guild.members.cache.filter(i => i.user.bot != true && !settings["nick-ignored-playerids"].includes(i.id)).size +
-												' members nickname\'s into ' + languageCodes.find(i => i.language == query.toLowerCase()).name + '...\n This may take up to ' +
-												guild.members.cache.filter(i => i.user.bot != true && !settings["nick-ignored-playerids"].includes(i.id)).size + ' seconds on a good day...\n' +
+											channel.send(new Discord.MessageEmbed().setDescription('Translating ' + members.size + ' members nickname\'s into ' +
+												languageCodes.find(i => i.language == query.toLowerCase()).name + '...\n This may take up to ' + members.size + ' seconds on a good day...\n' +
 												guild.members.cache.filter(i => i.user.bot != true && settings["nick-ignored-playerids"].includes(i.id)).size + ' nickname ignored members.').setColor('#0099ff'));
 											channel
-												.send(new Discord.MessageEmbed().setDescription('Done 0 / ' +
-													guild.members.cache.filter(i => i.user.bot != true && !settings["nick-ignored-playerids"].includes(i.id)).size).setColor('#FFCC00'))
+												.send(new Discord.MessageEmbed().setDescription('Done 0 / ' + members.size).setColor('#FFCC00'))
 												.then((sent) => {
 													var count = 0;
 
 													//For all members in the guild
-													guild.members.cache.filter(i => i.user.bot != true && !settings["nick-ignored-playerids"].includes(i.id)).map((value, key) => {
+													members.map((value, key) => {
 														//Get current user nickname.
 														var currentUserNickName = (value.nickname != null && typeof (value.nickname) !== undefined && value.nickname !== '' ? value.nickname : value.user.username);
 
@@ -844,15 +846,13 @@ bot.on('message', msg => {
 
 																//Edit message
 																if (count == guild.members.cache.filter(i => i.user.bot != true).size) {
-																	sent.edit(new Discord.MessageEmbed().setDescription('✅ Done ' + count + ' / ' +
-																		guild.members.cache.filter(i => i.user.bot != true).size).setColor('#09b50c'))
+																	sent.edit(new Discord.MessageEmbed().setDescription('✅ Done ' + count + ' / ' + members.size).setColor('#09b50c'));
 																} else {
-																	sent.edit(new Discord.MessageEmbed().setDescription('Done ' + count + ' / ' +
-																		guild.members.cache.filter(i => i.user.bot != true).size).setColor('#FFCC00'))
+																	sent.edit(new Discord.MessageEmbed().setDescription('Done ' + count + ' / ' + members.size).setColor('#FFCC00'));
 																}
 															} else {
 																channel.send(new Discord.MessageEmbed().setDescription('I had a problem translating ' + value.toString() +
-																	' nickname').setColor('#b50909'));
+																	' nickname due to Missing Permissions.').setColor('#b50909'));
 															}
 														});
 													});
