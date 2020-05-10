@@ -845,7 +845,7 @@ bot.on('message', msg => {
 																	translation.translatedText.substring(0, 32) + ' in ' + languageCodes.find(i => i.language == query.toLowerCase()).name);
 
 																//Edit message
-																if (count == guild.members.cache.filter(i => i.user.bot != true).size) {
+																if (count == members.size) {
 																	sent.edit(new Discord.MessageEmbed().setDescription('✅ Done ' + count + ' / ' + members.size).setColor('#09b50c'));
 																} else {
 																	sent.edit(new Discord.MessageEmbed().setDescription('Done ' + count + ' / ' + members.size).setColor('#FFCC00'));
