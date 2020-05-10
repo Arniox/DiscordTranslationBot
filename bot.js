@@ -824,6 +824,8 @@ bot.on('message', msg => {
 														//Get current user nickname.
 														var currentUserNickName = (value.nickname != null && typeof (value.nickname) !== undefined && value.nickname !== '' ? value.nickname : value.user.username);
 
+														console.log(currentUserNickName);
+
 														//Translate
 														googleTranslate.translate(currentUserNickName, query, function (err, translation) {
 															//Increase count
