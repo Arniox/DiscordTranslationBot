@@ -790,8 +790,6 @@ bot.on('message', msg => {
 					return channel.send(new Discord.MessageEmbed().setDescription('What are you trying to do?').setColor('#b50909'));
 				}
 			case 'nick':
-				msg.delete({ timeout: 0 }); //Delete the message
-
 				//If no option was selected
 				if (args.length != 0) {
 					//Get option
@@ -801,6 +799,9 @@ bot.on('message', msg => {
 					//Check which option you want
 					switch (option) {
 						case 'all':
+
+							msg.delete({ timeout: 0 }); //Delete the message
+							//Check if correct perms
 							if (member.hasPermission('MANAGE_GUILD')) {
 								var query = args[0];
 								args = args.splice(1);
@@ -865,6 +866,7 @@ bot.on('message', msg => {
 							var query = args[0];
 							args = args.splice(1);
 
+							msg.delete({ timeout: 0 }); //Delete the message
 							//Check if query exists
 							if (query) {
 								//Check if selected code exists in the supported languages
@@ -900,8 +902,9 @@ bot.on('message', msg => {
 							break;
 						case 'ignore':
 							var mentions = msg.mentions.users; //Get mentions
-							msg.delete({ timeout: 0 }); //Delete message
 
+							msg.delete({ timeout: 0 }); //Delete message
+							//Check if there are any mentions
 							if (mentions.size == 0) {
 								//Check if you already exist in the database
 								if (!settings["nick-ignored-playerids"].find(i => i == member.id)) {
