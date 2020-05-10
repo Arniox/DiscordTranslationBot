@@ -1,7 +1,5 @@
 {
     "prefix": "$",
     "muteroles": [],
-    "translate-ignored-patterns": [
-        "/(<:[A-Za-z]+:\\d+>)/gi"
-    ]
+    "translate-ignored-patterns": []
 }
