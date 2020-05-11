@@ -1219,7 +1219,7 @@ bot.on('message', msg => {
 														var voiceChannelTO = guild.channels.cache.find(i => i.name.toLowerCase() == e.toLowerCase() && i.type == 'voice');
 														if (voiceChannelTO) {
 															//Get a number of players randomly
-															var playersToMoveInVoice = playersFoundInVoice.sort(() => Math.random() - Math.random()).slice(0, (Math.floor(playersFoundInVoice.length / selectorSize)));
+															var playersToMoveInVoice = playersFoundInVoice.sort(() => Math.random() - Math.random()).slice(0, (Math.ceil(playersFoundInVoice.length / selectorSize)));
 															if (playersToMoveInVoice) {
 																playersToMoveInVoice.forEach(e => {
 																	e.voice.setChannel(voiceChannelTO);
@@ -1227,7 +1227,7 @@ bot.on('message', msg => {
 																//Added counts
 																countOfMovedPlayers += playersToMoveInVoice.length;
 																//Remove already moved players
-																playersFoundInVoice = playersFoundInVoice.filter((value, key) => !playersToMoveInVoice.includes(value));
+																playersFoundInVoice = playersFoundInVoice.filter(e => !playersToMoveInVoice.map(j => j.id).includes(e.id));
 															} //Ignore broken players
 														} else {
 															return channel.send(new Discord.MessageEmbed().setDescription('Could not find a voice channel with the name ' + e).setColor('#b50909'));
@@ -1271,7 +1271,7 @@ bot.on('message', msg => {
 												var voiceChannelTO = guild.channels.cache.find(i => i.name.toLowerCase() == e.toLowerCase() && i.type == 'voice');
 												if (voiceChannelTO) {
 													//Get a number of players randomly
-													var playersToMoveAll = playersFoundAll.map((value, key) => value).sort(() => Math.random() - Math.random()).slice(0, (Math.floor(playersFoundAll.size / selectorSize)));
+													var playersToMoveAll = playersFoundAll.map((value, key) => value).sort(() => Math.random() - Math.random()).slice(0, (Math.ceil(playersFoundAll.size / selectorSize)));
 													if (playersToMoveAll) {
 														playersToMoveAll.forEach(e => {
 															e.voice.setChannel(voiceChannelTO);
@@ -1279,7 +1279,7 @@ bot.on('message', msg => {
 														//Added counts
 														countOfMovedPlayers += playersToMoveAll.length;
 														//Remove already moved players
-														playersFoundAll = playersFoundAll.filter((value, key) => !playersToMoveAll.includes(value));
+														playersFoundAll = playersFoundAll.filter((value, key) => !playersToMoveAll.map(e => e.id).includes(key));
 													} //Ignore broken players
 												} else {
 													return channel.send(new Discord.MessageEmbed().setDescription('Could not find a voice channel with the name ' + e).setColor('#b50909'));
@@ -1313,7 +1313,7 @@ bot.on('message', msg => {
 												args = args.splice(1);
 
 												console.log('----------------Channel Selector and size--------------------------------');
-												console.log(channelSelector);
+												console.log(channelSelectors);
 												console.log(selectorSize);
 
 												var countOfMovedPlayers = 0
@@ -1323,7 +1323,7 @@ bot.on('message', msg => {
 													var voiceChannelTO = guild.channels.cache.find(i => i.name.toLowerCase() == e.toLowerCase() && i.type == 'voice');
 													if (voiceChannelTO) {
 														//Get a number of players randomly
-														var playersToMoveInVoice = playersFoundInVoice.map((value, key) => value).sort(() => Math.random() - Math.random()).slice(0, (Math.floor(playersFoundInVoice.size / selectorSize)));
+														var playersToMoveInVoice = playersFoundInVoice.map((value, key) => value).sort(() => Math.random() - Math.random()).slice(0, (Math.ceil(playersFoundInVoice.size / selectorSize)));
 
 														console.log('----------------Chosen players to move--------------------------------');
 														console.log(playersToMoveInVoice);
@@ -1339,7 +1339,7 @@ bot.on('message', msg => {
 															//Added counts
 															countOfMovedPlayers += playersToMoveInVoice.length;
 															//Remove already moved players
-															playersFoundInVoice = playersFoundInVoice.filter((value, key) => !playersToMoveInVoice.includes(value));
+															playersFoundInVoice = playersFoundInVoice.filter((value, key) => !playersToMoveInVoice.map(e => e.id).includes(key));
 														} //Ignore broken players
 													} else {
 														return channel.send(new Discord.MessageEmbed().setDescription('Could not find a voice channel with the name ' + e).setColor('#b50909'));
