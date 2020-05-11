@@ -1341,6 +1341,10 @@ bot.on('message', msg => {
 															//Remove already moved players
 															playersFoundInVoice = playersFoundInVoice.filter((value, key) => !playersToMoveInVoice.map(e => e.id).includes(key));
 														} //Ignore broken players
+
+														console.log('----------------Updated players to move in voice--------------------------------');
+														console.log(playersFoundInVoice);
+														console.log(playersFoundInVoice.size);
 													} else {
 														return channel.send(new Discord.MessageEmbed().setDescription('Could not find a voice channel with the name ' + e).setColor('#b50909'));
 													}
