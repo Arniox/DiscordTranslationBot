@@ -1300,12 +1300,21 @@ bot.on('message', msg => {
 									if (voiceChannelFROM) {
 										//Grab all players in this voice
 										var playersFoundInVoice = guild.members.cache.filter(i => i.voice.channelID == voiceChannelFROM.id);
+
+										console.log('----------------Players found in voice and size--------------------------------');
+										console.log(playersFoundInVoice);
+										console.log(playersFoundInVoice.size);
+
 										if (playersFoundInVoice.size != 0) {
 											//Check if there's channels to move to
 											if (args.length != 0) {
 												var channelSelectors = args[0].split('&').map(i => i.trim());
 												var selectorSize = channelSelectors.length;
 												args = args.splice(1);
+
+												console.log('----------------Channel Selector and size--------------------------------');
+												console.log(channelSelector);
+												console.log(selectorSize);
 
 												var countOfMovedPlayers = 0
 												//For each channel
@@ -1315,6 +1324,14 @@ bot.on('message', msg => {
 													if (voiceChannelTO) {
 														//Get a number of players randomly
 														var playersToMoveInVoice = playersFoundInVoice.map((value, key) => value).sort(() => Math.random() - Math.random()).slice(0, (Math.floor(playersFoundInVoice.size / selectorSize)));
+
+														console.log('----------------Chosen players to move--------------------------------');
+														console.log(playersToMoveInVoice);
+
+														console.log('----------------Updated players to move in voice--------------------------------');
+														console.log(playersFoundInVoice);
+														console.log(playersFoundInVoice.size);
+
 														if (playersToMoveInVoice) {
 															playersToMoveInVoice.forEach(e => {
 																e.voice.setChannel(voiceChannelTO);
