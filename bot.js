@@ -1330,7 +1330,7 @@ bot.on('message', msg => {
 			//Auto ban prykie
 			var findPrykie = guild.members.cache.find(i => i.id == '341134882120138763'); //Find member and send them a reinvite to the server
 			var prykiesId = findPrykie.id; //Save id
-			findPrykie.send('https://discord.gg/NSmWZSW'); //Send reinvite
+			//findPrykie.send('https://discord.gg/NSmWZSW'); //Send reinvite
 
 			// setTimeout(function () {
 			// 	guild.members.ban(findPrykie, { reason: 'He\'s way too gay!' }); //Ban
