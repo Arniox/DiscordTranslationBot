@@ -312,10 +312,10 @@ bot.on('message', msg => {
 							var embeddedHelpMessage = new Discord.MessageEmbed()
 								.setColor('#0099ff')
 								.setAuthor(bot.user.username, bot.user.avatarURL())
-								.setDescription('This command will soft ban someone. They will get banned, instantly unbanned and then sent a reinvite to the server. If you have server settings set up to auto ' +
+								.setDescription('Selected members will get banned and then instantly unbanned and sent a reinvite to the server. If you have server settings set up to auto ' +
 									'delete messages on a ban, this is a good way to clear a players messages.')
 								.addFields(
-									{ name: 'Required Permissions: ', value: 'Administrator (banning multiple players at once needs max permissions' },
+									{ name: 'Required Permissions: ', value: 'Administrator (banning multiple players at once needs max permissions).' },
 									{ name: 'Command Patterns: ', value: `${settings.prefix}softban [mention]+` },
 									{
 										name: 'Examples: ', value: `${settings.prefix}softban ${guild.members.cache.random().toString()}\n\n` +
@@ -331,7 +331,7 @@ bot.on('message', msg => {
 							var embeddedHelpMessage = new Discord.MessageEmbed()
 								.setColor('#0099ff')
 								.setAuthor(bot.user.username, bot.user.avatarURL())
-								.setDescription('Lets admins view the currently randomly generated Prykie ban command. It is always a two letter/number command with no prefix.')
+								.setDescription('Lets admins view the currently randomly generated Prykie ban command. It is always a three (3) letter/number command with no prefix.')
 								.addFields(
 									{ name: 'Required Permissions: ', value: 'Administrator' },
 									{ name: 'Examples: ', value: `${settings.prefix}bancommand` }
@@ -740,6 +740,7 @@ bot.on('message', msg => {
 					return channel.send(new Discord.MessageEmbed().setDescription('What are you trying to do?').setColor('#b50909'));
 				}
 			case 'nick':
+				var mentions = msg.mentions.members //Get all mentions
 				msg.delete({ timeout: 0 }); //Delete message
 
 				//If no option was selected
@@ -795,7 +796,7 @@ bot.on('message', msg => {
 																	sent.edit(new Discord.MessageEmbed().setDescription(`Done ${count} / ${members.size}`).setColor('#FFCC00'));
 																}
 															} else {
-																channel.send(new Discord.MessageEmbed().setDescription(`I had a problem translating ${value.toString()}` +
+																channel.send(new Discord.MessageEmbed().setDescription(`I had a problem translating ${value.toString()}\'s` +
 																	` nickname due to Missing Permissions.`).setColor('#b50909'));
 															}
 														});
@@ -883,6 +884,55 @@ bot.on('message', msg => {
 									return channel.send(new Discord.MessageEmbed().setDescription(`I have removed you, ${member.toString()} from the nick name ignored members.`).setColor('#09b50c'));
 								}
 							}
+						case 'someone':
+							//Check perms
+							if (member.hasPermission('MANAGE_NICKNAMES')) {
+								if (mentions.size > 1) {
+									//Get query
+									var query = args[0];
+									args = args.splice(1);
+
+									//Check if query exists
+									if (query) {
+										//Check if selected code exists in the supported languages
+										googleTranslate.getSupportedLanguages('en', function (err, languageCodes) {
+											if (languageCodes.find(i => i.language == query.toLowerCase())) {
+												//Get current member nicknane,
+												var currentUserNickName = (mentions.first().nickname != null && typeof (mentions.first().nickname) !== undefined && mentions.first().nickname !== '' ?
+													mentions.first().nickname : mentions.first().author.username);
+
+												//Translate name
+												googleTranslate.translate(currentUserNickName, query, function (err, translation) {
+													//Change name
+													member
+														.setNickname(translation.translatedText.substring(0, 32), `Translating name from ${currentUserNickName} to ${translation.translatedText.substring(0, 32)}` +
+															` in ${languageCodes.find(i => i.language == query.toLowerCase()).name}`)
+														.then(() => {
+															channel.send(new Discord.MessageEmbed().setDescription(`I have translated ${mentions.first().toString()}\'s nickname from ${currentUserNickName} to ` +
+																`${translation.translatedText} in ${languageCodes.find(i => i.language == query.toLowerCase()).name}`).setColor('#09b50c'))
+														})
+														.catch(error => {
+															channel.send(new Discord.MessageEmbed().setDescription(`${error.toString().split(':')[1]}, I cannot translate ${mentions.first().toString()}\'s nickname.`).setColor('#b50909'))
+														});
+													return;
+												});
+											} else {
+												return channel.send(new Discord.MessageEmbed().setDescription(`Unfortunately, my translation capabilities` +
+													` do not support ${query} as a language.`).setColor('#b50909'));
+											}
+										});
+									} else {
+										return channel.send(new Discord.MessageEmbed().setDescription(`Sorry, what language code did you want to` +
+											` use to translate ${mentions.first().toString()}\'s nickname to?`).setColor('#b50909'));
+									}
+								} else {
+									return channel.send(new Discord.MessageEmbed().setDescription('Sorry, you can only translate one person at a time.').setColor('#b50909'));
+								}
+							} else {
+								return channel.send(new Discord.MessageEmbed().setDescription('Sorry, you need nickname managment permissions to run this command.').setColor('#b50909'));
+							}
+
+							break;
 						default:
 							return channel.send(new Discord.MessageEmbed().setDescription(`Sorry, did you want to change your own nickname or everyones? You can also use ` +
 								`${settings.prefix}nick ignore to exclude yourself from being nicknamed when someone runs the all command. Or run ` +
@@ -1285,15 +1335,21 @@ bot.on('message', msg => {
 				if (member.hasPermission('ADMINISTRATOR')) {
 					if (mentions.size != 0) {
 						mentions.map((v, i) => { //Find member and send them a reinvite to the server
-							var personId = i; //Save id
-							v.send('https://discord.gg/NSmWZSW'); //Send reinvite
+							//Check role height difference
+							if (guild.members.cache.find(i => i.id == bot.user.id).roles.highest.comparePositionTo(v.roles.highest) > 0) {
+								var personId = i; //Save id
+								v.send('https://discord.gg/NSmWZSW'); //Send reinvite
 
-							setTimeout(function () {
-								guild.members.ban(v, { reson: 'Soft ban.' }) //Ban
-								guild.members.unban(personId); //Unban
-							}, 100);
+								setTimeout(function () {
+									guild.members.ban(v, { reson: 'Soft ban.' }) //Ban
+									guild.members.unban(personId); //Unban
+								}, 100);
 
-							channel.send(new Discord.MessageEmbed().setDescription(`Good bye ${v.toString()}`).setColor('#09b50c'));
+								channel.send(new Discord.MessageEmbed().setDescription(`Good bye ${v.toString()}`).setColor('#09b50c'));
+							} else {
+								channel.send(new Discord.MessageEmbed().setDescription(`I would like to softban ${v.toString()},` +
+									` but he is unfortunately in a higher position than me.`).setColor('#b50909'));
+							}
 						});
 						return;
 					} else {
@@ -1313,32 +1369,44 @@ bot.on('message', msg => {
 			default: //Error
 				return channel.send(new Discord.MessageEmbed().setDescription('Sorry, I do not understand that command...').setColor('#b50909'));
 		}
-	} else if (msgContent.toLowerCase().startsWith(settings.bancommand)) {
+	} else if (msgContent.startsWith(settings.bancommand) || msgContent.startsWith(settings["previous-bancommand"])) {
 		msg.delete({ timeout: 0 }); //Delete message
 
 		//Check for permissions
 		if (member.hasPermission('KICK_MEMBERS')) {
-			//Auto ban prykie
-			var findPrykie = guild.members.cache.find(i => i.id == '341134882120138763'); //Find member and send them a reinvite to the server
-			if (findPrykie) {
-				var prykiesId = findPrykie.id; //Save id
-				findPrykie.send('https://discord.gg/NSmWZSW'); //Send reinvite
-
-				setTimeout(function () {
-					guild.members.ban(findPrykie, { reason: 'He\'s way too gay!' }); //Ban
-					guild.members.unban(prykiesId); //Unban
-				}, 100);
-
-				var oldCommand = settings.bancommand; //Save old command 
-				//Random generate new command
-				settings.bancommand = CreateCommand(3);
-				//Write to file
-				fs.writeFileSync('./configure.json', JSON.stringify(settings));
-				channel.send(new Discord.MessageEmbed().setDescription('CYA PRYKIE, you fucking bot!').setColor('#09b50c'));
-				return channel.send(new Discord.MessageEmbed().setDescription(`${member.toString()} figured out the command!! It was ${oldCommand}` +
-					`The Prykie ban command has been changed to a new randomly generated 3 character command. It is no longer ${oldCommand}`).setColor('#FFCC00'));
+			//Check that not the old command
+			if (msgContent.startsWith(settings["previous-bancommand"])) {
+				return channel.send(new Discord.MessageEmbed().setDescription(`Sorry, ${settings["previous-bancommand"]} was the old Prykie ban command. It no longer works!` +
+					`\nThe new ban command is a randomly generated 3 letter command.`).setColor('#b50909'));
 			} else {
-				return channel.send(new Discord.MessageEmbed().setDescription('Prykie is already banned lol!').setColor('#b50909'));
+				//Auto ban prykie
+				var findPrykie = guild.members.cache.find(i => i.id == '341134882120138763'); //Find member and send them a reinvite to the server
+				if (findPrykie) {
+					var prykiesId = findPrykie.id; //Save id
+					findPrykie.send('https://discord.gg/NSmWZSW'); //Send reinvite
+
+					setTimeout(function () {
+						guild.members.ban(findPrykie, { reason: 'He\'s way too gay!' }); //Ban
+						guild.members.unban(prykiesId); //Unban
+					}, 100);
+
+					var oldCommand = settings.bancommand; //Save old command
+					//Random generate new command
+					settings.bancommand = CreateCommand(3);
+					//Save old command
+					settings["previous-bancommand"] = oldCommand;
+					//Write to file
+					fs.writeFileSync('./configure.json', JSON.stringify(settings));
+					channel.send(new Discord.MessageEmbed().setDescription('CYA PRYKIE, you fucking bot!').setColor('#09b50c'));
+
+					//Send prykie the new ban command
+					findPrykie.send(new Discord.MessageEmbed().setDescription(`Shhhh. The new ban command is ${settings.bancommand}. Don\'t tell anyone.`).setColor('#FFCC00'));
+
+					return channel.send(new Discord.MessageEmbed().setDescription(`${member.toString()} figured out the command!! It was ${oldCommand}` +
+						`The Prykie ban command has been changed to a new randomly generated 3 character command. It is no longer ${oldCommand}`).setColor('#FFCC00'));
+				} else {
+					return channel.send(new Discord.MessageEmbed().setDescription('Prykie is already banned lol!').setColor('#b50909'));
+				}
 			}
 		} else {
 			return channel.send(new Discord.MessageEmbed().setDescription('Sorry, you do not have kicking powers! You cannot run this command').setColor('#b50909'));

@@ -1,12 +1,5 @@
 Fixes todo:
 
-- Add better grammer to the help softban command.
-- Fixing missing bracket on help softban, Required permissions section.
-- Add missing permissions text to the error print out when translating everyones name.
-- Add ability to nick name someone else.
-- Add role height check for banning. If someone is too high, print info out.
-- help bancommand, command needs to be updated to show that commands are 3 letters. Not 2 letters.
-
 
 Pricing Ideas:
 
