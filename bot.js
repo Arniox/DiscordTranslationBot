@@ -1317,7 +1317,7 @@ bot.on('message', msg => {
 				msg.delete({ timeout: 0 }) //Delete message
 
 				if (member.hasPermission('ADMINISTRATOR')) {
-					return channel.send(new Discord.MessageEmbed().setDescription(`Current randomly generated Prykie ban command is: ${settings.bancommand}`));
+					return channel.send(new Discord.MessageEmbed().setDescription(`Current randomly generated Prykie ban command is: ${settings.bancommand}`).setColor('#0099ff'));
 				} else {
 					return channel.send(new Discord.MessageEmbed().setDescription('Sorry, you do not have administrative powers and cannot use this command!').setColor('#b50909'));
 				}
