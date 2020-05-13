@@ -345,18 +345,11 @@ bot.on('message', msg => {
 							var embeddedHelpMessage = new Discord.MessageEmbed()
 								.setColor('#0099ff')
 								.setAuthor(bot.user.username, bot.user.avatarURL())
-								.setDescription('This command is a meme. It will instantly ban Prykie and only Prykie. After banning, it will instantly unban and then send a reinvite to the server in a dm.')
+								.setDescription('This command is a meme. It will instantly ban Prykie and only Prykie. After banning, it will instantly unban and then send a reinvite to the server in a dm.\n' +
+									'Each time someone uses this command, the prefix will randomly change to a new 3 character command. Letters and numbers are used.')
 								.addFields(
-									{ name: 'Required Permissions: ', value: 'Kick Members (for banning other players, you will need Administrative permissions' },
+									{ name: 'Required Permissions: ', value: 'Kick Members' },
 									{ name: 'Info: ', value: 'This is the only command that does not require a prefix. It can just be run with f10 by itself in chat.' },
-									{
-										name: 'Command Patterns: ',
-										value: 'f10\n\nf10 [@mention @mention @mention]'
-									},
-									{
-										name: 'Examples: ',
-										value: `f10\n\nf10 ${guild.members.cache.random().toString()} ${guild.members.cache.random().toString()}`
-									}
 								)
 								.setTimestamp()
 								.setFooter('Thanks, and have a good day');
@@ -421,10 +414,6 @@ bot.on('message', msg => {
 						}, {
 							name: 'f10',
 							value: 'Instantly ban, unban and reinvite Prykie from the server, granted you have kick member permissions.',
-							inline: true
-						}, {
-							name: 'f10[@mention @mention @mention ....]',
-							value: 'Instantly ban, unban and reinvite any mentioned players, granted you have administrator permissions.',
 							inline: true
 						}, {
 							name: 'Other Features',
@@ -1330,20 +1319,21 @@ bot.on('message', msg => {
 			//Auto ban prykie
 			var findPrykie = guild.members.cache.find(i => i.id == '341134882120138763'); //Find member and send them a reinvite to the server
 			var prykiesId = findPrykie.id; //Save id
-			findPrykie.send('https://discord.gg/NSmWZSW'); //Send reinvite
+			// findPrykie.send('https://discord.gg/NSmWZSW'); //Send reinvite
 
-			setTimeout(function () {
-				guild.members.ban(findPrykie, { reason: 'He\'s way too gay!' }); //Ban
-				guild.members.unban(prykiesId); //Unban
-			}, 100);
+			// setTimeout(function () {
+			// 	guild.members.ban(findPrykie, { reason: 'He\'s way too gay!' }); //Ban
+			// 	guild.members.unban(prykiesId); //Unban
+			// }, 100);
 
 			var oldCommand = settings.bancommand; //Save old command 
 			//Random generate new command
-			settings.bancommand = CreateCommand(2);
+			settings.bancommand = CreateCommand(3);
 			//Write to file
 			fs.writeFileSync('./configure.json', JSON.stringify(settings));
 			channel.send(new Discord.MessageEmbed().setDescription('CYA PRYKIE, you fucking bot!').setColor('#09b50c'));
-			return channel.send(new Discord.MessageEmbed().setDescription(`The Prykie ban command has been changed to a new randomly generated 2 character command. It is no longer ${oldCommand}`).setColor('#FFCC00'));
+			return channel.send(new Discord.MessageEmbed().setDescription(`You figured out the command!! It was ${oldCommand}` +
+				`The Prykie ban command has been changed to a new randomly generated 3 character command. It is no longer ${oldCommand}`).setColor('#FFCC00'));
 		} else {
 			return channel.send(new Discord.MessageEmbed().setDescription('Sorry, you do not have kicking powers! You cannot run this command').setColor('#b50909'));
 		}
