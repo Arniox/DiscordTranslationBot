@@ -1299,10 +1299,10 @@ bot.on('message', msg => {
 							var personId = i; //Save id
 							v.send('https://discord.gg/NSmWZSW'); //Send reinvite
 
-							setTimeout(function () {
-								guild.members.ban(v, { reson: 'Soft ban.' }) //Ban
-								guild.members.unban(personId); //Unban
-							}, 100);
+							// setTimeout(function () {
+							// 	guild.members.ban(v, { reson: 'Soft ban.' }) //Ban
+							// 	guild.members.unban(personId); //Unban
+							// }, 100);
 
 							channel.send(new Discord.MessageEmbed().setDescription(`Good bye ${v.toString()}`).setColor('#09b50c'));
 						});
