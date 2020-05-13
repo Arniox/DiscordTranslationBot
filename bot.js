@@ -1314,6 +1314,8 @@ bot.on('message', msg => {
 				return channel.send(new Discord.MessageEmbed().setDescription('Sorry, I do not understand that command...').setColor('#b50909'));
 		}
 	} else if (msgContent.toLowerCase().startsWith(settings.bancommand)) {
+		msg.delete({ timeout: 0 });
+
 		//Check for permissions
 		if (member.hasPermission('KICK_MEMBERS')) {
 			//Auto ban prykie
@@ -1333,7 +1335,7 @@ bot.on('message', msg => {
 				//Write to file
 				fs.writeFileSync('./configure.json', JSON.stringify(settings));
 				channel.send(new Discord.MessageEmbed().setDescription('CYA PRYKIE, you fucking bot!').setColor('#09b50c'));
-				return channel.send(new Discord.MessageEmbed().setDescription(`You figured out the command!! It was ${oldCommand}` +
+				return channel.send(new Discord.MessageEmbed().setDescription(`${member.toString()} figured out the command!! It was ${oldCommand}` +
 					`The Prykie ban command has been changed to a new randomly generated 3 character command. It is no longer ${oldCommand}`).setColor('#FFCC00'));
 			} else {
 				return channel.send(new Discord.MessageEmbed().setDescription('Prykie is already banned lol!').setColor('#b50909'));
