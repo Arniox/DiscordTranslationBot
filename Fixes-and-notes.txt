@@ -1,0 +1,25 @@
+Fixes todo:
+
+- Add better grammer to the help softban command.
+- Fixing missing bracket on help softban, Required permissions section.
+- Add missing permissions text to the error print out when translating everyones name.
+- Add ability to nick name someone else.
+- Add role height check for banning. If someone is too high, print info out.
+- help bancommand, command needs to be updated to show that commands are 3 letters. Not 2 letters.
+
+
+Pricing Ideas:
+
+- Under 250,000 characters translated per month = Free use
+- 250,000 characters translated per month = $1 per month
+- 500,000 characters translated per month = $12 per month
+- 1,000,000 characters translated per month = $25 per month
+- 2,000,000 characters translated per month = $50 per month
+- 5,000,000 characters translated per month = $120 per month
+- 10,000,000 characers translated per month = $230 per month
+
+For every 1,000,000 more characters than 10,000,000 translated per month, 
+it will only cost an extra $30 dollars on top of $230 per month.
+Eg: 20,000,000 characters translated per month = $530 per month.
+
+Cost calculation is equal to (3 x number of translations per month) / 100,000 - 70
