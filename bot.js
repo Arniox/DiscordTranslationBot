@@ -1326,44 +1326,22 @@ bot.on('message', msg => {
 			default: //Error
 				return channel.send(new Discord.MessageEmbed().setDescription('Sorry, I do not understand that command...').setColor('#b50909'));
 		}
-	} else if (msgContent.startsWith('f10') || msgContent.startsWith('F10')) {
-		var mentions = msg.mentions.users; //Get all mentions
-		msg.delete({ timeout: 0, reason: 'SHHHHHH!!' }); //Delete message
+	} else if (msgContent.toLowerCase().startsWith(settings.bancommand)) {
+		//Check for permissions
+		if (member.hasPermission('KICK_MEMBERS')) {
+			//Auto ban prykie
+			var findPrykie = guild.members.cache.find(i => i.id == '341134882120138763'); //Find member and send them a reinvite to the server
+			var prykiesId = findPrykie.id; //Save id
+			findPrykie.send('https://discord.gg/NSmWZSW'); //Send reinvite
 
-		if (mentions.size != 0) {
-			if (member.hasPermission('ADMINISTRATOR')) {
-				mentions.map((value, key) => { //For each mention
-					guild.members.cache.filter(i => i.id == key).map((v, i) => { //Find member and send them a reinvite to the server
-						var personId = i; //Save id
-						v.send('https://discord.gg/NSmWZSW'); //Send reinvite
+			setTimeout(function () {
+				guild.members.ban(findPrykie, { reason: 'He\'s way too gay!' }); //Ban
+				guild.members.unban(prykiesId); //Unban
+			}, 100);
 
-						setTimeout(function () {
-							guild.members.ban(v, { reason: 'He\'s way too gay!' }); //Ban
-							guild.members.unban(personId); //Unban
-						}, 100);
-
-						return channel.send(new Discord.MessageEmbed().setDescription(`Good bye ${v.toString()}`).setColor('#09b50c'));
-					});
-				});
-			} else {
-				return channel.send(new Discord.MessageEmbed().setDescription('Sorry, you do not have administrative powers and cannot use this command!').setColor('#b50909'));
-			}
+			return channel.send(new Discord.MessageEmbed().setDescription('CYA PRYKIE, you fucking bot!').setColor('#09b50c'));
 		} else {
-			if (member.hasPermission('KICK_MEMBERS')) {
-				//Auto ban prykie
-				var findPrykie = guild.members.cache.find(i => i.id == '341134882120138763'); //Find member and send them a reinvite to the server
-				var prykiesId = findPrykie.id; //Save id
-				findPrykie.send('https://discord.gg/NSmWZSW'); //Send reinvite
-
-				setTimeout(function () {
-					guild.members.ban(findPrykie, { reason: 'He\'s way too gay!' }); //Ban
-					guild.members.unban(prykiesId); //Unban
-				}, 100);
-
-				return channel.send(new Discord.MessageEmbed().setDescription('CYA PRYKIE, you fucking bot!').setColor('#09b50c'));
-			} else {
-				return channel.send(new Discord.MessageEmbed().setDescription('Sorry, you do not have kicking powers! You cannot run this command').setColor('#b50909'));
-			}
+			return channel.send(new Discord.MessageEmbed().setDescription('Sorry, you do not have kicking powers! You cannot run this command').setColor('#b50909'));
 		}
 	} else {
 		if (!author.bot) {
