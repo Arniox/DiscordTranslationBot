@@ -1337,7 +1337,7 @@ bot.on('message', msg => {
 			// 	guild.members.unban(prykiesId); //Unban
 			// }, 100);
 
-			var oldCommand = settings.bancommand; //Save old command
+			var oldCommand = settings.bancommand; //Save old command 
 			//Random generate new command
 			settings.bancommand = CreateCommand(2);
 			//Write to file
