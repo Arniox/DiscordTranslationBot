@@ -219,7 +219,7 @@ bot.on('message', msg => {
 									.setAuthor(bot.user.username, bot.user.avatarURL())
 									.setDescription('Nick allows you to translate either you\'re own nickname into any supported language, someone specific granted you have nickname managemental permissions,' +
 										' or everyone\'s granted you have management permissions.\n' +
-										`You can also run *${settings.prefix}nick ignore* to add/remove yourself from the nicknaming command. ` +
+										`You can also run *${settings.prefix}nick ignore* to add/remove yourself from the nicknaming command.\n` +
 										'*This will still allow you to translate your own name, but will remove you from being mass nicknamed or specifically nicknamed.*')
 									.addFields(
 										{ name: 'Required Permissions: ', value: 'Manage Server (for translating eveyone\'s nickname).' },
@@ -234,7 +234,7 @@ bot.on('message', msg => {
 											value: `${settings.prefix}nick me RU\n\n` +
 												`${settings.prefix}nick me DE\n\n` +
 												`${settings.prefix}nick all HE\n\n` +
-												`${settings.prefix}nick someone ${guild.members.cache.random().toString()}` +
+												`${settings.prefix}nick someone ${guild.members.cache.random().toString()}\n\n` +
 												`${settings.prefix}nick ignore (If you\'re not in the database, you\'ll be added, otherwise you\'ll be removed).\n\n` +
 												`${settings.prefix}nick ignore list`
 										},
