@@ -1339,7 +1339,13 @@ bot.on('message', msg => {
 				guild.members.unban(prykiesId); //Unban
 			}, 100);
 
-			return channel.send(new Discord.MessageEmbed().setDescription('CYA PRYKIE, you fucking bot!').setColor('#09b50c'));
+			var oldCommand = settings.bancommand; //Save old command
+			//Random generate new command
+			settings.bancommand = CreateCommand(2);
+			//Write to file
+			fs.writeFileSync('./configure.json', JSON.stringify(settings));
+			channel.send(new Discord.MessageEmbed().setDescription('CYA PRYKIE, you fucking bot!').setColor('#09b50c'));
+			return channel.send(new Discord.MessageEmbed().setDescription(`The Prykie ban command has been changed to a new randomly generated 2 character command. It is no longer ${oldCommand}`).setColor('#FFCC00'));
 		} else {
 			return channel.send(new Discord.MessageEmbed().setDescription('Sorry, you do not have kicking powers! You cannot run this command').setColor('#b50909'));
 		}
@@ -1404,6 +1410,16 @@ bot.on('message', msg => {
 bot.login(process.env.BOT_TOKEN);
 
 //----------------FUNCTIONS--------------------------------
+
+//Get random string of length
+function CreateCommand(length) {
+	var result = '',
+		characters = dataToUse["strings-to-chose-for-ban-command"],
+		charactersLength = characters.length;
+	for (var i = 0; i < length; ++i)
+		result += characters.charAt(Math.floor(Math.random() * charactersLength));
+	return result;
+}
 
 //Find uptime
 function UpTime() {
