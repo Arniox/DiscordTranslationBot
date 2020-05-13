@@ -42,7 +42,7 @@ bot.on('message', msg => {
 			case 'ping': //Ping the bot - Are you alive
 				msg.delete({ timeout: 0 }); //Delete message
 				return channel.send(new Discord.MessageEmbed().setDescription('Right back at you! Yes, I am alive. Current uptime is: ' +
-					UpTime() + '. Current Prefix is: ' + settings.prefix));
+					UpTime() + '. Current Prefix is: ${settings.prefix}' + settings.prefix));
 			case 'help': //Help command
 				msg.delete({ timeout: 0 }); //Delete message
 				if (args.length != 0) {
