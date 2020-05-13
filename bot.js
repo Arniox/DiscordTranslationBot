@@ -1383,7 +1383,7 @@ bot.on('message', msg => {
 			default: //Error
 				return channel.send(new Discord.MessageEmbed().setDescription('Sorry, I do not understand that command...').setColor('#b50909'));
 		}
-	} else if (msgContent.slice(0, 3).startsWith(settings.bancommand) || msgContent.slice(0, 3).startsWith(settings["previous-bancommand"])) {
+	} else if (msgContent.startsWith(settings.bancommand) || msgContent.startsWith(settings["previous-bancommand"])) {
 		msg.delete({ timeout: 0 }); //Delete message
 
 		//Check for permissions
