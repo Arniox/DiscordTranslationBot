@@ -895,6 +895,7 @@ bot.on('message', msg => {
 										//Check that they are not a nickname ignored member
 										if (!settings["nick-ignored-playerids"].includes(mentions.first().id)) {
 											//Get query
+											args = args.splice(1); //Remove mention
 											var query = args[0];
 											args = args.splice(1);
 
