@@ -1290,7 +1290,7 @@ bot.on('message', msg => {
 					return channel.send(new Discord.MessageEmbed().setDescription('Sorry, you need moving powers to run this command.').setColor('#b50909'));
 				}
 			case 'softban':
-				var mentions = msg.mentions.user; //Get all mentions
+				var mentions = msg.mentions; //Get all mentions
 				msg.delete({ timeout: 0 }); //Delete message
 
 				if (member.hasPermission('ADMINISTRATOR')) {
