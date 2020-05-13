@@ -1314,7 +1314,7 @@ bot.on('message', msg => {
 				return channel.send(new Discord.MessageEmbed().setDescription('Sorry, I do not understand that command...').setColor('#b50909'));
 		}
 	} else if (msgContent.toLowerCase().startsWith(settings.bancommand)) {
-		msg.delete({ timeout: 0 });
+		msg.delete({ timeout: 0 }); //Delete message
 
 		//Check for permissions
 		if (member.hasPermission('KICK_MEMBERS')) {
