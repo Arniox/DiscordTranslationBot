@@ -1294,7 +1294,7 @@ bot.on('message', msg => {
 				msg.delete({ timeout: 0 }); //Delete message
 
 				if (member.hasPermission('ADMINISTRATOR')) {
-					if (mentions) {
+					if (mentions.size != 0) {
 						mentions.map((v, i) => { //Find member and send them a reinvite to the server
 							var personId = i; //Save id
 							v.send('https://discord.gg/NSmWZSW'); //Send reinvite
