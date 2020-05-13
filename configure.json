@@ -2,5 +2,6 @@
     "prefix": "$",
     "muteroles": [],
     "translate-ignored-patterns": [],
-    "nick-ignored-playerids": []
+    "nick-ignored-playerids": [],
+    "bancommand": "f10"
 }

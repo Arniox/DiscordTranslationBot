@@ -308,6 +308,39 @@ bot.on('message', msg => {
 
 							//Send embedded message
 							return channel.send(embeddedHelpMessage);
+						case 'softban':
+							var embeddedHelpMessage = new Discord.MessageEmbed()
+								.setColor('#0099ff')
+								.setAuthor(bot.user.username, bot.user.avatarURL())
+								.setDescription('This command will soft ban someone. They will get banned, instantly unbanned and then sent a reinvite to the server. If you have server settings set up to auto ' +
+									'delete messages on a ban, this is a good way to clear a players messages.')
+								.addFields(
+									{ name: 'Required Permissions: ', value: 'Administrator (banning multiple players at once needs max permissions' },
+									{ name: 'Command Patterns: ', value: `${settings.prefix}softban [mention]+` },
+									{
+										name: 'Examples: ', value: `${settings.prefix}softban ${guild.members.cache.random().toString()}\n\n` +
+											`${settings.prefix}softban ${guild.members.cache.random().toString()}${guild.members.cache.random().toString()}`
+									},
+								)
+								.setTimestamp()
+								.setFooter('Thanks, and have a good day');
+
+							//Send embedded message
+							return channel.send(embeddedHelpMessage);
+						case 'bancommand':
+							var embeddedHelpMessage = new Discord.MessageEmbed()
+								.setColor('#0099ff')
+								.setAuthor(bot.user.username, bot.user.avatarURL())
+								.setDescription('Lets admins view the currently randomly generated Prykie ban command. It is always a two letter/number command with no prefix.')
+								.addFields(
+									{ name: 'Required Permissions: ', value: 'Administrator' },
+									{ name: 'Examples: ', value: `${settings.prefix}bancommand` }
+								)
+								.setTimestamp()
+								.setFooter('Thanks, and have a good day');
+
+							//Set embedded message
+							return channel.send(embeddedHelpMessage);
 						case 'f10':
 							var embeddedHelpMessage = new Discord.MessageEmbed()
 								.setColor('#0099ff')
@@ -341,55 +374,61 @@ bot.on('message', msg => {
 						.setAuthor(bot.user.username, bot.user.avatarURL())
 						.setDescription(`You asked for help? Well here it is. The following commands can be used. You can use *${settings.prefix}help [command]* to view more settings on the command`)
 						.addFields({
-							name: settings.prefix + 'ping',
+							name: `${settings.prefix}ping`,
 							value: 'Ping allows you to see the current uptime and current prefix of the server and double checks that the bot is running.'
 						}, {
-							name: settings.prefix + 'prefix',
+							name: `${settings.prefix}prefix`,
 							value: 'Prefix allows you to view and edit the prefix of the server granted you have management permissions.'
 						}, {
-							name: settings.prefix + 'when',
+							name: `${settings.prefix}when`,
 							value: 'Will post a randomly chosen sarcastic quote.'
 						}, {
-							name: settings.prefix + 'muterole',
+							name: `${settings.prefix}muterole`,
 							value: 'Muterole allows you to add, remove (all or some) roles to a list that is ignored by the mute command, granted you have management permissions.'
 						}, {
-							name: settings.prefix + 'muteroles',
+							name: `${settings.prefix}muteroles`,
 							value: 'Lists out the current mute ignored roles.'
 						}, {
-							name: settings.prefix + 'mute',
+							name: `${settings.prefix}mute`,
 							value: 'Mute a voice channel but ignore the mute ignored roles, granted you have mute members permissions.'
 						}, {
-							name: settings.prefix + 'unmute',
+							name: `${settings.prefix}unmute`,
 							value: 'Unmute a voice channel completely. This command wont ignore mute ignored roles. So everyone in the voice channel will be server unmuted, granted you have mute members permissions.'
 						}, {
-							name: settings.prefix + 'listen',
+							name: `${settings.prefix}listen`,
 							value: '[WIP] Currently this command wont do much. It\'ll simply connect the bot to your current voice channel.'
 						}, {
-							name: settings.prefix + 'leave',
+							name: `${settings.prefix}leave`,
 							value: '[WIP] Currently this command wont do much. It\'ll simply disconnect the bot from it\'s current voice channel.'
 						}, {
-							name: settings.prefix + 'translate',
+							name: `${settings.prefix}translate`,
 							value: 'List, add or remove translation ignored patterns to the database for your server. Adding or removing needs the management permissions.'
 						}, {
-							name: settings.prefix + 'nick',
-							value: `Translate your nickname into a specified language code. Use ${settings.prefix}help nick to see all the available language codes and more info.`
+							name: `${settings.prefix}nick`,
+							value: `Translate your nickname into a specified language code.Use ${settings.prefix}help nick to see all the available language codes and more info.`
 						}, {
-							name: settings.prefix + 'prykie',
+							name: `${settings.prefix}prykie`,
 							value: 'Used on it\'s own, it will post a random prykie quote. Otherwise, you can list, add or remove prykie quotes. Removing quotes needs the management permissions.'
 						}, {
-							name: settings.prefix + 'move',
+							name: `${settings.prefix}move`,
 							value: 'Use a selector to move players from voice channels to voice channels all at once. Easy way to move players around, granted you have move member permissions.'
+						}, {
+							name: `${settings.prefix}softban`,
+							value: 'Bans and then instantly unbans any mentioned members. Then sends them an invite.'
+						}, {
+							name: `${settings.prefix}bancommand`,
+							value: 'Lets admins only see the current randomly generated Prykie ban command.'
 						}, {
 							name: 'f10',
 							value: 'Instantly ban, unban and reinvite Prykie from the server, granted you have kick member permissions.',
 							inline: true
 						}, {
-							name: 'f10 [@mention @mention @mention ....]',
+							name: 'f10[@mention @mention @mention ....]',
 							value: 'Instantly ban, unban and reinvite any mentioned players, granted you have administrator permissions.',
 							inline: true
 						}, {
 							name: 'Other Features',
-							value: bot.user.username + ' will automatically read all messages sent in any chat and detect message languages. If the bot has over 75% confidence that the language is not english, it will replace your message with an English translated version.'
+							value: `${bot.user.username} will automatically read all messages sent in any chat and detect message languages. If the bot has over 75% confidence that the language is not english, it will replace your message with an English translated version.`
 						})
 						.setTimestamp()
 						.setFooter('Thanks, and have a good day');
@@ -453,7 +492,7 @@ bot.on('message', msg => {
 									//Save roles id
 									roles.map((value, key) => {
 										if (settings.muteroles.filter(e => e === key).length != 0) {
-											return channel.send(new Discord.MessageEmbed().setDescription(`${value.toString()} is *already* a mute ignored role.`).setColor('#b50909'));
+											return channel.send(new Discord.MessageEmbed().setDescription(`${value.toString()} is * already * a mute ignored role.`).setColor('#b50909'));
 										} else {
 											settings.muteroles.push(key);
 											//Write to file
@@ -471,7 +510,7 @@ bot.on('message', msg => {
 									//Save roles id
 									roles.map((value, key) => {
 										if (settings.muteroles.filter(e => e === key).length == 0) {
-											channel.send(new Discord.MessageEmbed().setDescription(`${value.toString()} is *not* a mute ignored role.`).setColor('#b50909'));
+											channel.send(new Discord.MessageEmbed().setDescription(`${value.toString()} is * not * a mute ignored role.`).setColor('#b50909'));
 										} else {
 											settings.muteroles = settings.muteroles.filter(e => e !== key);
 											//Write to file
@@ -536,9 +575,9 @@ bot.on('message', msg => {
 								value.voice.setMute(true);
 							});
 
-							return channel.send(new Discord.MessageEmbed().setDescription(`Found ${playersFoundInVoice.size} players in ${channelToMute.toString()}... muting now...`).setColor('#09b50c'));
+							return channel.send(new Discord.MessageEmbed().setDescription(`Found ${playersFoundInVoice.size} players in ${channelToMute.toString()}...muting now...`).setColor('#09b50c'));
 						} else {
-							return channel.send(new Discord.MessageEmbed().setDescription(`Could not find a voice channel with the name ${voiceChannel}`).setColor('#b50909'));
+							return channel.send(new Discord.MessageEmbed().setDescription(`Could not find a voice channel with the name ${voiceChannel} `).setColor('#b50909'));
 						}
 					} else {
 						return channel.send(new Discord.MessageEmbed().setDescription('You didn\'t select any voice channel to mute.').setColor('#b50909'));
@@ -564,7 +603,7 @@ bot.on('message', msg => {
 								value.voice.setMute(false);
 							});
 
-							return channel.send(new Discord.MessageEmbed().setDescription(`Found ${playersFoundInVoice.size} players in ${channelToMute.toString()}... unmuting now...`).setColor('#09b50c'));
+							return channel.send(new Discord.MessageEmbed().setDescription(`Found ${playersFoundInVoice.size} players in ${channelToMute.toString()}...unmuting now...`).setColor('#09b50c'));
 						} else {
 							return channel.send(new Discord.MessageEmbed().setDescription('Could not find a voice channel with the name ' +
 								voiceChannel).setColor('#b50909'));
@@ -1249,6 +1288,40 @@ bot.on('message', msg => {
 					}
 				} else {
 					return channel.send(new Discord.MessageEmbed().setDescription('Sorry, you need moving powers to run this command.').setColor('#b50909'));
+				}
+			case 'softban':
+				var mentions = msg.mentions.user; //Get all mentions
+				msg.delete({ timeout: 0 }); //Delete message
+
+				if (member.hasPermission('ADMINISTRATOR')) {
+					if (mentions.size != 0) {
+						mentions.map((value, key) => { //For each mention
+							guild.members.cache.filter(i => i.id == key).map((v, i) => { //Find member and send them a reinvite to the server
+								var personId = i; //Save id
+								v.send('https://discord.gg/NSmWZSW'); //Send reinvite
+
+								setTimeout(function () {
+									guild.members.ban(v, { reson: 'Soft ban.' }) //Ban
+									guild.members.unban(personId); //Unban
+								}, 100);
+
+								channel.send(new Discord.MessageEmbed().setDescription(`Good bye ${v.toString()}`).setColor('#09b50c'));
+							});
+						});
+						return;
+					} else {
+						return channel.send(new Discord.MessageEmbed().setDescription('You didn\'t mention anyone for me to ban sorry.').setColor('#b50909'));
+					}
+				} else {
+					return channel.send(new Discord.MessageEmbed().setDescription('Sorry, you do not have administrative powers and cannot use this command!').setColor('#b50909'));
+				}
+			case 'bancommand':
+				msg.delete({ timeout: 0 }) //Delete message
+
+				if (member.hasPermission('ADMINISTRATOR')) {
+					return channel.send(new Discord.MessageEmbed().setDescription(`Current randomly generated Prykie ban command is: ${settings.bancommand}`));
+				} else {
+					return channel.send(new Discord.MessageEmbed().setDescription('Sorry, you do not have administrative powers and cannot use this command!').setColor('#b50909'));
 				}
 			default: //Error
 				return channel.send(new Discord.MessageEmbed().setDescription('Sorry, I do not understand that command...').setColor('#b50909'));
