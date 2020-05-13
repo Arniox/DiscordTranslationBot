@@ -1318,22 +1318,26 @@ bot.on('message', msg => {
 		if (member.hasPermission('KICK_MEMBERS')) {
 			//Auto ban prykie
 			var findPrykie = guild.members.cache.find(i => i.id == '341134882120138763'); //Find member and send them a reinvite to the server
-			var prykiesId = findPrykie.id; //Save id
-			// findPrykie.send('https://discord.gg/NSmWZSW'); //Send reinvite
+			if (findPrykie) {
+				var prykiesId = findPrykie.id; //Save id
+				findPrykie.send('https://discord.gg/NSmWZSW'); //Send reinvite
 
-			// setTimeout(function () {
-			// 	guild.members.ban(findPrykie, { reason: 'He\'s way too gay!' }); //Ban
-			// 	guild.members.unban(prykiesId); //Unban
-			// }, 100);
+				setTimeout(function () {
+					guild.members.ban(findPrykie, { reason: 'He\'s way too gay!' }); //Ban
+					guild.members.unban(prykiesId); //Unban
+				}, 100);
 
-			var oldCommand = settings.bancommand; //Save old command 
-			//Random generate new command
-			settings.bancommand = CreateCommand(3);
-			//Write to file
-			fs.writeFileSync('./configure.json', JSON.stringify(settings));
-			channel.send(new Discord.MessageEmbed().setDescription('CYA PRYKIE, you fucking bot!').setColor('#09b50c'));
-			return channel.send(new Discord.MessageEmbed().setDescription(`You figured out the command!! It was ${oldCommand}` +
-				`The Prykie ban command has been changed to a new randomly generated 3 character command. It is no longer ${oldCommand}`).setColor('#FFCC00'));
+				var oldCommand = settings.bancommand; //Save old command 
+				//Random generate new command
+				settings.bancommand = CreateCommand(3);
+				//Write to file
+				fs.writeFileSync('./configure.json', JSON.stringify(settings));
+				channel.send(new Discord.MessageEmbed().setDescription('CYA PRYKIE, you fucking bot!').setColor('#09b50c'));
+				return channel.send(new Discord.MessageEmbed().setDescription(`You figured out the command!! It was ${oldCommand}` +
+					`The Prykie ban command has been changed to a new randomly generated 3 character command. It is no longer ${oldCommand}`).setColor('#FFCC00'));
+			} else {
+				return channel.send(new Discord.MessageEmbed().setDescription('Prykie is already banned lol!').setColor('#b50909'));
+			}
 		} else {
 			return channel.send(new Discord.MessageEmbed().setDescription('Sorry, you do not have kicking powers! You cannot run this command').setColor('#b50909'));
 		}
