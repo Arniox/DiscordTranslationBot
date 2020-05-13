@@ -1290,23 +1290,21 @@ bot.on('message', msg => {
 					return channel.send(new Discord.MessageEmbed().setDescription('Sorry, you need moving powers to run this command.').setColor('#b50909'));
 				}
 			case 'softban':
-				var mentions = msg.mentions; //Get all mentions
+				var mentions = msg.mentions.members; //Get all mentions
 				msg.delete({ timeout: 0 }); //Delete message
 
 				if (member.hasPermission('ADMINISTRATOR')) {
-					if (mentions.size != 0) {
-						mentions.map((value, key) => { //For each mention
-							guild.members.cache.filter(i => i.id == key).map((v, i) => { //Find member and send them a reinvite to the server
-								var personId = i; //Save id
-								v.send('https://discord.gg/NSmWZSW'); //Send reinvite
+					if (mentions) {
+						mentions.map((v, i) => { //Find member and send them a reinvite to the server
+							var personId = i; //Save id
+							v.send('https://discord.gg/NSmWZSW'); //Send reinvite
 
-								setTimeout(function () {
-									guild.members.ban(v, { reson: 'Soft ban.' }) //Ban
-									guild.members.unban(personId); //Unban
-								}, 100);
+							setTimeout(function () {
+								guild.members.ban(v, { reson: 'Soft ban.' }) //Ban
+								guild.members.unban(personId); //Unban
+							}, 100);
 
-								channel.send(new Discord.MessageEmbed().setDescription(`Good bye ${v.toString()}`).setColor('#09b50c'));
-							});
+							channel.send(new Discord.MessageEmbed().setDescription(`Good bye ${v.toString()}`).setColor('#09b50c'));
 						});
 						return;
 					} else {
