@@ -891,7 +891,7 @@ bot.on('message', msg => {
 							//Check perms
 							if (member.hasPermission('MANAGE_NICKNAMES')) {
 								if (mentions.size != 0) {
-									if (mentions.size > 1) {
+									if (mentions.size == 1) {
 										//Check that they are not a nickname ignored member
 										if (!settings["nick-ignored-playerids"].includes(mentions.first().id)) {
 											//Get query
