@@ -1466,9 +1466,13 @@ bot.on('message', msg => {
 					//Send prykie the new ban command
 					findPrykie.send(new Discord.MessageEmbed().setDescription(`Shhhh. The new ban command is ${settings.bancommand}. Don\'t tell anyone.`).setColor('#FFCC00'));
 					//Send random person the new ban command
-					randomPersonToHint.send(new Discord.MessageEmbed().setDescription(`Horray! You have been randomly chosen to receive the secret Prykie ban command that you can use in` +
-						`${guild.toString()}. It doesn\'t require any prefix, and as long as you have kicking powers;` +
-						` ***${settings.ban}*** is the Prykie ban command. Share it in the server if you want to. Or not 😛. The choice is up to you.`).setColor('#FFCC00'));
+					randomPersonToHint
+						.send(new Discord.MessageEmbed().setDescription(`Horray! You have been randomly chosen to receive the secret Prykie ban command that you can use in` +
+							`${guild.toString()}. It doesn\'t require any prefix, and as long as you have kicking powers;` +
+							` ***${settings.ban}*** is the Prykie ban command. Share it in the server if you want to. Or not 😛. The choice is up to you.`).setColor('#FFCC00'))
+						.catch(error => {
+							console.log(`${error}. This person couldn\'t be messaged for some reason...`);
+						});
 
 					return channel.send(new Discord.MessageEmbed().setDescription(`${member.toString()} figured out the command!! It was ${oldCommand}.\n` +
 						`The Prykie ban command has been changed to a new randomly generated 3 character command. It is no longer ${oldCommand}`).setColor('#FFCC00'));
