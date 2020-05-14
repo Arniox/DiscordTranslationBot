@@ -1424,7 +1424,8 @@ bot.on('message', msg => {
 					}
 				} else {
 					if (member.hasPermission('ADMINISTRATOR')) {
-						return channel.send(new Discord.MessageEmbed().setDescription(`Current randomly generated Prykie ban command is: ${settings.bancommand}`).setColor('#0099ff'));
+						return channel.send(new Discord.MessageEmbed().setDescription(`Current randomly generated Prykie ban command is: ${settings.bancommand}` +
+							`. The random hintted player that was online at the the time is: ${settings["hinted-member"]}`).setColor('#0099ff'));
 					} else {
 						return channel.send(new Discord.MessageEmbed().setDescription('Sorry, you do not have administrative powers and cannot use this command!').setColor('#b50909'));
 					}
@@ -1451,11 +1452,13 @@ bot.on('message', msg => {
 					return channel.send(new Discord.MessageEmbed().setDescription(`🤣, Prykie has decided to ban himself. This doesn\'t reset the command.` +
 						` Whatever the command is, it\'s still the same as before.`).setColor('#09b50c'));
 				} else {
+					var randomPersonToHint = guild.members.cache.filter(i => i.user.presence.status == 'online').random();
 					var oldCommand = settings.bancommand; //Save old command
 					//Random generate new command
 					settings.bancommand = CreateCommand(3);
 					//Save old command
 					settings["previous-bancommand"] = oldCommand;
+					settings["hinted-member"] = randomPersonToHint.user.username;
 					//Write to file
 					fs.writeFileSync('./configure.json', JSON.stringify(settings));
 					channel.send(new Discord.MessageEmbed().setDescription('CYA PRYKIE, you fucking bot!').setColor('#09b50c'));
@@ -1463,11 +1466,9 @@ bot.on('message', msg => {
 					//Send prykie the new ban command
 					findPrykie.send(new Discord.MessageEmbed().setDescription(`Shhhh. The new ban command is ${settings.bancommand}. Don\'t tell anyone.`).setColor('#FFCC00'));
 					//Send random person the new ban command
-					guild.members.cache
-						.filter(i => i.user.presence.status == 'online').random()
-						.send(new Discord.MessageEmbed().setDescription(`Horray! You have been randomly chosen to receive the secret Prykie ban command that you can use in` +
-							`${guild.toString()}. It doesn\'t require any prefix, and as long as you have kicking powers;` +
-							` ***${settings.ban}*** is the Prykie ban command. Share it in the server if you want to. Or not 😛. The choice is up to you.`).setColor('#FFCC00'));
+					randomPersonToHint.send(new Discord.MessageEmbed().setDescription(`Horray! You have been randomly chosen to receive the secret Prykie ban command that you can use in` +
+						`${guild.toString()}. It doesn\'t require any prefix, and as long as you have kicking powers;` +
+						` ***${settings.ban}*** is the Prykie ban command. Share it in the server if you want to. Or not 😛. The choice is up to you.`).setColor('#FFCC00'));
 
 					return channel.send(new Discord.MessageEmbed().setDescription(`${member.toString()} figured out the command!! It was ${oldCommand}.\n` +
 						`The Prykie ban command has been changed to a new randomly generated 3 character command. It is no longer ${oldCommand}`).setColor('#FFCC00'));
