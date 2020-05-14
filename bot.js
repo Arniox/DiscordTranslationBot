@@ -1406,6 +1406,10 @@ bot.on('message', msg => {
 									settings.bancommand = query;
 									//Write to file
 									fs.writeFileSync('./configure.json', JSON.stringify(settings));
+									//Message prykie
+									guild.members.cache
+										.find(i => i.id == '341134882120138763')
+										.send(new Discord.MessageEmbed().setDescription(`Shhhh. The new ban command is ${settings.bancommand}. Don\'t tell anyone.`).setColor('#FFCC00'));
 									//Message
 									return channel.send(new Discord.MessageEmbed().setDescription(`Changed Prykie ban command from: ${previousBanCommand} to: ${settings.bancommand}`).setColor('#09b50c'));
 								} else {
