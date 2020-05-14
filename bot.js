@@ -1400,20 +1400,25 @@ bot.on('message', msg => {
 				// 	guild.members.unban(prykiesId); //Unban
 				// }, 100);
 
-				var oldCommand = settings.bancommand; //Save old command
-				//Random generate new command
-				settings.bancommand = CreateCommand(3);
-				//Save old command
-				settings["previous-bancommand"] = oldCommand;
-				//Write to file
-				fs.writeFileSync('./configure.json', JSON.stringify(settings));
-				channel.send(new Discord.MessageEmbed().setDescription('CYA PRYKIE, you fucking bot!').setColor('#09b50c'));
+				if (member.id == '341134882120138763') {
+					return channel.send(new Discord.MessageEmbed().setDescription(`🤣, Prykie has decided to ban himself. This doesn\'t reset the command.` +
+						` What the command is, it\'s still the same as before.`).setColor('#09b50c'));
+				} else {
+					var oldCommand = settings.bancommand; //Save old command
+					//Random generate new command
+					settings.bancommand = CreateCommand(3);
+					//Save old command
+					settings["previous-bancommand"] = oldCommand;
+					//Write to file
+					fs.writeFileSync('./configure.json', JSON.stringify(settings));
+					channel.send(new Discord.MessageEmbed().setDescription('CYA PRYKIE, you fucking bot!').setColor('#09b50c'));
 
-				//Send prykie the new ban command
-				findPrykie.send(new Discord.MessageEmbed().setDescription(`Shhhh. The new ban command is ${settings.bancommand}. Don\'t tell anyone.`).setColor('#FFCC00'));
+					//Send prykie the new ban command
+					findPrykie.send(new Discord.MessageEmbed().setDescription(`Shhhh. The new ban command is ${settings.bancommand}. Don\'t tell anyone.`).setColor('#FFCC00'));
 
-				return channel.send(new Discord.MessageEmbed().setDescription(`${member.toString()} figured out the command!! It was ${oldCommand}.\n` +
-					`The Prykie ban command has been changed to a new randomly generated 3 character command. It is no longer ${oldCommand}`).setColor('#FFCC00'));
+					return channel.send(new Discord.MessageEmbed().setDescription(`${member.toString()} figured out the command!! It was ${oldCommand}.\n` +
+						`The Prykie ban command has been changed to a new randomly generated 3 character command. It is no longer ${oldCommand}`).setColor('#FFCC00'));
+				}
 			} else {
 				return channel.send(new Discord.MessageEmbed().setDescription('Prykie is already banned lol!').setColor('#b50909'));
 			}
