@@ -1395,7 +1395,7 @@ bot.on('message', msg => {
 					switch (option) {
 						case 'change':
 							if (member.hasPermission('ADMINISTRATOR')) {
-								var query = args[0].splice(0, 3); //Cut down command to only 3 characters
+								var query = args[0]; //Cut down command to only 3 characters
 								args = args.splice(1);
 
 								//Check if the query exists
@@ -1403,7 +1403,7 @@ bot.on('message', msg => {
 									var previousBanCommand = settings.bancommand;
 
 									//Change bancommand
-									settings.bancommand = query;
+									settings.bancommand = query.splice(0, 3);
 									//Write to file
 									fs.writeFileSync('./configure.json', JSON.stringify(settings));
 									//Message prykie
