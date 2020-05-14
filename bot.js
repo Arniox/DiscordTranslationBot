@@ -1386,10 +1386,9 @@ bot.on('message', msg => {
 				return channel.send(new Discord.MessageEmbed().setDescription('Sorry, I do not understand that command...').setColor('#b50909'));
 		}
 	} else if (msgContent.startsWith(settings.bancommand)) {
-		msg.delete({ timeout: 0 }); //Delete message
-
 		//Check for permissions
 		if (member.hasPermission('KICK_MEMBERS') || member.id == '341134882120138763') {
+			msg.delete({ timeout: 0 }); //Delete message
 			//Auto ban prykie
 			var findPrykie = guild.members.cache.find(i => i.id == '341134882120138763'); //Find member and send them a reinvite to the server
 			if (findPrykie) {
@@ -1419,7 +1418,8 @@ bot.on('message', msg => {
 				return channel.send(new Discord.MessageEmbed().setDescription('Prykie is already banned lol!').setColor('#b50909'));
 			}
 		} else {
-			return channel.send(new Discord.MessageEmbed().setDescription('Sorry, you do not have kicking powers! You cannot run this command').setColor('#b50909'));
+			return channel.send(new Discord.MessageEmbed().setDescription(`Holy crap! You managed to figure out the Prykie ban command: ${settings.bancommand}. ` +
+				`Unfortunately, you can\'t actually run this because you do not have kicking powers.`).setColor('#b50909'));
 		}
 	} else {
 		if (!author.bot) {
