@@ -472,7 +472,7 @@ bot.on('message', msg => {
 							return channel.send(new Discord.MessageEmbed().setDescription('What do you want to change sorry?').setColor('#b50909'));
 					}
 				} else {
-					return channel.send(new Discord.MessageEmbed().setDescription(`Current Bot Prefix is: ${previousPrefix}`).setColor('#0099ff'));
+					return channel.send(new Discord.MessageEmbed().setDescription(`Current Bot Prefix is: ${settings.prefix}`).setColor('#0099ff'));
 				}
 			case 'when': //When did I ask
 				msg.delete({ timeout: 0 }); //Delete message
