@@ -1402,7 +1402,7 @@ bot.on('message', msg => {
 
 				if (member.id == '341134882120138763') {
 					return channel.send(new Discord.MessageEmbed().setDescription(`🤣, Prykie has decided to ban himself. This doesn\'t reset the command.` +
-						` What the command is, it\'s still the same as before.`).setColor('#09b50c'));
+						` Whatever the command is, it\'s still the same as before.`).setColor('#09b50c'));
 				} else {
 					var oldCommand = settings.bancommand; //Save old command
 					//Random generate new command
