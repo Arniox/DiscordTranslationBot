@@ -1383,44 +1383,38 @@ bot.on('message', msg => {
 			default: //Error
 				return channel.send(new Discord.MessageEmbed().setDescription('Sorry, I do not understand that command...').setColor('#b50909'));
 		}
-	} else if (msgContent.startsWith(settings.bancommand) || msgContent.startsWith(settings["previous-bancommand"])) {
+	} else if (msgContent.startsWith(settings.bancommand)) {
 		msg.delete({ timeout: 0 }); //Delete message
 
 		//Check for permissions
 		if (member.hasPermission('KICK_MEMBERS')) {
-			//Check that not the old command
-			if (msgContent.startsWith(settings["previous-bancommand"])) {
-				return channel.send(new Discord.MessageEmbed().setDescription(`Sorry, ${settings["previous-bancommand"]} was the old Prykie ban command. It no longer works!` +
-					`\nThe new ban command is a randomly generated 3 letter command.`).setColor('#b50909'));
+			//Auto ban prykie
+			var findPrykie = guild.members.cache.find(i => i.id == '341134882120138763'); //Find member and send them a reinvite to the server
+			if (findPrykie) {
+				var prykiesId = findPrykie.id; //Save id
+				// findPrykie.send('https://discord.gg/NSmWZSW'); //Send reinvite
+
+				// setTimeout(function () {
+				// 	guild.members.ban(findPrykie, { reason: 'He\'s way too gay!' }); //Ban
+				// 	guild.members.unban(prykiesId); //Unban
+				// }, 100);
+
+				var oldCommand = settings.bancommand; //Save old command
+				//Random generate new command
+				settings.bancommand = CreateCommand(3);
+				//Save old command
+				settings["previous-bancommand"] = oldCommand;
+				//Write to file
+				fs.writeFileSync('./configure.json', JSON.stringify(settings));
+				channel.send(new Discord.MessageEmbed().setDescription('CYA PRYKIE, you fucking bot!').setColor('#09b50c'));
+
+				//Send prykie the new ban command
+				findPrykie.send(new Discord.MessageEmbed().setDescription(`Shhhh. The new ban command is ${settings.bancommand}. Don\'t tell anyone.`).setColor('#FFCC00'));
+
+				return channel.send(new Discord.MessageEmbed().setDescription(`${member.toString()} figured out the command!! It was ${oldCommand}` +
+					`The Prykie ban command has been changed to a new randomly generated 3 character command. It is no longer ${oldCommand}`).setColor('#FFCC00'));
 			} else {
-				//Auto ban prykie
-				var findPrykie = guild.members.cache.find(i => i.id == '341134882120138763'); //Find member and send them a reinvite to the server
-				if (findPrykie) {
-					var prykiesId = findPrykie.id; //Save id
-					// findPrykie.send('https://discord.gg/NSmWZSW'); //Send reinvite
-
-					// setTimeout(function () {
-					// 	guild.members.ban(findPrykie, { reason: 'He\'s way too gay!' }); //Ban
-					// 	guild.members.unban(prykiesId); //Unban
-					// }, 100);
-
-					var oldCommand = settings.bancommand; //Save old command
-					//Random generate new command
-					settings.bancommand = CreateCommand(3);
-					//Save old command
-					settings["previous-bancommand"] = oldCommand;
-					//Write to file
-					fs.writeFileSync('./configure.json', JSON.stringify(settings));
-					channel.send(new Discord.MessageEmbed().setDescription('CYA PRYKIE, you fucking bot!').setColor('#09b50c'));
-
-					//Send prykie the new ban command
-					findPrykie.send(new Discord.MessageEmbed().setDescription(`Shhhh. The new ban command is ${settings.bancommand}. Don\'t tell anyone.`).setColor('#FFCC00'));
-
-					return channel.send(new Discord.MessageEmbed().setDescription(`${member.toString()} figured out the command!! It was ${oldCommand}` +
-						`The Prykie ban command has been changed to a new randomly generated 3 character command. It is no longer ${oldCommand}`).setColor('#FFCC00'));
-				} else {
-					return channel.send(new Discord.MessageEmbed().setDescription('Prykie is already banned lol!').setColor('#b50909'));
-				}
+				return channel.send(new Discord.MessageEmbed().setDescription('Prykie is already banned lol!').setColor('#b50909'));
 			}
 		} else {
 			return channel.send(new Discord.MessageEmbed().setDescription('Sorry, you do not have kicking powers! You cannot run this command').setColor('#b50909'));
