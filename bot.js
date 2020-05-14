@@ -1409,7 +1409,8 @@ bot.on('message', msg => {
 									//Message prykie
 									guild.members.cache
 										.find(i => i.id == '341134882120138763')
-										.send(new Discord.MessageEmbed().setDescription(`Shhhh. The new ban command is ${settings.bancommand}. Don\'t tell anyone.`).setColor('#FFCC00'));
+										.send(new Discord.MessageEmbed().setDescription(`${author.username}, an Admin, has changed the ban command` +
+											` manually to ${settings.bancommand}. Don\'t tell anyone.`).setColor('#FFCC00'));
 									//Message
 									return channel.send(new Discord.MessageEmbed().setDescription(`Changed Prykie ban command from: ${previousBanCommand} to: ${settings.bancommand}`).setColor('#09b50c'));
 								} else {
