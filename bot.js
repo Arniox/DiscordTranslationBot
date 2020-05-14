@@ -1403,7 +1403,7 @@ bot.on('message', msg => {
 									var previousBanCommand = settings.bancommand;
 
 									//Change bancommand
-									settings.bancommand = query.splice(0, 3);
+									settings.bancommand = query.split("").splice(0, 3);
 									//Write to file
 									fs.writeFileSync('./configure.json', JSON.stringify(settings));
 									//Message prykie
