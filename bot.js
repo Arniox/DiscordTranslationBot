@@ -911,7 +911,7 @@ bot.on('message', msg => {
 															//Translate name
 															googleTranslate.translate(currentUserNickName, query, function (err, translation) {
 																//Change name
-																member
+																value
 																	.setNickname(translation.translatedText.substring(0, 32), `Translating name from ${currentUserNickName} to ${translation.translatedText.substring(0, 32)}` +
 																		` in ${languageCodes.find(i => i.language == query.toLowerCase()).name}`)
 																	.then(() => {
