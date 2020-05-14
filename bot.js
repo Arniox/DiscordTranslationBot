@@ -334,10 +334,20 @@ bot.on('message', msg => {
 							var embeddedHelpMessage = new Discord.MessageEmbed()
 								.setColor('#0099ff')
 								.setAuthor(bot.user.username, bot.user.avatarURL())
-								.setDescription('Lets admins view the currently randomly generated Prykie ban command. It is always a three (3) letter/number command with no prefix.')
+								.setDescription('Lets admins view and change the currently randomly generated Prykie ban command. It is always a three (3) letter/number command with no prefix.')
 								.addFields(
 									{ name: 'Required Permissions: ', value: 'Administrator' },
-									{ name: 'Examples: ', value: `${settings.prefix}bancommand` }
+									{
+										name: 'Command Patterns: ',
+										value: `${settings.prefix}bancommand\n\n${settings.prefix}bancommand [change] [new 3 character ban command]`
+									},
+									{
+										name: 'Examples: ',
+										value: `${settings.prefix}bancommand\n\n` +
+											`${settings.prefix}bancommand change ${CreateCommand(3)}\n\n` +
+											`${settings.prefix}bancommand change ${CreateCommand(10)}` +
+											` (This will automatically cut away the rest of the command change the command to the first 3 characters).`
+									}
 								)
 								.setTimestamp()
 								.setFooter('Thanks, and have a good day');
@@ -413,7 +423,7 @@ bot.on('message', msg => {
 							value: 'Bans and then instantly unbans any mentioned members. Then sends them an invite.'
 						}, {
 							name: `${settings.prefix}bancommand`,
-							value: 'Lets admins only see the current randomly generated Prykie ban command.'
+							value: 'Lets only admins see and change the current randomly generated Prykie ban command.'
 						}, {
 							name: 'f10',
 							value: 'Instantly ban, unban and reinvite Prykie from the server, granted you have kick member permissions.',
