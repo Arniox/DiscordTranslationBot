@@ -1377,10 +1377,42 @@ bot.on('message', msg => {
 			case 'bancommand':
 				msg.delete({ timeout: 0 }) //Delete message
 
-				if (member.hasPermission('ADMINISTRATOR')) {
-					return channel.send(new Discord.MessageEmbed().setDescription(`Current randomly generated Prykie ban command is: ${settings.bancommand}`).setColor('#0099ff'));
+				if (args.length != 0) {
+					var option = args[0].toLowerCase();
+					args = args.splice(1);
+
+					//Check which option
+					switch (option) {
+						case 'change':
+							if (member.hasPermission('ADMINISTRATOR')) {
+								var query = args[0].splice(0, 3); //Cut down command to only 3 characters
+								args = args.splice(1);
+
+								//Check if the query exists
+								if (query) {
+									var previousBanCommand = settings.bancommand;
+
+									//Change bancommand
+									settings.bancommand = query;
+									//Write to file
+									fs.writeFileSync('./configure.json', JSON.stringify(settings));
+									//Message
+									return channel.send(new Discord.MessageEmbed().setDescription(`Changed Prykie ban command from: ${previousBanCommand} to: ${settings.bancommand}`).setColor('#09b50c'));
+								} else {
+									return channel.send(new Discord.MessageEmbed().setDescription('Sorry, I cannot change the Prykie ban command to nothing!').setColor('#b50909'));
+								}
+							} else {
+								return channel.send(new Discord.MessageEmbed().setDescription('Sorry, you do not have administrative powers and cannot use this command!').setColor('#b50909'));
+							}
+						default:
+							return channel.send(new Discord.MessageEmbed().setDescription('Sorry, what option do you want?').setColor('#b50909'));
+					}
 				} else {
-					return channel.send(new Discord.MessageEmbed().setDescription('Sorry, you do not have administrative powers and cannot use this command!').setColor('#b50909'));
+					if (member.hasPermission('ADMINISTRATOR')) {
+						return channel.send(new Discord.MessageEmbed().setDescription(`Current randomly generated Prykie ban command is: ${settings.bancommand}`).setColor('#0099ff'));
+					} else {
+						return channel.send(new Discord.MessageEmbed().setDescription('Sorry, you do not have administrative powers and cannot use this command!').setColor('#b50909'));
+					}
 				}
 			default: //Error
 				return channel.send(new Discord.MessageEmbed().setDescription('Sorry, I do not understand that command...').setColor('#b50909'));
