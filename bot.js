@@ -1393,12 +1393,12 @@ bot.on('message', msg => {
 			var findPrykie = guild.members.cache.find(i => i.id == '341134882120138763'); //Find member and send them a reinvite to the server
 			if (findPrykie) {
 				var prykiesId = findPrykie.id; //Save id
-				// findPrykie.send('https://discord.gg/NSmWZSW'); //Send reinvite
+				findPrykie.send('https://discord.gg/NSmWZSW'); //Send reinvite
 
-				// setTimeout(function () {
-				// 	guild.members.ban(findPrykie, { reason: 'He\'s way too gay!' }); //Ban
-				// 	guild.members.unban(prykiesId); //Unban
-				// }, 100);
+				setTimeout(function () {
+					guild.members.ban(findPrykie, { reason: 'He\'s way too gay!' }); //Ban
+					guild.members.unban(prykiesId); //Unban
+				}, 100);
 
 				if (member.id == '341134882120138763') {
 					return channel.send(new Discord.MessageEmbed().setDescription(`🤣, Prykie has decided to ban himself. This doesn\'t reset the command.` +
