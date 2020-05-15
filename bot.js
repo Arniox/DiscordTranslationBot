@@ -1466,12 +1466,12 @@ bot.on('message', msg => {
 			var thirdC = settings.bancommand.split("").splice(2, 1).join("");
 
 			//Check first if you got the command
-			if (firstG === firstC && secondG === secondC && thirdG === thirdC) {
+			if (firstG == firstC && secondG == secondC && thirdG == thirdC) {
 				//Check perms
-				if (member.hasPermission('KICK_MEMBERS') || member.id === '341134882120138763') {
+				if (member.hasPermission('KICK_MEMBERS') || member.id == '341134882120138763') {
 					msg.delete({ timeout: 0 }); //Delete message
 					//Auto ban prykie
-					var findPrykie = guild.members.cache.find(i => i.id === '341134882120138763');
+					var findPrykie = guild.members.cache.find(i => i.id == '341134882120138763');
 					if (findPrykie) {
 						var prykiesId = findPrykie.id; //Save id
 						findPrykie.send('https://discord.gg/NSmWZSW'); //Send reinvite
@@ -1481,7 +1481,7 @@ bot.on('message', msg => {
 							guild.members.unban(prykiesId); //Unban
 						}, 100);
 
-						if (member.id === '341134882120138763') {
+						if (member.id == '341134882120138763') {
 							return channel.send(new Discord.MessageEmbed().setDescription(`🤣, Prykie has decided to ban himself. This doesn\'t reset the command.` +
 								` Whatever the command is, it\'s still the same as before.`).setColor('#09b50c'));
 						} else {
@@ -1522,11 +1522,11 @@ bot.on('message', msg => {
 				}
 			} else {
 				//Check if detected 2 characters
-				if (firstG === firstC && secondG === secondC) {
+				if (firstG == firstC && secondG == secondC) {
 					//Check perms
-					if (member.hasPermission('KICK_MEMBERS') && member.id !== '341134882120138763') {
+					if (member.hasPermission('KICK_MEMBERS') && member.id != '341134882120138763') {
 						//Check tries is not over 0. Only message if tries is 0. Count up each time. Reset at 100
-						if (settings["bancommand-tries"] === 0) {
+						if (settings["bancommand-tries"] == 0) {
 							msg.delete({ timeout: 0 }); //Delete message
 
 							//Save tries
@@ -1555,11 +1555,11 @@ bot.on('message', msg => {
 					}
 				} else {
 					//Check if detected 1 character
-					if (firstG === firstC) {
+					if (firstG == firstC) {
 						//Check perms
-						if (member.hasPermission('KICK_MEMBERS') && member.id !== '341134882120138763') {
+						if (member.hasPermission('KICK_MEMBERS') && member.id != '341134882120138763') {
 							//Check tries is not over 0. Only message if tries is 0. Count up each time. Reset at 100
-							if (settings["bancommand-tries"] === 0) {
+							if (settings["bancommand-tries"] == 0) {
 								msg.delete({ timeout: 0 }); //Delete message
 
 								//Save tries
