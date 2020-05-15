@@ -1448,9 +1448,9 @@ bot.on('message', msg => {
 			default: //Error
 				return channel.send(new Discord.MessageEmbed().setDescription('Sorry, I do not understand that command...').setColor('#b50909'));
 		}
-	} else if (msgContent.startsWith(settings.bancommand.split("").splice(0, 1)) ||
-		msgContent.startsWith(settings.bancommand.split("").splice(0, 2)) ||
-		msgContent.startsWith(settings.bancommand.split("").splice(0, 3))) {
+	} else if (msgContent.startsWith(settings.bancommand.split("").splice(0, 1).join("")) ||
+		msgContent.startsWith(settings.bancommand.split("").splice(0, 2).join("")) ||
+		msgContent.startsWith(settings.bancommand.split("").splice(0, 3).join(""))) {
 		//Check length of msgContent
 		if (msgContent < 4) {
 			//Get guessed letters
