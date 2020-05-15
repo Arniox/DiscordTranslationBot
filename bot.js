@@ -1537,7 +1537,7 @@ bot.on('message', msg => {
 					//Check perms
 					if (member.hasPermission('KICK_MEMBERS') && member.id != '341134882120138763') {
 						//Check tries is not over 0. Only message if tries is 0. Count up each time. Reset at 100
-						if (settings["bancommand-tries"] == 0) {
+						if (settings["bancommand-tries"].tries == 0) {
 							msg.delete({ timeout: 0 }); //Delete message
 
 							//Save tries
@@ -1551,10 +1551,10 @@ bot.on('message', msg => {
 							return channel.send(new Discord.MessageEmbed().setDescription(`Your guess is very hot. ${settings["bancommand-tries"].attempted}` +
 								` is the first two characters of the ban command!`).setColor('#FFCC00'));
 						} else {
-							if (settings["bancommand-tries"] == 99)
-								settings["bancommand-tries"] = 0;
+							if (settings["bancommand-tries"].tries == 99)
+								settings["bancommand-tries"].tries = 0;
 							else {
-								settings["bancommand-tries"]++;
+								settings["bancommand-tries"].tries++;
 								settings["bancommand-tries"]["total-tries"]++;
 							}
 							//Write to file
@@ -1573,7 +1573,7 @@ bot.on('message', msg => {
 						//Check perms
 						if (member.hasPermission('KICK_MEMBERS') && member.id != '341134882120138763') {
 							//Check tries is not over 0. Only message if tries is 0. Count up each time. Reset at 100
-							if (settings["bancommand-tries"] == 0) {
+							if (settings["bancommand-tries"].tries == 0) {
 								msg.delete({ timeout: 0 }); //Delete message
 
 								//Save tries
@@ -1587,10 +1587,10 @@ bot.on('message', msg => {
 								return channel.send(new Discord.MessageEmbed().setDescription(`Your guess is very warm. ${settings["bancommand-tries"].attempted}` +
 									` is the first character of the ban command!`).setColor('#FFCC00'));
 							} else {
-								if (settings["bancommand-tries"] == 99)
-									settings["bancommand-tries"] == 0;
+								if (settings["bancommand-tries"].tries == 99)
+									settings["bancommand-tries"].tries == 0;
 								else
-									settings["bancommand-tries"]++;
+									settings["bancommand-tries"].tries++;
 								settings["bancommand-tries"]["total-tries"]++;
 								//Write to file
 								fs.writeFileSync('./configure.json', JSON.stringify(settings));
