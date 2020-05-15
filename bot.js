@@ -1424,6 +1424,21 @@ bot.on('message', msg => {
 					}
 				} else {
 					if (member.hasPermission('ADMINISTRATOR')) {
+						var messageEmbedded = new Discord.messageEmbedded()
+							.setDescription(`Bancommand info for Prykie ban command:`)
+							.addFields(
+								{ name: 'Command:', value: `Current Random Prykie Command: ***${settings.bancommand}***`, inline: true },
+								{ name: 'Previous Command: ', value: `The previous command used was ***${settings["previous-bancommand"]}***`, inline: true },
+								{ name: 'Hinted Player:', value: `Last random hinted player that was online at the time was: ${settings["hinted-member"]}` },
+								{
+									name: 'Attempts',
+									value: `Current attempted tries is ${(settings["bancommand-tries"].attempted.length == 2 ? "hot" : settings["bancommand-tries"].attempted.length == 1 ? "warm" : "cold")}\n` +
+										`With ${settings["bancommand-tries"]["total-tries"]} total attemps and \`${100 - settings["bancommand-tries"].tries}\` tries left before the next hint.`,
+									inline: true
+								},
+								{ name: 'Players have tried:', value: `So far, the closest guess is up to ***${settings["bancommand-tries"].attempted}***` }
+							)
+
 						return channel.send(new Discord.MessageEmbed().setDescription(`Current randomly generated Prykie ban command is: ${settings.bancommand}` +
 							`. The random hintted player that was online at the the time is: ${settings["hinted-member"]}`).setColor('#0099ff'));
 					} else {
@@ -1514,6 +1529,7 @@ bot.on('message', msg => {
 							//Save tries
 							settings["bancommand-tries"].attempted = firstG + secondG;
 							settings["bancommand-tries"].tries++;
+							settings["bancommand-tries"]["total-tries"]++;
 							//Write to file
 							fs.writeFileSync('./configure.json', JSON.stringify(settings));
 
@@ -1523,8 +1539,10 @@ bot.on('message', msg => {
 						} else {
 							if (settings["bancommand-tries"] == 99)
 								settings["bancommand-tries"] = 0;
-							else
+							else {
 								settings["bancommand-tries"]++;
+								settings["bancommand-tries"]["total-tries"]++;
+							}
 							//Write to file
 							fs.writeFileSync('./configure.json', JSON.stringify(settings));
 							return; //No message at 99 tries. Just reset and message again at 100 tries.
