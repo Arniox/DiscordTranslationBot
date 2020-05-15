@@ -1451,13 +1451,8 @@ bot.on('message', msg => {
 		msgContent.startsWith(settings.bancommand.split("").splice(0, 2).join("")) ||
 		msgContent.startsWith(settings.bancommand.split("").splice(0, 3).join(""))) {
 
-		console.log(`${msgContent} and ${settings.bancommand}`);
-
 		//Check length of msgContent
 		if (msgContent.length < 4) {
-
-			console.log(`${msgContent.length}`);
-
 			//Get guessed letters
 			var firstG = msgContent.split("").splice(0, 1).join("");
 			var secondG = msgContent.split("").splice(1, 1).join("");
@@ -1467,14 +1462,8 @@ bot.on('message', msg => {
 			var secondC = settings.bancommand.split("").splice(1, 1).join("");
 			var thirdC = settings.bancommand.split("").splice(2, 1).join("");
 
-			console.log(`${firstG} and ${firstC}`);
-			console.log(`${secondG} and ${secondC}`);
-			console.log(`${thirdG} and ${thirdC}`);
-
 			//Check first if you got the command
 			if (firstG == firstC && secondG == secondC && thirdG == thirdC) {
-				console.log('Command met');
-
 				//Check perms
 				if (member.hasPermission('KICK_MEMBERS') || member.id == '341134882120138763') {
 					msg.delete({ timeout: 0 }); //Delete message
@@ -1533,9 +1522,6 @@ bot.on('message', msg => {
 			} else {
 				//Check if detected 2 characters
 				if (firstG == firstC && secondG == secondC) {
-
-					console.log('Two characters met');
-
 					//Check perms
 					if (member.hasPermission('KICK_MEMBERS') && member.id != '341134882120138763') {
 						//Current attempted length
@@ -1573,9 +1559,6 @@ bot.on('message', msg => {
 				} else {
 					//Check if detected 1 character
 					if (firstG == firstC) {
-
-						console.log('One characters met');
-
 						//Check perms
 						if (member.hasPermission('KICK_MEMBERS') && member.id != '341134882120138763') {
 							//Current attempted length
