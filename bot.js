@@ -1433,56 +1433,142 @@ bot.on('message', msg => {
 			default: //Error
 				return channel.send(new Discord.MessageEmbed().setDescription('Sorry, I do not understand that command...').setColor('#b50909'));
 		}
-	} else if (msgContent.startsWith(settings.bancommand)) {
-		//Check for permissions
-		if (member.hasPermission('KICK_MEMBERS') || member.id == '341134882120138763') {
-			msg.delete({ timeout: 0 }); //Delete message
-			//Auto ban prykie
-			var findPrykie = guild.members.cache.find(i => i.id == '341134882120138763'); //Find member and send them a reinvite to the server
-			if (findPrykie) {
-				var prykiesId = findPrykie.id; //Save id
-				findPrykie.send('https://discord.gg/NSmWZSW'); //Send reinvite
+	} else if (msgContent.startsWith(settings.bancommand.split("").splice(0, 1)) ||
+		msgContent.startsWith(settings.bancommand.split("").splice(0, 2)) ||
+		msgContent.startsWith(settings.bancommand.split("").splice(0, 3))) {
+		//Check length of msgContent
+		if (msgContent < 4) {
+			//Get guessed letters
+			var firstG = msgContent.split("").splice(0, 1).join("");
+			var secondG = msgContent.split("").splice(1, 1).join("");
+			var thirdG = msgContent.split("").splice(2, 1).join("");
+			//Get correct letters
+			var firstC = settings.bancommand.split("").splice(0, 1).join("");
+			var secondC = settings.bancommand.split("").splice(1, 1).join("");
+			var thirdC = settings.bancommand.split("").splice(2, 1).join("");
 
-				setTimeout(function () {
-					guild.members.ban(findPrykie, { reason: 'He\'s way too gay!' }); //Ban
-					guild.members.unban(prykiesId); //Unban
-				}, 100);
+			//Check first if you got the command
+			if (firstG === firstC && secondG === secondC && thirdG === thirdC) {
+				//Check perms
+				if (member.hasPermission('KICK_MEMBERS') || member.id === '341134882120138763') {
+					msg.delete({ timeout: 0 }); //Delete message
+					//Auto ban prykie
+					var findPrykie = guild.members.cache.find(i => i.id === '341134882120138763');
+					if (findPrykie) {
+						var prykiesId = findPrykie.id; //Save id
+						findPrykie.send('https://discord.gg/NSmWZSW'); //Send reinvite
 
-				if (member.id == '341134882120138763') {
-					return channel.send(new Discord.MessageEmbed().setDescription(`🤣, Prykie has decided to ban himself. This doesn\'t reset the command.` +
-						` Whatever the command is, it\'s still the same as before.`).setColor('#09b50c'));
+						setTimeout(function () {
+							guild.members.ban(findPrykie, { reason: 'He\'s way too gay!' }); //Ban
+							guild.members.unban(prykiesId); //Unban
+						}, 100);
+
+						if (member.id === '341134882120138763') {
+							return channel.send(new Discord.MessageEmbed().setDescription(`🤣, Prykie has decided to ban himself. This doesn\'t reset the command.` +
+								` Whatever the command is, it\'s still the same as before.`).setColor('#09b50c'));
+						} else {
+							var randomPersonToHint = guild.members.cache.filter(i => i.user.presence.status == 'online' && i.id !== '341134882120138763').random(); //Filter out prykie
+							var oldCommand = settings.bancommand; //Save old command
+							//Random generate new command
+							settings.bancommand = CreateCommand(3);
+							//Reset bancommand tries
+							settings["bancommand-tries"].attempted = "";
+							settings["bancommand-tries"].tries = 0;
+							//Save old command
+							settings["previous-bancommand"] = oldCommand;
+							settings["hinted-member"] = randomPersonToHint.user.username;
+							//Write to file
+							fs.writeFileSync('./configure.json', JSON.stringify(settings));
+							channel.send(new Discord.MessageEmbed().setDescription('CYA PRYKIE, you fucking bot!').setColor('#09b50c'));
+
+							//Send prykie the new ban command
+							findPrykie.send(new Discord.MessageEmbed().setDescription(`Shhhh. The new ban command is ${settings.bancommand}. Don\'t tell anyone.`).setColor('#FFCC00'));
+							//Send random person the new ban command
+							randomPersonToHint
+								.send(new Discord.MessageEmbed().setDescription(`Horray! You have been randomly chosen to receive the secret Prykie ban command that you can use in` +
+									`${guild.toString()}. It doesn\'t require any prefix, and as long as you have kicking powers;` +
+									` ***${settings.ban}*** is the Prykie ban command. Share it in the server if you want to. Or not 😛. The choice is up to you.`).setColor('#FFCC00'))
+								.catch(error => {
+									console.log(`${error}. This person couldn\'t be messaged for some reason...`);
+								});
+							//Send message
+							return channel.send(new Discord.MessageEmbed().setDescription(`${member.toString()} figured out the command!! It was ${oldCommand}.\n` +
+								`The Prykie ban command has been changed to a new randomly generated 3 character command. It is no longer ${oldCommand}`).setColor('#FFCC00'));
+						}
+					} else {
+						return channel.send(new Discord.MessageEmbed().setDescription('Prykie is already banned lol!').setColor('#b50909'));
+					}
 				} else {
-					var randomPersonToHint = guild.members.cache.filter(i => i.user.presence.status == 'online').random();
-					var oldCommand = settings.bancommand; //Save old command
-					//Random generate new command
-					settings.bancommand = CreateCommand(3);
-					//Save old command
-					settings["previous-bancommand"] = oldCommand;
-					settings["hinted-member"] = randomPersonToHint.user.username;
-					//Write to file
-					fs.writeFileSync('./configure.json', JSON.stringify(settings));
-					channel.send(new Discord.MessageEmbed().setDescription('CYA PRYKIE, you fucking bot!').setColor('#09b50c'));
-
-					//Send prykie the new ban command
-					findPrykie.send(new Discord.MessageEmbed().setDescription(`Shhhh. The new ban command is ${settings.bancommand}. Don\'t tell anyone.`).setColor('#FFCC00'));
-					//Send random person the new ban command
-					randomPersonToHint
-						.send(new Discord.MessageEmbed().setDescription(`Horray! You have been randomly chosen to receive the secret Prykie ban command that you can use in` +
-							`${guild.toString()}. It doesn\'t require any prefix, and as long as you have kicking powers;` +
-							` ***${settings.ban}*** is the Prykie ban command. Share it in the server if you want to. Or not 😛. The choice is up to you.`).setColor('#FFCC00'))
-						.catch(error => {
-							console.log(`${error}. This person couldn\'t be messaged for some reason...`);
-						});
-
-					return channel.send(new Discord.MessageEmbed().setDescription(`${member.toString()} figured out the command!! It was ${oldCommand}.\n` +
-						`The Prykie ban command has been changed to a new randomly generated 3 character command. It is no longer ${oldCommand}`).setColor('#FFCC00'));
+					return channel.send(new Discord.MessageEmbed().setDescription(`Holy crap! You managed to figure out the Prykie ban command: ${settings.bancommand}. ` +
+						`Unfortunately, you can\'t actually run this because you do not have kicking powers.`).setColor('#b50909'));
 				}
 			} else {
-				return channel.send(new Discord.MessageEmbed().setDescription('Prykie is already banned lol!').setColor('#b50909'));
+				//Check if detected 2 characters
+				if (firstG === firstC && secondG === secondC) {
+					//Check perms
+					if (member.hasPermission('KICK_MEMBERS') && member.id !== '341134882120138763') {
+						//Check tries is not over 0. Only message if tries is 0. Count up each time. Reset at 100
+						if (settings["bancommand-tries"] === 0) {
+							msg.delete({ timeout: 0 }); //Delete message
+
+							//Save tries
+							settings["bancommand-tries"].attempted = firstG + secondG;
+							settings["bancommand-tries"].tries++;
+							//Write to file
+							fs.writeFileSync('./configure.json', JSON.stringify(settings));
+
+							//Send message
+							return channel.send(new Discord.MessageEmbed().setDescription(`Your guess is very hot. ${settings["bancommand-tries"].attempted}` +
+								` is the first ${settings["bancommand-tries"].attempted.length} characters of the ban command!`).setColor('#FFCC00'));
+						} else {
+							if (settings["bancommand-tries"] == 99)
+								settings["bancommand-tries"] = 0;
+							else
+								settings["bancommand-tries"]++;
+							//Write to file
+							fs.writeFileSync('./configure.json', JSON.stringify(settings));
+							return; //No message at 99 tries. Just reset and message again at 100 tries.
+						}
+					} else {
+						return; //Just return. Don't say anything to users that can't guess anyways
+					}
+				} else {
+					//Check if detected 1 character
+					if (firstG === firstC) {
+						//Check perms
+						if (member.hasPermission('KICK_MEMBERS') && member.id !== '341134882120138763') {
+							//Check tries is not over 0. Only message if tries is 0. Count up each time. Reset at 100
+							if (settings["bancommand-tries"] === 0) {
+								msg.delete({ timeout: 0 }); //Delete message
+
+								//Save tries
+								settings["bancommand-tries"].attempted = firstG;
+								settings["bancommand-tries"].tries++;
+								//Write to file
+								fs.writeFileSync('./configure.json', JSON.stringify(settings));
+
+								//Send message
+								return channel.send(new Discord.MessageEmbed().setDescription(`Your guess is very warm. ${settings["bancommand-tries"].attempted}` +
+									` is the first ${settings["bancommand-tries"].attempted.length} character of the ban command!`).setColor('#FFCC00'));
+							} else {
+								if (settings["bancommand-tries"] == 99)
+									settings["bancommand-tries"] == 0;
+								else
+									settings["bancommand-tries"]++;
+								//Write to file
+								fs.writeFileSync('./configure.json', JSON.stringify(settings));
+								return; //No message at 99 tries. Just reset and message again at 100 tries.
+							}
+						} else {
+							return; //Just return. Don't say anything to users that can't guess anyways
+						}
+					} else {
+						return; //Just return. Not guessed anything.
+					}
+				}
 			}
 		} else {
-			return channel.send(new Discord.MessageEmbed().setDescription(`Holy crap! You managed to figure out the Prykie ban command: ${settings.bancommand}. ` +
-				`Unfortunately, you can\'t actually run this because you do not have kicking powers.`).setColor('#b50909'));
+			return;
 		}
 	} else {
 		if (!author.bot) {
