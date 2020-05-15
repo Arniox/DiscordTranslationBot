@@ -1438,9 +1438,9 @@ bot.on('message', msg => {
 								},
 								{ name: 'Players have tried:', value: `So far, the closest guess is up to ***${settings["bancommand-tries"].attempted}***` }
 							)
+							.setColor('#0099ff');
 
-						return channel.send(new Discord.MessageEmbed().setDescription(`Current randomly generated Prykie ban command is: ${settings.bancommand}` +
-							`. The random hintted player that was online at the the time is: ${settings["hinted-member"]}`).setColor('#0099ff'));
+						return channel.send(messageEmbedded);
 					} else {
 						return channel.send(new Discord.MessageEmbed().setDescription('Sorry, you do not have administrative powers and cannot use this command!').setColor('#b50909'));
 					}
