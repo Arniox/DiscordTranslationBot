@@ -1429,7 +1429,7 @@ bot.on('message', msg => {
 							.addFields(
 								{ name: 'Command:', value: `Current Random Prykie Command: ***${settings.bancommand}***`, inline: true },
 								{ name: 'Previous Command: ', value: `The previous command used was ***${(settings["previous-bancommand"] != "" ? settings["previous-bancommand"] : "nothing")}***`, inline: true },
-								{ name: 'Hinted Player:', value: `Last random hinted player that was online at the time was: ${(settings["hinted-member"] != "" ? settings["hinted-member"] : "noone")}` },
+								{ name: 'Hinted Player:', value: `Last random hinted player that was online at the time was: ***${(settings["hinted-member"] != "" ? settings["hinted-member"] : "noone")}***` },
 								{
 									name: 'Attempts',
 									value: `${settings["bancommand-tries"]["total-tries"]} total attemps and \`${100 - settings["bancommand-tries"].tries}\` tries left before the next hint.`,
