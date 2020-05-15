@@ -1452,7 +1452,7 @@ bot.on('message', msg => {
 		msgContent.startsWith(settings.bancommand.split("").splice(0, 2).join("")) ||
 		msgContent.startsWith(settings.bancommand.split("").splice(0, 3).join(""))) {
 		//Check length of msgContent
-		if (msgContent < 4) {
+		if (msgContent.length < 4) {
 			//Get guessed letters
 			var firstG = msgContent.split("").splice(0, 1).join("");
 			var secondG = msgContent.split("").splice(1, 1).join("");
