@@ -1451,6 +1451,9 @@ bot.on('message', msg => {
 	} else if (msgContent.startsWith(settings.bancommand.split("").splice(0, 1).join("")) ||
 		msgContent.startsWith(settings.bancommand.split("").splice(0, 2).join("")) ||
 		msgContent.startsWith(settings.bancommand.split("").splice(0, 3).join(""))) {
+
+		console.log(`${msgContent} and ${settings.bancommand}`);
+
 		//Check length of msgContent
 		if (msgContent.length < 4) {
 			//Get guessed letters
