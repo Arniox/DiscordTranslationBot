@@ -1550,7 +1550,7 @@ bot.on('message', msg => {
 
 							//Send message
 							return channel.send(new Discord.MessageEmbed().setDescription(`Your guess is very hot. ${settings["bancommand-tries"].attempted}` +
-								` is the first ${settings["bancommand-tries"].attempted.length} characters of the ban command!`).setColor('#FFCC00'));
+								` is the first two characters of the ban command!`).setColor('#FFCC00'));
 						} else {
 							if (settings["bancommand-tries"] == 99)
 								settings["bancommand-tries"] = 0;
@@ -1580,17 +1580,19 @@ bot.on('message', msg => {
 								//Save tries
 								settings["bancommand-tries"].attempted = firstG;
 								settings["bancommand-tries"].tries++;
+								settings["bancommand-tries"]["total-tries"]++;
 								//Write to file
 								fs.writeFileSync('./configure.json', JSON.stringify(settings));
 
 								//Send message
 								return channel.send(new Discord.MessageEmbed().setDescription(`Your guess is very warm. ${settings["bancommand-tries"].attempted}` +
-									` is the first ${settings["bancommand-tries"].attempted.length} character of the ban command!`).setColor('#FFCC00'));
+									` is the first character of the ban command!`).setColor('#FFCC00'));
 							} else {
 								if (settings["bancommand-tries"] == 99)
 									settings["bancommand-tries"] == 0;
 								else
 									settings["bancommand-tries"]++;
+								settings["bancommand-tries"]["total-tries"]++;
 								//Write to file
 								fs.writeFileSync('./configure.json', JSON.stringify(settings));
 								return; //No message at 99 tries. Just reset and message again at 100 tries.
