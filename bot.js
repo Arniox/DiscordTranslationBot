@@ -1428,15 +1428,15 @@ bot.on('message', msg => {
 							.setDescription(`Bancommand info for Prykie ban command:`)
 							.addFields(
 								{ name: 'Command:', value: `Current Random Prykie Command: ***${settings.bancommand}***`, inline: true },
-								{ name: 'Previous Command: ', value: `The previous command used was ***${settings["previous-bancommand"]}***`, inline: true },
-								{ name: 'Hinted Player:', value: `Last random hinted player that was online at the time was: ${settings["hinted-member"]}` },
+								{ name: 'Previous Command: ', value: `The previous command used was ***${(settings["previous-bancommand"] != "" ? settings["previous-bancommand"] : "nothing")}***`, inline: true },
+								{ name: 'Hinted Player:', value: `Last random hinted player that was online at the time was: ${(settings["hinted-member"] != "" ? settings["hinted-member"] : "noone")}` },
 								{
 									name: 'Attempts',
 									value: `Current attempted tries is ${(settings["bancommand-tries"].attempted.length == 2 ? "hot" : settings["bancommand-tries"].attempted.length == 1 ? "warm" : "cold")}\n` +
 										`With ${settings["bancommand-tries"]["total-tries"]} total attemps and \`${100 - settings["bancommand-tries"].tries}\` tries left before the next hint.`,
 									inline: true
 								},
-								{ name: 'Players have tried:', value: `So far, the closest guess is up to ***${settings["bancommand-tries"].attempted}***` }
+								{ name: 'Players have tried:', value: `So far, the closest guess is up to ***${(settings["bancommand-tries"].attempted != "" ? settings["bancommand-tries"].attempted : "no guesses yet")}***` }
 							)
 							.setColor('#0099ff');
 
