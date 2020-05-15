@@ -1424,7 +1424,7 @@ bot.on('message', msg => {
 					}
 				} else {
 					if (member.hasPermission('ADMINISTRATOR')) {
-						var messageEmbedded = new Discord.messageEmbedded()
+						var messageEmbedded = new Discord.MessageEmbed()
 							.setDescription(`Bancommand info for Prykie ban command:`)
 							.addFields(
 								{ name: 'Command:', value: `Current Random Prykie Command: ***${settings.bancommand}***`, inline: true },
