@@ -1499,7 +1499,9 @@ bot.on('message', msg => {
 							settings.bancommand = CreateCommand(3);
 							//Reset bancommand tries
 							settings["bancommand-tries"].attempted = "";
+							settings["bancommand-tries"]["current-attempted-length"] = 0;
 							settings["bancommand-tries"].tries = 0;
+							settings["bancommand-tries"]["total-tries"] = 0;
 							//Save old command
 							settings["previous-bancommand"] = oldCommand;
 							settings["hinted-member"] = randomPersonToHint.user.username;
@@ -1511,9 +1513,9 @@ bot.on('message', msg => {
 							findPrykie.send(new Discord.MessageEmbed().setDescription(`Shhhh. The new ban command is ${settings.bancommand}. Don\'t tell anyone.`).setColor('#FFCC00'));
 							//Send random person the new ban command
 							randomPersonToHint
-								.send(new Discord.MessageEmbed().setDescription(`Horray! You have been randomly chosen to receive the secret Prykie ban command that you can use in` +
-									`${guild.toString()}. It doesn\'t require any prefix, and as long as you have kicking powers;` +
-									` ***${settings.ban}*** is the Prykie ban command. Share it in the server if you want to. Or not 😛. The choice is up to you.`).setColor('#FFCC00'))
+								.send(new Discord.MessageEmbed().setDescription(`Horray! You have been randomly chosen to receive the secret Prykie ban command that you can use in ***` +
+									`${guild.toString()}***. It doesn\'t require any prefix, and as long as you have kicking powers;` +
+									` ***${settings.bancommand}*** is the Prykie ban command. Share it in the server if you want to. Or not 😛. The choice is up to you.`).setColor('#FFCC00'))
 								.catch(error => {
 									console.log(`${error}. This person couldn\'t be messaged for some reason...`);
 								});
@@ -1536,12 +1538,17 @@ bot.on('message', msg => {
 
 					//Check perms
 					if (member.hasPermission('KICK_MEMBERS') && member.id != '341134882120138763') {
-						//Check tries is not over 0. Only message if tries is 0. Count up each time. Reset at 100
+						//Current attempted length
+						if (settings["bancommand-tries"]["current-attempted-length"] != 2)
+							settings["bancommand-tries"].tries = 0;
+
+						//Check tries is not over 0. Only message if tries is 0. Count up each time. Reset at 20
 						if (settings["bancommand-tries"].tries == 0) {
 							msg.delete({ timeout: 0 }); //Delete message
 
 							//Save tries
 							settings["bancommand-tries"].attempted = firstG + secondG;
+							settings["bancommand-tries"]["current-attempted-length"] = 2;
 							settings["bancommand-tries"].tries++;
 							settings["bancommand-tries"]["total-tries"]++;
 							//Write to file
@@ -1551,15 +1558,14 @@ bot.on('message', msg => {
 							return channel.send(new Discord.MessageEmbed().setDescription(`Your guess is very hot. ${settings["bancommand-tries"].attempted}` +
 								` is the first two characters of the ban command!`).setColor('#FFCC00'));
 						} else {
-							if (settings["bancommand-tries"].tries == 99)
+							if (settings["bancommand-tries"].tries == 19)
 								settings["bancommand-tries"].tries = 0;
-							else {
+							else
 								settings["bancommand-tries"].tries++;
-								settings["bancommand-tries"]["total-tries"]++;
-							}
+							settings["bancommand-tries"]["total-tries"]++;
 							//Write to file
 							fs.writeFileSync('./configure.json', JSON.stringify(settings));
-							return; //No message at 99 tries. Just reset and message again at 100 tries.
+							return; //No message at 99 tries. Just reset and message again at 20 tries.
 						}
 					} else {
 						return; //Just return. Don't say anything to users that can't guess anyways
@@ -1572,12 +1578,17 @@ bot.on('message', msg => {
 
 						//Check perms
 						if (member.hasPermission('KICK_MEMBERS') && member.id != '341134882120138763') {
-							//Check tries is not over 0. Only message if tries is 0. Count up each time. Reset at 100
+							//Current attempted length
+							if (settings["bancommand-tries"]["current-attempted-length"] != 1)
+								settings["bancommand-tries"].tries = 0;
+
+							//Check tries is not over 0. Only message if tries is 0. Count up each time. Reset at 20
 							if (settings["bancommand-tries"].tries == 0) {
 								msg.delete({ timeout: 0 }); //Delete message
 
 								//Save tries
 								settings["bancommand-tries"].attempted = firstG;
+								settings["bancommand-tries"]["current-attempted-length"] = 1;
 								settings["bancommand-tries"].tries++;
 								settings["bancommand-tries"]["total-tries"]++;
 								//Write to file
@@ -1587,14 +1598,14 @@ bot.on('message', msg => {
 								return channel.send(new Discord.MessageEmbed().setDescription(`Your guess is very warm. ${settings["bancommand-tries"].attempted}` +
 									` is the first character of the ban command!`).setColor('#FFCC00'));
 							} else {
-								if (settings["bancommand-tries"].tries == 99)
-									settings["bancommand-tries"].tries == 0;
+								if (settings["bancommand-tries"].tries == 19)
+									settings["bancommand-tries"].tries = 0;
 								else
 									settings["bancommand-tries"].tries++;
 								settings["bancommand-tries"]["total-tries"]++;
 								//Write to file
 								fs.writeFileSync('./configure.json', JSON.stringify(settings));
-								return; //No message at 99 tries. Just reset and message again at 100 tries.
+								return; //No message at 99 tries. Just reset and message again at 20 tries.
 							}
 						} else {
 							return; //Just return. Don't say anything to users that can't guess anyways

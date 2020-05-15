@@ -8,6 +8,7 @@
     "hinted-member": "",
     "bancommand-tries": {
         "attempted": "",
+        "current-attempted-length": 0,
         "tries": 0,
         "total-tries": 0
     }
