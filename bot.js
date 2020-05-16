@@ -1758,6 +1758,10 @@ bot.on('message', msg => {
 					if (member.hasPermission('KICK_MEMBERS') && member.id != '341134882120138763') {
 						//Current attempted length
 						if (settings["bancommand-tries"]["current-attempted-length"] < 3) {
+							//Reset tries when on a new character
+							if (settings["bancommand-tries"]["current-attempted-length"] != 2)
+								settings["bancommand-tries"].tries = 0;
+
 							//Check tries is not over 0. Only message if tries is 0. Count up each time. Reset at 20
 							if (settings["bancommand-tries"].tries == 0) {
 								msg.delete({ timeout: 0 }); //Delete message
@@ -1796,6 +1800,10 @@ bot.on('message', msg => {
 						if (member.hasPermission('KICK_MEMBERS') && member.id != '341134882120138763') {
 							//Current attempted length
 							if (settings["bancommand-tries"]["current-attempted-length"] < 2) {
+								//Reset tries when on a new character
+								if (settings["bancommand-tries"]["current-attempted-length"] != 1)
+									settings["bancommand-tries"].tries = 0;
+
 								//Check tries is not over 0. Only message if tries is 0. Count up each time. Reset at 20
 								if (settings["bancommand-tries"].tries == 0) {
 									msg.delete({ timeout: 0 });
