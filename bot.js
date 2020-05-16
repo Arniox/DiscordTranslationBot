@@ -1624,25 +1624,25 @@ bot.on('message', msg => {
 									args = args.splice(1);
 
 									channel
-										.send(new Discord.MessageEmbed().setDescription(`Harrassing ${person.toString()} with 0 / ${numberOfSpam} messages.\n\n` +
+										.send(new Discord.MessageEmbed().setDescription(`Harrassing ${person.first().toString()} with 0 / ${numberOfSpam} messages.\n\n` +
 											`Content of message: ***${messageToSpam}***`).setColor('#FFCC00'))
 										.then((sent) => {
 											//For loop
 											for (var i = 0; i < numberOfSpam + 1; ++i) {
-												person.send(`${messageToSpam}`); //Send message
+												person.first().send(`${messageToSpam}`); //Send message
 
 												//Edit message
 												if (i == numberOfSpam)
-													sent.edit(new Discord.MessageEmbed().setDescription(`✅ Finished Harrassing ${person.toString()} ` +
+													sent.edit(new Discord.MessageEmbed().setDescription(`✅ Finished Harrassing ${person.first().toString()} ` +
 														`with ${i} / ${numberOfSpam} messages.\n\nContent of message: ***${messageToSpam}***`).setColor('#09b50c'));
 												else
-													sent.edit(new Discord.MessageEmbed().setDescription(`Harrassing ${person.toString()} ` +
+													sent.edit(new Discord.MessageEmbed().setDescription(`Harrassing ${person.first().toString()} ` +
 														`with ${i} / ${numberOfSpam} messages.\n\nContent of message: ***${messageToSpam}***`).setColor('#FFCC00'));
 											}
 										});
 									return;
 								} else {
-									return channel.send(new Discord.MessageEmbed().setDescription(`Sorry, I cannot harrass ${person.toString()} with an empty message.`).setColor('#b50909'));
+									return channel.send(new Discord.MessageEmbed().setDescription(`Sorry, I cannot harrass ${person.first().toString()} with an empty message.`).setColor('#b50909'));
 								}
 							} else {
 								return channel.send(new Discord.MessageEmbed().setDescription(`Sorry, ${numberSelector} is not a number.`).setColor('#b50909'));
