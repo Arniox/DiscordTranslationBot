@@ -663,20 +663,23 @@ bot.on('message', msg => {
 							//Mute bot
 							guild.members.cache.find(i => i.id == bot.user.id).voice.setMute(true);
 							//Join voice channel
-							voiceChannel.join().then(connection => {
-								msg.delete({ timeout: 0 }); //Delete message
+							voiceChannel
+								.join()
+								.then(connection => {
+									msg.delete({ timeout: 0 }); //Delete message
 
-								//For everyuser in the channel
-								membersInVoice.map((value, key) => {
-									//Create audio stream
-									//var audioStream = connection.receiver.createStream(key);
-									//connection.play(audioStream, { type: 'opus' });
+									//For everyuser in the channel
+									membersInVoice.map((value, key) => {
+										//Create audio stream
+										//var audioStream = connection.receiver.createStream(key);
+										//connection.play(audioStream, { type: 'opus' });
+									});
+
+									channel.send(new Discord.MessageEmbed().setDescription(`Now listening to ${voiceChannel.toString()}`).setColor('#09b50c'));
+								}).catch(error => {
+									channel.send(new Discord.MessageEmbed().setDescription('For some reason, I have failed to join this channel. Please try again later or contact the bot developer').setColor('#b50909'))
 								});
-
-								return channel.send(new Discord.MessageEmbed().setDescription(`Now listening to ${voiceChannel.toString()}`).setColor('#09b50c'));
-							}).catch(error => {
-								return channel.send(new Discord.MessageEmbed().setDescription('For some reason, I have failed to join this channel. Please try again later or contact the bot developer').setColor('#b50909'))
-							});
+							return;
 						} else {
 							if (botVoice == voiceChannel) {
 								msg.delete({ timeout: 0 }); //Delete message
@@ -1119,7 +1122,7 @@ bot.on('message', msg => {
 													if (voiceChannelTO) {
 														//send message promise
 														channel
-															.send(new Discord.MessageEmbed().setDescription(`Moved 0 / ${numberOfPlayers} ${(playersFoundInVoice.length != numberOfPlayers ? `(down from ${numberOfPlayers})` : '')} ` +
+															.send(new Discord.MessageEmbed().setDescription(`Moved 0 / ${playersFoundInVoice.length} ${(playersFoundInVoice.length != numberOfPlayers ? `(down from ${numberOfPlayers})` : '')} ` +
 																`members from ${voiceChannelFROM.toString()} to ${voiceChannelTO.toString()}`).setColor('#FFCC00'))
 															.then((sent) => {
 																var countOfMovedPlayers = 0;
@@ -1598,6 +1601,60 @@ bot.on('message', msg => {
 					} else {
 						return channel.send(new Discord.MessageEmbed().setDescription('Sorry, you do not have administrative powers and cannot use this command!').setColor('#b50909'));
 					}
+				}
+			case 'harrass':
+				var person = msg.mentions.members;
+				msg.delete({ timeout: 0 }); //Delete message
+
+				if (member.hasPermission('ADMINISTRATOR')) {
+					if (args.length != 0 && person.size != 0) {
+						if (person.size < 2) {
+							args = args.splice(1);
+							var numberSelector = args[0];
+							args = args.splice(1);
+
+							//Check if numberSelector is actually a number
+							if (/^\d+$/.test(numberSelector)) {
+								//Grab number from string
+								var numberOfSpam = parseInt(numberSelector);
+
+								if (args.length != 0) {
+									//Get message
+									var messageToSpam = args[0];
+									args = args.splice(1);
+
+									channel
+										.send(new Discord.MessageEmbed().setDescription(`Harrassing ${person.toString()} with 0 / ${numberOfSpam} messages.\n\n` +
+											`Content of message: ***${messageToSpam}***`).setColor('#FFCC00'))
+										.then((sent) => {
+											//For loop
+											for (var i = 0; i < numberOfSpam + 1; ++i) {
+												person.send(`${messageToSpam}`); //Send message
+
+												//Edit message
+												if (i == numberOfSpam)
+													sent.edit(new Discord.MessageEmbed().setDescription(`✅ Finished Harrassing ${person.toString()} ` +
+														`with ${i} / ${numberOfSpam} messages.\n\nContent of message: ***${messageToSpam}***`).setColor('#09b50c'));
+												else
+													sent.edit(new Discord.MessageEmbed().setDescription(`Harrassing ${person.toString()} ` +
+														`with ${i} / ${numberOfSpam} messages.\n\nContent of message: ***${messageToSpam}***`).setColor('#FFCC00'));
+											}
+										});
+									return;
+								} else {
+									return channel.send(new Discord.MessageEmbed().setDescription(`Sorry, I cannot harrass ${person.toString()} with an empty message.`).setColor('#b50909'));
+								}
+							} else {
+								return channel.send(new Discord.MessageEmbed().setDescription(`Sorry, ${numberSelector} is not a number.`).setColor('#b50909'));
+							}
+						} else {
+							return channel.send(new Discord.MessageEmbed().setDescription('Sorry, you can only harrass one person at a time.').setColor('#b50909'));
+						}
+					} else {
+						return channel.send(new Discord.MessageEmbed().setDescription('Sorry, you didn\'t select anyone to harrass.').setColor('#b50909'));
+					}
+				} else {
+					return channel.send(new Discord.MessageEmbed().setDescription('Sorry, you need administrative powers for this command.').setColor('#b50909'));
 				}
 			default: //Error
 				return channel.send(new Discord.MessageEmbed().setDescription('Sorry, I do not understand that command...').setColor('#b50909'));
