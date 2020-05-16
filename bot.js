@@ -1622,7 +1622,7 @@ bot.on('message', msg => {
 
 									if (args.length != 0) {
 										//Get message
-										var messageToSpam = args[0];
+										var messageToSpam = args.join(" ");
 										args = args.splice(1);
 
 										channel
