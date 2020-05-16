@@ -572,12 +572,27 @@ bot.on('message', msg => {
 							//Grab all players in this voice that aren't ignored
 							var playersFoundInVoice = guild.members.cache.filter(i => i.voice.channelID == channelToMute.id && !i._roles.some(r => settings.muteroles.includes(r)));
 
-							//Mute everyone that we found
-							playersFoundInVoice.map((value, key) => {
-								value.voice.setMute(true);
-							});
+							//send message promise
+							channel
+								.send(new Discord.MessageEmbed().setDescription(`Muting 0 / ${playersFoundInVoice.size} members in ${channelToMute.toString()}`).setColor('#FFCC00'))
+								.then((sent) => {
+									var countofMutedPlayers = 0;
 
-							return channel.send(new Discord.MessageEmbed().setDescription(`Found ${playersFoundInVoice.size} players in ${channelToMute.toString()}...muting now...`).setColor('#09b50c'));
+									//Mute everyone that we found
+									playersFoundInVoice.map((value, key) => {
+										countofMutedPlayers++; //Count muted players
+
+										value.voice.setMute(true);
+										//Edit message
+										if (countofMutedPlayers == playersFoundInVoice.size)
+											sent.edit(new Discord.MessageEmbed().setDescription(`✅ Muted ${countofMutedPlayers} / ${playersFoundInVoice.size} members ` +
+												`in ${channelToMute.toString()}`).setColor('#09b50c'));
+										else
+											sent.edit(new Discord.MessageEmbed().setDescription(`Muting ${countofMutedPlayers} / ${playersFoundInVoice.size} members ` +
+												`in ${channelToMute.toString()}`).setColor('#FFCC00'));
+									});
+								});
+							return;
 						} else {
 							return channel.send(new Discord.MessageEmbed().setDescription(`Could not find a voice channel with the name ${voiceChannel} `).setColor('#b50909'));
 						}
@@ -600,15 +615,27 @@ bot.on('message', msg => {
 							//Grab all players in this voice
 							var playersFoundInVoice = guild.members.cache.filter(i => i.voice.channelID == channelToMute.id);
 
-							//Unmute everyone that we found
-							playersFoundInVoice.map((value, key) => {
-								value.voice.setMute(false);
-							});
+							//send message promise
+							channel
+								.send(new Discord.MessageEmbed().setDescription(`Unmuting 0 / ${playersFoundInVoice.size} members in ${channelToMute.toString()}`).setColor('#FFCC00'))
+								.then((sent) => {
+									var countOfUnmutedPlayers = 0;
 
-							return channel.send(new Discord.MessageEmbed().setDescription(`Found ${playersFoundInVoice.size} players in ${channelToMute.toString()}...unmuting now...`).setColor('#09b50c'));
+									//Unmute everyone that we found
+									playersFoundInVoice.map((value, key) => {
+										countOfUnmutedPlayers++; //Count unmuted players
+
+										value.voice.setMute(false);
+										//Edit message
+										if (countOfUnmutedPlayers == playersFoundInVoice.size)
+											sent.edit(new Discord.MessageEmbed().setDescription(`✅ Unmuted ${countOfUnmutedPlayers} / ${playersFoundInVoice.size} members in ${channelToMute.toString()}`).setColor('#09b50c'));
+										else
+											sent.edit(new Discord.MessageEmbed().setDescription(`Unmuting ${countOfUnmutedPlayers} / ${playersFoundInVoice.size} members in ${channelToMute.toString()}`).setColor('#FFCC00'));
+									});
+								});
+							return;
 						} else {
-							return channel.send(new Discord.MessageEmbed().setDescription('Could not find a voice channel with the name ' +
-								voiceChannel).setColor('#b50909'));
+							return channel.send(new Discord.MessageEmbed().setDescription(`Could not find a voice channel with the name ${voiceChannel}`).setColor('#b50909'));
 						}
 					} else {
 						return channel.send(new Discord.MessageEmbed().setDescription('You didn\'t select any voice channel to unmute.').setColor('#b50909'));
@@ -1087,19 +1114,34 @@ bot.on('message', msg => {
 													var channelToSelector = args[0];
 													args = args.splice(1);
 
-													//Get the voice channel to move to with the channel selector as name
-													var voiceChannelTO = guild.channels.cache.find(i => i.name.toLowerCase() == channelToSelector.toLowerCase() && i.type == 'voice');
-													if (voiceChannelTO) {
-														//Move players from voiceChannelFROM to voiceChannelTO
-														playersFoundInVoice.forEach(e => {
-															e.voice.setChannel(voiceChannelTO)
+													//send message promise
+													channel
+														.send(new Discord.MessageEmbed().setDescription(`Moved 0 / ${numberOfPlayers} members from ` +
+															`${voiceChannelFROM.toString()} to ${voiceChannelTO.toString()}`).setColor('#FFCC00'))
+														.then((sent) => {
+															var countOfMovedPlayers = 0;
+
+															//Get the voice channel to move to with the channel selector as name
+															var voiceChannelTO = guild.channels.cache.find(i => i.name.toLowerCase() == channelToSelector.toLowerCase() && i.type == 'voice');
+															if (voiceChannelTO) {
+																//Move players from voiceChannelFROM to voiceChannelTO
+																playersFoundInVoice.forEach(e => {
+																	countOfMovedPlayers++; //Count moved players
+
+																	e.voice.setChannel(voiceChannelTO);
+																	//Edit message
+																	if (countOfMovedPlayers == playersFoundInVoice.length)
+																		sent.edit(new Discord.MessageEmbed().setDescription(`✅ Moved ${countOfMovedPlayers} / ${playersFoundInVoice.length} members from ` +
+																			`${voiceChannelFROM.toString()} to ${voiceChannelTO.toString()}`).setColor('#09b50c'));
+																	else
+																		sent.edit(new Discord.MessageEmbed().setDescription(`Moved ${countOfMovedPlayers} / ${playersFoundInVoice.length} members from ` +
+																			`${voiceChannelFROM.toString()} to ${voiceChannelTO.toString()}`).setColor('#FFCC00'));
+																});
+															} else {
+																sent.edit(new Discord.MessageEmbed().setDescription(`Could not find a voice channel with the name ${channelToSelector}`).setColor('#b50909'));
+															}
 														});
-														//Message
-														return channel.send(new Discord.MessageEmbed().setDescription(`Moved *${playersFoundInVoice.length} / ${numberOfPlayers}` +
-															`* randomly selected players from ${voiceChannelFROM.toString()} to ${voiceChannelTO.toString()}`).setColor('#09b50c'));
-													} else {
-														return channel.send(new Discord.MessageEmbed().setDescription(`Could not find a voice channel with the name ${channelToSelector}`).setColor('#b50909'));
-													}
+													return;
 												} else {
 													return channel.send(new Discord.MessageEmbed().setDescription(`You didn\'t select any voice channel to move ${playersFoundInVoice.length} players to.`).setColor('#b50909'));
 												}
@@ -1128,18 +1170,33 @@ bot.on('message', msg => {
 											var channelSelector = args[0];
 											args = args.splice(1);
 
-											//Get voice channel to move to with the channel selector as name
-											var voiceChannelTO = guild.channels.cache.find(i => i.name.toLowerCase() == channelSelector.toLowerCase() && i.type == 'voice');
-											if (voiceChannelTO) {
-												//Move all the players found everywhere to voiceChannelTO
-												playersFoundAll.map((value, key) => {
-													value.voice.setChannel(voiceChannelTO);
+											//send message promise
+											channel
+												.send(new Discord.MessageEmbed().setDescription(`Moved 0 / ${playersFoundAll.size} members to ${voiceChannelTO.toString()}`).setColor('#FFCC00'))
+												.then((sent) => {
+													var countOfMovedPlayers = 0;
+
+													//Get voice channel to move to with the channel selector as name
+													var voiceChannelTO = guild.channels.cache.find(i => i.name.toLowerCase() == channelSelector.toLowerCase() && i.type == 'voice');
+													if (voiceChannelTO) {
+														//Move all the players found everywhere to voiceChannelTO
+														playersFoundAll.map((value, key) => {
+															countOfMovedPlayers++; //Count moved players
+
+															value.voice.setChannel(voiceChannelTO);
+															//Edit message
+															if (countOfMovedPlayers == playersFoundAll.size)
+																sent.edit(new Discord.MessageEmbed().setDescription(`✅ Moved ${countOfMovedPlayers} / ${playersFoundAll.size} members ` +
+																	`to ${voiceChannelTO.toString()}`).setColor('#09b50c'));
+															else
+																sent.edit(new Discord.MessageEmbed().setDescription(`Moved ${countOfMovedPlayers} / ${playersFoundAll.size} members ` +
+																	`to ${voiceChannelTO.toString()}`).setColor('#FFCC00'));
+														});
+													} else {
+														channel.send(new Discord.MessageEmbed().setDescription(`Could not find a voice channel with the name ${channelSelector}`).setColor('#b50909'));
+													}
 												});
-												//Message
-												return channel.send(new Discord.MessageEmbed().setDescription(`Moved ${playersFoundAll.size} players to ${voiceChannelTO.toString()}`).setColor('#09b50c'));
-											} else {
-												return channel.send(new Discord.MessageEmbed().setDescription(`Could not find a voice channel with the name ${channelSelector}`).setColor('#b50909'));
-											}
+											return;
 										} else {
 											return channel.send(new Discord.MessageEmbed().setDescription(`You didn\'t select any voice channel to move ${playersFoundAll.size} players to.`).setColor('#b50909'));
 										}
@@ -1158,20 +1215,36 @@ bot.on('message', msg => {
 												var channelSelector = args[0];
 												args = args.splice(1);
 
-												//Get the voice channel to move to with the channel selector as name
-												var voiceChannelTO = guild.channels.cache.find(i => i.name.toLowerCase() == channelSelector.toLowerCase() && i.type == 'voice');
-												if (voiceChannelTO) {
-													//Move players from voiceChannelFROM to voiceChannelTO
-													playersFoundInVoice.map((value, key) => {
-														value.voice.setChannel(voiceChannelTO);
+												//send message promise
+												channel
+													.send(new Discord.MessageEmbed().setDescription(`Moved 0 / ${playersFoundInVoice.size} members from ` +
+														`${voiceChannelFROM.toString()} to ${voiceChannelTO.toString()}`).setColor('#FFCC00'))
+													.then((sent) => {
+														var countOfMovedPlayers = 0;
+
+														//Get the voice channel to move to with the channel selector as name
+														var voiceChannelTO = guild.channels.cache.find(i => i.name.toLowerCase() == channelSelector.toLowerCase() && i.type == 'voice');
+														if (voiceChannelTO) {
+															//Move players from voiceChannelFROM to voiceChannelTO
+															playersFoundInVoice.map((value, key) => {
+																countOfMovedPlayers++; //Count moved players
+
+																value.voice.setChannel(voiceChannelTO);
+																//Edit message
+																if (countOfMovedPlayers == playersFoundInVoice.size)
+																	sent.edit(new Discord.MessageEmbed().setDescription(`✅ Moved ${countOfMovedPlayers} / ${playersFoundInVoice.size} members from ` +
+																		`${voiceChannelFROM.toString()} to ${voiceChannelTO.toString()}`).setColor('#09b50c'));
+																else
+																	sent.edit(new Discord.MessageEmbed().setDescription(`Moved ${countOfMovedPlayers} / ${playersFoundInVoice.size} members from ` +
+																		`${voiceChannelFROM.toString()} to ${voiceChannelTO.toString()}`).setColor('#FFCC00'));
+															});
+														} else {
+															sent.edit(new Discord.MessageEmbed().setDescription(`Could not find a voice channel with the name ${channelSelector}`).setColor('#b50909'));
+														}
 													});
-													//Message
-													return channel.send(new Discord.MessageEmbed().setDescription(`Moved ${playersFoundInVoice.size} players from ${voiceChannelFROM.toString()} to ${voiceChannelTO.toString()}`).setColor('#09b50c'));
-												} else {
-													return channel.send(new Discord.MessageEmbed().setDescription(`Could not find a voice channel with the name ${channelSelector}`).setColor('#b50909'));
-												}
+												return;
 											} else {
-												return channel.send(new Discord.MessageEmbed().setDescription(`You didn\'t select any voice channel to move ${playersFoundInVoice.size} players to.`).setColor('#b50909'));
+												return channel.send(new Discord.MessageEmbed().setDescription(`You didn\'t select any voice channel to move ${playersFoundInVoice.size} members to.`).setColor('#b50909'));
 											}
 										} else {
 											return channel.send(new Discord.MessageEmbed().setDescription(`There\'s no one in ${voiceChannelFROM.toString()} to move sorry.`).setColor('#b50909'));
@@ -1217,30 +1290,46 @@ bot.on('message', msg => {
 													var playerSize = playersFoundInVoice.length;
 													args = args.splice(1);
 
-													var countOfMovedPlayers = 0
-													//For each channel
-													channelSelectors.forEach(e => {
-														//Get voice channel to move to with the channel selector (e) as name
-														var voiceChannelTO = guild.channels.cache.find(i => i.name.toLowerCase() == e.toLowerCase() && i.type == 'voice');
-														if (voiceChannelTO) {
-															//Get a number of players randomly
-															var playersToMoveInVoice = playersFoundInVoice.sort(() => Math.random() - Math.random()).slice(0, (Math.ceil(playerSize / selectorSize)));
-															if (playersToMoveInVoice) {
-																playersToMoveInVoice.forEach(e => {
-																	e.voice.setChannel(voiceChannelTO);
-																});
-																//Added counts
-																countOfMovedPlayers += playersToMoveInVoice.length;
-																//Remove already moved players
-																playersFoundInVoice = playersFoundInVoice.filter(e => !playersToMoveInVoice.map(j => j.id).includes(e.id));
-															} //Ignore broken players
-														} else {
-															return channel.send(new Discord.MessageEmbed().setDescription(`Could not find a voice channel with the name ${e}`).setColor('#b50909'));
-														}
-													});
-													return channel.send(new Discord.MessageEmbed().setDescription(`Split *${countOfMovedPlayers} / ${numberOfPlayers}* players out into ${channelSelectors.join(', and ')}`).setColor('#09b50c'));
+													//send message promise
+													channel
+														.send(new Discord.MessageEmbed().setDescription(`Split 0 / ${numberOfPlayers} members from ${voiceChannelFROM.toString()} out into:\n`).setColor('#FFCC00'))
+														.then((sent) => {
+															var countOfMovedPlayers = 0;
+															var channelNameOutput = "";
+
+															//For each channel
+															channelSelector.forEach(e => {
+																//Get voice channel to move to with the channel selector (e) as name
+																var voiceChannelTO = guild.channels.cache.find(i => i.name.toLowerCase() == e.toLowerCase() && i.type == 'voice');
+																if (voiceChannelTO) {
+																	channelNameOutput = `${channelNameOutput} & ${voiceChannelTO.toString()}`;
+
+																	//Get a number of players randomly
+																	var playersToMoveInVoice = playersFoundInVoice.sort(() => Math.random() - Math.random()).slice(0, (Math.ceil(playerSize / selectorSize)));
+																	if (playersToMoveInVoice) {
+																		playersToMoveInVoice.forEach(e => {
+																			countOfMovedPlayers++; //Count moved players
+
+																			e.voice.setChannel(voiceChannelTO);
+																			//Edit message
+																			if (countOfMovedPlayers == numberOfPlayers)
+																				sent.edit(new Discord.MessageEmbed().setDescription(`✅ Split ${countOfMovedPlayers} / ${numberOfPlayers} members from ${voiceChannelFROM.toString()} ` +
+																					`out into:\n${channelNameOutput}`).setColor('#09b50c'));
+																			else
+																				sent.edit(new Discord.MessageEmbed().setDescription(`Split ${countOfMovedPlayers} / ${numberOfPlayers} members from ${voiceChannelFROM.toString()} ` +
+																					`out into:\n${channelNameOutput}`).setColor('#FFCC00'));
+																		});
+																		//Remove already moved players
+																		playersFoundInVoice = playersFoundInVoice.filter(e => !playersToMoveInVoice.map(j => j.id).includes(e.id));
+																	} //Ignore broken players
+																} else {
+																	channel.send(new Discord.MessageEmbed().setDescription(`Could not find a voice channel with the name ${e}`).setColor('#b50909'));
+																}
+															});
+														});
+													return;
 												} else {
-													return channel.send(new Discord.MessageEmbed().setDescription(`You didn\'t select any voice channels to split ${playersFoundInVoice.length} players into.`).setColor('#b50909'));
+													return channel.send(new Discord.MessageEmbed().setDescription(`You didn\'t select any voice channels to split ${playersFoundInVoice.length} members into.`).setColor('#b50909'));
 												}
 											} else {
 												return channel.send(new Discord.MessageEmbed().setDescription(`There\'s no one in ${voiceChannelFROM.toString()} to move sorry.`).setColor('#b50909'));
@@ -1268,30 +1357,44 @@ bot.on('message', msg => {
 											var playerSize = playersFoundAll.size;
 											args = args.splice(1);
 
-											var countOfMovedPlayers = 0
-											//For each channel
-											channelSelectors.forEach(e => {
-												//Get voice channel to move to with the channel selector (e) as name
-												var voiceChannelTO = guild.channels.cache.find(i => i.name.toLowerCase() == e.toLowerCase() && i.type == 'voice');
-												if (voiceChannelTO) {
-													//Get a number of players randomly
-													var playersToMoveAll = playersFoundAll.map((value, key) => value).sort(() => Math.random() - Math.random()).slice(0, (Math.ceil(playerSize / selectorSize)));
-													if (playersToMoveAll) {
-														playersToMoveAll.forEach(e => {
-															e.voice.setChannel(voiceChannelTO);
-														});
-														//Added counts
-														countOfMovedPlayers += playersToMoveAll.length;
-														//Remove already moved players
-														playersFoundAll = playersFoundAll.filter((value, key) => !playersToMoveAll.map(e => e.id).includes(key));
-													} //Ignore broken players
-												} else {
-													return channel.send(new Discord.MessageEmbed().setDescription(`Could not find a voice channel with the name ${e}`).setColor('#b50909'));
-												}
-											});
-											return channel.send(new Discord.MessageEmbed().setDescription(`Split ${countOfMovedPlayers} players out into ${channelSelectors.join(', and ')}`).setColor('#09b50c'));
+											//send message promise
+											channel
+												.send(new Discord.MessageEmbed().setDescription(`Split 0 / ${playerSize} members out into:\n`).setColor('#FFCC00'))
+												.then((sent) => {
+													var countOfMovedPlayers = 0;
+													var channelNameOutput = "";
+
+													//For each channel
+													channelSelectors.forEach(e => {
+														//Get voice channel to move to with the channel selector (e) as name
+														var voiceChannelTO = guild.channels.cache.find(i => i.name.toLowerCase() == e.toLowerCase() && i.type == 'voice');
+														if (voiceChannelTO) {
+															channelNameOutput = `${channelNameOutput} & ${voiceChannelTO.toString()}`;
+
+															//Get a number of players randomly
+															var playersToMoveAll = playersFoundAll.map((value, key) => value).sort(() => Math.random() - Math.random()).slice(0, (Math.ceil(playerSize / selectorSize)));
+															if (playersToMoveAll) {
+																playersToMoveAll.forEach(e => {
+																	countOfMovedPlayers++; //Count moved players
+
+																	e.voice.setChannel(voiceChannelTO);
+																	//Edit message
+																	if (countOfMovedPlayers == playerSize)
+																		sent.edit(new Discord.MessageEmbed().setDescription(`✅ Split ${countOfMovedPlayers} / ${playerSize} members out into:\n${channelNameOutput}`).setColor('#09b50c'));
+																	else
+																		sent.edit(new Discord.MessageEmbed().setDescription(`Split ${countOfMovedPlayers} / ${playerSize} members out into:\n${channelNameOutput}`).setColor('#FFCC00'));
+																});
+																//Remove already moved players
+																playersFoundAll = playersFoundAll.filter((value, key) => !playersToMoveAll.map(e => e.id).includes(key));
+															} //Ignore broken players
+														} else {
+															channel.send(new Discord.MessageEmbed().setDescription(`Could not find a voice channel with the name ${e}`).setColor('#b50909'));
+														}
+													});
+												});
+											return;
 										} else {
-											return channel.send(new Discord.MessageEmbed().setDescription(`You didn\'t select any voice channels to split ${playersFoundAll.size} players into.`).setColor('#b50909'));
+											return channel.send(new Discord.MessageEmbed().setDescription(`You didn\'t select any voice channels to split ${playersFoundAll.size} members into.`).setColor('#b50909'));
 										}
 									} else {
 										return channel.send(new Discord.MessageEmbed().setDescription('There\'s no one at all currently in a voice channel for this server.').setColor('#b50909'));
@@ -1311,31 +1414,48 @@ bot.on('message', msg => {
 												var playerSize = playersFoundInVoice.size;
 												args = args.splice(1);
 
-												var countOfMovedPlayers = 0
-												//For each channel
-												channelSelectors.forEach(e => {
-													//Get voice channel to move to with the channel selector (e) as name
-													var voiceChannelTO = guild.channels.cache.find(i => i.name.toLowerCase() == e.toLowerCase() && i.type == 'voice');
-													if (voiceChannelTO) {
-														//Get a number of players randomly
-														var playersToMoveInVoice = playersFoundInVoice.map((value, key) => value).sort(() => Math.random() - Math.random()).slice(0, (Math.ceil(playerSize / selectorSize)));
+												//send message promise
+												channel
+													.send(new Discord.MessageEmbed().setDescription(`Split 0 / ${playerSize} members from ${voiceChannelFROM.toString()} out into:\n`).setColor('#FFCC00'))
+													.then((sent) => {
+														var countOfMovedPlayers = 0;
+														var channelNameOutput = "";
 
-														if (playersToMoveInVoice) {
-															playersToMoveInVoice.forEach(e => {
-																e.voice.setChannel(voiceChannelTO);
-															});
-															//Added counts
-															countOfMovedPlayers += playersToMoveInVoice.length;
-															//Remove already moved players
-															playersFoundInVoice = playersFoundInVoice.filter((value, key) => !playersToMoveInVoice.map(e => e.id).includes(key));
-														} //Ignore broken players
-													} else {
-														return channel.send(new Discord.MessageEmbed().setDescription(`Could not find a voice channel with the name ${e}`).setColor('#b50909'));
-													}
-												});
-												return channel.send(new Discord.MessageEmbed().setDescription(`Split ${countOfMovedPlayers} players out into ${channelSelectors.join(', and ')}`).setColor('#09b50c'));
+														//For each channel
+														channelSelector.forEach(e => {
+															//Get voice channel to move to with the channel selector (e) as name
+															var voiceChannelTO = guild.channels.cache.find(i => i.name.toLowerCase() == e.toLowerCase() && i.type == 'voice');
+															if (voiceChannelTO) {
+																channelNameOutput = `${channelNameOutput} & ${voiceChannelTO.toString()}`;
+
+																//Get a number of players randomly
+																var playersToMoveInVoice = playersFoundInVoice.map((value, key) => value).sort(() => Math.random() - Math.random()).slice(0, (Math.ceil(playerSize / selectorSize)));
+
+																if (playersToMoveInVoice) {
+																	playersToMoveInVoice.forEach(e => {
+																		countOfMovedPlayers++; //Count moved players
+
+																		e.voice.setChannel(voiceChannelTO);
+																		//Edit message
+																		if (countOfMovedPlayers == playerSize)
+																			sent.edit(new Discord.MessageEmbed().setDescription(`✅ Split ${countOfMovedPlayers} / ${playerSize} members from ${voiceChannelFROM.toString()} ` +
+																				`out into:\n${channelNameOutput}`).setColor('#09b50c'));
+																		else
+																			sent.edit(new Discord.MessageEmbed().setDescription(`Split ${countOfMovedPlayers} / ${playerSize} members from ${voiceChannelFROM.toString()} ` +
+																				`out into:\n${channelNameOutput}`).setColor('#FFCC00'));
+																	});
+																	//Remove already moved players
+																	playersFoundInVoice = playersFoundInVoice.filter((value, key) => !playersToMoveInVoice.map(e => e.id).includes(key));
+																}//Ignore broken players
+															} else {
+																//Error message
+																channel.send(new Discord.MessageEmbed().setDescription(`Could not find a voice channel with the name ${e}`).setColor('#b50909'));
+															}
+														});
+													});
+												return;
 											} else {
-												return channel.send(new Discord.MessageEmbed().setDescription(`You didn\'t select any voice channels to split ${playersFoundInVoice.size} players into.`).setColor('#b50909'));
+												return channel.send(new Discord.MessageEmbed().setDescription(`You didn\'t select any voice channels to split ${playersFoundInVoice.size} members into.`).setColor('#b50909'));
 											}
 										} else {
 											return channel.send(new Discord.MessageEmbed().setDescription(`There\'s no one in ${voiceChannelFROM.toString()} to move sorry.`).setColor('#b50909'));
@@ -1360,23 +1480,37 @@ bot.on('message', msg => {
 
 				if (member.hasPermission('ADMINISTRATOR')) {
 					if (mentions.size != 0) {
-						mentions.map((v, i) => { //Find member and send them a reinvite to the server
-							//Check role height difference
-							if (guild.members.cache.find(i => i.id == bot.user.id).roles.highest.comparePositionTo(v.roles.highest) > 0) {
-								var personId = i; //Save id
-								v.send('https://discord.gg/NSmWZSW'); //Send reinvite
+						channel
+							.send(new Discord.MessageEmbed().setDescription(`Good bye 0 / ${mentions.size}\nI couldn\'t ban 0 / ${mentions.size} players.\n\n`).setColor('#FFCC00'))
+							.then((sent) => {
+								var count = 0;
+								var errorCount = 0;
 
-								setTimeout(function () {
-									guild.members.ban(v, { reson: 'Soft ban.' }) //Ban
-									guild.members.unban(personId); //Unban
-								}, 100);
+								mentions.map((value, key) => { //Find for each member and send reinvite
+									//Check role height difference
+									if (guild.me.roles.highest.comparePositionTo(value.roles.highest) > 0) {
+										count++;
+										//Save id
+										var personId = key;
+										//Send invite
+										value
+											.send('https://discord.gg/NSmWZSW')
+											.then(() => {
+												guild.members.ban(value, { reason: 'Soft ban.' }) //Ban
+												guild.members.unban(personId); //Unban
+												//Edit message
+											});
+									} else {
+										errorCount++;
+									}
 
-								channel.send(new Discord.MessageEmbed().setDescription(`Good bye ${v.toString()}`).setColor('#09b50c'));
-							} else {
-								channel.send(new Discord.MessageEmbed().setDescription(`I would like to softban ${v.toString()},` +
-									` but he is unfortunately in a higher position than me.`).setColor('#b50909'));
-							}
-						});
+									//Edit message
+									if (errorCount + count == mentions.size)
+										sent.edit(new Discord.MessageEmbed().setDescription(`✅ Good by ${count} / ${mentions.size}\nI could\'t ban ${errorCount} / ${mentions.size} players.\n\n`).setColor('#09b50c'));
+									else
+										sent.edit(new Discord.MessageEmbed().setDescription(`Good by ${count} / ${mentions.size}\nI could\'t ban ${errorCount} / ${mentions.size} players.\n\n`).setColor('#FFCC00'));
+								});
+							});
 						return;
 					} else {
 						return channel.send(new Discord.MessageEmbed().setDescription('You didn\'t mention anyone for me to ban sorry.').setColor('#b50909'));
@@ -1438,7 +1572,7 @@ bot.on('message', msg => {
 								{
 									name: 'Previous Command Winner: ',
 									value: `The person who figured out the last command (***${settings["previous-bancommand"]}***) was ` +
-										`***${(settings["previous-bancommand-winner"] != "" ? settings["previous-bancommand-winner"] : "noone")}`
+										`***${(settings["previous-bancommand-winner"] != "" ? settings["previous-bancommand-winner"] : "noone")}***`
 								},
 								{
 									name: 'Hinted Player:',
@@ -1488,49 +1622,62 @@ bot.on('message', msg => {
 					var findPrykie = guild.members.cache.find(i => i.id == '341134882120138763');
 					if (findPrykie) {
 						var prykiesId = findPrykie.id; //Save id
-						findPrykie.send('https://discord.gg/NSmWZSW'); //Send reinvite
+						findPrykie
+							.send('https://discord.gg/NSmWZSW')
+							.then(() => {
+								console.log('I banned prykie.');
 
-						setTimeout(function () {
-							guild.members.ban(findPrykie, { reason: 'He\'s way too gay!' }); //Ban
-							guild.members.unban(prykiesId); //Unban
-						}, 100);
+								guild.members.ban(findPrykie, { reason: 'He\'s way too gay!' }); //Ban
+								guild.members.unban(prykiesId); //Unban
 
-						if (member.id == '341134882120138763') {
-							return channel.send(new Discord.MessageEmbed().setDescription(`🤣, Prykie has decided to ban himself. This doesn\'t reset the command.` +
-								` Whatever the command is, it\'s still the same as before.`).setColor('#09b50c'));
-						} else {
-							var randomPersonToHint = guild.members.cache.filter(i => i.user.presence.status == 'online' && !i.user.bot && i.id !== '341134882120138763').random(); //Filter out prykie
-							var oldCommand = settings.bancommand; //Save old command
-							//Random generate new command
-							settings.bancommand = CreateCommand(3);
-							//Reset bancommand tries
-							settings["bancommand-tries"].attempted = "";
-							settings["bancommand-tries"]["current-attempted-length"] = 0;
-							settings["bancommand-tries"].tries = 0;
-							settings["bancommand-tries"]["total-tries"] = 0;
-							//Save old command
-							settings["previous-bancommand"] = oldCommand;
-							settings["hinted-member"] = randomPersonToHint.user.username;
-							//Save person who got the last command
-							settings["previous-bancommand-winner"] = member.user.username;
-							//Write to file
-							fs.writeFileSync('./configure.json', JSON.stringify(settings));
-							channel.send(new Discord.MessageEmbed().setDescription('CYA PRYKIE, you fucking bot!').setColor('#09b50c'));
-
-							//Send prykie the new ban command
-							findPrykie.send(new Discord.MessageEmbed().setDescription(`Shhhh. The new ban command is ${settings.bancommand}. Don\'t tell anyone.`).setColor('#FFCC00'));
-							//Send random person the new ban command
-							randomPersonToHint
-								.send(new Discord.MessageEmbed().setDescription(`Horray! You have been randomly chosen to receive the secret Prykie ban command that you can use in ***` +
-									`${guild.toString()}***. It doesn\'t require any prefix, and as long as you have kicking powers;` +
-									` ***${settings.bancommand}*** is the Prykie ban command. Share it in the server if you want to. Or not 😛. The choice is up to you.`).setColor('#FFCC00'))
-								.catch(error => {
-									console.log(`${error}. This person couldn\'t be messaged for some reason...`);
-								});
-							//Send message
-							return channel.send(new Discord.MessageEmbed().setDescription(`${member.toString()} figured out the command!! It was ${oldCommand}.\n` +
-								`The Prykie ban command has been changed to a new randomly generated 3 character command. It is no longer ${oldCommand}`).setColor('#FFCC00'));
-						}
+								if (member.id == '341134882120138763') {
+									return channel.send(new Discord.MessageEmbed().setDescription(`🤣, Prykie has decided to ban himself. This doesn\'t reset the command.` +
+										` Whatever the command is, it\'s still the same as before.`).setColor('#09b50c'));
+								} else {
+									var randomPersonToHint = guild.members.cache.filter(i => i.user.presence.status == 'online' && !i.user.bot && i.id !== '341134882120138763').random(); //Filter out prykie
+									var oldCommand = settings.bancommand; //Save old command
+									//Random generate new command
+									settings.bancommand = CreateCommand(3);
+									//Reset bancommand tries
+									settings["bancommand-tries"].attempted = "";
+									settings["bancommand-tries"]["current-attempted-length"] = 0;
+									settings["bancommand-tries"].tries = 0;
+									settings["bancommand-tries"]["total-tries"] = 0;
+									//Save old command
+									settings["previous-bancommand"] = oldCommand;
+									settings["hinted-member"] = randomPersonToHint.user.username;
+									//Save person who got the last command
+									settings["previous-bancommand-winner"] = member.user.username;
+									//Write to file
+									fs.writeFileSync('./configure.json', JSON.stringify(settings));
+									channel
+										.send(new Discord.MessageEmbed().setDescription('CYA PRYKIE, you fucking bot!').setColor('#09b50c'))
+										.then(() => {
+											//Send prykie the new ban command
+											findPrykie
+												.send(new Discord.MessageEmbed().setDescription(`Shhhh. The new ban command is ${settings.bancommand}. Don\'t tell anyone.`).setColor('#FFCC00'))
+												.then(() => {
+													//Send random person the new ban command
+													randomPersonToHint
+														.send(new Discord.MessageEmbed().setDescription(`Horray! You have been randomly chosen to receive the secret Prykie ban command that you can use in ***` +
+															`${guild.toString()}***. It doesn\'t require any prefix, and as long as you have kicking powers;` +
+															` ***${settings.bancommand}*** is the Prykie ban command. Share it in the server if you want to. Or not 😛. The choice is up to you.`).setColor('#FFCC00'))
+														.then(() => {
+															//Send message
+															return channel
+																.send(new Discord.MessageEmbed().setDescription(`${member.toString()} figured out the command!! It was ${oldCommand}.\n` +
+																	`The Prykie ban command has been changed to a new randomly generated 3 character command. It is no longer ${oldCommand}`).setColor('#FFCC00'))
+																.catch(error => {
+																	console.log(`${error}. I couldn\'t post this message sorry...`);
+																});
+														})
+														.catch(error => {
+															console.log(`${error}. This person couldn\'t be messaged for some reason...`);
+														});
+												});
+										});
+								}
+							}); //Send reinvite
 					} else {
 						return channel.send(new Discord.MessageEmbed().setDescription('Prykie is already banned lol!').setColor('#b50909'));
 					}
