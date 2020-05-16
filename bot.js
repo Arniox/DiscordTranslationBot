@@ -1114,16 +1114,16 @@ bot.on('message', msg => {
 													var channelToSelector = args[0];
 													args = args.splice(1);
 
-													//send message promise
-													channel
-														.send(new Discord.MessageEmbed().setDescription(`Moved 0 / ${numberOfPlayers} ${(playersFoundInVoice.length != numberOfPlayers ? `(down from ${numberOfPlayers})` : '')} ` +
-															`members from ${voiceChannelFROM.toString()} to ${voiceChannelTO.toString()}`).setColor('#FFCC00'))
-														.then((sent) => {
-															var countOfMovedPlayers = 0;
+													//Get the voice channel to move to with the channel selector as name
+													var voiceChannelTO = guild.channels.cache.find(i => i.name.toLowerCase() == channelToSelector.toLowerCase() && i.type == 'voice');
+													if (voiceChannelTO) {
+														//send message promise
+														channel
+															.send(new Discord.MessageEmbed().setDescription(`Moved 0 / ${numberOfPlayers} ${(playersFoundInVoice.length != numberOfPlayers ? `(down from ${numberOfPlayers})` : '')} ` +
+																`members from ${voiceChannelFROM.toString()} to ${voiceChannelTO.toString()}`).setColor('#FFCC00'))
+															.then((sent) => {
+																var countOfMovedPlayers = 0;
 
-															//Get the voice channel to move to with the channel selector as name
-															var voiceChannelTO = guild.channels.cache.find(i => i.name.toLowerCase() == channelToSelector.toLowerCase() && i.type == 'voice');
-															if (voiceChannelTO) {
 																//Move players from voiceChannelFROM to voiceChannelTO
 																playersFoundInVoice.forEach(e => {
 																	countOfMovedPlayers++; //Count moved players
@@ -1139,11 +1139,11 @@ bot.on('message', msg => {
 																			`${(playersFoundInVoice.length != numberOfPlayers ? `(down from ${numberOfPlayers})` : '')} ` +
 																			`members from ${voiceChannelFROM.toString()} to ${voiceChannelTO.toString()}`).setColor('#FFCC00'));
 																});
-															} else {
-																sent.edit(new Discord.MessageEmbed().setDescription(`Could not find a voice channel with the name ${channelToSelector}`).setColor('#b50909'));
-															}
-														});
-													return;
+															});
+														return;
+													} else {
+														return channel.send(new Discord.MessageEmbed().setDescription(`Could not find a voice channel with the name ${channelToSelector}`).setColor('#b50909'));
+													}
 												} else {
 													return channel.send(new Discord.MessageEmbed().setDescription(`You didn\'t select any voice channel to move ${playersFoundInVoice.length} players to.`).setColor('#b50909'));
 												}
@@ -1172,15 +1172,15 @@ bot.on('message', msg => {
 											var channelSelector = args[0];
 											args = args.splice(1);
 
-											//send message promise
-											channel
-												.send(new Discord.MessageEmbed().setDescription(`Moved 0 / ${playersFoundAll.size} members to ${voiceChannelTO.toString()}`).setColor('#FFCC00'))
-												.then((sent) => {
-													var countOfMovedPlayers = 0;
+											//Get voice channel to move to with the channel selector as name
+											var voiceChannelTO = guild.channels.cache.find(i => i.name.toLowerCase() == channelSelector.toLowerCase() && i.type == 'voice');
+											if (voiceChannelTO) {
+												//send message promise
+												channel
+													.send(new Discord.MessageEmbed().setDescription(`Moved 0 / ${playersFoundAll.size} members to ${voiceChannelTO.toString()}`).setColor('#FFCC00'))
+													.then((sent) => {
+														var countOfMovedPlayers = 0;
 
-													//Get voice channel to move to with the channel selector as name
-													var voiceChannelTO = guild.channels.cache.find(i => i.name.toLowerCase() == channelSelector.toLowerCase() && i.type == 'voice');
-													if (voiceChannelTO) {
 														//Move all the players found everywhere to voiceChannelTO
 														playersFoundAll.map((value, key) => {
 															countOfMovedPlayers++; //Count moved players
@@ -1194,11 +1194,11 @@ bot.on('message', msg => {
 																sent.edit(new Discord.MessageEmbed().setDescription(`Moved ${countOfMovedPlayers} / ${playersFoundAll.size} members ` +
 																	`to ${voiceChannelTO.toString()}`).setColor('#FFCC00'));
 														});
-													} else {
-														channel.send(new Discord.MessageEmbed().setDescription(`Could not find a voice channel with the name ${channelSelector}`).setColor('#b50909'));
-													}
-												});
-											return;
+													});
+												return;
+											} else {
+												return channel.send(new Discord.MessageEmbed().setDescription(`Could not find a voice channel with the name ${channelSelector}`).setColor('#b50909'));
+											}
 										} else {
 											return channel.send(new Discord.MessageEmbed().setDescription(`You didn\'t select any voice channel to move ${playersFoundAll.size} players to.`).setColor('#b50909'));
 										}
@@ -1217,16 +1217,16 @@ bot.on('message', msg => {
 												var channelSelector = args[0];
 												args = args.splice(1);
 
-												//send message promise
-												channel
-													.send(new Discord.MessageEmbed().setDescription(`Moved 0 / ${playersFoundInVoice.size} members from ` +
-														`${voiceChannelFROM.toString()} to ${voiceChannelTO.toString()}`).setColor('#FFCC00'))
-													.then((sent) => {
-														var countOfMovedPlayers = 0;
+												//Get the voice channel to move to with the channel selector as name
+												var voiceChannelTO = guild.channels.cache.find(i => i.name.toLowerCase() == channelSelector.toLowerCase() && i.type == 'voice');
+												if (voiceChannelTO) {
+													//send message promise
+													channel
+														.send(new Discord.MessageEmbed().setDescription(`Moved 0 / ${playersFoundInVoice.size} members from ` +
+															`${voiceChannelFROM.toString()} to ${voiceChannelTO.toString()}`).setColor('#FFCC00'))
+														.then((sent) => {
+															var countOfMovedPlayers = 0;
 
-														//Get the voice channel to move to with the channel selector as name
-														var voiceChannelTO = guild.channels.cache.find(i => i.name.toLowerCase() == channelSelector.toLowerCase() && i.type == 'voice');
-														if (voiceChannelTO) {
 															//Move players from voiceChannelFROM to voiceChannelTO
 															playersFoundInVoice.map((value, key) => {
 																countOfMovedPlayers++; //Count moved players
@@ -1240,11 +1240,12 @@ bot.on('message', msg => {
 																	sent.edit(new Discord.MessageEmbed().setDescription(`Moved ${countOfMovedPlayers} / ${playersFoundInVoice.size} members from ` +
 																		`${voiceChannelFROM.toString()} to ${voiceChannelTO.toString()}`).setColor('#FFCC00'));
 															});
-														} else {
-															sent.edit(new Discord.MessageEmbed().setDescription(`Could not find a voice channel with the name ${channelSelector}`).setColor('#b50909'));
-														}
-													});
-												return;
+
+														});
+													return;
+												} else {
+													return channel.send(new Discord.MessageEmbed().setDescription(`Could not find a voice channel with the name ${channelSelector}`).setColor('#b50909'));
+												}
 											} else {
 												return channel.send(new Discord.MessageEmbed().setDescription(`You didn\'t select any voice channel to move ${playersFoundInVoice.size} members to.`).setColor('#b50909'));
 											}
