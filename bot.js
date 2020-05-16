@@ -1306,7 +1306,7 @@ bot.on('message', msg => {
 																//Get voice channel to move to with the channel selector (e) as name
 																var voiceChannelTO = guild.channels.cache.find(i => i.name.toLowerCase() == e.toLowerCase() && i.type == 'voice');
 																if (voiceChannelTO) {
-																	channelNameOutput = `${channelNameOutput} ${voiceChannelTO.toString()}, and`;
+																	channelNameOutput = `${channelNameOutput}${voiceChannelTO.toString()}\n`;
 
 																	//Get a number of players randomly
 																	var playersToMoveInVoice = playersFoundInVoice.sort(() => Math.random() - Math.random()).slice(0, (Math.ceil(playerSize / selectorSize)));
@@ -1373,7 +1373,7 @@ bot.on('message', msg => {
 														//Get voice channel to move to with the channel selector (e) as name
 														var voiceChannelTO = guild.channels.cache.find(i => i.name.toLowerCase() == e.toLowerCase() && i.type == 'voice');
 														if (voiceChannelTO) {
-															channelNameOutput = `${channelNameOutput} ${voiceChannelTO.toString()}, and`;
+															channelNameOutput = `${channelNameOutput}${voiceChannelTO.toString()}\n`;
 
 															//Get a number of players randomly
 															var playersToMoveAll = playersFoundAll.map((value, key) => value).sort(() => Math.random() - Math.random()).slice(0, (Math.ceil(playerSize / selectorSize)));
@@ -1430,7 +1430,7 @@ bot.on('message', msg => {
 															//Get voice channel to move to with the channel selector (e) as name
 															var voiceChannelTO = guild.channels.cache.find(i => i.name.toLowerCase() == e.toLowerCase() && i.type == 'voice');
 															if (voiceChannelTO) {
-																channelNameOutput = `${channelNameOutput} ${voiceChannelTO.toString()}, and`;
+																channelNameOutput = `${channelNameOutput}${voiceChannelTO.toString()}\n`;
 
 																//Get a number of players randomly
 																var playersToMoveInVoice = playersFoundInVoice.map((value, key) => value).sort(() => Math.random() - Math.random()).slice(0, (Math.ceil(playerSize / selectorSize)));
