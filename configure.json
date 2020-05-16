@@ -6,6 +6,7 @@
     "bancommand": "f10",
     "previous-bancommand": "",
     "hinted-member": "",
+    "previous-bancommand-winner": "",
     "bancommand-tries": {
         "attempted": "",
         "current-attempted-length": 0,

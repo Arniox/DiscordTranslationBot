@@ -1427,15 +1427,32 @@ bot.on('message', msg => {
 						var messageEmbedded = new Discord.MessageEmbed()
 							.setDescription(`Bancommand info for Prykie ban command:`)
 							.addFields(
-								{ name: 'Command:', value: `Current Random Prykie Command: ***${settings.bancommand}***`, inline: true },
-								{ name: 'Previous Command: ', value: `The previous command used was ***${(settings["previous-bancommand"] != "" ? settings["previous-bancommand"] : "nothing")}***`, inline: true },
-								{ name: 'Hinted Player:', value: `Last random hinted player that was online at the time was: ***${(settings["hinted-member"] != "" ? settings["hinted-member"] : "noone")}***` },
+								{
+									name: 'Command:',
+									value: `Current Random Prykie Command: ***${settings.bancommand}***`
+								},
+								{
+									name: 'Previous Command: ',
+									value: `The previous command used was ***${(settings["previous-bancommand"] != "" ? settings["previous-bancommand"] : "nothing")}***`, inline: true
+								},
+								{
+									name: 'Previous Command Winner: ',
+									value: `The person who figured out the last command (***${settings["previous-bancommand"]}***) was ` +
+										`***${(settings["previous-bancommand-winner"] != "" ? settings["previous-bancommand-winner"] : "noone")}`
+								},
+								{
+									name: 'Hinted Player:',
+									value: `Last random hinted player that was online at the time was: ***${(settings["hinted-member"] != "" ? settings["hinted-member"] : "noone")}***`
+								},
 								{
 									name: 'Attempts',
-									value: `${settings["bancommand-tries"]["total-tries"]} total attemps and \`${100 - settings["bancommand-tries"].tries}\` tries left before the next hint.`,
+									value: `${settings["bancommand-tries"]["total-tries"]} total attemps and \`${20 - settings["bancommand-tries"].tries}\` tries left before the next hint.`,
 									inline: true
 								},
-								{ name: 'Players have tried:', value: `So far, the closest guess is up to ***${(settings["bancommand-tries"].attempted != "" ? settings["bancommand-tries"].attempted : "no guesses yet")}***` }
+								{
+									name: 'Players have tried:',
+									value: `So far, the closest guess is up to ***${(settings["bancommand-tries"].attempted != "" ? settings["bancommand-tries"].attempted : "no guesses yet")}***`
+								}
 							)
 							.setColor('#0099ff');
 
@@ -1482,7 +1499,7 @@ bot.on('message', msg => {
 							return channel.send(new Discord.MessageEmbed().setDescription(`🤣, Prykie has decided to ban himself. This doesn\'t reset the command.` +
 								` Whatever the command is, it\'s still the same as before.`).setColor('#09b50c'));
 						} else {
-							var randomPersonToHint = guild.members.cache.filter(i => i.user.presence.status == 'online' && i.id !== '341134882120138763').random(); //Filter out prykie
+							var randomPersonToHint = guild.members.cache.filter(i => i.user.presence.status == 'online' && !i.user.bot && i.id !== '341134882120138763').random(); //Filter out prykie
 							var oldCommand = settings.bancommand; //Save old command
 							//Random generate new command
 							settings.bancommand = CreateCommand(3);
@@ -1494,6 +1511,8 @@ bot.on('message', msg => {
 							//Save old command
 							settings["previous-bancommand"] = oldCommand;
 							settings["hinted-member"] = randomPersonToHint.user.username;
+							//Save person who got the last command
+							settings["previous-bancommand-winner"] = member.user.username;
 							//Write to file
 							fs.writeFileSync('./configure.json', JSON.stringify(settings));
 							channel.send(new Discord.MessageEmbed().setDescription('CYA PRYKIE, you fucking bot!').setColor('#09b50c'));
@@ -1525,33 +1544,34 @@ bot.on('message', msg => {
 					//Check perms
 					if (member.hasPermission('KICK_MEMBERS') && member.id != '341134882120138763') {
 						//Current attempted length
-						if (settings["bancommand-tries"]["current-attempted-length"] != 2)
-							settings["bancommand-tries"].tries = 0;
+						if (settings["bancommand-tries"]["current-attempted-length"] < 3) {
+							//Check tries is not over 0. Only message if tries is 0. Count up each time. Reset at 20
+							if (settings["bancommand-tries"].tries == 0) {
+								msg.delete({ timeout: 0 }); //Delete message
 
-						//Check tries is not over 0. Only message if tries is 0. Count up each time. Reset at 20
-						if (settings["bancommand-tries"].tries == 0) {
-							msg.delete({ timeout: 0 }); //Delete message
-
-							//Save tries
-							settings["bancommand-tries"].attempted = firstG + secondG;
-							settings["bancommand-tries"]["current-attempted-length"] = 2;
-							settings["bancommand-tries"].tries++;
-							settings["bancommand-tries"]["total-tries"]++;
-							//Write to file
-							fs.writeFileSync('./configure.json', JSON.stringify(settings));
-
-							//Send message
-							return channel.send(new Discord.MessageEmbed().setDescription(`Your guess is very hot. ${settings["bancommand-tries"].attempted}` +
-								` is the first two characters of the ban command!`).setColor('#FFCC00'));
-						} else {
-							if (settings["bancommand-tries"].tries == 19)
-								settings["bancommand-tries"].tries = 0;
-							else
+								//Save tries
+								settings["bancommand-tries"].attempted = firstG + secondG;
+								settings["bancommand-tries"]["current-attempted-length"] = 2;
 								settings["bancommand-tries"].tries++;
-							settings["bancommand-tries"]["total-tries"]++;
-							//Write to file
-							fs.writeFileSync('./configure.json', JSON.stringify(settings));
-							return; //No message at 99 tries. Just reset and message again at 20 tries.
+								settings["bancommand-tries"]["total-tries"]++;
+								//Write to file
+								fs.writeFileSync('./configure.json', JSON.stringify(settings));
+
+								//Send message
+								return channel.send(new Discord.MessageEmbed().setDescription(`Your guess is very hot. ${settings["bancommand-tries"].attempted}` +
+									` is the first two characters of the ban command!`).setColor('#FFCC00'));
+							} else {
+								if (settings["bancommand-tries"].tries == 19)
+									settings["bancommand-tries"].tries = 0;
+								else
+									settings["bancommand-tries"].tries++;
+								settings["bancommand-tries"]["total-tries"]++;
+								//Write to file
+								fs.writeFileSync('./configure.json', JSON.stringify(settings));
+								return; //No message at 99 tries. Just reset and message again at 20 tries.
+							}
+						} else {
+							return;
 						}
 					} else {
 						return; //Just return. Don't say anything to users that can't guess anyways
@@ -1562,33 +1582,34 @@ bot.on('message', msg => {
 						//Check perms
 						if (member.hasPermission('KICK_MEMBERS') && member.id != '341134882120138763') {
 							//Current attempted length
-							if (settings["bancommand-tries"]["current-attempted-length"] != 1)
-								settings["bancommand-tries"].tries = 0;
+							if (settings["bancommand-tries"]["current-attempted-length"] < 2) {
+								//Check tries is not over 0. Only message if tries is 0. Count up each time. Reset at 20
+								if (settings["bancommand-tries"].tries == 0) {
+									msg.delete({ timeout: 0 });
 
-							//Check tries is not over 0. Only message if tries is 0. Count up each time. Reset at 20
-							if (settings["bancommand-tries"].tries == 0) {
-								msg.delete({ timeout: 0 }); //Delete message
-
-								//Save tries
-								settings["bancommand-tries"].attempted = firstG;
-								settings["bancommand-tries"]["current-attempted-length"] = 1;
-								settings["bancommand-tries"].tries++;
-								settings["bancommand-tries"]["total-tries"]++;
-								//Write to file
-								fs.writeFileSync('./configure.json', JSON.stringify(settings));
-
-								//Send message
-								return channel.send(new Discord.MessageEmbed().setDescription(`Your guess is very warm. ${settings["bancommand-tries"].attempted}` +
-									` is the first character of the ban command!`).setColor('#FFCC00'));
-							} else {
-								if (settings["bancommand-tries"].tries == 19)
-									settings["bancommand-tries"].tries = 0;
-								else
+									//Save tries
+									settings["bancommand-tries"].attempted = firstG;
+									settings["bancommand-tries"]["current-attempted-length"] = 1;
 									settings["bancommand-tries"].tries++;
-								settings["bancommand-tries"]["total-tries"]++;
-								//Write to file
-								fs.writeFileSync('./configure.json', JSON.stringify(settings));
-								return; //No message at 99 tries. Just reset and message again at 20 tries.
+									settings["bancommand-tries"]["total-tries"]++;
+									//Write to file
+									fs.writeFileSync('./configure.json', JSON.stringify(settings));
+
+									//Send message
+									return channel.send(new Discord.MessageEmbed().setDescription(`Your guess is very warm. ***${settings["bancommand-tries"].attempted}***` +
+										` is the first character of the ban command!`).setColor('#FFCC00'));
+								} else {
+									if (settings["bancommand-tries"].tries == 19)
+										settings["bancommand-tries"].tries = 0;
+									else
+										settings["bancommand-tries"].tries++;
+									settings["bancommand-tries"]["total-tries"]++;
+									//Write to file
+									fs.writeFileSync('./configure.json', JSON.stringify(settings));
+									return; //No message at 19 tries. Just reset and message again at 20 tries.
+								}
+							} else {
+								return;
 							}
 						} else {
 							return; //Just return. Don't say anything to users that can't guess anyways
