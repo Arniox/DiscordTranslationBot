@@ -1302,7 +1302,7 @@ bot.on('message', msg => {
 															var channelNameOutput = "";
 
 															//For each channel
-															channelSelector.forEach(e => {
+															channelSelectors.forEach(e => {
 																//Get voice channel to move to with the channel selector (e) as name
 																var voiceChannelTO = guild.channels.cache.find(i => i.name.toLowerCase() == e.toLowerCase() && i.type == 'voice');
 																if (voiceChannelTO) {
@@ -1426,7 +1426,7 @@ bot.on('message', msg => {
 														var channelNameOutput = "";
 
 														//For each channel
-														channelSelector.forEach(e => {
+														channelSelectors.forEach(e => {
 															//Get voice channel to move to with the channel selector (e) as name
 															var voiceChannelTO = guild.channels.cache.find(i => i.name.toLowerCase() == e.toLowerCase() && i.type == 'voice');
 															if (voiceChannelTO) {
