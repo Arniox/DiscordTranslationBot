@@ -1481,7 +1481,7 @@ bot.on('message', msg => {
 				if (member.hasPermission('ADMINISTRATOR')) {
 					if (mentions.size != 0) {
 						channel
-							.send(new Discord.MessageEmbed().setDescription(`Good bye 0 / ${mentions.size}\nI couldn\'t ban 0 / ${mentions.size} players.\n\n`).setColor('#FFCC00'))
+							.send(new Discord.MessageEmbed().setDescription(`Softbanning 0 / ${mentions.size} members\n\nI couldn\'t ban 0 / ${mentions.size} members.`).setColor('#FFCC00'))
 							.then((sent) => {
 								var count = 0;
 								var errorCount = 0;
@@ -1506,9 +1506,9 @@ bot.on('message', msg => {
 
 									//Edit message
 									if (errorCount + count == mentions.size)
-										sent.edit(new Discord.MessageEmbed().setDescription(`✅ Good by ${count} / ${mentions.size}\nI could\'t ban ${errorCount} / ${mentions.size} players.\n\n`).setColor('#09b50c'));
+										sent.edit(new Discord.MessageEmbed().setDescription(`✅ Softbanned ${count} / ${mentions.size} members\n\nI could\'t ban ${errorCount} / ${mentions.size} members.`).setColor('#09b50c'));
 									else
-										sent.edit(new Discord.MessageEmbed().setDescription(`Good by ${count} / ${mentions.size}\nI could\'t ban ${errorCount} / ${mentions.size} players.\n\n`).setColor('#FFCC00'));
+										sent.edit(new Discord.MessageEmbed().setDescription(`Softbanning ${count} / ${mentions.size} members\n\nI could\'t ban ${errorCount} / ${mentions.size} members.`).setColor('#FFCC00'));
 								});
 							});
 						return;
