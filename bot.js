@@ -755,7 +755,7 @@ bot.on('message', msg => {
 								if (query) {
 									//Check if query is actually a number
 									if (/^\d+$/.test(query)) {
-										var numberSelector = parseInt(query);
+										var numberSelector = parseInt(query) + 1;
 										//Find existing
 										if (numberSelector >= settings["translate-ignored-patterns"].length) {
 											var existingPattern = settings["translate-ignored-patterns"][numberSelector];
@@ -784,7 +784,9 @@ bot.on('message', msg => {
 							}
 						case 'patterns': //List out current patterns
 							var output = "";
-							settings["translate-ignored-patterns"].forEach((e, index) => { output = `pattern ${index + 1} - ${output}${e.toString()}\n`; });
+							for (var i = 0; i < settings["translate-ignored-patterns"].length; ++i) {
+								output = `${output} Pattern ${index + 1} - ***${e.toString()}***\n`;
+							}
 							return channel.send(new Discord.MessageEmbed().setDescription(`${settings["translate-ignored-patterns"].length} translation ignored patterns.\n${output}`).setColor('#0099ff'));
 						default:
 							return channel.send(new Discord.MessageEmbed().setDescription('Did you want to add or remove a translation pattern?').setColor('#b50909'));
@@ -1047,7 +1049,7 @@ bot.on('message', msg => {
 								if (query) {
 									//Check if query is actually a number
 									if (/^\d+$/.test(query)) {
-										var numberSelector = parseInt(query);
+										var numberSelector = parseInt(query) + 1;
 										//Find existing
 										if (numberSelector >= dataToUse["prykie-quotes"].length) {
 											var existingQuote = dataToUse["prykie-quotes"][numberSelector];
@@ -1077,7 +1079,7 @@ bot.on('message', msg => {
 						case 'list': //List all prykie quotes
 							var output = "";
 							for (var i = 0; i < dataToUse["prykie-quotes"].length; ++i) {
-								output = `${output}${i} - ${dataToUse["prykie-quotes"][i]}\n`;
+								output = `${output} Quote ${i + 1} - ***${dataToUse["prykie-quotes"][i]}***\n`;
 							}
 							return channel.send(new Discord.MessageEmbed().setDescription(`${dataToUse["prykie-quotes"].length} prykie quotes.\n${output}`).setColor('#0099ff'));
 						default:
