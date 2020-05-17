@@ -197,7 +197,7 @@ bot.on('message', msg => {
 									{ name: 'Required Permissions: ', value: 'Manage Server (for adding and removing. Everyone else can use list the current patterns).' },
 									{
 										name: 'Command Patterns: ',
-										value: `${settings.prefix}translate [add/remove] [pattern]\n\n${settings.prefix}translate patterns`
+										value: `${settings.prefix}translate [add/remove] [pattern] (Remove by index)\n\n${settings.prefix}translate patterns`
 									},
 									{
 										name: 'Examples: ',
@@ -738,8 +738,7 @@ bot.on('message', msg => {
 									//Write to file
 									fs.writeFileSync('./configure.json', JSON.stringify(settings));
 									//Message
-									return channel.send(new Discord.MessageEmbed().setDescription('Add new pattern to translation ignored patterns: ' +
-										query).setColor('#09b50c'));
+									return channel.send(new Discord.MessageEmbed().setDescription(`Add new pattern to translation ignored patterns:\n${query}`).setColor('#09b50c'));
 								} else {
 									return channel.send(new Discord.MessageEmbed().setDescription('I did not see any pattern to add sorry.').setColor('#b50909'));
 								}
@@ -754,17 +753,28 @@ bot.on('message', msg => {
 
 								//Check if query exists
 								if (query) {
-									//Find existing
-									var existingPattern = settings["translate-ignored-patterns"].find(i => i === query);
-									if (existingPattern) {
-										//Remove pattern
-										settings["translate-ignored-patterns"] = settings["translate-ignored-patterns"].filter(i => i !== query);
-										//Write to file
-										fs.writeFileSync('./configure.json', JSON.stringify(settings));
-										//Message
-										return channel.send(new Discord.MessageEmbed().setDescription(`Removed ${query} from the translation ignored patterns.`).setColor('#09b50c'));
+									//Check if query is actually a number
+									if (/^\d+$/.test(query)) {
+										var numberSelector = parseInt(query);
+										//Find existing
+										if (numberSelector >= settings["translate-ignored-patterns"].length) {
+											var existingPattern = settings["translate-ignored-patterns"][numberSelector];
+											if (existingPattern) {
+												//Remove pattern
+												settings["translate-ignored-patterns"] = settings["translate-ignored-patterns"].splice(numberSelector, 1);
+												//Write to file
+												fs.writeFileSync('./configure.json', JSON.stringify(settings));
+												//Message
+												return channel.send(new Discord.MessageEmbed().setDescription(`Removed\n***${existingPattern}***\nfrom the translation ignored patterns.`).setColor('#09b50c'));
+											} else {
+												return channel.send(new Discord.MessageEmbed().setDescription(`I couldn\'t find this quote for some reason...`).setColor('#b50909'));
+											}
+										} else {
+											return channel.send(new Discord.MessageEmbed().setDescription(`The ${tools.ordinal(numberSelector)} ` +
+												` translation ignored pattern does not exist sorry.`).setColor('#b50909'));
+										}
 									} else {
-										return channel.send(new Discord.MessageEmbed().setDescription(`${query} already doesn\'t exist in the database.`).setColor('#b50909'));
+										return channel.send(new Discord.MessageEmbed().setDescription(`${query} is not a number I can get an index of.`).setColor('#b50909'))
 									}
 								} else {
 									return channel.send(new Discord.MessageEmbed().setDescription('I did not see any pattern to remove sorry.').setColor('#b50909'));
@@ -774,7 +784,7 @@ bot.on('message', msg => {
 							}
 						case 'patterns': //List out current patterns
 							var output = "";
-							settings["translate-ignored-patterns"].forEach((e, index) => { output = `pattern ${index} - ${output}${e.toString()}\n`; });
+							settings["translate-ignored-patterns"].forEach((e, index) => { output = `pattern ${index + 1} - ${output}${e.toString()}\n`; });
 							return channel.send(new Discord.MessageEmbed().setDescription(`${settings["translate-ignored-patterns"].length} translation ignored patterns.\n${output}`).setColor('#0099ff'));
 						default:
 							return channel.send(new Discord.MessageEmbed().setDescription('Did you want to add or remove a translation pattern?').setColor('#b50909'));
@@ -1035,21 +1045,27 @@ bot.on('message', msg => {
 
 								//Check if query exists
 								if (query) {
-									//Find existing
-									if (parseInt(query) >= dataToUse["prykie-quotes"].length) {
-										var existingQuote = dataToUse["prykie-quotes"][parseInt(query)];
-										if (existingQuote) {
-											//Remove quote
-											dataToUse["prykie-quotes"] = dataToUse["prykie-quotes"].splice(parseInt(query), 1);
-											//Write to file
-											fs.writeFileSync('./data-to-use.json', JSON.stringify(dataToUse));
-											//Message
-											return channel.send(new Discord.MessageEmbed().setDescription(`Removed **${existingQuote}** from the data base.`).setColor('#09b50c'));
+									//Check if query is actually a number
+									if (/^\d+$/.test(query)) {
+										var numberSelector = parseInt(query);
+										//Find existing
+										if (numberSelector >= dataToUse["prykie-quotes"].length) {
+											var existingQuote = dataToUse["prykie-quotes"][numberSelector];
+											if (existingQuote) {
+												//Remove quote
+												dataToUse["prykie-quotes"] = dataToUse["prykie-quotes"].splice(numberSelector, 1);
+												//Write to file
+												fs.writeFileSync('./data-to-use.json', JSON.stringify(dataToUse));
+												//Message
+												return channel.send(new Discord.MessageEmbed().setDescription(`Removed***\n${existingQuote}***\nfrom the data base.`).setColor('#09b50c'));
+											} else {
+												return channel.send(new Discord.MessageEmbed().setDescription('I couldn\'t find this quote for some reason...').setColor('#b50909'));
+											}
 										} else {
-											return channel.send(new Discord.MessageEmbed().setDescription('I couldn\'t find this quote for some reason...').setColor('#b50909'));
+											return channel.send(new Discord.MessageEmbed().setDescription(`The ${tools.ordinal(numberSelector)} quote does not exist sorry.`).setColor('#b50909'));
 										}
 									} else {
-										return channel.send(new Discord.MessageEmbed().setDescription(`The${tools.ordinal(parseInt(query))} quote does not exist sorry.`).setColor('#b50909'));
+										return channel.send(new Discord.MessageEmbed().setDescription(`${query} is not a number I can get an index of.`).setColor('#b50909'));
 									}
 								} else {
 									return channel.send(new Discord.MessageEmbed().setDescription(`You didn\'t select a quote number to remove. You can use *${settings.prefix}` +
