@@ -728,7 +728,7 @@ bot.on('message', msg => {
 						case 'add': //Add a pattern
 							//Check if has perms
 							if (member.hasPermission('MANAGE_GUILD')) {
-								var query = args[0];
+								var query = args.join("");
 								args = args.splice(1);
 
 								//Check if query exists
@@ -774,7 +774,7 @@ bot.on('message', msg => {
 							}
 						case 'patterns': //List out current patterns
 							var output = "";
-							settings["translate-ignored-patterns"].forEach(e => { output = `\`${output}${e.toString()}\`\n`; });
+							settings["translate-ignored-patterns"].forEach((e, index) => { output = `pattern ${index} - ${output}${e.toString()}\n`; });
 							return channel.send(new Discord.MessageEmbed().setDescription(`${settings["translate-ignored-patterns"].length} translation ignored patterns.\n${output}`).setColor('#0099ff'));
 						default:
 							return channel.send(new Discord.MessageEmbed().setDescription('Did you want to add or remove a translation pattern?').setColor('#b50909'));
