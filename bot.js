@@ -1884,36 +1884,18 @@ bot.on('message', msg => {
 									.setAuthor(author.username, author.avatarURL())
 									.setDescription(translation.translatedText)
 									.addFields(
-										{ name: 'Detected Language', value: `${languageCodes.find(i => i.language == detection.language).name}`, inline: true },
-										{ name: 'Confidence', value: `${(detection.confidence * 100).floor().toString()}%`, inline: true },
-										{ name: 'Original text', value: `${msgContent}`, inline: false }
+										{ name: 'Original text', value: `${msgContent}` },
+										{
+											name: 'Detected Language',
+											value: `${languageCodes.find(i => i.language == detection.language).name} - ` +
+												`${(detection.confidence * 100).floor().toString()}% confidence.`,
+											inline: true
+										}
 									)
 									.setTimestamp()
 									.setFooter('Powered by Google Translate');
-
-								//Get language country
-								axios.get('https://restcountries.eu/rest/v2/lang/' + (detection.language.split('-').length > 1 ? detection.language.split('-')[0] : detection.language)).then(response => {
-									//Find flag if one country, otherwise list out countries
-									if (response.data.length > 1) {
-										var possibleFlag = response.data.find(i => i.alpha2Code == (detection.language.split('-').length > 1 ? detection.language.split('-')[0] : detection.language).toUpperCase());
-										if (possibleFlag) {
-											embeddedTranslation.setThumbnail('https://www.countryflags.io/' + possibleFlag.alpha2Code + '/flat/64.png');
-										} else {
-											embeddedTranslation.setThumbnail('https://www.countryflags.io/' + response.data.first().alpha2Code + '/flat/64.png');
-										}
-										//Send
-										return channel.send(embeddedTranslation);
-									} else {
-										embeddedTranslation.setThumbnail('https://www.countryflags.io/' + response.data.map(i => i.alpha2Code).join('') + '/flat/64.png');
-										//Send
-										return channel.send(embeddedTranslation);
-									}
-								}).catch(error => {
-									//Failed embed
-									embeddedTranslation.addField('Failed...', `Could not find country or countries with the language code: ${detection.language}`);
-									//Send
-									return channel.send(embeddedTranslation);
-								});
+								//Send
+								return channel.send(embeddedTranslation);
 							});
 						}
 					});
