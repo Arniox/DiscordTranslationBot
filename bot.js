@@ -646,7 +646,7 @@ bot.on('message', msg => {
 			case 'listen': //Join voice chat
 				//Grab member voice channel
 				var voiceChannel = member.voice.channel;
-				var botVoice = guild.members.cache.find(i => i.id == bot.user.id).voice.channel;
+				var botVoice = guild.me.voice.channel;
 				//If you are not in a voice
 				if (!voiceChannel) {
 					msg.delete({ timeout: 0 }); //Delete message
@@ -661,7 +661,7 @@ bot.on('message', msg => {
 					} else {
 						if (!botVoice) {
 							//Mute bot
-							guild.members.cache.find(i => i.id == bot.user.id).voice.setMute(true);
+							guild.me.voice.setMute(true);
 							//Join voice channel
 							voiceChannel
 								.join()
@@ -697,7 +697,7 @@ bot.on('message', msg => {
 
 				//Grab bot voice channel
 				var memberVoice = member.voice.channel;
-				var botVoice = guild.members.cache.find(i => i.id == bot.user.id).voice.channel;
+				var botVoice = guild.me.voice.channel;
 
 				//If bot is not in voice
 				if (!memberVoice) {
@@ -711,7 +711,7 @@ bot.on('message', msg => {
 							return channel.send(new Discord.MessageEmbed().setDescription('You can only execute this command if you share the same voice channel as the bot!').setColor('#b50909'));
 						} else {
 							channel.send(new Discord.MessageEmbed().setDescription(`I have stopped listening to ${botVoice.toString()}`).setColor('#09b50c'));
-							guild.members.cache.find(i => i.id == bot.user.id).voice.setMute(false);
+							guild.me.voice.setMute(false);
 							return botVoice.leave();
 						}
 					}
@@ -839,7 +839,7 @@ bot.on('message', msg => {
 															//Increase count
 															count++
 															//Check if the bot has perms
-															if (guild.members.cache.find(i => i.id == bot.user.id).roles.highest.comparePositionTo(value.roles.highest) > 0) {
+															if (guild.me.roles.highest.comparePositionTo(value.roles.highest) > 0) {
 																//Change name
 																value.setNickname(translation.translatedText.substring(0, 32), `Translating name from ${currentUserNickName} to ` +
 																	`${translation.translatedText.substring(0, 32)} in ${languageCodes.find(i => i.language == query.toLowerCase()).name}`);
