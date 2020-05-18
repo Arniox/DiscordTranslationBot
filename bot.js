@@ -1592,12 +1592,21 @@ bot.on('message', msg => {
 								},
 								{
 									name: 'Previous Command: ',
-									value: `The previous command used was ***${(settings["previous-bancommand"] != "" ? settings["previous-bancommand"] : "nothing")}***`, inline: true
+									value: `The previous command used was ***${(settings["previous-bancommand"].length != 0 ?
+										settings["previous-bancommand"][settings["previous-bancommand"].length - 1] :
+										"nothing")}***`,
+									inline: true
+								},
+								{
+									name: 'Command History: ',
+									value: `***${settings["previous-bancommand"].length != 0 ? `${settings["previous-bancommand"].join(', ')}` : 'No Command History'}***`,
+									inline: true
 								},
 								{
 									name: 'Previous Command Winner: ',
-									value: `The person who figured out the last command (***${settings["previous-bancommand"]}***) was ` +
-										`***${(settings["previous-bancommand-winner"] != "" ? settings["previous-bancommand-winner"] : "noone")}***`
+									value: `The person who figured out the last command (***${(settings["previous-bancommand"].length != 0 ?
+										settings["previous-bancommand"][settings["previous-bancommand"].length - 1] :
+										"nothing")}***) was ***${(settings["previous-bancommand-winner"] != "" ? settings["previous-bancommand-winner"] : "noone")}***`
 								},
 								{
 									name: 'Hinted Player:',
@@ -1709,38 +1718,44 @@ bot.on('message', msg => {
 						findPrykie
 							.send('https://discord.gg/NSmWZSW')
 							.then(() => {
-								console.log('I banned prykie.');
+								console.log('I banned prykie.'); //Console log
 
-								guild.members.ban(findPrykie, { reason: 'He\'s way too gay!' }); //Ban
-								guild.members
-									.unban(prykiesId)//Unban
+								//Send prykie the code
+								findPrykie
+									.send(new Discord.MessageEmbed().setDescription(`Shhhh. The new ban command is ${settings.bancommand}. Don\'t tell anyone.`).setColor('#FFCC00'))
 									.then(() => {
-										if (member.id == '341134882120138763') {
+										//Send channel message if sent by prykie
+										if (member.id == '341134882120138763')
 											channel.send(new Discord.MessageEmbed().setDescription(`🤣, Prykie has decided to ban himself. This doesn\'t reset the command.` +
 												` Whatever the command is, it\'s still the same as before.`).setColor('#09b50c'));
-										} else {
-											var randomPersonToHint = guild.members.cache.filter(i => i.user.presence.status == 'online' && !i.user.bot && i.id !== '341134882120138763').random(); //Filter out prykie
-											var oldCommand = settings.bancommand; //Save old command
-											//Random generate new command
-											settings.bancommand = CreateCommand(3);
-											//Reset bancommand tries
-											settings["bancommand-tries"].attempted = "";
-											settings["bancommand-tries"]["current-attempted-length"] = 0;
-											settings["bancommand-tries"].tries = 0;
-											settings["bancommand-tries"]["total-tries"] = 0;
-											//Save old command
-											settings["previous-bancommand"] = oldCommand;
-											settings["hinted-member"] = randomPersonToHint.user.username;
-											//Save person who got the last command
-											settings["previous-bancommand-winner"] = member.user.username;
-											//Write to file
-											fs.writeFileSync('./configure.json', JSON.stringify(settings));
-											channel
-												.send(new Discord.MessageEmbed().setDescription('CYA PRYKIE, you fucking bot!').setColor('#09b50c'))
-												.then(() => {
-													//Send prykie the new ban command
-													findPrykie
-														.send(new Discord.MessageEmbed().setDescription(`Shhhh. The new ban command is ${settings.bancommand}. Don\'t tell anyone.`).setColor('#FFCC00'))
+
+										//Ban prykie
+										guild.members.ban(findPrykie, { reason: 'He\'s way too gay!' }); //Ban
+										guild.members
+											.unban(prykiesId)//Unban
+											.then(() => {
+												//Wait for ban
+												if (member.id != '341134882120138763') {
+													var randomPersonToHint = guild.members.cache.filter(i => i.user.presence.status == 'online' && !i.user.bot && i.id !== '341134882120138763').random(); //Filter out prykie
+													var oldCommand = settings.bancommand; //Save old command
+
+													//Random generate new command
+													settings.bancommand = CreateCommand(3);
+													//Reset bancommand tries
+													settings["bancommand-tries"].attempted = "";
+													settings["bancommand-tries"]["current-attempted-length"] = 0;
+													settings["bancommand-tries"].tries = 0;
+													settings["bancommand-tries"]["total-tries"] = 0;
+													//Save old command
+													settings["previous-bancommand"].push(oldCommand);
+													settings["hinted-member"] = randomPersonToHint.user.username;
+													//Save person who got the last command
+													settings["previous-bancommand-winner"] = member.user.username;
+													//Write to file
+													fs.writeFileSync('./configure.json', JSON.stringify(settings));
+
+													channel
+														.send(new Discord.MessageEmbed().setDescription('CYA PRYKIE, you fucking bot!').setColor('#09b50c'))
 														.then(() => {
 															//Send random person the new ban command
 															randomPersonToHint
@@ -1760,8 +1775,8 @@ bot.on('message', msg => {
 																	console.log(`${error}. This person couldn\'t be messaged for some reason...`);
 																});
 														});
-												});
-										}
+												}
+											});
 									});
 							}); //Send reinvite
 						return;
