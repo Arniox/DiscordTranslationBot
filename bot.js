@@ -1712,56 +1712,59 @@ bot.on('message', msg => {
 								console.log('I banned prykie.');
 
 								guild.members.ban(findPrykie, { reason: 'He\'s way too gay!' }); //Ban
-								guild.members.unban(prykiesId); //Unban
-
-								if (member.id == '341134882120138763') {
-									return channel.send(new Discord.MessageEmbed().setDescription(`🤣, Prykie has decided to ban himself. This doesn\'t reset the command.` +
-										` Whatever the command is, it\'s still the same as before.`).setColor('#09b50c'));
-								} else {
-									var randomPersonToHint = guild.members.cache.filter(i => i.user.presence.status == 'online' && !i.user.bot && i.id !== '341134882120138763').random(); //Filter out prykie
-									var oldCommand = settings.bancommand; //Save old command
-									//Random generate new command
-									settings.bancommand = CreateCommand(3);
-									//Reset bancommand tries
-									settings["bancommand-tries"].attempted = "";
-									settings["bancommand-tries"]["current-attempted-length"] = 0;
-									settings["bancommand-tries"].tries = 0;
-									settings["bancommand-tries"]["total-tries"] = 0;
-									//Save old command
-									settings["previous-bancommand"] = oldCommand;
-									settings["hinted-member"] = randomPersonToHint.user.username;
-									//Save person who got the last command
-									settings["previous-bancommand-winner"] = member.user.username;
-									//Write to file
-									fs.writeFileSync('./configure.json', JSON.stringify(settings));
-									channel
-										.send(new Discord.MessageEmbed().setDescription('CYA PRYKIE, you fucking bot!').setColor('#09b50c'))
-										.then(() => {
-											//Send prykie the new ban command
-											findPrykie
-												.send(new Discord.MessageEmbed().setDescription(`Shhhh. The new ban command is ${settings.bancommand}. Don\'t tell anyone.`).setColor('#FFCC00'))
+								guild.members
+									.unban(prykiesId)//Unban
+									.then(() => {
+										if (member.id == '341134882120138763') {
+											channel.send(new Discord.MessageEmbed().setDescription(`🤣, Prykie has decided to ban himself. This doesn\'t reset the command.` +
+												` Whatever the command is, it\'s still the same as before.`).setColor('#09b50c'));
+										} else {
+											var randomPersonToHint = guild.members.cache.filter(i => i.user.presence.status == 'online' && !i.user.bot && i.id !== '341134882120138763').random(); //Filter out prykie
+											var oldCommand = settings.bancommand; //Save old command
+											//Random generate new command
+											settings.bancommand = CreateCommand(3);
+											//Reset bancommand tries
+											settings["bancommand-tries"].attempted = "";
+											settings["bancommand-tries"]["current-attempted-length"] = 0;
+											settings["bancommand-tries"].tries = 0;
+											settings["bancommand-tries"]["total-tries"] = 0;
+											//Save old command
+											settings["previous-bancommand"] = oldCommand;
+											settings["hinted-member"] = randomPersonToHint.user.username;
+											//Save person who got the last command
+											settings["previous-bancommand-winner"] = member.user.username;
+											//Write to file
+											fs.writeFileSync('./configure.json', JSON.stringify(settings));
+											channel
+												.send(new Discord.MessageEmbed().setDescription('CYA PRYKIE, you fucking bot!').setColor('#09b50c'))
 												.then(() => {
-													//Send random person the new ban command
-													randomPersonToHint
-														.send(new Discord.MessageEmbed().setDescription(`Horray! You have been randomly chosen to receive the secret Prykie ban command that you can use in ***` +
-															`${guild.toString()}***. It doesn\'t require any prefix, and as long as you have kicking powers;` +
-															` ***${settings.bancommand}*** is the Prykie ban command. Share it in the server if you want to. Or not 😛. The choice is up to you.`).setColor('#FFCC00'))
+													//Send prykie the new ban command
+													findPrykie
+														.send(new Discord.MessageEmbed().setDescription(`Shhhh. The new ban command is ${settings.bancommand}. Don\'t tell anyone.`).setColor('#FFCC00'))
 														.then(() => {
-															//Send message
-															return channel
-																.send(new Discord.MessageEmbed().setDescription(`${member.toString()} figured out the command!! It was ${oldCommand}.\n` +
-																	`The Prykie ban command has been changed to a new randomly generated 3 character command. It is no longer ${oldCommand}`).setColor('#FFCC00'))
+															//Send random person the new ban command
+															randomPersonToHint
+																.send(new Discord.MessageEmbed().setDescription(`Horray! You have been randomly chosen to receive the secret Prykie ban command that you can use in ***` +
+																	`${guild.toString()}***. It doesn\'t require any prefix, and as long as you have kicking powers;` +
+																	` ***${settings.bancommand}*** is the Prykie ban command. Share it in the server if you want to. Or not 😛. The choice is up to you.`).setColor('#FFCC00'))
+																.then(() => {
+																	//Send message
+																	channel
+																		.send(new Discord.MessageEmbed().setDescription(`${member.toString()} figured out the command!! It was ${oldCommand}.\n` +
+																			`The Prykie ban command has been changed to a new randomly generated 3 character command. It is no longer ${oldCommand}`).setColor('#FFCC00'))
+																		.catch(error => {
+																			console.log(`${error}. I couldn\'t post this message sorry...`);
+																		});
+																})
 																.catch(error => {
-																	console.log(`${error}. I couldn\'t post this message sorry...`);
+																	console.log(`${error}. This person couldn\'t be messaged for some reason...`);
 																});
-														})
-														.catch(error => {
-															console.log(`${error}. This person couldn\'t be messaged for some reason...`);
 														});
 												});
-										});
-								}
+										}
+									});
 							}); //Send reinvite
+						return;
 					} else {
 						return channel.send(new Discord.MessageEmbed().setDescription('Prykie is already banned lol!').setColor('#b50909'));
 					}
