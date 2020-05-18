@@ -785,7 +785,7 @@ bot.on('message', msg => {
 						case 'patterns': //List out current patterns
 							var output = "";
 							for (var i = 0; i < settings["translate-ignored-patterns"].length; ++i) {
-								output = `${output} Pattern ${i + 1} - ***${e.toString()}***\n`;
+								output = `${output} Pattern ${i + 1} - ***${settings["translate-ignored-patterns"][i].toString()}***\n`;
 							}
 							return channel.send(new Discord.MessageEmbed().setDescription(`${settings["translate-ignored-patterns"].length} translation ignored patterns.\n${output}`).setColor('#0099ff'));
 						default:
