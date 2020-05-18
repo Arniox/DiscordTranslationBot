@@ -1871,7 +1871,7 @@ bot.on('message', msg => {
 			//Detect
 			googleTranslate.detectLanguage(msgContent, function (err, detection) {
 				//Translate if not english or link
-				if (detection.language != 'en' && detection.language != 'und' && detection.confidence > 0.99) {
+				if (detection.language != 'en' && detection.language != 'und' && detection.confidence > 0.90) {
 					//Translate
 					googleTranslate.translate(msgContent, detection.language, 'en', function (err, translation) {
 						if (translation.translatedText !== msgContent) {
