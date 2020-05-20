@@ -80,43 +80,7 @@ bot.on('message', msg => {
 		var cmd = args[0].toLowerCase();
 		args = args.splice(1);
 
-		switch (cmd) {				
-			case 'prefix': //Prefix options
-				msg.delete({ timeout: 0 }); //Delete message
-				if (args.length != 0) {
-					var option = args[0].toLowerCase();
-					args = args.splice(1);
-
-					//Check which option you want
-					switch (option) {
-						case 'change': //Change bot prefix
-							if (member.hasPermission('MANAGE_GUILD')) {
-								var query = args[0];
-								args = args.splice(1);
-
-								//Check if the query exists
-								if (query) {
-									var previousPrefix = settings.prefix;
-
-									//Change prefix
-									settings.prefix = query;
-									//Write to file
-									fs.writeFileSync('./configure.json', JSON.stringify(settings));
-									bot.user.setActivity(`the ${settings.prefix} prefix`, { type: 'WATCHING' });
-									//Message
-									return channel.send(new Discord.MessageEmbed().setDescription(`Changed Prefix from: ${previousPrefix} to: ${settings.prefix}`).setColor('#09b50c'));
-								} else {
-									return channel.send(new Discord.MessageEmbed().setDescription('Sorry, I cannot change your prefix to nothing!').setColor('#b50909'));
-								}
-							} else {
-								return channel.send(new Discord.MessageEmbed().setDescription('Sorry, you need to be a server manager/admin to change the server prefix.').setColor('#b50909'));
-							}
-						default: //Error on prefix command
-							return channel.send(new Discord.MessageEmbed().setDescription('What do you want to change sorry?').setColor('#b50909'));
-					}
-				} else {
-					return channel.send(new Discord.MessageEmbed().setDescription(`Current Bot Prefix is: ${settings.prefix}`).setColor('#0099ff'));
-				}
+		switch (cmd) {
 			case 'when': //When did I ask
 				msg.delete({ timeout: 0 }); //Delete message
 				var findRandom = dataToUse.quotes[Math.floor(tools.siteRand(dataToUse.quotes.length - 1, 0))];
