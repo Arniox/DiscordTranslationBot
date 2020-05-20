@@ -39,7 +39,7 @@ exports.run = (bot, message, args) => {
                         if (/^\d+$/.test(query)) {
                             var numberSelector = parseInt(query) - 1;
                             //Find existing
-                            if (numberSelector >= bot.config["translate-ignored-patterns"].length) {
+                            if (numberSelector < bot.config["translate-ignored-patterns"].length && numberSelector > -1) {
                                 var existingPattern = bot.config["translate-ignored-patterns"][numberSelector];
                                 if (existingPattern) {
                                     //Remove pattern
