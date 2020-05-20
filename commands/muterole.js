@@ -56,8 +56,10 @@ exports.run = (bot, message, args) => {
                                         fs.writeFileSync('./configure.json', JSON.stringify(bot.config));
                                         //Message
                                         message.channel.send(new Discord.MessageEmbed().setDescription('Removed all roles from mute ignored roles').setColor('#09b50c'));
+                                        break
                                     default:
                                         message.channel.send(new Discord.MessageEmbed().setDescription('I\'m afraid I don\'t understand the command...').setColor('#b50909'));
+                                        break;
                                 }
                             } else {
                                 message.channel.send(new Discord.MessageEmbed().setDescription('I did not detect a roles to add/remove...').setColor('#b50909'));
