@@ -82,14 +82,6 @@ bot.on('message', msg => {
 		args = args.splice(1);
 
 		switch (cmd) {
-			case 'translate': //Translate commands for ignored patterns
-				msg.delete({ timeout: 0 }); //Delete message
-
-				if (args.length != 0) {
-					
-				} else {
-					return channel.send(new Discord.MessageEmbed().setDescription('What are you trying to do?').setColor('#b50909'));
-				}
 			case 'nick':
 				var mentions = msg.mentions.members //Get all mentions
 				msg.delete({ timeout: 0 }); //Delete message
