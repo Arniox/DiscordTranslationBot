@@ -73,7 +73,6 @@ exports.run = (bot, message, args) => {
         } else {
             message.channel.send(new Discord.MessageEmbed().setDescription('Sorry, you cannot add or remove mute ignored roles. You need to be a server manager/admin to use these commands.').setColor('#b50909'));
         }
-        break;
     } else {
         HelpMessage(bot, message, args);
     }
