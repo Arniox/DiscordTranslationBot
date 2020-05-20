@@ -5,7 +5,6 @@ var settings = require('./configure.json');
 var dataToUse = require('./data-to-use.json');
 var tools = require('./extra-functions');
 var fs = require('fs');
-var googleTranslate = require('google-translate')(googleApiKey, { "concurrentLimit": 20 });
 
 //Initialize Discord bot 
 var bot = new Discord.Client();
