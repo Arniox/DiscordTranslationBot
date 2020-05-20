@@ -3,7 +3,41 @@ const Discord = require('discord.js');
 
 exports.run = (bot, message, args) => {
     if (args.length != 0) {
+        if (message.member.hasPermission('MUTE_MEMBERS')) {
+            var voiceChannel = args.join(' ');
 
+            //Channel name, find the voice channel
+            var channelToMute = message.guild.channels.cache.find(i => i.name.toLowerCase() == voiceChannel.toLowerCase() && i.type == 'voice');
+            if (channelToMute) {
+                //Grab all players in this voice that aren't ignored
+                var playersFoundInVoice = message.guild.members.cache.filter(i => i.voice.channelID == channelToMute.id && !i._roles.some(r => bot.config.muteroles.includes(r)));
+
+                //send message promise
+                message.channel
+                    .send(new Discord.MessageEmbed().setDescription(`Muting 0 / ${playersFoundInVoice.size} members in ${channelToMute.toString()}`).setColor('#FFCC00'))
+                    .then((sent) => {
+                        var countofMutedPlayers = 0;
+
+                        //Mute everyone that we found
+                        playersFoundInVoice.map((value, key) => {
+                            countofMutedPlayers++; //Count muted players
+
+                            value.voice.setMute(true);
+                            //Edit message
+                            if (countofMutedPlayers == playersFoundInVoice.size)
+                                sent.edit(new Discord.MessageEmbed().setDescription(`✅ Muted ${countofMutedPlayers} / ${playersFoundInVoice.size} members ` +
+                                    `in ${channelToMute.toString()}`).setColor('#09b50c'));
+                            else
+                                sent.edit(new Discord.MessageEmbed().setDescription(`Muting ${countofMutedPlayers} / ${playersFoundInVoice.size} members ` +
+                                    `in ${channelToMute.toString()}`).setColor('#FFCC00'));
+                        });
+                    });
+            } else {
+                message.channel.send(new Discord.MessageEmbed().setDescription(`Could not find a voice channel with the name ${voiceChannel} `).setColor('#b50909'));
+            }
+        } else {
+            message.channel.send(new Discord.MessageEmbed().setDescription('Sorry, you need muting permissions to run this command.').setColor('#b50909'));
+        }
     } else {
         HelpMessage(bot, message, args);
     }
