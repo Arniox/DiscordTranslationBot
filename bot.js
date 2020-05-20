@@ -81,49 +81,6 @@ bot.on('message', msg => {
 		args = args.splice(1);
 
 		switch (cmd) {
-			case 'mute': //mute channel and ignore mute roles
-				msg.delete({ timeout: 0 }); //Delete message
-				if (member.hasPermission('MUTE_MEMBERS')) {
-					if (args.length != 0) {
-						var voiceChannel = args.join(' ');
-						args = args.splice(1);
-
-						//Channel name, find the voice channel
-						var channelToMute = guild.channels.cache.find(i => i.name.toLowerCase() == voiceChannel.toLowerCase() && i.type == 'voice');
-						if (channelToMute) {
-							//Grab all players in this voice that aren't ignored
-							var playersFoundInVoice = guild.members.cache.filter(i => i.voice.channelID == channelToMute.id && !i._roles.some(r => settings.muteroles.includes(r)));
-
-							//send message promise
-							channel
-								.send(new Discord.MessageEmbed().setDescription(`Muting 0 / ${playersFoundInVoice.size} members in ${channelToMute.toString()}`).setColor('#FFCC00'))
-								.then((sent) => {
-									var countofMutedPlayers = 0;
-
-									//Mute everyone that we found
-									playersFoundInVoice.map((value, key) => {
-										countofMutedPlayers++; //Count muted players
-
-										value.voice.setMute(true);
-										//Edit message
-										if (countofMutedPlayers == playersFoundInVoice.size)
-											sent.edit(new Discord.MessageEmbed().setDescription(`✅ Muted ${countofMutedPlayers} / ${playersFoundInVoice.size} members ` +
-												`in ${channelToMute.toString()}`).setColor('#09b50c'));
-										else
-											sent.edit(new Discord.MessageEmbed().setDescription(`Muting ${countofMutedPlayers} / ${playersFoundInVoice.size} members ` +
-												`in ${channelToMute.toString()}`).setColor('#FFCC00'));
-									});
-								});
-							return;
-						} else {
-							return channel.send(new Discord.MessageEmbed().setDescription(`Could not find a voice channel with the name ${voiceChannel} `).setColor('#b50909'));
-						}
-					} else {
-						return channel.send(new Discord.MessageEmbed().setDescription('You didn\'t select any voice channel to mute.').setColor('#b50909'));
-					}
-				} else {
-					return channel.send(new Discord.MessageEmbed().setDescription('Sorry, you need muting permissions to run this command.').setColor('#b50909'));
-				}
 			case 'unmute': //Unmute everyone in a voice chat
 				msg.delete({ timeout: 0 }); //Delete message
 				if (member.hasPermission('MUTE_MEMBERS')) {
