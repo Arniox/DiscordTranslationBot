@@ -14,7 +14,7 @@ exports.run = (bot, message, args) => {
         switch (command) {
             case 'all':
                 //Check if correct perms
-                if (member.hasPermission('MANAGE_GUILD')) {
+                if (message.member.hasPermission('MANAGE_GUILD')) {
                     var query = args.shift().toLowerCase();
 
                     //Check if query exists
