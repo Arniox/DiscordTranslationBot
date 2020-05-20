@@ -4,7 +4,7 @@
     "translate-ignored-patterns": [],
     "nick-ignored-playerids": [],
     "bancommand": "f10",
-    "previous-bancommand": "",
+    "previous-bancommand": [],
     "hinted-member": "",
     "previous-bancommand-winner": "",
     "bancommand-tries": {

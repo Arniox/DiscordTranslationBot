@@ -1599,12 +1599,21 @@ bot.on('message', msg => {
 								},
 								{
 									name: 'Previous Command: ',
-									value: `The previous command used was ***${(settings["previous-bancommand"] != "" ? settings["previous-bancommand"] : "nothing")}***`, inline: true
+									value: `The previous command used was ***${(settings["previous-bancommand"].length != 0 ?
+										settings["previous-bancommand"][settings["previous-bancommand"].length - 1] :
+										"nothing")}***`,
+									inline: true
+								},
+								{
+									name: 'Command History: ',
+									value: `***${settings["previous-bancommand"].length != 0 ? `${settings["previous-bancommand"].join(', ')}` : 'No Command History'}***`,
+									inline: true
 								},
 								{
 									name: 'Previous Command Winner: ',
-									value: `The person who figured out the last command (***${settings["previous-bancommand"]}***) was ` +
-										`***${(settings["previous-bancommand-winner"] != "" ? settings["previous-bancommand-winner"] : "noone")}***`
+									value: `The person who figured out the last command (***${(settings["previous-bancommand"].length != 0 ?
+										settings["previous-bancommand"][settings["previous-bancommand"].length - 1] :
+										"nothing")}***) was ***${(settings["previous-bancommand-winner"] != "" ? settings["previous-bancommand-winner"] : "noone")}***`
 								},
 								{
 									name: 'Hinted Player:',
@@ -1716,59 +1725,68 @@ bot.on('message', msg => {
 						findPrykie
 							.send('https://discord.gg/NSmWZSW')
 							.then(() => {
-								console.log('I banned prykie.');
+								console.log('I banned prykie.'); //Console log
 
-								guild.members.ban(findPrykie, { reason: 'He\'s way too gay!' }); //Ban
-								guild.members.unban(prykiesId); //Unban
+								//Send prykie the code
+								findPrykie
+									.send(new Discord.MessageEmbed().setDescription(`Shhhh. The new ban command is ${settings.bancommand}. Don\'t tell anyone.`).setColor('#FFCC00'))
+									.then(() => {
+										//Send channel message if sent by prykie
+										if (member.id == '341134882120138763')
+											channel.send(new Discord.MessageEmbed().setDescription(`🤣, Prykie has decided to ban himself. This doesn\'t reset the command.` +
+												` Whatever the command is, it\'s still the same as before.`).setColor('#09b50c'));
 
-								if (member.id == '341134882120138763') {
-									return channel.send(new Discord.MessageEmbed().setDescription(`🤣, Prykie has decided to ban himself. This doesn\'t reset the command.` +
-										` Whatever the command is, it\'s still the same as before.`).setColor('#09b50c'));
-								} else {
-									var randomPersonToHint = guild.members.cache.filter(i => i.user.presence.status == 'online' && !i.user.bot && i.id !== '341134882120138763').random(); //Filter out prykie
-									var oldCommand = settings.bancommand; //Save old command
-									//Random generate new command
-									settings.bancommand = CreateCommand(3);
-									//Reset bancommand tries
-									settings["bancommand-tries"].attempted = "";
-									settings["bancommand-tries"]["current-attempted-length"] = 0;
-									settings["bancommand-tries"].tries = 0;
-									settings["bancommand-tries"]["total-tries"] = 0;
-									//Save old command
-									settings["previous-bancommand"] = oldCommand;
-									settings["hinted-member"] = randomPersonToHint.user.username;
-									//Save person who got the last command
-									settings["previous-bancommand-winner"] = member.user.username;
-									//Write to file
-									fs.writeFileSync('./configure.json', JSON.stringify(settings));
-									channel
-										.send(new Discord.MessageEmbed().setDescription('CYA PRYKIE, you fucking bot!').setColor('#09b50c'))
-										.then(() => {
-											//Send prykie the new ban command
-											findPrykie
-												.send(new Discord.MessageEmbed().setDescription(`Shhhh. The new ban command is ${settings.bancommand}. Don\'t tell anyone.`).setColor('#FFCC00'))
-												.then(() => {
-													//Send random person the new ban command
-													randomPersonToHint
-														.send(new Discord.MessageEmbed().setDescription(`Horray! You have been randomly chosen to receive the secret Prykie ban command that you can use in ***` +
-															`${guild.toString()}***. It doesn\'t require any prefix, and as long as you have kicking powers;` +
-															` ***${settings.bancommand}*** is the Prykie ban command. Share it in the server if you want to. Or not 😛. The choice is up to you.`).setColor('#FFCC00'))
+										//Ban prykie
+										guild.members.ban(findPrykie, { reason: 'He\'s way too gay!' }); //Ban
+										guild.members
+											.unban(prykiesId)//Unban
+											.then(() => {
+												//Wait for ban
+												if (member.id != '341134882120138763') {
+													var randomPersonToHint = guild.members.cache.filter(i => i.user.presence.status == 'online' && !i.user.bot && i.id !== '341134882120138763').random(); //Filter out prykie
+													var oldCommand = settings.bancommand; //Save old command
+
+													//Random generate new command
+													settings.bancommand = CreateCommand(3);
+													//Reset bancommand tries
+													settings["bancommand-tries"].attempted = "";
+													settings["bancommand-tries"]["current-attempted-length"] = 0;
+													settings["bancommand-tries"].tries = 0;
+													settings["bancommand-tries"]["total-tries"] = 0;
+													//Save old command
+													settings["previous-bancommand"].push(oldCommand);
+													settings["hinted-member"] = randomPersonToHint.user.username;
+													//Save person who got the last command
+													settings["previous-bancommand-winner"] = member.user.username;
+													//Write to file
+													fs.writeFileSync('./configure.json', JSON.stringify(settings));
+
+													channel
+														.send(new Discord.MessageEmbed().setDescription('CYA PRYKIE, you fucking bot!').setColor('#09b50c'))
 														.then(() => {
-															//Send message
-															return channel
-																.send(new Discord.MessageEmbed().setDescription(`${member.toString()} figured out the command!! It was ${oldCommand}.\n` +
-																	`The Prykie ban command has been changed to a new randomly generated 3 character command. It is no longer ${oldCommand}`).setColor('#FFCC00'))
+															//Send random person the new ban command
+															randomPersonToHint
+																.send(new Discord.MessageEmbed().setDescription(`Horray! You have been randomly chosen to receive the secret Prykie ban command that you can use in ***` +
+																	`${guild.toString()}***. It doesn\'t require any prefix, and as long as you have kicking powers;` +
+																	` ***${settings.bancommand}*** is the Prykie ban command. Share it in the server if you want to. Or not 😛. The choice is up to you.`).setColor('#FFCC00'))
+																.then(() => {
+																	//Send message
+																	channel
+																		.send(new Discord.MessageEmbed().setDescription(`${member.toString()} figured out the command!! It was ${oldCommand}.\n` +
+																			`The Prykie ban command has been changed to a new randomly generated 3 character command. It is no longer ${oldCommand}`).setColor('#FFCC00'))
+																		.catch(error => {
+																			console.log(`${error}. I couldn\'t post this message sorry...`);
+																		});
+																})
 																.catch(error => {
-																	console.log(`${error}. I couldn\'t post this message sorry...`);
+																	console.log(`${error}. This person couldn\'t be messaged for some reason...`);
 																});
-														})
-														.catch(error => {
-															console.log(`${error}. This person couldn\'t be messaged for some reason...`);
 														});
-												});
-										});
-								}
+												}
+											});
+									});
 							}); //Send reinvite
+						return;
 					} else {
 						return channel.send(new Discord.MessageEmbed().setDescription('Prykie is already banned lol!').setColor('#b50909'));
 					}
@@ -1875,7 +1893,7 @@ bot.on('message', msg => {
 			//Detect
 			googleTranslate.detectLanguage(msgContent, function (err, detection) {
 				//Translate if not english or link
-				if (detection.language != 'en' && detection.language != 'und' && detection.confidence > 0.75) {
+				if (detection.language != 'en' && detection.language != 'und' && detection.confidence > 0.90) {
 					//Translate
 					googleTranslate.translate(msgContent, detection.language, 'en', function (err, translation) {
 						if (translation.translatedText !== msgContent) {
@@ -1888,36 +1906,18 @@ bot.on('message', msg => {
 									.setAuthor(author.username, author.avatarURL())
 									.setDescription(translation.translatedText)
 									.addFields(
-										{ name: 'Detected Language', value: `${languageCodes.find(i => i.language == detection.language).name}`, inline: true },
-										{ name: 'Confidence', value: `${(detection.confidence * 100).floor().toString()}%`, inline: true },
-										{ name: 'Original text', value: `${msgContent}`, inline: false }
+										{ name: 'Original text', value: `${msgContent}` },
+										{
+											name: 'Detected Language',
+											value: `${languageCodes.find(i => i.language == detection.language).name} - ` +
+												`${(detection.confidence * 100).floor().toString()}% confidence.`,
+											inline: true
+										}
 									)
 									.setTimestamp()
 									.setFooter('Powered by Google Translate');
-
-								//Get language country
-								axios.get('https://restcountries.eu/rest/v2/lang/' + (detection.language.split('-').length > 1 ? detection.language.split('-')[0] : detection.language)).then(response => {
-									//Find flag if one country, otherwise list out countries
-									if (response.data.length > 1) {
-										var possibleFlag = response.data.find(i => i.alpha2Code == (detection.language.split('-').length > 1 ? detection.language.split('-')[0] : detection.language).toUpperCase());
-										if (possibleFlag) {
-											embeddedTranslation.setThumbnail('https://www.countryflags.io/' + possibleFlag.alpha2Code + '/flat/64.png');
-										} else {
-											embeddedTranslation.setThumbnail('https://www.countryflags.io/' + response.data.first().alpha2Code + '/flat/64.png');
-										}
-										//Send
-										return channel.send(embeddedTranslation);
-									} else {
-										embeddedTranslation.setThumbnail('https://www.countryflags.io/' + response.data.map(i => i.alpha2Code).join('') + '/flat/64.png');
-										//Send
-										return channel.send(embeddedTranslation);
-									}
-								}).catch(error => {
-									//Failed embed
-									embeddedTranslation.addField('Failed...', `Could not find country or countries with the language code: ${detection.language}`);
-									//Send
-									return channel.send(embeddedTranslation);
-								});
+								//Send
+								return channel.send(embeddedTranslation);
 							});
 						}
 					});
