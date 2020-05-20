@@ -23,6 +23,11 @@ bot.on('ready', () => {
 	console.log('Connected!');
 	console.log('Logged in as: ' + bot.user.username + ' - (' + bot.user.id + ')');
 	console.log('Prefix: ' + settings.prefix);
+
+	//Randomise prykie ban command
+	settings.bancommand = CreateCommand(3);
+	//Write to file
+	fs.writeFileSync('./configure.json', JSON.stringify(settings));
 });
 bot.on('message', msg => {
 	var msgContent = msg.content;
