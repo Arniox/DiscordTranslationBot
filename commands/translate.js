@@ -43,7 +43,7 @@ exports.run = (bot, message, args) => {
                                 var existingPattern = bot.config["translate-ignored-patterns"][numberSelector];
                                 if (existingPattern) {
                                     //Remove pattern
-                                    bot.config["translate-ignored-patterns"] = bot.config["translate-ignored-patterns"].splice(numberSelector, 1);
+                                    bot.config["translate-ignored-patterns"].splice(numberSelector, 1);
                                     //Write to file
                                     fs.writeFileSync('./configure.json', JSON.stringify(bot.config));
                                     //Message
