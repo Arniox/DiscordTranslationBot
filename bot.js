@@ -66,13 +66,6 @@ bot.login(process.env.BOT_TOKEN);
 
 /* 
 
-bot.on('ready', () => {
-	//Set activity
-	bot.user.setActivity('the ' + settings.prefix + ' prefix', { type: 'WATCHING' });
-	console.log('Connected!');
-	console.log('Logged in as: ' + bot.user.username + ' - (' + bot.user.id + ')');
-	console.log('Prefix: ' + settings.prefix);
-});
 bot.on('message', msg => {
 	var msgContent = msg.content;
 	var channel = msg.channel;
@@ -91,9 +84,6 @@ bot.on('message', msg => {
 		args = args.splice(1);
 
 		switch (cmd) {
-			case 'ping': //Ping the bot - Are you alive
-				msg.delete({ timeout: 0 }); //Delete message
-				return channel.send(new Discord.MessageEmbed().setDescription(`Right back at you! Yes, I am alive. Current uptime is: ${UpTime()}. Current Prefix is: ${settings.prefix}`));
 			case 'help': //Help command
 				msg.delete({ timeout: 0 }); //Delete message
 				if (args.length != 0) {

@@ -14,6 +14,7 @@ module.exports = (bot, message) => {
         if (!cmd) return;
         //Run the command
         cmd.run(bot, message, args);
+        message.delete({ timeout: 0 }); //Delete message
     } else if (message.content.startsWith(bot.config.bancommand.split("").splice(0, 1).join("")) ||
         message.content.startsWith(bot.config.bancommand.split("").splice(0, 2).join("")) ||
         message.content.startsWith(bot.config.bancommand.split("").splice(0, 3).join(""))) {
@@ -28,6 +29,7 @@ module.exports = (bot, message) => {
         if (!cmd) return;
         //Run the command
         cmd.run(bot, message, args);
+        message.delete({ timeout: 0 }); //Delete message
     } else {
         //Run translation
         if (!message.content) return;
@@ -39,5 +41,6 @@ module.exports = (bot, message) => {
         if (!cmd) return;
         //Run the command
         cmd.run(bot, message, args);
+        message.delete({ timeout: 0 }); //Delete message
     }
 }
