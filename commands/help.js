@@ -66,7 +66,7 @@ exports.run = (bot, message, args) => {
                             value: `${bot.config.prefix}muterole add ${randomRole}\n\n` +
                                 `${bot.config.prefix}muterole remove ${randomRole}\n\n` +
                                 `${bot.config.prefix}muterole remove all\n\n` +
-                                ``
+                                `${bot.config.prefix}muterole list`
                         }
                     )
                     .setTimestamp()
