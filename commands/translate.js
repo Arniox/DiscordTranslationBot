@@ -73,7 +73,7 @@ exports.run = (bot, message, args) => {
                 message.channel.send(new Discord.MessageEmbed().setDescription(`${bot.config["translate-ignored-patterns"].length} translation ignored patterns.\n${output}`).setColor('#0099ff'));
                 break;
             default:
-                message.channel.send(new Discord.MessageEmbed().setDescription('Did you want to add or remove a translation pattern?').setColor('#b50909'));
+                HelpMessage(bot, message, args);
                 break;
         }
     } else {
@@ -84,7 +84,7 @@ exports.run = (bot, message, args) => {
 //Functions
 function HelpMessage(bot, message, args) {
     var embeddedHelpMessage = new Discord.MessageEmbed()
-        .setColor('#0099ff')
+        .setColor('#b50909')
         .setAuthor(bot.user.username, bot.user.avatarURL())
         .setDescription('[WIP] Currently the command works, but the Regex patterns don\'t do anything. This command allows you to list, add, and remove Regex patterns for the translation to ignore.')
         .addFields(
