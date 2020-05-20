@@ -19,6 +19,7 @@ exports.run = (bot, message, args) => {
 
                 //Send embedded message
                 message.channel.send(embeddedHelpMessage);
+                break;
             case 'prefix':
                 var embeddedHelpMessage = new Discord.MessageEmbed()
                     .setColor('#0099ff')
@@ -33,6 +34,7 @@ exports.run = (bot, message, args) => {
 
                 //Send embedded message
                 message.channel.send(embeddedHelpMessage);
+                break;
             case 'when':
                 var embeddedHelpMessage = new Discord.MessageEmbed()
                     .setColor('#0099ff')
@@ -43,6 +45,7 @@ exports.run = (bot, message, args) => {
 
                 //Send embedded message
                 message.channel.send(embeddedHelpMessage);
+                break;
             case 'muterole':
                 var randomRole = message.guild.roles.cache.random().toString();
 
@@ -68,6 +71,7 @@ exports.run = (bot, message, args) => {
 
                 //Send embedded message
                 message.channel.send(embeddedHelpMessage);
+                break;
             case 'muteroles':
                 var embeddedHelpMessage = new Discord.MessageEmbed()
                     .setColor('#0099ff')
@@ -78,6 +82,7 @@ exports.run = (bot, message, args) => {
 
                 //Send embedded message
                 message.channel.send(embeddedHelpMessage);
+                break;
             case 'mute':
                 var randomChannel = message.guild.channels.cache.filter(i => i.type == 'voice').random().name;
 
@@ -97,6 +102,7 @@ exports.run = (bot, message, args) => {
 
                 //Send embedded message
                 message.channel.send(embeddedHelpMessage);
+                break;
             case 'unmute':
                 var randomChannel = message.guild.channels.cache.filter(i => i.type == 'voice').random().name;
 
@@ -116,6 +122,7 @@ exports.run = (bot, message, args) => {
 
                 //Send embedded message
                 message.channel.send(embeddedHelpMessage);
+                break;
             case 'listen':
                 var embeddedHelpMessage = new Discord.MessageEmbed()
                     .setColor('#0099ff')
@@ -134,6 +141,7 @@ exports.run = (bot, message, args) => {
 
                 //Send embedded message
                 message.channel.send(embeddedHelpMessage);
+                break;
             case 'leave':
                 var embeddedHelpMessage = new Discord.MessageEmbed()
                     .setColor('#0099ff')
@@ -147,6 +155,7 @@ exports.run = (bot, message, args) => {
 
                 //Send embedded message
                 message.channel.send(embeddedHelpMessage);
+                break;
             case 'translate':
                 var embeddedHelpMessage = new Discord.MessageEmbed()
                     .setColor('#0099ff')
@@ -210,7 +219,7 @@ exports.run = (bot, message, args) => {
                         .send(embeddedHelpMessage)
                         .catch(error => { console.log('Error. Ignored') });
                 });
-                return;
+                break;
             case 'prykie':
                 var embeddedHelpMessage = new Discord.MessageEmbed()
                     .setColor('#0099ff')
@@ -237,6 +246,7 @@ exports.run = (bot, message, args) => {
 
                 //Send embedded message
                 message.channel.send(embeddedHelpMessage);
+                break;
             case 'move':
                 var randomChannel1 = message.guild.channels.cache.filter(i => i.type == 'voice').random().name;
                 var randomChannel2 = message.guild.channels.cache.filter(i => i.type == 'voice').random().name;
@@ -270,6 +280,7 @@ exports.run = (bot, message, args) => {
 
                 //Send embedded message
                 message.channel.send(embeddedHelpMessage);
+                break;
             case 'softban':
                 var embeddedHelpMessage = new Discord.MessageEmbed()
                     .setColor('#0099ff')
@@ -288,7 +299,8 @@ exports.run = (bot, message, args) => {
                     .setFooter('Thanks, and have a good day');
 
                 //Send embedded message
-                return channel.send(embeddedHelpMessage);
+                channel.send(embeddedHelpMessage);
+                break;
             case 'bancommand':
                 var embeddedHelpMessage = new Discord.MessageEmbed()
                     .setColor('#0099ff')
@@ -313,6 +325,7 @@ exports.run = (bot, message, args) => {
 
                 //Set embedded message
                 message.channel.send(embeddedHelpMessage);
+                break;
             case 'f10':
                 var embeddedHelpMessage = new Discord.MessageEmbed()
                     .setColor('#0099ff')
@@ -328,10 +341,11 @@ exports.run = (bot, message, args) => {
 
                 //Send embedded message
                 message.channel.send(embeddedHelpMessage);
+                break;
             default:
                 message.channel.send(new Discord.MessageEmbed().setDescription(`Sorry, ${command} is not a command I can help you with.`).setColor('#b50909'));
+                break;
         }
-
     } else {
         //All help
         var embeddedHelpMessage = new Discord.MessageEmbed()
