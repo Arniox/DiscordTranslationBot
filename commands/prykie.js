@@ -44,7 +44,7 @@ exports.run = (bot, message, args) => {
                                 var existingQuote = bot.datatouse["prykie-quotes"][numberSelector];
                                 if (existingQuote) {
                                     //Remove quote
-                                    bot.datatouse["prykie-quotes"] = bot.datatouse["prykie-quotes"].splice(numberSelector, 1);
+                                    bot.datatouse["prykie-quotes"].splice(numberSelector, 1);
                                     //Write to file
                                     fs.writeFileSync('./data-to-use.json', JSON.stringify(bot.datatouse));
                                     //Message
@@ -91,7 +91,7 @@ exports.run = (bot, message, args) => {
 //Functionms
 function HelpMessage(bot, message, args) {
     var embeddedHelpMessage = new Discord.MessageEmbed()
-        .setColor('#0099ff')
+        .setColor('#b50909')
         .setAuthor(bot.user.username, bot.user.avatarURL())
         .setDescription('The prykie command allows you to list, add, remove or print out a random prykie quote. Removing a quote needs server management permissions.')
         .addFields(
