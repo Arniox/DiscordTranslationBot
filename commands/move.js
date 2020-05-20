@@ -268,7 +268,7 @@ exports.run = (bot, message, args) => {
                     //If seleting all or channel
                     if (selector == '*') {
                         //Grab every player
-                        var playersFoundAll = guild.members.cache.filter(i => i.voice.channel);
+                        var playersFoundAll = message.guild.members.cache.filter(i => i.voice.channel);
                         if (playersFoundAll.size != 0) {
                             //Check there's channels to move to
                             if (args.length != 0) {
