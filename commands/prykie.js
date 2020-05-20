@@ -53,7 +53,7 @@ exports.run = (bot, message, args) => {
                                     message.channel.send(new Discord.MessageEmbed().setDescription('I couldn\'t find this quote for some reason...').setColor('#b50909'));
                                 }
                             } else {
-                                message.channel.send(new Discord.MessageEmbed().setDescription(`The ${Ordinal(numberSelector)} quote does not exist sorry.`).setColor('#b50909'));
+                                message.channel.send(new Discord.MessageEmbed().setDescription(`The ${Ordinal(numberSelector + 1)} quote does not exist sorry.`).setColor('#b50909'));
                             }
                         } else {
                             message.channel.send(new Discord.MessageEmbed().setDescription(`${query} is not a number I can get an index of.`).setColor('#b50909'));

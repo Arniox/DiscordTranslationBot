@@ -52,7 +52,7 @@ exports.run = (bot, message, args) => {
                                     message.channel.send(new Discord.MessageEmbed().setDescription(`I couldn\'t find this quote for some reason...`).setColor('#b50909'));
                                 }
                             } else {
-                                message.channel.send(new Discord.MessageEmbed().setDescription(`The ${Ordinal(numberSelector)} ` +
+                                message.channel.send(new Discord.MessageEmbed().setDescription(`The ${Ordinal(numberSelector + 1)} ` +
                                     ` translation ignored pattern does not exist sorry.`).setColor('#b50909'));
                             }
                         } else {
