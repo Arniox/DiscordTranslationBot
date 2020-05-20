@@ -81,11 +81,6 @@ bot.on('message', msg => {
 		args = args.splice(1);
 
 		switch (cmd) {
-			case 'when': //When did I ask
-				msg.delete({ timeout: 0 }); //Delete message
-				var findRandom = dataToUse.quotes[Math.floor(tools.siteRand(dataToUse.quotes.length - 1, 0))];
-				//Message
-				return channel.send(findRandom);
 			case 'muterole': //Add something to the settings
 				var roles = msg.mentions.roles;
 				msg.delete({ timeout: 0 }); //Delete message
