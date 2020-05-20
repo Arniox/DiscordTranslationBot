@@ -55,7 +55,8 @@ fs.readdir('./commands/', (err, files) => {
 });
 bot.login(process.env.BOT_TOKEN);
 
-
+//Handle promise rejections
+process.on('unhandledRejection', error => console.error('Uncaught Promise Rejection', error));
 
 
 
@@ -81,55 +82,6 @@ bot.on('message', msg => {
 		args = args.splice(1);
 
 		switch (cmd) {
-			case 'listen': //Join voice chat
-				//Grab member voice channel
-				var voiceChannel = member.voice.channel;
-				var botVoice = guild.me.voice.channel;
-				//If you are not in a voice
-				if (!voiceChannel) {
-					msg.delete({ timeout: 0 }); //Delete message
-					return channel.send(new Discord.MessageEmbed().setDescription('Please join a voice channel first!').setColor('#b50909'));
-				} else {
-					//Check how many users in channel
-					var membersInVoice = guild.members.cache.filter(i => i.voice.channelID == voiceChannel.id && i.user.bot != true);
-					//If there are no members in that voice channel
-					if (membersInVoice.size == 0) {
-						msg.delete({ timeout: 0 }); //Delete message
-						return channel.send(new Discord.MessageEmbed().setDescription(`I have found no one in ${voiceChannel.toString()} so I didn\'t join it.`).setColor('#b50909'));
-					} else {
-						if (!botVoice) {
-							//Mute bot
-							guild.me.voice.setMute(true);
-							//Join voice channel
-							voiceChannel
-								.join()
-								.then(connection => {
-									msg.delete({ timeout: 0 }); //Delete message
-
-									//For everyuser in the channel
-									membersInVoice.map((value, key) => {
-										//Create audio stream
-										//var audioStream = connection.receiver.createStream(key);
-										//connection.play(audioStream, { type: 'opus' });
-									});
-
-									channel.send(new Discord.MessageEmbed().setDescription(`Now listening to ${voiceChannel.toString()}`).setColor('#09b50c'));
-								}).catch(error => {
-									channel.send(new Discord.MessageEmbed().setDescription('For some reason, I have failed to join this channel. Please try again later or contact the bot developer').setColor('#b50909'))
-								});
-							return;
-						} else {
-							if (botVoice == voiceChannel) {
-								msg.delete({ timeout: 0 }); //Delete message
-								return channel.send(new Discord.MessageEmbed().setDescription('I am already listening to your channel. I can\'t be anywhere else!').setColor('#b50909'));
-							} else {
-								msg.delete({ timeout: 0 }); //Delete message
-								return channel.send(new Discord.MessageEmbed().setDescription(`I am currently busy listening to ${botVoice.toString()}. Ask me later on when I am no longer busy.`).setColor('#b50909'));
-							}
-						}
-					}
-				}
-				break;
 			case 'leave': //Leave voice chat
 				msg.delete({ timeout: 0 }); //Delete message
 
