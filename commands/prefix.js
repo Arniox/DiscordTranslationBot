@@ -6,7 +6,7 @@ exports.run = (bot, message, args) => {
         var command = args.shift().toLowerCase();
 
         //Check which option you want
-        switch (option) {
+        switch (command) {
             case 'change': //Change bot prefix
                 if (message.member.hasPermission('MANAGE_GUILD')) {
                     var query = args.shift();
@@ -45,7 +45,7 @@ exports.run = (bot, message, args) => {
 function HelpMessage(bot, message, args) {
     //Reply with help message
     var embeddedHelpMessage = new Discord.MessageEmbed()
-        .setColor('#0099ff')
+        .setColor('#b50909')
         .setAuthor(bot.user.username, bot.user.avatarURL())
         .setDescription(`You can use prefix by running *${bot.config.prefix}prefix current* to list the current prefix, or *${bot.config.prefix}prefix change [new prefix]* to change the prefix.`)
         .addFields(
