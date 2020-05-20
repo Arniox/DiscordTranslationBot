@@ -50,33 +50,25 @@ exports.run = (bot, message, args) => {
                 var randomRole = message.guild.roles.cache.random().toString();
 
                 var embeddedHelpMessage = new Discord.MessageEmbed()
-                    .setColor('#0099ff')
+                    .setColor('#b50909')
                     .setAuthor(bot.user.username, bot.user.avatarURL())
-                    .setDescription('The muterole command allows you to add or remove mute ignored roles to the server database.')
+                    .setDescription('The muterole command allows you to add, list, or remove mute ignored roles to the server database.')
                     .addFields(
                         { name: 'Required Permissions: ', value: 'Manage Server' },
                         {
                             name: 'Command Patterns: ',
-                            value: `${bot.config.prefix}muterole [add/remove] [@role]\n${bot.config.prefix}muterole [remove] {optional: all}`
+                            value: `${bot.config.prefix}muterole [add/remove] [@role]\n\n` +
+                                `${bot.config.prefix}muterole remove {optional: all}\n\n` +
+                                `${bot.config.prefix}muterole list`
                         },
                         {
                             name: 'Examples: ',
                             value: `${bot.config.prefix}muterole add ${randomRole}\n\n` +
                                 `${bot.config.prefix}muterole remove ${randomRole}\n\n` +
-                                `${bot.config.prefix}muterole remove all`
+                                `${bot.config.prefix}muterole remove all\n\n` +
+                                ``
                         }
                     )
-                    .setTimestamp()
-                    .setFooter('Thanks, and have a good day');
-
-                //Send embedded message
-                message.channel.send(embeddedHelpMessage);
-                break;
-            case 'muteroles':
-                var embeddedHelpMessage = new Discord.MessageEmbed()
-                    .setColor('#0099ff')
-                    .setAuthor(bot.user.username, bot.user.avatarURL())
-                    .setDescription(`The muteroles command is very simple. It lists out current mute ignored roles. Just use ${bot.config.prefix}muteroles to run this command.`)
                     .setTimestamp()
                     .setFooter('Thanks, and have a good day');
 
@@ -364,10 +356,7 @@ exports.run = (bot, message, args) => {
                 value: 'Will post a randomly chosen sarcastic quote.'
             }, {
                 name: `${bot.config.prefix}muterole`,
-                value: 'Muterole allows you to add, remove (all or some) roles to a list that is ignored by the mute command, granted you have management permissions.'
-            }, {
-                name: `${bot.config.prefix}muteroles`,
-                value: 'Lists out the current mute ignored roles.'
+                value: 'Muterole allows you to add, list, or remove (all or some) roles to a list that is ignored by the mute command, granted you have management permissions.'
             }, {
                 name: `${bot.config.prefix}mute`,
                 value: 'Mute a voice channel but ignore the mute ignored roles, granted you have mute members permissions.'

@@ -17,7 +17,7 @@ exports.run = (bot, message, args) => {
                             //Save roles id
                             roles.map((value, key) => {
                                 if (bot.config.muteroles.filter(e => e === key).length != 0) {
-                                    message.channel.send(new Discord.MessageEmbed().setDescription(`${value.toString()} is * already * a mute ignored role.`).setColor('#b50909'));
+                                    message.channel.send(new Discord.MessageEmbed().setDescription(`${value.toString()} is *already* a mute ignored role.`).setColor('#b50909'));
                                 } else {
                                     bot.config.muteroles.push(key);
                                     //Write to file
@@ -35,7 +35,7 @@ exports.run = (bot, message, args) => {
                             //Save roles id
                             roles.map((value, key) => {
                                 if (bot.config.muteroles.filter(e => e === key).length == 0) {
-                                    message.channel.send(new Discord.MessageEmbed().setDescription(`${value.toString()} is * not * a mute ignored role.`).setColor('#b50909'));
+                                    message.channel.send(new Discord.MessageEmbed().setDescription(`${value.toString()} is *not* a mute ignored role.`).setColor('#b50909'));
                                 } else {
                                     bot.config.muteroles = bot.config.muteroles.filter(e => e !== key);
                                     //Write to file
@@ -66,6 +66,13 @@ exports.run = (bot, message, args) => {
                             }
                         }
                         break;
+                    case 'list':
+                        var output = "";
+                        bot.config.muteroles.forEach(e => {
+                            output = output + message.guild.roles.cache.find(i => i.id = e).toString() + '\n';
+                        });
+                        channel.send(new Discord.MessageEmbed().setDescription(`${bot.config.muteroles.length} mute ignored roles.\n` + output).setColor('#0099ff'));
+                        break;
                     default:
                         message.channel.send(new Discord.MessageEmbed().setDescription('Do you want to add a mute ignored role, or remove a mute ignored role?').setColor('#b50909'));
                 }
@@ -86,18 +93,21 @@ function HelpMessage(bot, message, args) {
     var embeddedHelpMessage = new Discord.MessageEmbed()
         .setColor('#b50909')
         .setAuthor(bot.user.username, bot.user.avatarURL())
-        .setDescription('The muterole command allows you to add or remove mute ignored roles to the server database.')
+        .setDescription('The muterole command allows you to add, list, or remove mute ignored roles to the server database.')
         .addFields(
             { name: 'Required Permissions: ', value: 'Manage Server' },
             {
                 name: 'Command Patterns: ',
-                value: `${bot.config.prefix}muterole [add/remove] [@role]\n${bot.config.prefix}muterole [remove] {optional: all}`
+                value: `${bot.config.prefix}muterole [add/remove] [@role]\n\n` +
+                    `${bot.config.prefix}muterole remove {optional: all}\n\n` +
+                    `${bot.config.prefix}muterole list`
             },
             {
                 name: 'Examples: ',
                 value: `${bot.config.prefix}muterole add ${randomRole}\n\n` +
                     `${bot.config.prefix}muterole remove ${randomRole}\n\n` +
-                    `${bot.config.prefix}muterole remove all`
+                    `${bot.config.prefix}muterole remove all\n\n` +
+                    ``
             }
         )
         .setTimestamp()
