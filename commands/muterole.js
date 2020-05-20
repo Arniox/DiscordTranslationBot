@@ -71,7 +71,7 @@ exports.run = (bot, message, args) => {
                         bot.config.muteroles.forEach(e => {
                             output = output + message.guild.roles.cache.find(i => i.id = e).toString() + '\n';
                         });
-                        channel.send(new Discord.MessageEmbed().setDescription(`${bot.config.muteroles.length} mute ignored roles.\n` + output).setColor('#0099ff'));
+                        message.channel.send(new Discord.MessageEmbed().setDescription(`${bot.config.muteroles.length} mute ignored roles.\n` + output).setColor('#0099ff'));
                         break;
                     default:
                         message.channel.send(new Discord.MessageEmbed().setDescription('Do you want to add a mute ignored role, or remove a mute ignored role?').setColor('#b50909'));
