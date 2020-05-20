@@ -138,7 +138,7 @@ exports.run = (bot, message, args) => {
                         //Remove user from database
                         bot.config["nick-ignored-playerids"] = bot.config["nick-ignored-playerids"].filter(i => i !== message.member.id);
                         //Write file
-                        fs.writeFileSync('./configure.json', JSON.stringify(settings));
+                        fs.writeFileSync('./configure.json', JSON.stringify(bot.config));
                         //Message
                         message.channel.send(new Discord.MessageEmbed().setDescription(`I have removed you, ${message.member.toString()} from the nick name ignored members.`).setColor('#09b50c'));
                     }
@@ -151,7 +151,7 @@ exports.run = (bot, message, args) => {
                         if (mentions.size == 1) {
                             mentions.map((value, key) => {
                                 //Check that they are not a nickname ignored member
-                                if (!settings["nick-ignored-playerids"].includes(key)) {
+                                if (!bot.config["nick-ignored-playerids"].includes(key)) {
                                     //Get query
                                     args.shift(); //Remove mention
                                     var query = args.shift();
