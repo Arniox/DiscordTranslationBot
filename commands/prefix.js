@@ -29,6 +29,7 @@ exports.run = (bot, message, args) => {
                 } else {
                     message.channel.send(new Discord.MessageEmbed().setDescription('Sorry, you need to be a server manager/admin to change the server prefix.').setColor('#b50909'));
                 }
+                break;
             case 'current':
                 message.channel.send(new Discord.MessageEmbed().setDescription(`Current Bot Prefix is: ${bot.config.prefix}`).setColor('#0099ff'));
                 break;
@@ -36,7 +37,6 @@ exports.run = (bot, message, args) => {
                 HelpMessage(bot, message, args);
                 break;
         }
-
     } else {
         HelpMessage(bot, message, args);
     }
