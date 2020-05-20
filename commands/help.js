@@ -316,8 +316,8 @@ exports.run = (bot, message, args) => {
                         {
                             name: 'Examples: ',
                             value: `${bot.config.prefix}bancommand\n\n` +
-                                `${bot.config.prefix}bancommand change ${CreateCommand(3)}\n\n` +
-                                `${bot.config.prefix}bancommand change ${CreateCommand(10)}` +
+                                `${bot.config.prefix}bancommand change ${CreateCommand(3, bot)}\n\n` +
+                                `${bot.config.prefix}bancommand change ${CreateCommand(10, bot)}` +
                                 ` (This will automatically cut away the rest of the command change the command to the first 3 characters).`
                         }
                     )
@@ -416,9 +416,9 @@ exports.run = (bot, message, args) => {
 
 
 //Get random string of length
-function CreateCommand(length) {
+function CreateCommand(length, bot) {
     var result = '',
-        characters = dataToUse["strings-to-chose-for-ban-command"],
+        characters = bot.datatouse["strings-to-chose-for-ban-command"],
         charactersLength = characters.length;
     for (var i = 0; i < length; ++i)
         result += characters.charAt(Math.floor(Math.random() * charactersLength));
