@@ -12,26 +12,30 @@ exports.run = (bot, message, args) => {
                 //Grab all players in this voice that aren't ignored
                 var playersFoundInVoice = message.guild.members.cache.filter(i => i.voice.channelID == channelToMute.id && !i._roles.some(r => bot.config.muteroles.includes(r)));
 
-                //send message promise
-                message.channel
-                    .send(new Discord.MessageEmbed().setDescription(`Muting 0 / ${playersFoundInVoice.size} members in ${channelToMute.toString()}`).setColor('#FFCC00'))
-                    .then((sent) => {
-                        var countofMutedPlayers = 0;
+                if (playersFoundInVoice.size != 0) {
+                    //send message promise
+                    message.channel
+                        .send(new Discord.MessageEmbed().setDescription(`Muting 0 / ${playersFoundInVoice.size} members in ${channelToMute.toString()}`).setColor('#FFCC00'))
+                        .then((sent) => {
+                            var countofMutedPlayers = 0;
 
-                        //Mute everyone that we found
-                        playersFoundInVoice.map((value, key) => {
-                            countofMutedPlayers++; //Count muted players
+                            //Mute everyone that we found
+                            playersFoundInVoice.map((value, key) => {
+                                countofMutedPlayers++; //Count muted players
 
-                            value.voice.setMute(true);
-                            //Edit message
-                            if (countofMutedPlayers == playersFoundInVoice.size)
-                                sent.edit(new Discord.MessageEmbed().setDescription(`✅ Muted ${countofMutedPlayers} / ${playersFoundInVoice.size} members ` +
-                                    `in ${channelToMute.toString()}`).setColor('#09b50c'));
-                            else
-                                sent.edit(new Discord.MessageEmbed().setDescription(`Muting ${countofMutedPlayers} / ${playersFoundInVoice.size} members ` +
-                                    `in ${channelToMute.toString()}`).setColor('#FFCC00'));
+                                value.voice.setMute(true);
+                                //Edit message
+                                if (countofMutedPlayers == playersFoundInVoice.size)
+                                    sent.edit(new Discord.MessageEmbed().setDescription(`✅ Muted ${countofMutedPlayers} / ${playersFoundInVoice.size} members ` +
+                                        `in ${channelToMute.toString()}`).setColor('#09b50c'));
+                                else
+                                    sent.edit(new Discord.MessageEmbed().setDescription(`Muting ${countofMutedPlayers} / ${playersFoundInVoice.size} members ` +
+                                        `in ${channelToMute.toString()}`).setColor('#FFCC00'));
+                            });
                         });
-                    });
+                } else {
+                    message.channel.send(new Discord.MessageEmbed().setDescription(`There\'s no one in ${channelToMute.toString()} to mute.`).setColor('#b50909'));
+                }
             } else {
                 message.channel.send(new Discord.MessageEmbed().setDescription(`Could not find a voice channel with the name ${voiceChannel} `).setColor('#b50909'));
             }
