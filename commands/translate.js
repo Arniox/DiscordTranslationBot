@@ -37,7 +37,7 @@ exports.run = (bot, message, args) => {
                     if (query) {
                         //Check if query is actually a number
                         if (/^\d+$/.test(query)) {
-                            var numberSelector = parseInt(query) + 1;
+                            var numberSelector = parseInt(query) - 1;
                             //Find existing
                             if (numberSelector >= bot.config["translate-ignored-patterns"].length) {
                                 var existingPattern = bot.config["translate-ignored-patterns"][numberSelector];
