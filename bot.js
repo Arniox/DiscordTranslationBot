@@ -81,13 +81,6 @@ bot.on('message', msg => {
 		args = args.splice(1);
 
 		switch (cmd) {
-			case 'muteroles': //List out the mute ignored roles
-				msg.delete({ timeout: 0 }); //Delete message
-				var output = "";
-				settings.muteroles.forEach(e => {
-					output = output + guild.roles.cache.find(i => i.id = e).toString() + '\n';
-				});
-				return channel.send(new Discord.MessageEmbed().setDescription(`${settings.muteroles.length} mute ignored roles.\n` + output).setColor('#0099ff'));
 			case 'mute': //mute channel and ignore mute roles
 				msg.delete({ timeout: 0 }); //Delete message
 				if (member.hasPermission('MUTE_MEMBERS')) {
