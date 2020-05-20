@@ -1,9 +1,6 @@
 const googleApiKey = process.env.GOOGLE_API_KEY;
 
 //const { OpusEncoder } = require('@discordjs/opus');
-const axios = require('axios');
-const mergeImages = require('merge-images');
-const { Canvas, Image } = require('canvas');
 var Discord = require('discord.js');
 var settings = require('./configure.json');
 var dataToUse = require('./data-to-use.json');
@@ -11,11 +8,68 @@ var tools = require('./extra-functions');
 var fs = require('fs');
 var googleTranslate = require('google-translate')(googleApiKey, { "concurrentLimit": 20 });
 
-//Function variables / Globals
-const minutes = 20, interval = minutes * 60 * 1000;
-
 //Initialize Discord bot 
-const bot = new Discord.Client();
+var bot = new Discord.Client();
+//Randomise prykie ban command
+settings.bancommand = CreateCommand(3);
+//Write to file
+fs.writeFileSync('./configure.json', JSON.stringify(settings));
+//Attach settings to bot
+bot.config = settings;
+bot.datatouse = dataToUse;
+
+//Attaches all event files to event
+fs.readdir('./events/', (err, files) => {
+	if (err)
+		return console.error(err); //Throw if file breaks
+	files.forEach(file => {
+		//if file is not js file, ignore
+		if (!file.endsWith(".js"))
+			return;
+		//Load event file
+		const event = require(`./events/${file}`);
+		//Get the event name from file nmae
+		var eventName = file.split('.')[0];
+		console.log(`Attempting to load event ${eventName}`);
+		//Bind all found events to client
+		bot.on(eventName, event.bind(null, bot));
+		delete require.cache[require.resolve(`./events/${file}`)]; //Remove from memory
+	});
+});
+
+//Set up commands and attach to the client
+bot.commands = new Enmap();
+fs.readdir('./commands/', (err, folders) => {
+	if (err)
+		return console.error(err); //Throw if folder breaks
+	folders.forEach(folder => {
+		fs.readdir(`./commands/${folder}`, (err2, files) => {
+			if (err2)
+				return console.error(err); //Throw if file breaks
+			files.forEach(file => {
+				//if file is not js file, ignore
+				if (!file.endsWith(".js"))
+					return;
+				//Load the command file itself
+				var props = require(`./commands/${folder}/${file}`);
+				//Get just the command name from the file name
+				var commandName = file.split('.')[0];
+				console.log(`Attempting to load command ${commandName}`);
+				//Store the command in the command Enmap.
+				bot.commands.set(commandName, props);
+			});
+		});
+	});
+});
+bot.login(process.env.BOT_TOKEN);
+
+
+
+
+
+
+
+/* 
 
 bot.on('ready', () => {
 	//Set activity
@@ -23,11 +77,6 @@ bot.on('ready', () => {
 	console.log('Connected!');
 	console.log('Logged in as: ' + bot.user.username + ' - (' + bot.user.id + ')');
 	console.log('Prefix: ' + settings.prefix);
-
-	//Randomise prykie ban command
-	settings.bancommand = CreateCommand(3);
-	//Write to file
-	fs.writeFileSync('./configure.json', JSON.stringify(settings));
 });
 bot.on('message', msg => {
 	var msgContent = msg.content;
@@ -1935,13 +1984,15 @@ bot.on('message', msg => {
 	}
 });
 bot.login(process.env.BOT_TOKEN);
-
+*/
 //----------------FUNCTIONS--------------------------------
+//Function variables / Globals
+const minutes = 20, interval = minutes * 60 * 1000;
+
 //Ping bot
 setInterval(function () {
 	console.log('I am currently alive.');
 }, interval);
-
 
 //Get random string of length
 function CreateCommand(length) {
