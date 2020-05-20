@@ -59,7 +59,7 @@ exports.run = (bot, message, args) => {
 
 function HelpMessage(bot, message, args) {
     var embeddedHelpMessage = new Discord.MessageEmbed()
-        .setColor('#0099ff')
+        .setColor('#b50909')
         .setAuthor(bot.user.username, bot.user.avatarURL())
         .setDescription('[WIP] This command is a work in progress. Currently it\'s a bit buggy and can cause bot crashes. It will simply connect the bot to the current voice channel you\'re in.')
         .addFields(
