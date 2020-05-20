@@ -6,7 +6,7 @@ exports.run = (bot, message, args) => {
     if (args.length != 0) {
         var roles = message.mentions.roles;
 
-        if (member.hasPermission('MANAGE_GUILD')) {
+        if (message.member.hasPermission('MANAGE_GUILD')) {
             if (args.length != 0) {
                 var direction = args.shift().toLowerCase();
 
