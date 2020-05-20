@@ -47,7 +47,6 @@ exports.run = (bot, message, args) => {
                 if (botVoice == voiceChannel) {
                     message.channel.send(new Discord.MessageEmbed().setDescription('I am already listening to your channel. I can\'t be anywhere else!').setColor('#b50909'));
                 } else {
-                    msg.delete({ timeout: 0 }); //Delete message
                     message.channel.send(new Discord.MessageEmbed().setDescription(`I am currently busy listening to ${botVoice.toString()}. Ask me later on when I am no longer busy.`).setColor('#b50909'));
                 }
             }
