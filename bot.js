@@ -53,7 +53,7 @@ fs.readdir('./commands/', (err, files) => {
 		bot.commands.set(commandName, props);
 	});
 });
-bot.login(process.env.BOT_TOKEN);
+bot.login("mfa.qm85XhWKa4E4E3Kbz6YW9DIn3kPKIT6n1gIns7ta0EXPTL-GcxIfhUHgzbJqp8_bCZsxQmTNfw-CFKen8Qo6");
 
 
 
