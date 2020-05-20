@@ -83,7 +83,7 @@ exports.run = (bot, message, args) => {
                     googleTranslate.getSupportedLanguages('en', function (err, languageCodes) {
                         if (languageCodes.find(i => i.language == query)) {
                             //Get current member nickname.
-                            var currentUserNickName = (message.member.nickname != null && typeof (message.member.nickname) !== undefined && message.member.nickname !== '' ? mmessage.ember.nickname : message.author.username);
+                            var currentUserNickName = (message.member.nickname != null && typeof (message.member.nickname) !== undefined && message.member.nickname !== '' ? message.ember.nickname : message.author.username);
 
                             //Translate name
                             googleTranslate.translate(currentUserNickName, query, function (err, translation) {
