@@ -81,47 +81,6 @@ bot.on('message', msg => {
 		args = args.splice(1);
 
 		switch (cmd) {
-			case 'unmute': //Unmute everyone in a voice chat
-				msg.delete({ timeout: 0 }); //Delete message
-				if (member.hasPermission('MUTE_MEMBERS')) {
-					if (args.length != 0) {
-						var voiceChannel = args.join(' ');
-						args = args.splice(1);
-
-						//Channel name, find the voice channel
-						var channelToMute = guild.channels.cache.find(i => i.name.toLowerCase() == voiceChannel.toLowerCase() && i.type == 'voice');
-						if (channelToMute) {
-							//Grab all players in this voice
-							var playersFoundInVoice = guild.members.cache.filter(i => i.voice.channelID == channelToMute.id);
-
-							//send message promise
-							channel
-								.send(new Discord.MessageEmbed().setDescription(`Unmuting 0 / ${playersFoundInVoice.size} members in ${channelToMute.toString()}`).setColor('#FFCC00'))
-								.then((sent) => {
-									var countOfUnmutedPlayers = 0;
-
-									//Unmute everyone that we found
-									playersFoundInVoice.map((value, key) => {
-										countOfUnmutedPlayers++; //Count unmuted players
-
-										value.voice.setMute(false);
-										//Edit message
-										if (countOfUnmutedPlayers == playersFoundInVoice.size)
-											sent.edit(new Discord.MessageEmbed().setDescription(`✅ Unmuted ${countOfUnmutedPlayers} / ${playersFoundInVoice.size} members in ${channelToMute.toString()}`).setColor('#09b50c'));
-										else
-											sent.edit(new Discord.MessageEmbed().setDescription(`Unmuting ${countOfUnmutedPlayers} / ${playersFoundInVoice.size} members in ${channelToMute.toString()}`).setColor('#FFCC00'));
-									});
-								});
-							return;
-						} else {
-							return channel.send(new Discord.MessageEmbed().setDescription(`Could not find a voice channel with the name ${voiceChannel}`).setColor('#b50909'));
-						}
-					} else {
-						return channel.send(new Discord.MessageEmbed().setDescription('You didn\'t select any voice channel to unmute.').setColor('#b50909'));
-					}
-				} else {
-					return channel.send(new Discord.MessageEmbed().setDescription('Sorry, you need muting permissions to run this command.').setColor('#b50909'));
-				}
 			case 'listen': //Join voice chat
 				//Grab member voice channel
 				var voiceChannel = member.voice.channel;
