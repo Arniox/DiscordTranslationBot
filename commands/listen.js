@@ -39,9 +39,6 @@ exports.run = (bot, message, args) => {
 
                                 sent.edit(new Discord.MessageEmbed().setDescription(`✅ Now listening to ${membersInVoice.size} members in ${voiceChannel.toString()}`).setColor('#09b50c'));
                             })
-                            .end(() => {
-                                console.log('test');
-                            })
                             .catch(error => {
                                 sent.edit(new Discord.MessageEmbed().setDescription(`For some reason, I hae failed to join this channel. Please try again later or contact the bot developer`).setColor('#b50909'));
                             });
