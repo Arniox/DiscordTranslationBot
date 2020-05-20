@@ -11,6 +11,9 @@ var tools = require('./extra-functions');
 var fs = require('fs');
 var googleTranslate = require('google-translate')(googleApiKey, { "concurrentLimit": 20 });
 
+//Function variables / Globals
+const minutes = 20, interval = minutes * 60 * 1000;
+
 //Initialize Discord bot 
 const bot = new Discord.Client();
 
@@ -1929,6 +1932,11 @@ bot.on('message', msg => {
 bot.login(process.env.BOT_TOKEN);
 
 //----------------FUNCTIONS--------------------------------
+//Ping bot
+setInterval(function () {
+	console.log('I am currently alive.');
+}, interval);
+
 
 //Get random string of length
 function CreateCommand(length) {
