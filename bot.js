@@ -82,105 +82,11 @@ bot.on('message', msg => {
 		args = args.splice(1);
 
 		switch (cmd) {
-			case 'leave': //Leave voice chat
-				msg.delete({ timeout: 0 }); //Delete message
-
-				//Grab bot voice channel
-				var memberVoice = member.voice.channel;
-				var botVoice = guild.me.voice.channel;
-
-				//If bot is not in voice
-				if (!memberVoice) {
-					return channel.send(new Discord.MessageEmbed().setDescription('You can only execute this command if you are in a voice channel and share the same voice channel as the bot!').setColor('#b50909'));
-				} else {
-					if (!botVoice) {
-						return channel.send(new Discord.MessageEmbed().setDescription('I am not in a voice channel sorry.').setColor('#b50909'));
-					} else {
-						//If member and bot are not in the same voice
-						if (memberVoice !== botVoice) {
-							return channel.send(new Discord.MessageEmbed().setDescription('You can only execute this command if you share the same voice channel as the bot!').setColor('#b50909'));
-						} else {
-							channel.send(new Discord.MessageEmbed().setDescription(`I have stopped listening to ${botVoice.toString()}`).setColor('#09b50c'));
-							guild.me.voice.setMute(false);
-							return botVoice.leave();
-						}
-					}
-				}
 			case 'translate': //Translate commands for ignored patterns
 				msg.delete({ timeout: 0 }); //Delete message
 
 				if (args.length != 0) {
-					var option = args[0].toLowerCase();
-					args = args.splice(1);
-
-					//Check which option you want
-					switch (option) {
-						case 'add': //Add a pattern
-							//Check if has perms
-							if (member.hasPermission('MANAGE_GUILD')) {
-								var query = args.join("");
-								args = args.splice(1);
-
-								//Check if query exists
-								if (query) {
-									//Add pattern
-									settings["translate-ignored-patterns"].push(query);
-									//Write to file
-									fs.writeFileSync('./configure.json', JSON.stringify(settings));
-									//Message
-									return channel.send(new Discord.MessageEmbed().setDescription(`Add new pattern to translation ignored patterns:\n${query}`).setColor('#09b50c'));
-								} else {
-									return channel.send(new Discord.MessageEmbed().setDescription('I did not see any pattern to add sorry.').setColor('#b50909'));
-								}
-							} else {
-								return channel.send(new Discord.MessageEmbed().setDescription('Sorry, you need to be a server manager/admin to add or remove translation ignore patterns.').setColor('#b50909'));
-							}
-						case 'remove': //Remove specific pattern
-							//Check if has perms
-							if (member.hasPermission('MANAGE_GUILD')) {
-								var query = args[0];
-								args = args.splice(1);
-
-								//Check if query exists
-								if (query) {
-									//Check if query is actually a number
-									if (/^\d+$/.test(query)) {
-										var numberSelector = parseInt(query) + 1;
-										//Find existing
-										if (numberSelector >= settings["translate-ignored-patterns"].length) {
-											var existingPattern = settings["translate-ignored-patterns"][numberSelector];
-											if (existingPattern) {
-												//Remove pattern
-												settings["translate-ignored-patterns"] = settings["translate-ignored-patterns"].splice(numberSelector, 1);
-												//Write to file
-												fs.writeFileSync('./configure.json', JSON.stringify(settings));
-												//Message
-												return channel.send(new Discord.MessageEmbed().setDescription(`Removed\n***${existingPattern}***\nfrom the translation ignored patterns.`).setColor('#09b50c'));
-											} else {
-												return channel.send(new Discord.MessageEmbed().setDescription(`I couldn\'t find this quote for some reason...`).setColor('#b50909'));
-											}
-										} else {
-											return channel.send(new Discord.MessageEmbed().setDescription(`The ${tools.ordinal(numberSelector)} ` +
-												` translation ignored pattern does not exist sorry.`).setColor('#b50909'));
-										}
-									} else {
-										return channel.send(new Discord.MessageEmbed().setDescription(`${query} is not a number I can get an index of.`).setColor('#b50909'))
-									}
-								} else {
-									return channel.send(new Discord.MessageEmbed().setDescription('I did not see any pattern to remove sorry.').setColor('#b50909'));
-								}
-							} else {
-								return channel.send(new Discord.MessageEmbed().setDescription('Sorry, you need to be a server manager/admin to add or remove translation ignore patterns.').setColor('#b50909'));
-							}
-						case 'patterns': //List out current patterns
-							var output = "";
-							for (var i = 0; i < settings["translate-ignored-patterns"].length; ++i) {
-								output = `${output} Pattern ${i + 1} - ***${settings["translate-ignored-patterns"][i].toString()}***\n`;
-							}
-							return channel.send(new Discord.MessageEmbed().setDescription(`${settings["translate-ignored-patterns"].length} translation ignored patterns.\n${output}`).setColor('#0099ff'));
-						default:
-							return channel.send(new Discord.MessageEmbed().setDescription('Did you want to add or remove a translation pattern?').setColor('#b50909'));
-					}
+					
 				} else {
 					return channel.send(new Discord.MessageEmbed().setDescription('What are you trying to do?').setColor('#b50909'));
 				}
