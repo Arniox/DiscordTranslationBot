@@ -80,6 +80,7 @@ exports.run = (bot, message, args) => {
                 break;
             default:
                 HelpMessage(bot, message, args);
+                break;
         }
     } else {
         HelpMessage(bot, message, args);
