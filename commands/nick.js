@@ -218,7 +218,7 @@ function HelpMessage(bot, message, args) {
     //Get all available language codes
     googleTranslate.getSupportedLanguages('en', function (err, languageCodes) {
         var embeddedHelpMessage = new Discord.MessageEmbed()
-            .setColor('#0099ff')
+            .setColor('#b50909')
             .setAuthor(bot.user.username, bot.user.avatarURL())
             .setDescription('Nick allows you to translate either you\'re own nickname into any supported language, someone specific granted you have nickname managemental permissions,' +
                 ' or everyone\'s granted you have management permissions.\n' +
