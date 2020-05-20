@@ -1999,13 +1999,6 @@ function CreateCommand(length) {
 	return result;
 }
 
-//Find uptime
-function UpTime() {
-	var time = process.uptime();
-	var uptime = (time + '').toHHMMSS();
-	return uptime;
-}
-
 //To funny case
 function ToFunnyCase(str) {
 	return str.split('').map((v, i) => i % 2 == 0 ? v.toLowerCase() : v.toUpperCase()).join('');
