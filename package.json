@@ -17,6 +17,7 @@
     "axios": "^0.19.2",
     "canvas": "^2.6.1",
     "discord.js": "^12.2.0",
+    "enmap": "^5.2.4",
     "google-translate": "^3.0.0",
     "merge-images": "^2.0.0"
   }

@@ -1,6 +1,7 @@
 const googleApiKey = process.env.GOOGLE_API_KEY;
 
 //const { OpusEncoder } = require('@discordjs/opus');
+const Enmap = require("enmap");
 var Discord = require('discord.js');
 var settings = require('./configure.json');
 var dataToUse = require('./data-to-use.json');
