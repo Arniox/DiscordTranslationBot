@@ -179,6 +179,7 @@ exports.run = (bot, message, args) => {
 
                 //Send embedded message
                 message.channel.send(embeddedHelpMessage);
+                break;
             case 'nick':
                 //Get all available language codes
                 googleTranslate.getSupportedLanguages('en', function (err, languageCodes) {
@@ -299,7 +300,7 @@ exports.run = (bot, message, args) => {
                     .setFooter('Thanks, and have a good day');
 
                 //Send embedded message
-                channel.send(embeddedHelpMessage);
+                message.channel.send(embeddedHelpMessage);
                 break;
             case 'bancommand':
                 var embeddedHelpMessage = new Discord.MessageEmbed()
