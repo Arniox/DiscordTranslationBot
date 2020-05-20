@@ -82,7 +82,7 @@ function HelpMessage(bot, message, args) {
     var randomRole = message.guild.roles.cache.random().toString();
 
     var embeddedHelpMessage = new Discord.MessageEmbed()
-        .setColor('#0099ff')
+        .setColor('#b50909')
         .setAuthor(bot.user.username, bot.user.avatarURL())
         .setDescription('The muterole command allows you to add or remove mute ignored roles to the server database.')
         .addFields(
