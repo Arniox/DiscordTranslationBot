@@ -1563,6 +1563,13 @@ bot.on('message', msg => {
 
 									//Change bancommand
 									settings.bancommand = query.split("").splice(0, 3).join('');
+									//Reset bancommand tries
+									settings["bancommand-tries"].attempted = "";
+									settings["bancommand-tries"]["current-attempted-length"] = 0;
+									settings["bancommand-tries"].tries = 0;
+									settings["bancommand-tries"]["total-tries"] = 0;
+									//Save old command
+									settings["previous-bancommand"] = previousBanCommand;
 									//Write to file
 									fs.writeFileSync('./configure.json', JSON.stringify(settings));
 									//Message prykie
