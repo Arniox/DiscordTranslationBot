@@ -24,10 +24,10 @@ exports.run = (bot, message, args) => {
                 var embeddedHelpMessage = new Discord.MessageEmbed()
                     .setColor('#0099ff')
                     .setAuthor(bot.user.username, bot.user.avatarURL())
-                    .setDescription(`You can use prefix by running *${bot.config.prefix}prefix* to list the current prefix, or *${bot.config.prefix}prefix change [new prefix]* to change the prefix.`)
+                    .setDescription(`You can use prefix by running *${bot.config.prefix}prefix current* to list the current prefix, or *${bot.config.prefix}prefix change [new prefix]* to change the prefix.`)
                     .addFields(
                         { name: 'Required Permissions: ', value: 'Manage Server' },
-                        { name: 'Example: ', value: `${bot.config.prefix}prefix\n\n${bot.config.prefix}prefix change =` }
+                        { name: 'Example: ', value: `${bot.config.prefix}prefix current\n\n${bot.config.prefix}prefix change =` }
                     )
                     .setTimestamp()
                     .setFooter('Thanks, and have a good day');
