@@ -40,26 +40,20 @@ fs.readdir('./events/', (err, files) => {
 
 //Set up commands and attach to the client
 bot.commands = new Enmap();
-fs.readdir('./commands/', (err, folders) => {
+fs.readdir('./commands/', (err, files) => {
 	if (err)
 		return console.error(err); //Throw if folder breaks
-	folders.forEach(folder => {
-		fs.readdir(`./commands/${folder}`, (err2, files) => {
-			if (err2)
-				return console.error(err); //Throw if file breaks
-			files.forEach(file => {
-				//if file is not js file, ignore
-				if (!file.endsWith(".js"))
-					return;
-				//Load the command file itself
-				var props = require(`./commands/${folder}/${file}`);
-				//Get just the command name from the file name
-				var commandName = file.split('.')[0];
-				console.log(`Attempting to load command ${commandName}`);
-				//Store the command in the command Enmap.
-				bot.commands.set(commandName, props);
-			});
-		});
+	files.forEach(file => {
+		//if file is not js file, ignore
+		if (!file.endsWith(".js"))
+			return;
+		//Load the command file itself
+		var props = require(`./commands/${file}`);
+		//Get just the command name from the file name
+		var commandName = file.split('.')[0];
+		console.log(`Attempting to load command ${commandName}`);
+		//Store the command in the command Enmap.
+		bot.commands.set(commandName, props);
 	});
 });
 bot.login(process.env.BOT_TOKEN);
