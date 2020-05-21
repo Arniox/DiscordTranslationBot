@@ -16,7 +16,7 @@ exports.run = (bot, message, args) => {
                     //Check if query exists
                     if (query) {
                         //Add pattern
-                        bot.config["translate-ignored-patterns"].push(query);
+                        bot.config.google["translate-ignored-patterns"].push(query);
                         //Write to file
                         fs.writeFileSync('./configure.json', JSON.stringify(bot.config));
                         //Message
@@ -39,11 +39,11 @@ exports.run = (bot, message, args) => {
                         if (/^\d+$/.test(query)) {
                             var numberSelector = parseInt(query) - 1;
                             //Find existing
-                            if (numberSelector < bot.config["translate-ignored-patterns"].length && numberSelector > -1) {
-                                var existingPattern = bot.config["translate-ignored-patterns"][numberSelector];
+                            if (numberSelector < bot.config.google["translate-ignored-patterns"].length && numberSelector > -1) {
+                                var existingPattern = bot.config.google["translate-ignored-patterns"][numberSelector];
                                 if (existingPattern) {
                                     //Remove pattern
-                                    bot.config["translate-ignored-patterns"].splice(numberSelector, 1);
+                                    bot.config.google["translate-ignored-patterns"].splice(numberSelector, 1);
                                     //Write to file
                                     fs.writeFileSync('./configure.json', JSON.stringify(bot.config));
                                     //Message
@@ -67,10 +67,10 @@ exports.run = (bot, message, args) => {
                 break;
             case 'patterns': //List out current patterns
                 var output = "";
-                for (var i = 0; i < bot.config["translate-ignored-patterns"].length; ++i) {
-                    output = `${output} Pattern ${i + 1} - ***${bot.config["translate-ignored-patterns"][i].toString()}***\n`;
+                for (var i = 0; i < bot.config.google["translate-ignored-patterns"].length; ++i) {
+                    output = `${output} Pattern ${i + 1} - ***${bot.config.google["translate-ignored-patterns"][i].toString()}***\n`;
                 }
-                message.channel.send(new Discord.MessageEmbed().setDescription(`${bot.config["translate-ignored-patterns"].length} translation ignored patterns.\n${output}`).setColor('#0099ff'));
+                message.channel.send(new Discord.MessageEmbed().setDescription(`${bot.config.google["translate-ignored-patterns"].length} translation ignored patterns.\n${output}`).setColor('#0099ff'));
                 break;
             default:
                 HelpMessage(bot, message, args);

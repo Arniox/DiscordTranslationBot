@@ -38,6 +38,5 @@ module.exports = (bot, message) => {
         if (!cmd) return;
         //Run the command
         cmd.run(bot, message, args);
-        message.delete({ timeout: 0 }); //Delete message
     }
 }

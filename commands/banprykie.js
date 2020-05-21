@@ -2,32 +2,6 @@
 const Discord = require('discord.js');
 const fs = require('fs');
 
-//Const variable
-const sayings = [
-    "getting warm",
-    "balmy",
-    "warm",
-    "hot",
-    "overheating",
-    "boiling",
-    "burning",
-    "red-hot",
-    "scalding",
-    "scorching"
-];
-const colors = [
-    "#FFfa00",
-    "#FFd200",
-    "#FFaa00",
-    "#FF8200",
-    "#FF5a00",
-    "#FF3200",
-    "#FF0a00",
-    "#EB0000",
-    "#C30000",
-    "#9B0000"
-];
-
 exports.run = (bot, message, args) => {
     //Get guessed letters
     var a = message.content.substring(0, 1),
@@ -41,16 +15,16 @@ exports.run = (bot, message, args) => {
         i = message.content.substring(8, 9),
         j = message.content.substring(9, 10);
     //Get correct letter
-    var A = bot.config.bancommand.substring(0, 1),
-        B = bot.config.bancommand.substring(1, 2),
-        C = bot.config.bancommand.substring(2, 3),
-        D = bot.config.bancommand.substring(3, 4),
-        E = bot.config.bancommand.substring(4, 5),
-        F = bot.config.bancommand.substring(5, 6),
-        G = bot.config.bancommand.substring(6, 7),
-        H = bot.config.bancommand.substring(7, 8),
-        I = bot.config.bancommand.substring(8, 9),
-        J = bot.config.bancommand.substring(9, 10);
+    var A = bot.config.bancommand.bancommand.substring(0, 1),
+        B = bot.config.bancommand.bancommand.substring(1, 2),
+        C = bot.config.bancommand.bancommand.substring(2, 3),
+        D = bot.config.bancommand.bancommand.substring(3, 4),
+        E = bot.config.bancommand.bancommand.substring(4, 5),
+        F = bot.config.bancommand.bancommand.substring(5, 6),
+        G = bot.config.bancommand.bancommand.substring(6, 7),
+        H = bot.config.bancommand.bancommand.substring(7, 8),
+        I = bot.config.bancommand.bancommand.substring(8, 9),
+        J = bot.config.bancommand.bancommand.substring(9, 10);
 
     if (a == A && b == B && c == C && d == D && e == E && f == F && g == G && h == H && i == I && j == J) {
         message.delete({ timeout: 0 }); //Delete message
@@ -67,7 +41,8 @@ exports.run = (bot, message, args) => {
 
                         //Send prykie the code
                         findPrykie
-                            .send(new Discord.MessageEmbed().setDescription(`Shhhh. The new ban command is ${bot.config.bancommand}. Don\'t tell anyone.`).setColor('#FFCC00'))
+                            .send(new Discord.MessageEmbed().setDescription(`Shhhh. The new ban command is ${bot.config.bancommand.bancommand}.` +
+                                ` Don\'t tell anyone.`).setColor('#FFCC00'))
                             .then(() => {
                                 //Send channel message if sent by prykie
                                 if (message.member.id == '341134882120138763')
@@ -84,20 +59,20 @@ exports.run = (bot, message, args) => {
                                             var randomPersonToHint = message.guild.members.cache
                                                 .filter(i => i.user.presence.status == 'online' && !i.user.bot && i.id !== '341134882120138763')
                                                 .random(); //Filter out prykie
-                                            var oldCommand = bot.config.bancommand; //Save old command
+                                            var oldCommand = bot.config.bancommand.bancommand; //Save old command
 
                                             //Random generate new command
-                                            bot.config.bancommand = CreateCommand(10);
+                                            bot.config.bancommand.bancommand = CreateCommand(10);
                                             //Reset bancommand tries
-                                            bot.config["bancommand-tries"].attempted = "";
-                                            bot.config["bancommand-tries"]["current-attempted-length"] = 0;
-                                            bot.config["bancommand-tries"].tries = 0;
-                                            bot.config["bancommand-tries"]["total-tries"] = 0;
+                                            bot.config.bancommand["bancommand-tries"].attempted = "";
+                                            bot.config.bancommand["bancommand-tries"]["current-attempted-length"] = 0;
+                                            bot.config.bancommand["bancommand-tries"].tries = 0;
+                                            bot.config.bancommand["bancommand-tries"]["total-tries"] = 0;
                                             //Save old command
-                                            bot.config["previous-bancommand"].push(oldCommand);
-                                            bot.config["hinted-member"] = randomPersonToHint.user.username;
+                                            bot.config.bancommand["previous-bancommand"].push(oldCommand);
+                                            bot.config.bancommand["hinted-member"] = randomPersonToHint.user.username;
                                             //Save person who got the last command
-                                            bot.config["previous-bancommand-winner"] = message.member.user.username;
+                                            bot.config.bancommand["previous-bancommand-winner"] = message.member.user.username;
                                             //Write to file
                                             fs.writeFileSync('./configure.json', JSON.stringify(bot.config));
 
@@ -106,9 +81,11 @@ exports.run = (bot, message, args) => {
                                                 .then(() => {
                                                     //Send random person the new ban command
                                                     randomPersonToHint
-                                                        .send(new Discord.MessageEmbed().setDescription(`Horray! You have been randomly chosen to receive the secret Prykie ban command that you can use in ***` +
+                                                        .send(new Discord.MessageEmbed().setDescription(`Horray! You have been randomly chosen to receive the secret` +
+                                                            ` Prykie ban command that you can use in ***` +
                                                             `${message.guild.toString()}***. It doesn\'t require any prefix, and as long as you have kicking powers;` +
-                                                            ` ***${bot.config.bancommand}*** is the Prykie ban command. Share it in the server if you want to. Or not 😛. The choice is up to you.`).setColor('#FFCC00'))
+                                                            ` ***${bot.config.bancommand.bancommand}*** is the Prykie ban command. Share it in the server if you want to.` +
+                                                            ` Or not 😛. The choice is up to you.`).setColor('#FFCC00'))
                                                         .then(() => {
                                                             //Send message
                                                             message.channel
@@ -130,7 +107,8 @@ exports.run = (bot, message, args) => {
                 message.channel.send(new Discord.MessageEmbed().setDescription('Prykie is already banned lol!').setColor('#b50909'));
             }
         } else {
-            message.channel.send(new Discord.MessageEmbed().setDescription(`Holy crap! You managed to figure out the Prykie ban command: ${bot.config.bancommand}. ` +
+            message.channel.send(new Discord.MessageEmbed().setDescription(`Holy crap! You managed to` +
+                ` figure out the Prykie ban command: ${bot.config.bancommand.bancommand}. ` +
                 `Unfortunately, you can\'t actually run this because you do not have kicking powers.`).setColor('#ffffff'));
         }
     } else {
@@ -161,33 +139,34 @@ exports.run = (bot, message, args) => {
 //Check progress
 function CheckProgress(bot, message, args, requiredLength, foundCharacters) {
     if (message.member.hasPermission('KICK_MEMBERS') && message.member.id != '341134882120138763') {
-        if (bot.config["bancommand-tries"]["current-attempted-length"] < (requiredLength + 1)) {
+        if (bot.config.bancommand["bancommand-tries"]["current-attempted-length"] < (requiredLength + 1)) {
             //Reset tries when on a new character
-            if (bot.config["bancommand-tries"]["current-attempted-length"] != requiredLength)
-                bot.config["bancommand-tries"].tries = 0;
+            if (bot.config.bancommand["bancommand-tries"]["current-attempted-length"] != requiredLength)
+                bot.config.bancommand["bancommand-tries"].tries = 0;
 
             //Check tries is not over 0. Only message if tries is 0. Count up each time. Reset at 20
-            if (bot.config["bancommand-tries"].tries == 0) {
+            if (bot.config.bancommand["bancommand-tries"].tries == 0) {
                 message.delete({ timeout: 0 }); //Delete message
 
                 //Save tries
-                bot.config["bancommand-tries"].attempted = foundCharacters;
-                bot.config["bancommand-tries"]["current-attempted-length"] = requiredLength;
-                bot.config["bancommand-tries"].tries++;
-                bot.config["bancommand-tries"]["total-tries"]++;
+                bot.config.bancommand["bancommand-tries"].attempted = foundCharacters;
+                bot.config.bancommand["bancommand-tries"]["current-attempted-length"] = requiredLength;
+                bot.config.bancommand["bancommand-tries"].tries++;
+                bot.config.bancommand["bancommand-tries"]["total-tries"]++;
                 //Write to file
                 fs.writeFileSync('./configure.json', JSON.stringify(bot.config));
 
                 //Send message
-                message.channel.send(new Discord.MessageEmbed().setDescription(`Your guess is ${sayings[requiredLength - 1]}. *${bot.config["bancommand-tries"].attempted}*` +
-                    ` is the first ${requiredLength} character(s) of the ban command!`).setColor(`${colors[requiredLength - 1]}`));
+                message.channel.send(new Discord.MessageEmbed().setDescription(`Your guess is ${bot.config.bancommand["bancommand-tries"].sayings[requiredLength - 1]}. ` +
+                    `*${bot.config.bancommand["bancommand-tries"].attempted}*` +
+                    ` is the first ${requiredLength} character(s) of the ban command!`).setColor(`${bot.config.bancommand["bancommand-tries"].colors[requiredLength - 1]}`));
                 return;
             } else {
-                if (bot.config["bancommand-tries"].tries == 19)
-                    bot.config["bancommand-tries"].tries = 0;
+                if (bot.config.bancommand["bancommand-tries"].tries == 19)
+                    bot.config.bancommand["bancommand-tries"].tries = 0;
                 else
-                    bot.config["bancommand-tries"].tries++;
-                bot.config["bancommand-tries"]["total-tries"]++;
+                    bot.config.bancommand["bancommand-tries"].tries++;
+                bot.config.bancommand["bancommand-tries"]["total-tries"]++;
                 //Write to file
                 fs.writeFileSync('./configure.json', JSON.stringify(bot.config));
                 return; //No message at 99 tries. Just reset and message again at 20 tries.

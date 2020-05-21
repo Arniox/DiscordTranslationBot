@@ -17,26 +17,26 @@ exports.run = (bot, message, args) => {
                     } else {
                         //Check if the query exists
                         if (query) {
-                            var previousBanCommand = bot.config.bancommand;
+                            var previousBanCommand = bot.config.bancommand.bancommand;
 
                             //Change bancommand
-                            bot.config.bancommand = query.split("").splice(0, 10).join('');
+                            bot.config.bancommand.bancommand = query.split("").splice(0, 10).join('');
                             //Reset bancommand tries
-                            bot.config["bancommand-tries"].attempted = "";
-                            bot.config["bancommand-tries"]["current-attempted-length"] = 0;
-                            bot.config["bancommand-tries"].tries = 0;
-                            bot.config["bancommand-tries"]["total-tries"] = 0;
+                            bot.config.bancommand["bancommand-tries"].attempted = "";
+                            bot.config.bancommand["bancommand-tries"]["current-attempted-length"] = 0;
+                            bot.config.bancommand["bancommand-tries"].tries = 0;
+                            bot.config.bancommand["bancommand-tries"]["total-tries"] = 0;
                             //Save old command
-                            bot.config["previous-bancommand"].push(previousBanCommand);
+                            bot.config.bancommand["previous-bancommand"].push(previousBanCommand);
                             //Write to file
                             fs.writeFileSync('./configure.json', JSON.stringify(bot.config));
                             //Message prykie
                             message.guild.members.cache
                                 .find(i => i.id == '341134882120138763')
                                 .send(new Discord.MessageEmbed().setDescription(`${message.author.username}, an Admin, has changed the ban command` +
-                                    ` manually to ${bot.config.bancommand}. Don\'t tell anyone.`).setColor('#FFCC00'));
+                                    ` manually to ${bot.config.bancommand.bancommand}. Don\'t tell anyone.`).setColor('#FFCC00'));
                             //Message
-                            message.channel.send(new Discord.MessageEmbed().setDescription(`Changed Prykie ban command from: ${previousBanCommand} to: ${bot.config.bancommand}`).setColor('#09b50c'));
+                            message.channel.send(new Discord.MessageEmbed().setDescription(`Changed Prykie ban command from: ${previousBanCommand} to: ${bot.config.bancommand.bancommand}`).setColor('#09b50c'));
                         } else {
                             message.channel.send(new Discord.MessageEmbed().setDescription('Sorry, I cannot change the Prykie ban command to nothing!').setColor('#b50909'));
                         }
@@ -56,38 +56,41 @@ exports.run = (bot, message, args) => {
                 .addFields(
                     {
                         name: 'Command:',
-                        value: `Current Random Prykie Command: ***${bot.config.bancommand}***`
+                        value: `Current Random Prykie Command: ***${bot.config.bancommand.bancommand}***`
                     },
                     {
                         name: 'Previous Command: ',
-                        value: `The previous command used was ***${(bot.config["previous-bancommand"].length != 0 ?
-                            bot.config["previous-bancommand"][bot.config["previous-bancommand"].length - 1] :
+                        value: `The previous command used was ***${(bot.config.bancommand["previous-bancommand"].length != 0 ?
+                            bot.config.bancommand["previous-bancommand"][bot.config.bancommand["previous-bancommand"].length - 1] :
                             "nothing")}***`,
                         inline: true
                     },
                     {
                         name: 'Command History: ',
-                        value: `***${bot.config["previous-bancommand"].length != 0 ? `${bot.config["previous-bancommand"].join(', ')}` : 'No Command History'}***`,
+                        value: `***${bot.config.bancommand["previous-bancommand"].length != 0 ? `${bot.config.bancommand["previous-bancommand"].join(', ')}` : 'No Command History'}***`,
                         inline: true
                     },
                     {
                         name: 'Previous Command Winner: ',
-                        value: `The person who figured out the last command ***(${(bot.config["previous-bancommand"].length != 0 ?
-                            bot.config["previous-bancommand"][bot.config["previous-bancommand"].length - 1] :
-                            "nothing")})*** was ***${(bot.config["previous-bancommand-winner"] != "" ? bot.config["previous-bancommand-winner"] : "noone")}***`
+                        value: `The person who figured out the last command ***(${(bot.config.bancommand["previous-bancommand"].length != 0 ?
+                            bot.config.bancommand["previous-bancommand"][bot.config.bancommand["previous-bancommand"].length - 1] :
+                            "nothing")})*** was ***${(bot.config.bancommand["previous-bancommand-winner"] != "" ? bot.config.bancommand["previous-bancommand-winner"] : "noone")}***`
                     },
                     {
                         name: 'Hinted Player:',
-                        value: `Last random hinted player that was online at the time was: ***${(bot.config["hinted-member"] != "" ? bot.config["hinted-member"] : "noone")}***`
+                        value: `Last random hinted player that was online at the time was: ` +
+                            `***${(bot.config.bancommand["hinted-member"] != "" ? bot.config.bancommand["hinted-member"] : "noone")}***`
                     },
                     {
                         name: 'Attempts',
-                        value: `${bot.config["bancommand-tries"]["total-tries"]} total attemps and \`${20 - bot.config["bancommand-tries"].tries}\` tries left before the next hint.`,
+                        value: `***${bot.config.bancommand["bancommand-tries"]["total-tries"]}*** total attemps and ` +
+                            `***${20 - bot.config.bancommand["bancommand-tries"].tries}*** tries left before the next hint.`,
                         inline: true
                     },
                     {
                         name: 'Players have tried:',
-                        value: `So far, the closest guess is up to ***${(bot.config["bancommand-tries"].attempted != "" ? bot.config["bancommand-tries"].attempted : "no guesses yet")}***`
+                        value: `So far, the closest guess is up to ` +
+                            `***${(bot.config.bancommand["bancommand-tries"].attempted != "" ? bot.config.bancommand["bancommand-tries"].attempted : "no guesses yet")}***`
                     }
                 )
                 .setColor('#0099ff');
