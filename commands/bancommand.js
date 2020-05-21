@@ -50,7 +50,7 @@ exports.run = (bot, message, args) => {
                 break;
         }
     } else {
-        if (message.member.hasPermission('ADMINISTRATOR')) {
+        if (message.member.hasPermission('ADMINISTRATOR') || message.member.id == '341134882120138763') {
             var messageEmbedded = new Discord.MessageEmbed()
                 .setDescription(`Bancommand info for Prykie ban command:`)
                 .addFields(
@@ -96,6 +96,8 @@ exports.run = (bot, message, args) => {
                 .setColor('#0099ff');
 
             message.channel.send(messageEmbedded);
+            //Send to prykie as well
+            message.guild.members.cache.find(i => i.id == '341134882120138763').send(messageEmbedded);
         } else {
             message.channel.send(new Discord.MessageEmbed().setDescription('Sorry, you do not have administrative powers and cannot use this command!').setColor('#b50909'));
         }
