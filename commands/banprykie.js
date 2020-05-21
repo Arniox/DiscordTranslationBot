@@ -17,15 +17,15 @@ const sayings = [
 ];
 const colors = [
     "#FFfa00",
-    "#FFdc00",
-    "#FFbe00",
-    "#FFa000",
+    "#FFd200",
+    "#FFaa00",
     "#FF8200",
-    "#FF6400",
-    "#FF4600",
-    "#FF2800",
+    "#FF5a00",
+    "#FF3200",
     "#FF0a00",
-    "#A50000"
+    "#EB0000",
+    "#C30000",
+    "#9B0000"
 ];
 
 exports.run = (bot, message, args) => {
@@ -51,11 +51,6 @@ exports.run = (bot, message, args) => {
         H = bot.config.bancommand.substring(7, 8),
         I = bot.config.bancommand.substring(8, 9),
         J = bot.config.bancommand.substring(9, 10);
-
-    console.log(message.content);
-    console.log(bot.config.bancommand);
-    console.log(a, b, c, d, e, f, g, h, i, j);
-    console.log(A, B, C, D, E, F, G, H, I, J);
 
     if (a == A && b == B && c == C && d == D && e == E && f == F && g == G && h == H && i == I && j == J) {
         message.delete({ timeout: 0 }); //Delete message
