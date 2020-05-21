@@ -36,7 +36,6 @@ exports.run = (bot, message, args) => {
                             sent.edit(new Discord.MessageEmbed().setDescription(`Softbanning ${count} / ${mentions.size} members\n\nI could\'t ban ${errorCount} / ${mentions.size} members.`).setColor('#FFCC00'));
                     });
                 });
-            return;
         } else {
             message.channel.send(new Discord.MessageEmbed().setDescription('Sorry, you do not have administrative powers and cannot use this command!').setColor('#b50909'));
         }

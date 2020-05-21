@@ -82,50 +82,6 @@ bot.on('message', msg => {
 		args = args.splice(1);
 
 		switch (cmd) {
-			case 'softban':
-				var mentions = msg.mentions.members; //Get all mentions
-				msg.delete({ timeout: 0 }); //Delete message
-
-				if (member.hasPermission('ADMINISTRATOR')) {
-					if (mentions.size != 0) {
-						channel
-							.send(new Discord.MessageEmbed().setDescription(`Softbanning 0 / ${mentions.size} members\n\nI couldn\'t ban 0 / ${mentions.size} members.`).setColor('#FFCC00'))
-							.then((sent) => {
-								var count = 0;
-								var errorCount = 0;
-
-								mentions.map((value, key) => { //Find for each member and send reinvite
-									//Check role height difference
-									if (guild.me.roles.highest.comparePositionTo(value.roles.highest) > 0) {
-										count++;
-										//Save id
-										var personId = key;
-										//Send invite
-										value
-											.send('https://discord.gg/NSmWZSW')
-											.then(() => {
-												guild.members.ban(value, { reason: 'Soft ban.' }) //Ban
-												guild.members.unban(personId); //Unban
-												//Edit message
-											});
-									} else {
-										errorCount++;
-									}
-
-									//Edit message
-									if (errorCount + count == mentions.size)
-										sent.edit(new Discord.MessageEmbed().setDescription(`✅ Softbanned ${count} / ${mentions.size} members\n\nI could\'t ban ${errorCount} / ${mentions.size} members.`).setColor('#09b50c'));
-									else
-										sent.edit(new Discord.MessageEmbed().setDescription(`Softbanning ${count} / ${mentions.size} members\n\nI could\'t ban ${errorCount} / ${mentions.size} members.`).setColor('#FFCC00'));
-								});
-							});
-						return;
-					} else {
-						return channel.send(new Discord.MessageEmbed().setDescription('You didn\'t mention anyone for me to ban sorry.').setColor('#b50909'));
-					}
-				} else {
-					return channel.send(new Discord.MessageEmbed().setDescription('Sorry, you do not have administrative powers and cannot use this command!').setColor('#b50909'));
-				}
 			case 'bancommand':
 				msg.delete({ timeout: 0 }) //Delete message
 
