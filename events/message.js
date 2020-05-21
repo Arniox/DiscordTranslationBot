@@ -15,27 +15,24 @@ module.exports = (bot, message) => {
         //Run the command
         cmd.run(bot, message, args);
         message.delete({ timeout: 0 }); //Delete message
-    } else if (message.content.startsWith(bot.config.bancommand.split("").splice(0, 1).join("")) ||
-        message.content.startsWith(bot.config.bancommand.split("").splice(0, 2).join("")) ||
-        message.content.startsWith(bot.config.bancommand.split("").splice(0, 3).join(""))) {
+    } else if (bot.config.startsWith(message.content)) {
 
         //Check length of message.content
-        if (message.content.length > 3) return;
+        if (message.content.length > 10) return;
 
         //Get the specific ban command data from client.commands Enmap
-        const cmd = bot.commands.get("ban-prykie");
+        const cmd = bot.commands.get("banprykie");
 
         //If command doesn't exist, exit and do nothing
         if (!cmd) return;
         //Run the command
         cmd.run(bot, message, args);
-        message.delete({ timeout: 0 }); //Delete message
     } else {
         //Run translation
         if (!message.content) return;
 
         //Get the specific ban command data from client.commands Enmap
-        const cmd = bot.commands.get("translate-message");
+        const cmd = bot.commands.get("translatemessage");
 
         //If command doesn't exist, exit and do nothing
         if (!cmd) return;
