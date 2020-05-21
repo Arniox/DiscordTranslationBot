@@ -67,7 +67,7 @@ function Helpmessage(bot, message, args) {
     var randomPerson = message.guild.members.cache.random();
 
     var embeddedHelpMessage = new Discord.MessageEmbed()
-        .setColor('#0099ff')
+        .setColor('#b50909')
         .setAuthor(bot.user.username, bot.user.avatarURL())
         .setDescription(`Use this command to spam a mentioned member with any number of messages. Useful to get them to listen to you. Only available to administrators.`)
         .addFields(
