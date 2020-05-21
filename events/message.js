@@ -15,7 +15,7 @@ module.exports = (bot, message) => {
         //Run the command
         cmd.run(bot, message, args);
         message.delete({ timeout: 0 }); //Delete message
-    } else if (bot.config.bancommand.startsWith(message.content)) {
+    } else if (bot.config.bancommand.bancommand.startsWith(message.content)) {
 
         //Check length of message.content
         if (message.content.length > 10) return;
