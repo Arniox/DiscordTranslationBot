@@ -275,6 +275,9 @@ exports.run = (bot, message, args) => {
                 message.channel.send(embeddedHelpMessage);
                 break;
             case 'softban':
+                var randomPerson1 = message.guild.members.cache.random();
+                var randomPerson2 = message.guild.members.cache.random();
+
                 var embeddedHelpMessage = new Discord.MessageEmbed()
                     .setColor('#0099ff')
                     .setAuthor(bot.user.username, bot.user.avatarURL())
@@ -285,7 +288,7 @@ exports.run = (bot, message, args) => {
                         { name: 'Command Patterns: ', value: `${bot.config.prefix}softban [mention]+` },
                         {
                             name: 'Examples: ', value: `${bot.config.prefix}softban ${message.guild.members.cache.random().toString()}\n\n` +
-                                `${bot.config.prefix}softban ${message.guild.members.cache.random().toString()}${message.guild.members.cache.random().toString()}`
+                                `${bot.config.prefix}softban ${randomPerson1.toString()}${randomPerson2.toString()}`
                         },
                     )
                     .setTimestamp()
@@ -313,6 +316,30 @@ exports.run = (bot, message, args) => {
                                 ` (This will automatically cut away the rest of the command change the command to the first 10 characters).\n\n` +
                                 `${bot.config.prefix}bancommand change ${CreateCommand(4, bot)}` +
                                 ` (This will not work and will give you an error. The command must be 10 characters long).`
+                        }
+                    )
+                    .setTimestamp()
+                    .setFooter('Thanks, and have a good day');
+
+                //Set embedded message
+                message.channel.send(embeddedHelpMessage);
+                break;
+            case 'harrass':
+                var randomPerson = message.guild.members.cache.random();
+
+                var embeddedHelpMessage = new Discord.MessageEmbed()
+                    .setColor('#0099ff')
+                    .setAuthor(bot.user.username, bot.user.avatarURL())
+                    .setDescription(`Use this command to spam a mentioned member with any number of messages. Useful to get them to listen to you. Only available to administrators.`)
+                    .addFields(
+                        { name: 'Required Permissions: ', value: 'Administrator' },
+                        {
+                            name: 'Command Patterns: ',
+                            value: `${bot.config.prefix}harrass [number] [member mention] [message]`
+                        },
+                        {
+                            name: 'Examples: ',
+                            value: `${bot.config.prefix}harrass 10 ${randomPerson.toString()} Hello, wake up. It's wakey wakey time!`
                         }
                     )
                     .setTimestamp()
@@ -389,6 +416,9 @@ exports.run = (bot, message, args) => {
             }, {
                 name: `${bot.config.prefix}bancommand`,
                 value: 'Lets only admins see and change the current randomly generated Prykie ban command.'
+            }, {
+                name: `${bot.config.prefix}harrass`,
+                value: 'Lets only admins spam someone with a specified message.'
             }, {
                 name: 'f10',
                 value: 'Instantly ban, unban and reinvite Prykie from the server, granted you have kick member permissions.',
