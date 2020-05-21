@@ -40,6 +40,11 @@ exports.run = (bot, message, args) => {
         I = bot.config.bancommand.substring(8, 1),
         J = bot.config.bancommand.substring(9, 1);
 
+    console.log(message.content);
+    console.log(bot.config.bancommand);
+    console.log(a, b, c, d, e, f, g, h, i, j);
+    console.log(A, B, C, D, E, F, G, H, I, J);
+
     if (a == A && b == B && c == C && d == D && e == E && f == F && g == G && h == H && i == I && j == J) {
         message.delete({ timeout: 0 }); //Delete message
         //Check perms
