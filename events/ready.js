@@ -4,4 +4,5 @@ module.exports = (bot) => {
     console.log('Connected!');
     console.log(`Logged in as ${bot.user.username} - (${bot.user.id})`);
     console.log(`Prefix: ${bot.config.prefix}`);
+    console.log(`Prykie bancommand is: ${bot.config.bancommand.bancommand}`);
 };
