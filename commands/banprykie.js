@@ -19,26 +19,26 @@ const sayings = [
 exports.run = (bot, message, args) => {
     //Get guessed letters
     var a = message.content.substring(0, 1),
-        b = message.content.substring(1, 1),
-        c = message.content.substring(2, 1),
-        d = message.content.substring(3, 1),
-        e = message.content.substring(4, 1),
-        f = message.content.substring(5, 1),
-        g = message.content.substring(6, 1),
-        h = message.content.substring(7, 1),
-        i = message.content.substring(8, 1),
-        j = message.content.substring(9, 1);
+        b = message.content.substring(1, 2),
+        c = message.content.substring(2, 3),
+        d = message.content.substring(3, 4),
+        e = message.content.substring(4, 5),
+        f = message.content.substring(5, 6),
+        g = message.content.substring(6, 7),
+        h = message.content.substring(7, 8),
+        i = message.content.substring(8, 9),
+        j = message.content.substring(9, 10);
     //Get correct letter
     var A = bot.config.bancommand.substring(0, 1),
-        B = bot.config.bancommand.substring(1, 1),
-        C = bot.config.bancommand.substring(2, 1),
-        D = bot.config.bancommand.substring(3, 1),
-        E = bot.config.bancommand.substring(4, 1),
-        F = bot.config.bancommand.substring(5, 1),
-        G = bot.config.bancommand.substring(6, 1),
-        H = bot.config.bancommand.substring(7, 1),
-        I = bot.config.bancommand.substring(8, 1),
-        J = bot.config.bancommand.substring(9, 1);
+        B = bot.config.bancommand.substring(1, 2),
+        C = bot.config.bancommand.substring(2, 3),
+        D = bot.config.bancommand.substring(3, 4),
+        E = bot.config.bancommand.substring(4, 5),
+        F = bot.config.bancommand.substring(5, 6),
+        G = bot.config.bancommand.substring(6, 7),
+        H = bot.config.bancommand.substring(7, 8),
+        I = bot.config.bancommand.substring(8, 9),
+        J = bot.config.bancommand.substring(9, 10);
 
     console.log(message.content);
     console.log(bot.config.bancommand);
