@@ -131,7 +131,7 @@ exports.run = (bot, message, args) => {
             }
         } else {
             message.channel.send(new Discord.MessageEmbed().setDescription(`Holy crap! You managed to figure out the Prykie ban command: ${bot.config.bancommand}. ` +
-                `Unfortunately, you can\'t actually run this because you do not have kicking powers.`).setColor('#b50909'));
+                `Unfortunately, you can\'t actually run this because you do not have kicking powers.`).setColor('#ffffff'));
         }
     } else {
         if (a == A && b == B && c == C && d == D && e == E && f == F && g == G && h == H && i == I) {
