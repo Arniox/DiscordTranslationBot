@@ -167,7 +167,7 @@ function CheckProgress(bot, message, args, requiredLength, foundCharacters) {
                 fs.writeFileSync('./configure.json', JSON.stringify(bot.config));
 
                 //Send message
-                message.channel.send(new Discord.MessageEmbed().setDescription(`Your guess is ${sayings[requiredLength - 1]}. ${bot.config["bancommand-tries"].attempted}` +
+                message.channel.send(new Discord.MessageEmbed().setDescription(`Your guess is ${sayings[requiredLength - 1]}. *${bot.config["bancommand-tries"].attempted}*` +
                     ` is the first ${requiredLength} characters of the ban command!`).setColor('#FFCC00'));
                 return;
             } else {
