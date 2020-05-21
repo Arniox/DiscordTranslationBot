@@ -93,7 +93,7 @@ exports.run = (bot, message, args) => {
                             `***${(bot.config.bancommand["bancommand-tries"].attempted != "" ? bot.config.bancommand["bancommand-tries"].attempted : "no guesses yet")}***`
                     }
                 )
-                .setColor('#b50909');
+                .setColor('#0099ff');
 
             message.channel.send(messageEmbedded);
         } else {
