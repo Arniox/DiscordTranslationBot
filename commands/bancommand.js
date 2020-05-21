@@ -120,3 +120,13 @@ function HelpMessage(bot, message, args) {
     //Set embedded message
     message.channel.send(embeddedHelpMessage);
 }
+
+//Get random string of length
+function CreateCommand(length) {
+    var result = '',
+        characters = dataToUse["strings-to-chose-for-ban-command"],
+        charactersLength = characters.length;
+    for (var i = 0; i < length; ++i)
+        result += characters.charAt(Math.floor(Math.random() * charactersLength));
+    return result;
+}
