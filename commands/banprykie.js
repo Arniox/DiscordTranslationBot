@@ -15,6 +15,18 @@ const sayings = [
     "scalding",
     "scorching"
 ];
+const colors = [
+    "#FFfa00",
+    "#FFdc00",
+    "#FFbe00",
+    "#FFa000",
+    "#FF8200",
+    "#FF6400",
+    "#FF4600",
+    "#FF2800",
+    "#FF0a00",
+    "#A50000"
+];
 
 exports.run = (bot, message, args) => {
     //Get guessed letters
@@ -173,7 +185,7 @@ function CheckProgress(bot, message, args, requiredLength, foundCharacters) {
 
                 //Send message
                 message.channel.send(new Discord.MessageEmbed().setDescription(`Your guess is ${sayings[requiredLength - 1]}. *${bot.config["bancommand-tries"].attempted}*` +
-                    ` is the first ${requiredLength} characters of the ban command!`).setColor('#FFCC00'));
+                    ` is the first ${requiredLength} character(s) of the ban command!`).setColor(`${colors[requiredLength - 1]}`));
                 return;
             } else {
                 if (bot.config["bancommand-tries"].tries == 19)
