@@ -24,7 +24,7 @@ exports.run = (bot, message, args) => {
                         bot.config["bancommand-tries"].tries = 0;
                         bot.config["bancommand-tries"]["total-tries"] = 0;
                         //Save old command
-                        bot.config["previous-bancommand"] = previousBanCommand;
+                        bot.config["previous-bancommand"].push(previousBanCommand);
                         //Write to file
                         fs.writeFileSync('./configure.json', JSON.stringify(bot.config));
                         //Message prykie
