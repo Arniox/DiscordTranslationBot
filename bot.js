@@ -9,7 +9,7 @@ var fs = require('fs');
 //Initialize Discord bot 
 var bot = new Discord.Client();
 //Randomise prykie ban command
-settings.bancommand = CreateCommand(10);
+settings.bancommand.bancommand = CreateCommand(10);
 //Write to file
 fs.writeFileSync('./configure.json', JSON.stringify(settings));
 //Attach settings to bot
