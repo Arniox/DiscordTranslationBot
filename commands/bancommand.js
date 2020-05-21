@@ -122,9 +122,9 @@ function HelpMessage(bot, message, args) {
 }
 
 //Get random string of length
-function CreateCommand(length) {
+function CreateCommand(length, bot) {
     var result = '',
-        characters = dataToUse["strings-to-chose-for-ban-command"],
+        characters = bot.datatouse["strings-to-chose-for-ban-command"],
         charactersLength = characters.length;
     for (var i = 0; i < length; ++i)
         result += characters.charAt(Math.floor(Math.random() * charactersLength));
