@@ -156,10 +156,15 @@ function CheckProgress(bot, message, args, requiredLength, foundCharacters) {
                 //Write to file
                 fs.writeFileSync('./configure.json', JSON.stringify(bot.config));
 
+                //Calculate possibilities left
+                var possibilitiesLeft = Math.pow(61, (10 - requiredLength));
+
                 //Send message
                 message.channel.send(new Discord.MessageEmbed().setDescription(`Your guess is ${bot.config.bancommand["bancommand-tries"].sayings[requiredLength - 1]}. ` +
                     `*${bot.config.bancommand["bancommand-tries"].attempted}*` +
-                    ` is the first ${requiredLength} character(s) of the ban command!`).setColor(`${bot.config.bancommand["bancommand-tries"].colors[requiredLength - 1]}`));
+                    ` is the first ${requiredLength} character(s) of the ban command!\n` +
+                    `There are now ${possibilitiesLeft} possible codes left with ${10 - requiredLength} characters left to solve.`)
+                    .setColor(`${bot.config.bancommand["bancommand-tries"].colors[requiredLength - 1]}`));
                 return;
             } else {
                 if (bot.config.bancommand["bancommand-tries"].tries == 19)
