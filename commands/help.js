@@ -296,21 +296,23 @@ exports.run = (bot, message, args) => {
                 break;
             case 'bancommand':
                 var embeddedHelpMessage = new Discord.MessageEmbed()
-                    .setColor('#0099ff')
+                    .setColor('#b50909')
                     .setAuthor(bot.user.username, bot.user.avatarURL())
-                    .setDescription('Lets admins view and change the currently randomly generated Prykie ban command. It is always a three (3) letter/number command with no prefix.')
+                    .setDescription('Lets admins view and change the currently randomly generated Prykie ban command. It is always a three (10) letter/number command with no prefix.')
                     .addFields(
                         { name: 'Required Permissions: ', value: 'Administrator' },
                         {
                             name: 'Command Patterns: ',
-                            value: `${bot.config.prefix}bancommand\n\n${bot.config.prefix}bancommand [change] [new 3 character ban command]`
+                            value: `${bot.config.prefix}bancommand\n\n${bot.config.prefix}bancommand [change] [new 10 character ban command]`
                         },
                         {
                             name: 'Examples: ',
                             value: `${bot.config.prefix}bancommand\n\n` +
-                                `${bot.config.prefix}bancommand change ${CreateCommand(3, bot)}\n\n` +
-                                `${bot.config.prefix}bancommand change ${CreateCommand(10, bot)}` +
-                                ` (This will automatically cut away the rest of the command change the command to the first 3 characters).`
+                                `${bot.config.prefix}bancommand change ${CreateCommand(10, bot)}\n\n` +
+                                `${bot.config.prefix}bancommand change ${CreateCommand(20, bot)}` +
+                                ` (This will automatically cut away the rest of the command change the command to the first 10 characters).\n\n` +
+                                `${bot.config.prefix}bancommand change ${CreateCommand(4, bot)}` +
+                                ` (This will not work and will give you an error. The command must be 10 characters long).`
                         }
                     )
                     .setTimestamp()
@@ -324,7 +326,7 @@ exports.run = (bot, message, args) => {
                     .setColor('#0099ff')
                     .setAuthor(bot.user.username, bot.user.avatarURL())
                     .setDescription('This command is a meme. It will instantly ban Prykie and only Prykie. After banning, it will instantly unban and then send a reinvite to the server in a dm.\n' +
-                        'Each time someone uses this command, the prefix will randomly change to a new 3 character command. Letters and numbers are used.')
+                        'Each time someone uses this command, the prefix will randomly change to a new 5 character command. Letters and numbers are used.')
                     .addFields(
                         { name: 'Required Permissions: ', value: 'Kick Members' },
                         { name: 'Info: ', value: 'This is the only command that does not require a prefix. It can just be run with f10 by itself in chat.' },

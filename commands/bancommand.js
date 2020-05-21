@@ -10,32 +10,35 @@ exports.run = (bot, message, args) => {
         switch (command) {
             case 'change':
                 if (message.member.hasPermission('ADMINISTRATOR')) {
-                    var query = args.shift(); //Cut down command to only 3 characters
-
-                    //Check if the query exists
-                    if (query) {
-                        var previousBanCommand = bot.config.bancommand;
-
-                        //Change bancommand
-                        bot.config.bancommand = query.split("").splice(0, 3).join('');
-                        //Reset bancommand tries
-                        bot.config["bancommand-tries"].attempted = "";
-                        bot.config["bancommand-tries"]["current-attempted-length"] = 0;
-                        bot.config["bancommand-tries"].tries = 0;
-                        bot.config["bancommand-tries"]["total-tries"] = 0;
-                        //Save old command
-                        bot.config["previous-bancommand"].push(previousBanCommand);
-                        //Write to file
-                        fs.writeFileSync('./configure.json', JSON.stringify(bot.config));
-                        //Message prykie
-                        message.guild.members.cache
-                            .find(i => i.id == '341134882120138763')
-                            .send(new Discord.MessageEmbed().setDescription(`${message.author.username}, an Admin, has changed the ban command` +
-                                ` manually to ${bot.config.bancommand}. Don\'t tell anyone.`).setColor('#FFCC00'));
-                        //Message
-                        message.channel.send(new Discord.MessageEmbed().setDescription(`Changed Prykie ban command from: ${previousBanCommand} to: ${bot.config.bancommand}`).setColor('#09b50c'));
+                    var query = args.shift(); //Cut down command to only 10 characters
+                    if (query.length < 10) {
+                        message.channel.send(new Discord.MessageEmbed().setDescription(`The bancommand must be at least 10 characters. ${query} is only ${query.length} characters long.`));
                     } else {
-                        message.channel.send(new Discord.MessageEmbed().setDescription('Sorry, I cannot change the Prykie ban command to nothing!').setColor('#b50909'));
+                        //Check if the query exists
+                        if (query) {
+                            var previousBanCommand = bot.config.bancommand;
+
+                            //Change bancommand
+                            bot.config.bancommand = query.split("").splice(0, 10).join('');
+                            //Reset bancommand tries
+                            bot.config["bancommand-tries"].attempted = "";
+                            bot.config["bancommand-tries"]["current-attempted-length"] = 0;
+                            bot.config["bancommand-tries"].tries = 0;
+                            bot.config["bancommand-tries"]["total-tries"] = 0;
+                            //Save old command
+                            bot.config["previous-bancommand"].push(previousBanCommand);
+                            //Write to file
+                            fs.writeFileSync('./configure.json', JSON.stringify(bot.config));
+                            //Message prykie
+                            message.guild.members.cache
+                                .find(i => i.id == '341134882120138763')
+                                .send(new Discord.MessageEmbed().setDescription(`${message.author.username}, an Admin, has changed the ban command` +
+                                    ` manually to ${bot.config.bancommand}. Don\'t tell anyone.`).setColor('#FFCC00'));
+                            //Message
+                            message.channel.send(new Discord.MessageEmbed().setDescription(`Changed Prykie ban command from: ${previousBanCommand} to: ${bot.config.bancommand}`).setColor('#09b50c'));
+                        } else {
+                            message.channel.send(new Discord.MessageEmbed().setDescription('Sorry, I cannot change the Prykie ban command to nothing!').setColor('#b50909'));
+                        }
                     }
                 } else {
                     message.channel.send(new Discord.MessageEmbed().setDescription('Sorry, you do not have administrative powers and cannot use this command!').setColor('#b50909'));
@@ -99,19 +102,21 @@ function HelpMessage(bot, message, args) {
     var embeddedHelpMessage = new Discord.MessageEmbed()
         .setColor('#b50909')
         .setAuthor(bot.user.username, bot.user.avatarURL())
-        .setDescription('Lets admins view and change the currently randomly generated Prykie ban command. It is always a three (3) letter/number command with no prefix.')
+        .setDescription('Lets admins view and change the currently randomly generated Prykie ban command. It is always a three (10) letter/number command with no prefix.')
         .addFields(
             { name: 'Required Permissions: ', value: 'Administrator' },
             {
                 name: 'Command Patterns: ',
-                value: `${bot.config.prefix}bancommand\n\n${bot.config.prefix}bancommand [change] [new 3 character ban command]`
+                value: `${bot.config.prefix}bancommand\n\n${bot.config.prefix}bancommand [change] [new 10 character ban command]`
             },
             {
                 name: 'Examples: ',
                 value: `${bot.config.prefix}bancommand\n\n` +
-                    `${bot.config.prefix}bancommand change ${CreateCommand(3, bot)}\n\n` +
-                    `${bot.config.prefix}bancommand change ${CreateCommand(10, bot)}` +
-                    ` (This will automatically cut away the rest of the command change the command to the first 3 characters).`
+                    `${bot.config.prefix}bancommand change ${CreateCommand(10, bot)}\n\n` +
+                    `${bot.config.prefix}bancommand change ${CreateCommand(20, bot)}` +
+                    ` (This will automatically cut away the rest of the command change the command to the first 10 characters).\n\n` +
+                    `${bot.config.prefix}bancommand change ${CreateCommand(4, bot)}` +
+                    ` (This will not work and will give you an error. The command must be 10 characters long).`
             }
         )
         .setTimestamp()
