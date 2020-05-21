@@ -38,7 +38,7 @@ exports.run = (bot, message, args) => {
         G = bot.config.bancommand.substring(6, 1),
         H = bot.config.bancommand.substring(7, 1),
         I = bot.config.bancommand.substring(8, 1),
-        J = bot.config.bancommand.substring(9, 1),
+        J = bot.config.bancommand.substring(9, 1);
 
     if (a == A && b == B && c == C && d == D && e == E && f == F && g == G && h == H && i == I && j == J) {
         message.delete({ timeout: 0 }); //Delete message
