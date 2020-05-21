@@ -102,7 +102,7 @@ exports.run = (bot, message, args) => {
                                             fs.writeFileSync('./configure.json', JSON.stringify(bot.config));
 
                                             message.channel
-                                                .send(new Discord.MessageEmbed().setDescription('CYA PRYKIE, you fucking bot!').setColor('#09b50c'))
+                                                .send(new Discord.MessageEmbed().setDescription('CYA PRYKIE, you fucking bot!').setColor('#ffffff'))
                                                 .then(() => {
                                                     //Send random person the new ban command
                                                     randomPersonToHint
@@ -113,7 +113,7 @@ exports.run = (bot, message, args) => {
                                                             //Send message
                                                             message.channel
                                                                 .send(new Discord.MessageEmbed().setDescription(`${message.member.toString()} figured out the command!! It was ***${oldCommand}***.\n` +
-                                                                    `The Prykie ban command has been changed to a new randomly generated 3 character command. It is no longer ***${oldCommand}***`).setColor('#FFCC00'))
+                                                                    `The Prykie ban command has been changed to a new randomly generated 3 character command. It is no longer ***${oldCommand}***`).setColor('#09b50c'))
                                                                 .catch(error => {
                                                                     console.log(`${error}. I couldn\'t post this message sorry...`);
                                                                 });
