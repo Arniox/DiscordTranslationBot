@@ -52,4 +52,4 @@ function RemoveByMatches(string, expressions) {
             outPut += string.replace(expressions[i], "");
         }
     }
-},
+}

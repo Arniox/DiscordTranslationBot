@@ -53,10 +53,11 @@ fs.readdir('./commands/', (err, files) => {
 		bot.commands.set(commandName, props);
 	});
 });
-bot.login(process.env.BOT_TOKEN);
-
 //Handle promise rejections
 process.on('unhandledRejection', error => console.error('Uncaught Promise Rejection', error));
+//Bot loggin
+bot.login(process.env.BOT_TOKEN);
+
 
 
 
