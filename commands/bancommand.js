@@ -50,8 +50,6 @@ exports.run = (bot, message, args) => {
                 break;
         }
     } else {
-        console.log(bot.config);
-
         if (message.member.hasPermission('ADMINISTRATOR')) {
             var messageEmbedded = new Discord.MessageEmbed()
                 .setDescription(`Bancommand info for Prykie ban command:`)
