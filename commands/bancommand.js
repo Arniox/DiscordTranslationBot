@@ -50,6 +50,8 @@ exports.run = (bot, message, args) => {
                 break;
         }
     } else {
+        console.log(bot.config);
+
         if (message.member.hasPermission('ADMINISTRATOR')) {
             var messageEmbedded = new Discord.MessageEmbed()
                 .setDescription(`Bancommand info for Prykie ban command:`)
@@ -93,7 +95,7 @@ exports.run = (bot, message, args) => {
                             `***${(bot.config.bancommand["bancommand-tries"].attempted != "" ? bot.config.bancommand["bancommand-tries"].attempted : "no guesses yet")}***`
                     }
                 )
-                .setColor('#0099ff');
+                .setColor('#b50909');
 
             message.channel.send(messageEmbedded);
         } else {
