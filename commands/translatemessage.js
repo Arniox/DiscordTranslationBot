@@ -13,7 +13,7 @@ exports.run = (bot, message, args) => {
             //Translate
             googleTranslate.translate(message.content, detection.language, 'en', function (err, translation) {
                 if (translation.translatedText !== message.content) {
-                    msg.delete({ timeout: 0 }); //Delete message
+                    message.delete({ timeout: 0 }); //Delete message
                     //Get country
                     googleTranslate.getSupportedLanguages('en', function (err, languageCodes) {
                         //Create embedded message
