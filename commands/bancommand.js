@@ -12,7 +12,8 @@ exports.run = (bot, message, args) => {
                 if (message.member.hasPermission('ADMINISTRATOR')) {
                     var query = args.shift(); //Cut down command to only 10 characters
                     if (query.length < 10) {
-                        message.channel.send(new Discord.MessageEmbed().setDescription(`The bancommand must be at least 10 characters. ${query} is only ${query.length} characters long.`));
+                        message.channel.send(new Discord.MessageEmbed().setDescription(`The bancommand must be at least 10 characters.` +
+                            ` ${query} is only ${query.length} characters long.`).setColor('#b50909'));
                     } else {
                         //Check if the query exists
                         if (query) {
