@@ -40,7 +40,7 @@ exports.run = (bot, message, args) => {
                                     }
                                 }).then((value) => {
                                     //Grab members
-                                    var members = message.guild.memebers.cache.filter(i => i.user.bot && !bot.config["nick-ignored-playerids"].includes(i.id));
+                                    var members = message.guild.members.cache.filter(i => i.user.bot && !bot.config["nick-ignored-playerids"].includes(i.id));
                                     var discludedMembers = message.guild.members.cache.fiter(i => !i.user.bot && bot.config["nick-ignored-playerids"].includes(i.id));
 
                                     //Message
@@ -355,7 +355,7 @@ exports.run = (bot, message, args) => {
                                 //Check if query exists
                                 if (query) {
                                     //Grab members
-                                    var members = message.guild.members.cache.filer(i => !i.user.bot); //Forget about nick ignored players here. That's only for translation
+                                    var members = message.guild.members.cache.filter(i => !i.user.bot); //Forget about nick ignored players here. That's only for translation
 
                                     //Message
                                     message.channel.send(new Discord.MessageEmbed().setDescription(`Setting ${members.size} members nickname\'s to ${query}...\n` +
