@@ -223,7 +223,6 @@ exports.run = (bot, message, args) => {
                                                 if (languageCodes.find(i => i.language == query.toLowerCase())) {
                                                     //Get current member nickname
                                                     var currentUserNickName = (value.nickname != null && typeof (value.nickname) !== undefined && value.nickname !== '' ? value.nickname : value.user.username);
-                                                    var originalName = currentUserNickName;
 
                                                     //Send message and update
                                                     message.channel
@@ -234,9 +233,10 @@ exports.run = (bot, message, args) => {
                                                             //Shuffle array
                                                             languageCodes = Shuffle(languageCodes);
                                                             var firstLanguage = `${languageCodes[0].name}`;
+                                                            var outPutName = currentUserNickName;
 
                                                             languageCodes.forEach(lang => {
-                                                                googleTranslate.translate(currentUserNickName, lang.language, function (err, translation) {
+                                                                googleTranslate.translate(outPutName, lang.language, function (err, translation) {
                                                                     langCount++;
                                                                     //Edit message
                                                                     sent.edit(
@@ -251,7 +251,7 @@ exports.run = (bot, message, args) => {
                                                                                 },
                                                                                 {
                                                                                     name: 'Name -> Name',
-                                                                                    value: `Name changed from ${currentUserNickName} to ${translation.translatedText}`,
+                                                                                    value: `Name changed from ${outPutName} to ${translation.translatedText}`,
                                                                                     inline: true
                                                                                 }
                                                                             )
@@ -261,11 +261,17 @@ exports.run = (bot, message, args) => {
                                                                     //Change previous language name
                                                                     previousLanguage = lang.name;
                                                                     //Update user name to translate
-                                                                    currentUserNickName = translation.translatedText;
+                                                                    outPutName = translation.translatedText;
+
+                                                                    console.log(`Output name: ${outPutName}. Language: ${lang.name}`);
                                                                 });
                                                             });
+
                                                             //After loop, google translate to end language
-                                                            googleTranslate.translate(currentUserNickName, query, function (err, translation) {
+                                                            googleTranslate.translate(outPutName, query, function (err, translation) {
+
+                                                                console.log(`Input final name: ${outPutName}. Language Code: ${query}. Output final name: ${translation.translatedText}`);
+
                                                                 //Change username
                                                                 value
                                                                     .setNickname(translation.translatedText.substring(0, 32), `Chinese whispers with ${value.toString()}\'s` +
@@ -284,7 +290,7 @@ exports.run = (bot, message, args) => {
                                                                                     },
                                                                                     {
                                                                                         name: 'Name',
-                                                                                        value: `Original Name: ${originalName} and now, current name: ${translation.translatedText}`
+                                                                                        value: `Original Name: ${currentUserNickName} and now, current name: ${translation.translatedText}`
                                                                                     }
                                                                                 )
                                                                                 .setTimestamp()
