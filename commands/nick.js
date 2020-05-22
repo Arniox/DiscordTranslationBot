@@ -100,6 +100,8 @@ exports.run = (bot, message, args) => {
                                         });
                                     }
                                 }).then((value) => {
+                                    console.log(value);
+
                                     //Get current member nickname
                                     var currentUserNickName = NickName(message.member);
 
@@ -112,6 +114,8 @@ exports.run = (bot, message, args) => {
                                             ` in ${value.name}`).setColor('#09b50c'));
                                     });
                                 }).catch((err) => {
+                                    console.log(err);
+
                                     message.channel.send(new Discord.MessageEmbed().setDescription(`${err}`).setColor('#b50909'));
                                 });
                             } else {
