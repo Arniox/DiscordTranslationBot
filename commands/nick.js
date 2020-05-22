@@ -229,8 +229,6 @@ exports.run = (bot, message, args) => {
                                                     message.channel
                                                         .send(new Discord.MessageEmbed().setDescription(`Playing Chinese whispers with ${value.toString()}\'s nickname...`).setColor('#FFCC00'))
                                                         .then((sent) => {
-                                                            sent.delete({ timeout: 0 });
-
                                                             var langCount = 0;
                                                             var previousLanguage = "***Auto Detected***";
                                                             //Shuffle array
@@ -241,7 +239,7 @@ exports.run = (bot, message, args) => {
                                                                 googleTranslate.translate(currentUserNickName, lang.language, function (err, translation) {
                                                                     langCount++;
                                                                     //Edit message
-                                                                    message.channel.send(
+                                                                    sent.edit(
                                                                         new Discord.MessageEmbed()
                                                                             .setColor('#FFCC00')
                                                                             .setDescription(`Playing Chinese whispers with ${value.toString()}\'s nickname...`)
@@ -258,7 +256,7 @@ exports.run = (bot, message, args) => {
                                                                                 }
                                                                             )
                                                                             .setTimestamp()
-                                                                    ).then((sent) => { sent.delete({ timeout: 0 }) });
+                                                                    );
 
                                                                     //Change previous language name
                                                                     previousLanguage = lang.name;
@@ -273,7 +271,7 @@ exports.run = (bot, message, args) => {
                                                                     .setNickname(translation.translatedText.substring(0, 32), `Chinese whispers with ${value.toString()}\'s` +
                                                                         ` nickname from ${firstLanguage} to ${languageCodes.find(i => i.language == query.toLowerCase()).name}`)
                                                                     .then(() => {
-                                                                        message.channel.send(
+                                                                        sent.edit(
                                                                             new Discord.MessageEmbed()
                                                                                 .setColor('#09b50c')
                                                                                 .setDescription(`✅ Finished playing Chinese whispers with ` +
@@ -290,7 +288,7 @@ exports.run = (bot, message, args) => {
                                                                                     }
                                                                                 )
                                                                                 .setTimestamp()
-                                                                        ).then((sent) => { sent.delete({ timeout: 0 }) });
+                                                                        );
                                                                     });
                                                             });
                                                         });
