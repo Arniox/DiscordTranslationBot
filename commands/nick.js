@@ -191,7 +191,7 @@ exports.run = (bot, message, args) => {
                                                         //Change name
                                                         message.member.setNickname(translation.translatedText.substring(0, 32), `Translating name from ${currentUserNickName} to ${translation.translatedText} in ${value.name}`);
                                                         //Send message
-                                                        message.channel.send(new Discord.MessageEmbed().setDescription(`I have translated ${v, toString()}\'s nickname from ${currentUserNickName} to ${translation.translate}` +
+                                                        message.channel.send(new Discord.MessageEmbed().setDescription(`I have translated ${v.user.username}\'s nickname from ${currentUserNickName} to ${translation.translatedText}` +
                                                             ` in ${value.name}`).setColor('#09b50c'));
                                                     });
                                                 }).catch((err) => {
