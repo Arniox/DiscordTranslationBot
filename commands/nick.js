@@ -235,67 +235,75 @@ exports.run = (bot, message, args) => {
                                                             var firstLanguage = `${languageCodes[0].name}`;
                                                             var outPutName = currentUserNickName;
 
-                                                            languageCodes.forEach(lang => {
-                                                                googleTranslate.translate(outPutName, lang.language, function (err, translation) {
-                                                                    langCount++;
-                                                                    //Edit message
-                                                                    sent.edit(
-                                                                        new Discord.MessageEmbed()
-                                                                            .setColor('#FFCC00')
-                                                                            .setDescription(`Playing Chinese whispers with ${value.toString()}\'s nickname...`)
-                                                                            .addFields(
-                                                                                {
-                                                                                    name: 'Language -> Language',
-                                                                                    value: `Gone through ${langCount} / ${languageCodes.length} languages. Just did ${previousLanguage} to ${lang.name}`,
-                                                                                    inline: true
-                                                                                },
-                                                                                {
-                                                                                    name: 'Name -> Name',
-                                                                                    value: `Name changed from ${outPutName} to ${translation.translatedText}`,
-                                                                                    inline: true
-                                                                                }
-                                                                            )
-                                                                            .setTimestamp()
-                                                                    );
-
-                                                                    //Change previous language name
-                                                                    previousLanguage = lang.name;
-                                                                    //Update user name to translate
-                                                                    outPutName = translation.translatedText;
-
-                                                                    console.log(`Output name: ${outPutName}. Language: ${lang.name}`);
-                                                                });
-                                                            });
-
-                                                            //After loop, google translate to end language
-                                                            googleTranslate.translate(outPutName, query, function (err, translation) {
-
-                                                                console.log(`Input final name: ${outPutName}. Language Code: ${query}. Output final name: ${translation.translatedText}`);
-
-                                                                //Change username
-                                                                value
-                                                                    .setNickname(translation.translatedText.substring(0, 32), `Chinese whispers with ${value.toString()}\'s` +
-                                                                        ` nickname from ${firstLanguage} to ${languageCodes.find(i => i.language == query.toLowerCase()).name}`)
-                                                                    .then(() => {
+                                                            //Create promise
+                                                            var promisMeAll = new Promise((resolve, reject) => {
+                                                                languageCodes.forEach((lang, index, array) => {
+                                                                    googleTranslate.translate(outPutName, lang.language, function (err, translation) {
+                                                                        langCount++;
+                                                                        //Edit message
                                                                         sent.edit(
                                                                             new Discord.MessageEmbed()
-                                                                                .setColor('#09b50c')
-                                                                                .setDescription(`✅ Finished playing Chinese whispers with ` +
-                                                                                    `${value.toString()}\'s nickname.`)
+                                                                                .setColor('#FFCC00')
+                                                                                .setDescription(`Playing Chinese whispers with ${value.toString()}\'s nickname...`)
                                                                                 .addFields(
                                                                                     {
-                                                                                        name: 'Language',
-                                                                                        value: `Went through all ${langCount} / ${languageCodes.length} languages.`,
+                                                                                        name: 'Language -> Language',
+                                                                                        value: `Gone through ${langCount} / ${languageCodes.length} languages. Just did ${previousLanguage} to ${lang.name}`,
                                                                                         inline: true
                                                                                     },
                                                                                     {
-                                                                                        name: 'Name',
-                                                                                        value: `Original Name: ${currentUserNickName} and now, current name: ${translation.translatedText}`
+                                                                                        name: 'Name -> Name',
+                                                                                        value: `Name changed from ${outPutName} to ${translation.translatedText}`,
+                                                                                        inline: true
                                                                                     }
                                                                                 )
                                                                                 .setTimestamp()
                                                                         );
+
+                                                                        //Change previous language name
+                                                                        previousLanguage = lang.name;
+                                                                        //Update user name to translate
+                                                                        outPutName = translation.translatedText;
+
+                                                                        console.log(`Output name: ${outPutName}. Language: ${lang.name}`);
+
+                                                                        //Resolve once the loop is done
+                                                                        if (index === array.length - 1) resolve();
                                                                     });
+                                                                });
+                                                            });
+
+                                                            promisMeAll.then(() => {
+                                                                //After loop, google translate to end language
+                                                                googleTranslate.translate(outPutName, query, function (err, translation) {
+
+                                                                    console.log(`Input final name: ${outPutName}. Language Code: ${query}. Output final name: ${translation.translatedText}`);
+
+                                                                    //Change username
+                                                                    value
+                                                                        .setNickname(translation.translatedText.substring(0, 32), `Chinese whispers with ${value.toString()}\'s` +
+                                                                            ` nickname from ${firstLanguage} to ${languageCodes.find(i => i.language == query.toLowerCase()).name}`)
+                                                                        .then(() => {
+                                                                            sent.edit(
+                                                                                new Discord.MessageEmbed()
+                                                                                    .setColor('#09b50c')
+                                                                                    .setDescription(`✅ Finished playing Chinese whispers with ` +
+                                                                                        `${value.toString()}\'s nickname.`)
+                                                                                    .addFields(
+                                                                                        {
+                                                                                            name: 'Language',
+                                                                                            value: `Went through all ${langCount} / ${languageCodes.length} languages.`,
+                                                                                            inline: true
+                                                                                        },
+                                                                                        {
+                                                                                            name: 'Name',
+                                                                                            value: `Original Name: ${currentUserNickName} and now, current name: ${translation.translatedText}`
+                                                                                        }
+                                                                                    )
+                                                                                    .setTimestamp()
+                                                                            );
+                                                                        });
+                                                                });
                                                             });
                                                         });
                                                 } else {
