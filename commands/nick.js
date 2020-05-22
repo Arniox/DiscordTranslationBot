@@ -35,7 +35,7 @@ exports.run = (bot, message, args) => {
                                         })
                                     } else {
                                         googleTranslate.getSupportedLanguages('en', function (err, languageCodes) {
-                                            resolve(languageCodes[SiteRand(languageCodes.length - 1, 0)]);
+                                            resolve(languageCodes[Math.floor(SiteRand(languageCodes.length - 1, 0))]);
                                         });
                                     }
                                 }).then((value) => {
@@ -96,19 +96,10 @@ exports.run = (bot, message, args) => {
                                         });
                                     } else {
                                         googleTranslate.getSupportedLanguages('en', function (err, languageCodes) {
-                                            console.log(languageCodes);
-
-                                            var language = languageCodes[SiteRand(languageCodes.length - 1, 0)];
-
-                                            console.log(language);
-
-
-                                            resolve(language);
+                                            resolve(languageCodes[Math.floor(SiteRand(languageCodes.length - 1, 0))]);
                                         });
                                     }
                                 }).then((value) => {
-                                    console.log(value);
-
                                     //Get current member nickname
                                     var currentUserNickName = NickName(message.member);
 
@@ -121,8 +112,6 @@ exports.run = (bot, message, args) => {
                                             ` in ${value.name}`).setColor('#09b50c'));
                                     });
                                 }).catch((err) => {
-                                    console.log(err);
-
                                     message.channel.send(new Discord.MessageEmbed().setDescription(`${err}`).setColor('#b50909'));
                                 });
                             } else {
@@ -190,7 +179,7 @@ exports.run = (bot, message, args) => {
                                                         });
                                                     } else {
                                                         googleTranslate.getSupportedLanguages('en', function (err, languageCodes) {
-                                                            resolve(languageCodes[SiteRand(languageCodes.length - 1, 0)]);
+                                                            resolve(languageCodes[Math.floor(SiteRand(languageCodes.length - 1, 0))]);
                                                         });
                                                     }
                                                 }).then((value) => {
@@ -247,7 +236,7 @@ exports.run = (bot, message, args) => {
                                                         });
                                                     } else {
                                                         googleTranslate.getSupportedLanguages('en', function (err, languageCodes) {
-                                                            resolve(languageCodes[SiteRand(languageCodes.length - 1, 0)]);
+                                                            resolve(languageCodes[Math.floor(SiteRand(languageCodes.length - 1, 0))]);
                                                         });
                                                     }
                                                 }).then((value) => {
