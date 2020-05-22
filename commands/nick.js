@@ -264,9 +264,6 @@ exports.run = (bot, message, args) => {
                                                                         previousLanguage = lang.name;
                                                                         //Update user name to translate
                                                                         outPutName = translation.translatedText;
-
-                                                                        console.log(`Output name: ${outPutName}. Language: ${lang.name}`);
-
                                                                         //Resolve once the loop is done
                                                                         if (index === array.length - 1) resolve();
                                                                     });
@@ -276,9 +273,6 @@ exports.run = (bot, message, args) => {
                                                             promisMeAll.then(() => {
                                                                 //After loop, google translate to end language
                                                                 googleTranslate.translate(outPutName, query, function (err, translation) {
-
-                                                                    console.log(`Input final name: ${outPutName}. Language Code: ${query}. Output final name: ${translation.translatedText}`);
-
                                                                     //Change username
                                                                     value
                                                                         .setNickname(translation.translatedText.substring(0, 32), `Chinese whispers with ${value.toString()}\'s` +
