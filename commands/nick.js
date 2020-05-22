@@ -87,8 +87,6 @@ exports.run = (bot, message, args) => {
                             if (IsLowerRoles(message, message.member)) {
                                 //Check if query eixsts
                                 new Promise((resolve, reject) => {
-                                    console.log(query);
-
                                     if (query) {
                                         googleTranslate.getSupportedLanguages('en', function (err, languageCodes) {
                                             var language = languageCodes.find(i => i.language == query);
@@ -97,9 +95,9 @@ exports.run = (bot, message, args) => {
                                             else reject(`Unfortunately, my translation capabilities do not support ${query} as a language.`);
                                         });
                                     } else {
-                                        console.log('test');
-
                                         googleTranslate.getSupportedLanguages('en', function (err, languageCodes) {
+                                            console.log(languageCodes);
+
                                             var language = languageCodes[SiteRand(languageCodes.length - 1, 0)];
 
                                             console.log(language);
