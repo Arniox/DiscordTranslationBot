@@ -290,7 +290,7 @@ exports.run = (bot, message, args) => {
                                                                 //After loop, google translate to end language
                                                                 googleTranslate.translate(outPutName, value.language, function (err, translation) {
                                                                     //Change username
-                                                                    v.setNickname(translation.translatedText.substring(0, 32), `Chinese whispers with ${v.toString()}\'s` +
+                                                                    v.setNickname(translation.translatedText.substring(0, 32), `Chinese whispers with ${v.user.username}\'s` +
                                                                         ` nickname from ${firstLanguage} to ${value.name}`)
                                                                         .then(() => {
                                                                             sent.edit(new Discord.MessageEmbed()
@@ -375,7 +375,7 @@ exports.run = (bot, message, args) => {
                                                 //Check if bot has perms
                                                 if (IsLowerRoles(message, value)) {
                                                     //Change nickname
-                                                    value.setNickname(query.substring(0, 32), `Set ${value.toString()}\'s nickname to ${query}.`);
+                                                    value.setNickname(query.substring(0, 32), `Set ${value.user.username}\'s nickname to ${query}.`);
                                                     //Edit message
                                                     sent.edit(new Discord.MessageEmbed().setDescription(`Setting ${count} / ${members.size} members nicknames to ${query}`).setColor('#FFCC00'));
                                                 } else {
@@ -400,7 +400,7 @@ exports.run = (bot, message, args) => {
                                     //Get current user nickname
                                     var currentUserNickName = NickName(message.member);
                                     //Change nickname
-                                    message.member.setNickname(query.substring(0, 32), `Set ${message.member.toString()}\'s nickname to ${query}.`);
+                                    message.member.setNickname(query.substring(0, 32), `Set ${message.member.user.username}\'s nickname to ${query}.`);
                                     //send message
                                     message.channel.send(new Discord.MessageEmbed().setDescription(`I have changed your name, ${currentUserNickName}, to ${query}`).setColor('#09b50c'));
                                 } else {
@@ -425,7 +425,7 @@ exports.run = (bot, message, args) => {
                                                 //Get current user nickname
                                                 var currentUserNickName = NickName(value);
                                                 //Change nickname
-                                                value.setNickname(query.substring(0, 32), `Set ${value.toString()}\'s nickname to ${query}.`);
+                                                value.setNickname(query.substring(0, 32), `Set ${value.user.username}\'s nickname to ${query}.`);
                                                 //send message
                                                 message.channel.send(new Discord.MessageEmbed().setDescription(`I have changed ${value.toString()}\'s nickname to ${query}`).setColor('#09b50c'));
                                             } else {
