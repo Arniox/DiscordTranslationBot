@@ -31,13 +31,12 @@ exports.run = (bot, message, args) => {
                                             person.first().send(`${messageToSpam}`); //Send message
 
                                             //Edit message
-                                            if (i == numberOfSpam)
-                                                sent.edit(new Discord.MessageEmbed().setDescription(`✅ Finished Harrassing ${person.first().toString()} ` +
-                                                    `with ${i} / ${numberOfSpam} messages.\n\nContent of message: ***${messageToSpam}***`).setColor('#09b50c'));
-                                            else
-                                                sent.edit(new Discord.MessageEmbed().setDescription(`Harrassing ${person.first().toString()} ` +
-                                                    `with ${i} / ${numberOfSpam} messages.\n\nContent of message: ***${messageToSpam}***`).setColor('#FFCC00'));
+                                            sent.edit(new Discord.MessageEmbed().setDescription(`Harrassing ${person.first().toString()} ` +
+                                                `with ${i} / ${numberOfSpam} messages.\n\nContent of message: ***${messageToSpam}***`).setColor('#FFCC00'));
                                         }
+                                        //Update after loop
+                                        sent.edit(new Discord.MessageEmbed().setDescription(`✅ Finished Harrassing ${person.first().toString()} ` +
+                                            `with ${i} / ${numberOfSpam} messages.\n\nContent of message: ***${messageToSpam}***`).setColor('#09b50c'));
                                     });
                             } else {
                                 message.channel.send(new Discord.MessageEmbed().setDescription(`Sorry, I cannot harrass ${person.first().toString()} with an empty message.`).setColor('#b50909'));

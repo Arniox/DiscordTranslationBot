@@ -54,15 +54,14 @@ exports.run = (bot, message, args) => {
 
                                                         e.voice.setChannel(voiceChannelTO);
                                                         //Edit message
-                                                        if (countOfMovedPlayers == playersFoundInVoice.length)
-                                                            sent.edit(new Discord.MessageEmbed().setDescription(`✅ Moved ${countOfMovedPlayers} / ${playersFoundInVoice.length} ` +
-                                                                `${(playersFoundInVoice.length != numberOfPlayers ? `(down from ${numberOfPlayers})` : '')} ` +
-                                                                `members from ${voiceChannelFROM.toString()} to ${voiceChannelTO.toString()}`).setColor('#09b50c'));
-                                                        else
-                                                            sent.edit(new Discord.MessageEmbed().setDescription(`Moved ${countOfMovedPlayers} / ${playersFoundInVoice.length} ` +
-                                                                `${(playersFoundInVoice.length != numberOfPlayers ? `(down from ${numberOfPlayers})` : '')} ` +
-                                                                `members from ${voiceChannelFROM.toString()} to ${voiceChannelTO.toString()}`).setColor('#FFCC00'));
+                                                        sent.edit(new Discord.MessageEmbed().setDescription(`Moved ${countOfMovedPlayers} / ${playersFoundInVoice.length} ` +
+                                                            `${(playersFoundInVoice.length != numberOfPlayers ? `(down from ${numberOfPlayers})` : '')} ` +
+                                                            `members from ${voiceChannelFROM.toString()} to ${voiceChannelTO.toString()}`).setColor('#FFCC00'));
                                                     });
+                                                    //Update after loop
+                                                    sent.edit(new Discord.MessageEmbed().setDescription(`✅ Moved ${countOfMovedPlayers} / ${playersFoundInVoice.length} ` +
+                                                        `${(playersFoundInVoice.length != numberOfPlayers ? `(down from ${numberOfPlayers})` : '')} ` +
+                                                        `members from ${voiceChannelFROM.toString()} to ${voiceChannelTO.toString()}`).setColor('#09b50c'));
                                                 });
                                         } else {
                                             message.channel.send(new Discord.MessageEmbed().setDescription(`Could not find a voice channel with the name ${channelToSelector}`).setColor('#b50909'));
@@ -109,13 +108,12 @@ exports.run = (bot, message, args) => {
 
                                                 value.voice.setChannel(voiceChannelTO);
                                                 //Edit message
-                                                if (countOfMovedPlayers == playersFoundAll.size)
-                                                    sent.edit(new Discord.MessageEmbed().setDescription(`✅ Moved ${countOfMovedPlayers} / ${playersFoundAll.size} members ` +
-                                                        `to ${voiceChannelTO.toString()}`).setColor('#09b50c'));
-                                                else
-                                                    sent.edit(new Discord.MessageEmbed().setDescription(`Moved ${countOfMovedPlayers} / ${playersFoundAll.size} members ` +
-                                                        `to ${voiceChannelTO.toString()}`).setColor('#FFCC00'));
+                                                sent.edit(new Discord.MessageEmbed().setDescription(`Moved ${countOfMovedPlayers} / ${playersFoundAll.size} members ` +
+                                                    `to ${voiceChannelTO.toString()}`).setColor('#FFCC00'));
                                             });
+                                            //Update after loop
+                                            sent.edit(new Discord.MessageEmbed().setDescription(`✅ Moved ${countOfMovedPlayers} / ${playersFoundAll.size} members ` +
+                                                `to ${voiceChannelTO.toString()}`).setColor('#09b50c'));
                                         });
                                 } else {
                                     message.channel.send(new Discord.MessageEmbed().setDescription(`Could not find a voice channel with the name ${channelSelector}`).setColor('#b50909'));
@@ -153,14 +151,12 @@ exports.run = (bot, message, args) => {
 
                                                     value.voice.setChannel(voiceChannelTO);
                                                     //Edit message
-                                                    if (countOfMovedPlayers == playersFoundInVoice.size)
-                                                        sent.edit(new Discord.MessageEmbed().setDescription(`✅ Moved ${countOfMovedPlayers} / ${playersFoundInVoice.size} members from ` +
-                                                            `${voiceChannelFROM.toString()} to ${voiceChannelTO.toString()}`).setColor('#09b50c'));
-                                                    else
-                                                        sent.edit(new Discord.MessageEmbed().setDescription(`Moved ${countOfMovedPlayers} / ${playersFoundInVoice.size} members from ` +
-                                                            `${voiceChannelFROM.toString()} to ${voiceChannelTO.toString()}`).setColor('#FFCC00'));
+                                                    sent.edit(new Discord.MessageEmbed().setDescription(`Moved ${countOfMovedPlayers} / ${playersFoundInVoice.size} members from ` +
+                                                        `${voiceChannelFROM.toString()} to ${voiceChannelTO.toString()}`).setColor('#FFCC00'));
                                                 });
-
+                                                //Update ater loop
+                                                sent.edit(new Discord.MessageEmbed().setDescription(`✅ Moved ${countOfMovedPlayers} / ${playersFoundInVoice.size} members from ` +
+                                                    `${voiceChannelFROM.toString()} to ${voiceChannelTO.toString()}`).setColor('#09b50c'));
                                             });
                                     } else {
                                         message.channel.send(new Discord.MessageEmbed().setDescription(`Could not find a voice channel with the name ${channelSelector}`).setColor('#b50909'));
@@ -233,12 +229,8 @@ exports.run = (bot, message, args) => {
 
                                                                 e.voice.setChannel(voiceChannelTO);
                                                                 //Edit message
-                                                                if (countOfMovedPlayers == playerSize)
-                                                                    sent.edit(new Discord.MessageEmbed().setDescription(`✅ Split ${countOfMovedPlayers} / ${playerSize} ${(playerSize != numberOfPlayers ? `(down from ${numberOfPlayers})` : '')} ` +
-                                                                        ` members from ${voiceChannelFROM.toString()} out into:\n${channelNameOutput}`).setColor('#09b50c'));
-                                                                else
-                                                                    sent.edit(new Discord.MessageEmbed().setDescription(`Split ${countOfMovedPlayers} / ${playerSize} ${(playerSize != numberOfPlayers ? `(down from ${numberOfPlayers})` : '')} ` +
-                                                                        `members from ${voiceChannelFROM.toString()} out into:\n${channelNameOutput}`).setColor('#FFCC00'));
+                                                                sent.edit(new Discord.MessageEmbed().setDescription(`Split ${countOfMovedPlayers} / ${playerSize} ${(playerSize != numberOfPlayers ? `(down from ${numberOfPlayers})` : '')} ` +
+                                                                    `members from ${voiceChannelFROM.toString()} out into:\n${channelNameOutput}`).setColor('#FFCC00'));
                                                             });
                                                             //Remove already moved players
                                                             playersFoundInVoice = playersFoundInVoice.filter(e => !playersToMoveInVoice.map(j => j.id).includes(e.id));
@@ -247,6 +239,9 @@ exports.run = (bot, message, args) => {
                                                         message.channel.send(new Discord.MessageEmbed().setDescription(`Could not find a voice channel with the name ${e}`).setColor('#b50909'));
                                                     }
                                                 });
+                                                //Update after loop
+                                                sent.edit(new Discord.MessageEmbed().setDescription(`✅ Split ${countOfMovedPlayers} / ${playerSize} ${(playerSize != numberOfPlayers ? `(down from ${numberOfPlayers})` : '')} ` +
+                                                    ` members from ${voiceChannelFROM.toString()} out into:\n${channelNameOutput}`).setColor('#09b50c'));
                                             });
                                     } else {
                                         message.channel.send(new Discord.MessageEmbed().setDescription(`You didn\'t select any voice channels to split ${playersFoundInVoice.length} members into.`).setColor('#b50909'));
@@ -298,10 +293,7 @@ exports.run = (bot, message, args) => {
 
                                                         e.voice.setChannel(voiceChannelTO);
                                                         //Edit message
-                                                        if (countOfMovedPlayers == playerSize)
-                                                            sent.edit(new Discord.MessageEmbed().setDescription(`✅ Split ${countOfMovedPlayers} / ${playerSize} members out into:\n${channelNameOutput}`).setColor('#09b50c'));
-                                                        else
-                                                            sent.edit(new Discord.MessageEmbed().setDescription(`Split ${countOfMovedPlayers} / ${playerSize} members out into:\n${channelNameOutput}`).setColor('#FFCC00'));
+                                                        sent.edit(new Discord.MessageEmbed().setDescription(`Split ${countOfMovedPlayers} / ${playerSize} members out into:\n${channelNameOutput}`).setColor('#FFCC00'));
                                                     });
                                                     //Remove already moved players
                                                     playersFoundAll = playersFoundAll.filter((value, key) => !playersToMoveAll.map(e => e.id).includes(key));
@@ -310,6 +302,8 @@ exports.run = (bot, message, args) => {
                                                 message.channel.send(new Discord.MessageEmbed().setDescription(`Could not find a voice channel with the name ${e}`).setColor('#b50909'));
                                             }
                                         });
+                                        //Update after loop
+                                        sent.edit(new Discord.MessageEmbed().setDescription(`✅ Split ${countOfMovedPlayers} / ${playerSize} members out into:\n${channelNameOutput}`).setColor('#09b50c'));
                                     });
                             } else {
                                 message.channel.send(new Discord.MessageEmbed().setDescription(`You didn\'t select any voice channels to split ${playersFoundAll.size} members into.`).setColor('#b50909'));
@@ -354,12 +348,8 @@ exports.run = (bot, message, args) => {
 
                                                             e.voice.setChannel(voiceChannelTO);
                                                             //Edit message
-                                                            if (countOfMovedPlayers == playerSize)
-                                                                sent.edit(new Discord.MessageEmbed().setDescription(`✅ Split ${countOfMovedPlayers} / ${playerSize} members from ${voiceChannelFROM.toString()} ` +
-                                                                    `out into:\n${channelNameOutput}`).setColor('#09b50c'));
-                                                            else
-                                                                sent.edit(new Discord.MessageEmbed().setDescription(`Split ${countOfMovedPlayers} / ${playerSize} members from ${voiceChannelFROM.toString()} ` +
-                                                                    `out into:\n${channelNameOutput}`).setColor('#FFCC00'));
+                                                            sent.edit(new Discord.MessageEmbed().setDescription(`Split ${countOfMovedPlayers} / ${playerSize} members from ${voiceChannelFROM.toString()} ` +
+                                                                `out into:\n${channelNameOutput}`).setColor('#FFCC00'));
                                                         });
                                                         //Remove already moved players
                                                         playersFoundInVoice = playersFoundInVoice.filter((value, key) => !playersToMoveInVoice.map(e => e.id).includes(key));
@@ -369,6 +359,9 @@ exports.run = (bot, message, args) => {
                                                     message.channel.send(new Discord.MessageEmbed().setDescription(`Could not find a voice channel with the name ${e}`).setColor('#b50909'));
                                                 }
                                             });
+                                            //Update after loop
+                                            sent.edit(new Discord.MessageEmbed().setDescription(`✅ Split ${countOfMovedPlayers} / ${playerSize} members from ${voiceChannelFROM.toString()} ` +
+                                                `out into:\n${channelNameOutput}`).setColor('#09b50c'));
                                         });
                                 } else {
                                     message.channel.send(new Discord.MessageEmbed().setDescription(`You didn\'t select any voice channels to split ${playersFoundInVoice.size} members into.`).setColor('#b50909'));

@@ -25,13 +25,12 @@ exports.run = (bot, message, args) => {
 
                                 value.voice.setMute(false);
                                 //Edit message
-                                if (countOfUnmutedPlayers == playersFoundInVoice.size)
-                                    sent.edit(new Discord.MessageEmbed().setDescription(`✅ Unmuted ${countOfUnmutedPlayers} / ${playersFoundInVoice.size} members` +
-                                        ` in ${channelToMute.toString()}`).setColor('#09b50c'));
-                                else
-                                    sent.edit(new Discord.MessageEmbed().setDescription(`Unmuting ${countOfUnmutedPlayers} / ${playersFoundInVoice.size} members` +
-                                        ` in ${channelToMute.toString()}`).setColor('#FFCC00'));
+                                sent.edit(new Discord.MessageEmbed().setDescription(`Unmuting ${countOfUnmutedPlayers} / ${playersFoundInVoice.size} members` +
+                                    ` in ${channelToMute.toString()}`).setColor('#FFCC00'));
                             });
+                            //Update after loop
+                            sent.edit(new Discord.MessageEmbed().setDescription(`✅ Unmuted ${countOfUnmutedPlayers} / ${playersFoundInVoice.size} members` +
+                                ` in ${channelToMute.toString()}`).setColor('#09b50c'));
                         });
                 } else {
                     message.channel.send(new Discord.MessageEmbed().setDescription(`There\'s no one in ${channelToMute.toString()} to unmute.`).setColor('#b50909'));

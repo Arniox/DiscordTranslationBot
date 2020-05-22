@@ -36,7 +36,7 @@ exports.run = (bot, message, args) => {
                                     userCount++;
                                     sent.edit(new Discord.MessageEmbed().setDescription(`Listening to ${userCount} / ${membersInVoice.size} members...`).setColor('#FFCC00'));
                                 });
-
+                                //Update after loop
                                 sent.edit(new Discord.MessageEmbed().setDescription(`✅ Now listening to ${membersInVoice.size} members in ${voiceChannel.toString()}`).setColor('#09b50c'));
                             })
                             .catch(error => {
