@@ -66,14 +66,14 @@ exports.run = (bot, message, args) => {
                                                         //Change name
                                                         v.setNickname(translation.translatedText.substring(0, 32), `Translating name from ${currentUserNickName} to ${translation.translatedText} in ${value.name}`);
                                                         //Edit message
-                                                        sent.edit(new Discord.MessageEmbed().setDescription(`Done ${count} / ${members.size}`).setColor('#FFCC00'));
+                                                        sent.edit(new Discord.MessageEmbed().setDescription(`Translating ${count} / ${members.size} members nicknames into ${value.name}`).setColor('#FFCC00'));
                                                     });
                                                 } else {
                                                     message.channel.send(new Discord.MessageEmbed().setDescription(`I hade problem translating ${v.toString()}\'s` +
                                                         ` nickname due to Missing Permissions`).setColor('#b50909'));
                                                 }
                                             });
-                                            sent.edit(new Discord.MessageEmbed().setDescription(`✅ Done ${count} / ${members.size}`).setColor('#09b50c'));
+                                            sent.edit(new Discord.MessageEmbed().setDescription(`✅ Translated ${count} / ${members.size} members nicknames into ${value.name}`).setColor('#09b50c'));
                                         });
                                 }).catch((err) => {
                                     message.channel.send(new Discord.MessageEmbed().setDescription(`${err}`).setColor('#b50909'));
@@ -350,7 +350,7 @@ exports.run = (bot, message, args) => {
                         case 'all':
                             //Check if correct perms
                             if (IsManager(message)) {
-                                var query = args.shift();
+                                var query = args.join(" ");
 
                                 //Check if query exists
                                 if (query) {
@@ -377,12 +377,12 @@ exports.run = (bot, message, args) => {
                                                     //Change nickname
                                                     value.setNickname(query.substring(0, 32), `Set ${value.toString()}\'s nickname to ${query}.`);
                                                     //Edit message
-                                                    sent.edit(new Discord.MessageEmbed().setDescription(`Done ${count} / ${members.size}`).setColor('#FFCC00'));
+                                                    sent.edit(new Discord.MessageEmbed().setDescription(`Setting ${count} / ${members.size} members nicknames to ${query}`).setColor('#FFCC00'));
                                                 } else {
                                                     message.channel.send(new Discord.MessageEmbed().setDescription(`I had a problem setting ${value.toString()}\'s nickname due to Missing Permissions.`).setColor('#b50909'));
                                                 }
                                             });
-                                            sent.edit(new Discord.MessageEmbed().setDescription(`✅ Done ${count} / ${members.size}`).setColor('#09b50c'));
+                                            sent.edit(new Discord.MessageEmbed().setDescription(`✅ Set ${count} / ${members.size} members nicknames to ${query}`).setColor('#09b50c'));
                                         });
                                 } else {
                                     message.channel.send(new Discord.MessageEmbed().setDescription('Sorry, you cannot set everyone\'s name to nothing.').setColor('#b50909'));
@@ -392,7 +392,7 @@ exports.run = (bot, message, args) => {
                             }
                             break;
                         case 'me':
-                            var query = args.shift();
+                            var query = args.join(" ");
 
                             //Check if query exists
                             if (query) {
@@ -418,7 +418,7 @@ exports.run = (bot, message, args) => {
                                         if (IsLowerRoles(message, value)) {
                                             //Get query
                                             args.shift() //Remove mention
-                                            var query = args.shift();
+                                            var query = args.join(" ");
 
                                             //Check if query exists
                                             if (query) {
@@ -483,12 +483,12 @@ exports.run = (bot, message, args) => {
                                                 //Reset nickname
                                                 value.setNickname(value.user.username, `Reset ${currentUserNickName}\'s nickname to default username (${value.user.username}).`);
                                                 //Edit message
-                                                sent.edit(new Discord.MessageEmbed().setDescription(`Done ${count} / ${members.size}`).setColor('#FFCC00'));
+                                                sent.edit(new Discord.MessageEmbed().setDescription(`Resetting ${count} / ${members.size} members usernames.`).setColor('#FFCC00'));
                                             } else {
                                                 message.channel.send(new Discord.MessageEmbed().setDescription(`I had a problem resetting ${value.toString()}\'s nickname due to Missing Permissions.`).setColor('#b50909'));
                                             }
                                         });
-                                        sent.edit(new Discord.MessageEmbed().setDescription(`✅ Done ${count} / ${members.size}`).setColor('#09b50c'));
+                                        sent.edit(new Discord.MessageEmbed().setDescription(`✅ Reset ${count} / ${members.size} members usernames.`).setColor('#09b50c'));
                                     });
                             } else {
                                 message.channel.send(new Discord.MessageEmbed().setDescription('Sorry, you need management perms to run this command.').setColor('#b50909'));
