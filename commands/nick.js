@@ -402,7 +402,7 @@ exports.run = (bot, message, args) => {
                                     //Change nickname
                                     message.member.setNickname(query.substring(0, 32), `Set ${message.member.toString()}\'s nickname to ${query}.`);
                                     //send message
-                                    message.channel.send(new Discord.MessageEmbed().setDescription(`I have changed your name, ${currentUserNickName}, to ${query}`));
+                                    message.channel.send(new Discord.MessageEmbed().setDescription(`I have changed your name, ${currentUserNickName}, to ${query}`).setColor('#09b50c'));
                                 } else {
                                     message.channel.send(new Discord.MessageEmbed().setDescription(`I cannot set your nickname ${message.member.toString()} due to Missing Permissions`).setColor('#b50909'));
                                 }
@@ -427,9 +427,9 @@ exports.run = (bot, message, args) => {
                                                 //Change nickname
                                                 value.setNickname(query.substring(0, 32), `Set ${value.toString()}\'s nickname to ${query}.`);
                                                 //send message
-                                                message.channel.send(new Discord.MessageEmbed().setDescription(`I have changed ${value.toString()}\'s nickname to ${query}`));
+                                                message.channel.send(new Discord.MessageEmbed().setDescription(`I have changed ${value.toString()}\'s nickname to ${query}`).setColor('#09b50c'));
                                             } else {
-                                                message.channel.send(new Discord.MessageEmbed().setDescription(`Sorry, I cannot set ${value.toString()}\'s nickname to nothing.`));
+                                                message.channel.send(new Discord.MessageEmbed().setDescription(`Sorry, I cannot set ${value.toString()}\'s nickname to nothing.`).setColor('#b50909'));
                                             }
                                         } else {
                                             message.channel.send(new Discord.MessageEmbed().setDescription(`I hade problem translating ${value.toString()}\'s` +
@@ -501,7 +501,7 @@ exports.run = (bot, message, args) => {
                                 //Change nickanme
                                 message.member.setNickname(message.member.user.username, `Reset ${currentUserNickName}\'s nickname to default username (${message.member.user.username})`);
                                 //Send message
-                                message.channel.send(new Discord.MessageEmbed().setDescription(`I have reset your nickname, ${currentUserNickName}, to your default username (${message.member.user.username})`));
+                                message.channel.send(new Discord.MessageEmbed().setDescription(`I have reset your nickname, ${currentUserNickName}, to your default username (${message.member.user.username})`).setColor('#09b50c'));
                             } else {
                                 message.channel.send(new Discord.MessageEmbed().setDescription(`I cannot reset your nickname ${message.member.toString()} due to Missing Permissions`).setColor('#b50909'));
                             }
@@ -517,7 +517,7 @@ exports.run = (bot, message, args) => {
                                             //Change nickname
                                             value.setNickname(value.user.username, `Reset ${currentUserNickName}\'s nickname to default username (${value.user.username})`);
                                             //Send message
-                                            message.channel.send(new Discord.MessageEmbed().setDescription(`I have reset ${currentUserNickName}\'s nickname to their default username (${value.user.username})`));
+                                            message.channel.send(new Discord.MessageEmbed().setDescription(`I have reset ${currentUserNickName}\'s nickname to their default username (${value.user.username})`).setColor('#09b50c'));
                                         } else {
                                             message.channel.send(new Discord.MessageEmbed().setDescription(`I hade problem translating ${value.toString()}\'s` +
                                                 ` nickname due to Missing Permissions`).setColor('#b50909'));
