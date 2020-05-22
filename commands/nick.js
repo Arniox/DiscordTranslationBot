@@ -87,6 +87,8 @@ exports.run = (bot, message, args) => {
                             if (IsLowerRoles(message, message.member)) {
                                 //Check if query eixsts
                                 new Promise((resolve, reject) => {
+                                    console.log(query);
+
                                     if (query) {
                                         googleTranslate.getSupportedLanguages('en', function (err, languageCodes) {
                                             var language = languageCodes.find(i => i.language == query);
