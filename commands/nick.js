@@ -41,7 +41,7 @@ exports.run = (bot, message, args) => {
                                 }).then((value) => {
                                     //Grab members
                                     var members = message.guild.members.cache.filter(i => i.user.bot && !bot.config["nick-ignored-playerids"].includes(i.id));
-                                    var discludedMembers = message.guild.members.cache.fiter(i => !i.user.bot && bot.config["nick-ignored-playerids"].includes(i.id));
+                                    var discludedMembers = message.guild.members.cache.filter(i => !i.user.bot && bot.config["nick-ignored-playerids"].includes(i.id));
 
                                     //Message
                                     message.channel.send(new Discord.MessageEmbed().setDescription(`Translating ${members.size} members nickname\'s into ${value.name}` +
