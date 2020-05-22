@@ -239,22 +239,23 @@ exports.run = (bot, message, args) => {
                                                                 googleTranslate.translate(currentUserNickName, lang.language, function (err, translation) {
                                                                     langCount++;
                                                                     //Edit message
-                                                                    sent.edit(new Discord.MessageEmbed()
-                                                                        .setDescription(`Playing Chinese whispers with ${value.toString()}\'s nickname...`)
-                                                                        .addFields(
-                                                                            {
-                                                                                name: 'Language -> Language',
-                                                                                value: `Gone through ${langCount} / ${languageCodes.length} languages. Just did ${previousLanguage} to ${lang.name}`,
-                                                                                inline: true
-                                                                            },
-                                                                            {
-                                                                                name: 'Name -> Name',
-                                                                                value: `Name changed from ${currentUserNickName} to ${translation.translatedText}`,
-                                                                                inline: true
-                                                                            }
-                                                                        )
-                                                                        .setColor('#FFCC00')
-                                                                        .timestamp()
+                                                                    sent.edit(
+                                                                        new Discord.MessageEmbed()
+                                                                            .setColor('#FFCC00')
+                                                                            .setDescription(`Playing Chinese whispers with ${value.toString()}\'s nickname...`)
+                                                                            .addFields(
+                                                                                {
+                                                                                    name: 'Language -> Language',
+                                                                                    value: `Gone through ${langCount} / ${languageCodes.length} languages. Just did ${previousLanguage} to ${lang.name}`,
+                                                                                    inline: true
+                                                                                },
+                                                                                {
+                                                                                    name: 'Name -> Name',
+                                                                                    value: `Name changed from ${currentUserNickName} to ${translation.translatedText}`,
+                                                                                    inline: true
+                                                                                }
+                                                                            )
+                                                                            .setTimestamp()
                                                                     );
 
                                                                     //Change previous language name
@@ -270,22 +271,23 @@ exports.run = (bot, message, args) => {
                                                                     .setNickname(translation.translatedText.substring(0, 32), `Chinese whispers with ${value.toString()}\'s` +
                                                                         ` nickname from ${firstLanguage} to ${languageCodes.find(i => i.language == query.toLowerCase()).name}`)
                                                                     .then(() => {
-                                                                        sent.edit(new Discord.MessageEmbed()
-                                                                            .setDescription(`✅ Finished playing Chinese whispers with ` +
-                                                                                `${value.toString()}\'s nickname.`)
-                                                                            .addFields(
-                                                                                {
-                                                                                    name: 'Language',
-                                                                                    value: `Went through all ${langCount} / ${languageCodes.length} languages.`,
-                                                                                    inline: true
-                                                                                },
-                                                                                {
-                                                                                    name: 'Name',
-                                                                                    value: `Original Name: ${originalName} and now, current name: ${translation.translatedText}`
-                                                                                }
-                                                                            )
-                                                                            .setColor('#09b50c')
-                                                                            .timestamp()
+                                                                        sent.edit(
+                                                                            new Discord.MessageEmbed()
+                                                                                .setColor('#09b50c')
+                                                                                .setDescription(`✅ Finished playing Chinese whispers with ` +
+                                                                                    `${value.toString()}\'s nickname.`)
+                                                                                .addFields(
+                                                                                    {
+                                                                                        name: 'Language',
+                                                                                        value: `Went through all ${langCount} / ${languageCodes.length} languages.`,
+                                                                                        inline: true
+                                                                                    },
+                                                                                    {
+                                                                                        name: 'Name',
+                                                                                        value: `Original Name: ${originalName} and now, current name: ${translation.translatedText}`
+                                                                                    }
+                                                                                )
+                                                                                .setTimestamp()
                                                                         );
                                                                     });
                                                             });
