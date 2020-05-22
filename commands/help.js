@@ -173,45 +173,53 @@ exports.run = (bot, message, args) => {
                 message.channel.send(embeddedHelpMessage);
                 break;
             case 'nick':
-                //Get all available language codes
-                googleTranslate.getSupportedLanguages('en', function (err, languageCodes) {
-                    var embeddedHelpMessage = new Discord.MessageEmbed()
-                        .setColor('#0099ff')
-                        .setAuthor(bot.user.username, bot.user.avatarURL())
-                        .setDescription('Nick allows you to translate either you\'re own nickname into any supported language, someone specific granted you have nickname managemental permissions,' +
-                            ' or everyone\'s granted you have management permissions.\n' +
-                            `You can also run *${bot.config.prefix}nick ignore* to add/remove yourself from the nicknaming command.\n` +
-                            '*This will still allow you to translate your own name, but will remove you from being mass nicknamed or specifically nicknamed.*')
-                        .addFields(
-                            { name: 'Required Permissions: ', value: 'Manage Server (for translating eveyone\'s nickname).' },
-                            {
-                                name: 'Command Patterns: ',
-                                value: `${bot.config.prefix}nick [me/all] [language code]\n` +
-                                    `${bot.config.prefix}nick someone @mention\n` +
-                                    `${bot.config.prefix}nick ignore {optional: list}`
-                            },
-                            {
-                                name: 'Examples: ',
-                                value: `${bot.config.prefix}nick me RU\n\n` +
-                                    `${bot.config.prefix}nick me DE\n\n` +
-                                    `${bot.config.prefix}nick all HE\n\n` +
-                                    `${bot.config.prefix}nick someone ${message.guild.members.cache.random().toString()}\n\n` +
-                                    `${bot.config.prefix}nick ignore (If you\'re not in the database, you\'ll be added, otherwise you\'ll be removed).\n\n` +
-                                    `${bot.config.prefix}nick ignore list`
-                            },
-                            {
-                                name: 'Available Language Codes: ',
-                                value: `${languageCodes.map(i => i.language).join(', ')}`
-                            }
-                        )
-                        .setTimestamp()
-                        .setFooter('Thanks, and have a good day');
+                var randomMember = message.guild.members.cache.random();
 
-                    //Send embedded message
-                    message.channel
-                        .send(embeddedHelpMessage)
-                        .catch(error => { console.log('Error. Ignored') });
-                });
+                //Get all available language codes
+                var embeddedHelpMessage = new Discord.MessageEmbed()
+                    .setColor('#0099ff')
+                    .setAuthor(bot.user.username, bot.user.avatarURL())
+                    .setDescription('Nick allows you to translate (into any supported language), set, and reset either you\'re own nickname, someone specific granted you have nickname managemental permissions,' +
+                        ' or everyone\'s granted you have management permissions.\n' +
+                        `You can also run *${bot.config.prefix}nick ignore* to add/remove yourself from being translated.`)
+                    .addFields(
+                        {
+                            name: 'Required Permissions: ', value: 'Manage Server (for translating, setting, or resetting eveyone\'s nickname)\n' +
+                                'Manage Nicknames (for translating, setting, or resetting someone\'s specific name.'
+                        },
+                        {
+                            name: 'Command Patterns: ',
+                            value: `${bot.config.prefix}nick [translate/set/reset] [all/me/someone/{translate:ignore/whisper}] [newname/{translate: languagecode (optional)}]\n\n` +
+                                `${bot.config.prefix}nick translate [all/me/someone/ignore/whisper] {translate:languagecode (optional)}\n\n` +
+                                `${bot.config.prefix}nick set [all/me/someone] newname\n\n` +
+                                `${bot.config.prefix}nick reset [all/me/someone]\n\n` +
+                                `Any ${bot.config.prefix}nick [translate] command without a language specified will pick a random language.`
+                        },
+                        {
+                            name: 'Examples: ',
+                            value: `${bot.config.prefix}nick translate all RU - (will translate everyone\'s name to Russian)\n` +
+                                `${bot.config.prefix}nick translate all\n` +
+                                `${bot.config.prefix}nick translate me RU - (will translate your name to Russuan)\n` +
+                                `${bot.config.prefix}nick translate me\n` +
+                                `${bot.config.prefix}nick translate someone ${randomMember.toString()} RU\n` +
+                                `${bot.config.prefix}nick translate someone ${randomMember.toString()}\n` +
+                                `${bot.config.prefix}nick translate ignore - ` +
+                                `(will add/remove you from the database of translation ignored members. This still allows you personally to use ***${bot.config.prefix}nick translate me*** still)\n` +
+                                `${bot.config.prefix}nick translate whisper ${randomMember.toString()} EN - ` +
+                                `(will play Chinese whispers with a members name through every single language and finish with EN. No language specificed remember will end on a random language)\n` +
+                                `${bot.config.prefix}nick set all StuffAndThings\n` +
+                                `${bot.config.prefix}nick set me StuffAndThings\n` +
+                                `${bot.config.prefix}nick set someone ${randomMember.toString()} StuffAndThings\n` +
+                                `${bot.config.prefix}nick reset all\n` +
+                                `${bot.config.prefix}nick reset me\n` +
+                                `${bot.config.prefix}nick reset someone ${randomMember.toString()}`
+                        }
+                    )
+                    .setTimestamp()
+                    .setFooter('Thanks, and have a good day');
+
+                //Send embedded message
+                message.channel.send(embeddedHelpMessage);
                 break;
             case 'prykie':
                 var embeddedHelpMessage = new Discord.MessageEmbed()
