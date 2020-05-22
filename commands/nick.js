@@ -97,10 +97,14 @@ exports.run = (bot, message, args) => {
                                             else reject(`Unfortunately, my translation capabilities do not support ${query} as a language.`);
                                         });
                                     } else {
-                                        console.log(test);
+                                        console.log('test');
 
                                         googleTranslate.getSupportedLanguages('en', function (err, languageCodes) {
-                                            var language = languageCodes[SiteRand(languageCodes.length - 1, 0)]
+                                            var language = languageCodes[SiteRand(languageCodes.length - 1, 0)];
+
+                                            console.log(language);
+
+
                                             resolve(language);
                                         });
                                     }
