@@ -163,7 +163,7 @@ exports.run = (bot, message, args) => {
                                 if (mentions.size == 1) {
                                     mentions.map((v, key) => {
                                         if (IsLowerRoles(message, v)) {
-                                            if (!bot.config("nick-ignored-playersid").includes(key)) {
+                                            if (!bot.config["nick-ignored-playerids"].includes(key)) {
                                                 //Get query
                                                 args.shift(); //Remove mention
                                                 var query = args.shift();
@@ -220,7 +220,7 @@ exports.run = (bot, message, args) => {
                                 if (mentions.size == 1) {
                                     mentions.map((v, key) => {
                                         if (IsLowerRoles(message, v)) {
-                                            if (!bot.config("nick-ignored-playersid").includes(key)) {
+                                            if (!bot.config["nick-ignored-playerids"].includes(key)) {
                                                 //Get query
                                                 args.shift(); //Remove mention
                                                 var query = args.shift();
