@@ -48,7 +48,7 @@ exports.run = (bot, message, args) => {
                                         `...\nThis may take up to ${members.size} seconds on a good day...\n${discludedMembers.size} nickname ignored members`).setColor('#0099ff'));
                                     //Send message
                                     message.channel
-                                        .send(new Discord.MessageEmbed().setDescription(`Done 0 / ${members.size}`).setColor('#FFCC00'))
+                                        .send(new Discord.MessageEmbed().setDescription(`Translating 0 / ${members.size} members nicknames into ${value.name}`).setColor('#FFCC00'))
                                         .then((sent) => {
                                             var count = 0;
 
@@ -362,7 +362,7 @@ exports.run = (bot, message, args) => {
                                         `This may take up to ${members.size} seconds on a good day...\n`).setColor('#0099ff'));
                                     //Send message
                                     message.channel
-                                        .send(new Discord.MessageEmbed().setDescription(`Done 0 / ${members.size}`).setColor('#FFCC00'))
+                                        .send(new Discord.MessageEmbed().setDescription(`Setting 0 / ${members.size} members nicknames to ${query}`).setColor('#FFCC00'))
                                         .then((sent) => {
                                             var count = 0;
 
@@ -469,7 +469,7 @@ exports.run = (bot, message, args) => {
                                     `This may take up to ${members.size} seconds on a good day...\n`).setColor('#0099ff'));
                                 //Send message
                                 message.channel
-                                    .send(new Discord.MessageEmbed().setDescription(`Done 0 / ${members.size}`).setColor('#FFCC00'))
+                                    .send(new Discord.MessageEmbed().setDescription(`Resetting 0 / ${members.size} members usernames.`).setColor('#FFCC00'))
                                     .then((sent) => {
                                         var count = 0;
 
