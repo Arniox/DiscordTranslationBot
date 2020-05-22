@@ -22,7 +22,7 @@ exports.run = (bot, message, args) => {
                         case 'all':
                             //Check if correct perms
                             if (IsManager(message)) {
-                                var query = args.shift().toLowerCase();
+                                var query = args.shift();
 
                                 //Check if query eixsts
                                 new Promise((resolve, reject) => {
@@ -83,7 +83,7 @@ exports.run = (bot, message, args) => {
                             }
                             break;
                         case 'me':
-                            var query = args.shift().toLowerCase();
+                            var query = args.shift();
                             if (IsLowerRoles(message, message.member)) {
                                 //Check if query eixsts
                                 new Promise((resolve, reject) => {
