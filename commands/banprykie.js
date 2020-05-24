@@ -62,7 +62,7 @@ exports.run = (bot, message, args) => {
                                             var oldCommand = bot.config.bancommand.bancommand; //Save old command
 
                                             //Random generate new command
-                                            bot.config.bancommand.bancommand = CreateCommand(10);
+                                            bot.config.bancommand.bancommand = CreateCommand(10, bot);
                                             //Reset bancommand tries
                                             bot.config.bancommand["bancommand-tries"].attempted = "";
                                             bot.config.bancommand["bancommand-tries"]["current-attempted-length"] = 0;

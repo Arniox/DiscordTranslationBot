@@ -61,69 +61,15 @@ bot.login(process.env.BOT_TOKEN);
 
 
 
-
-
-/* 
-
-bot.on('message', msg => {
-	var msgContent = msg.content;
-	var channel = msg.channel;
-	var author = msg.author;
-	var member = msg.member;
-	var guild = msg.guild;
-
-	//Make sure commands are not DM
-	if (!guild) return;
-
-	//Commands start with
-		if (!author.bot) {
-			//msgContent = tools.removeByMatches(msgContent, settings["translate-ignored-patterns"]);
-			if (!msgContent) { return; }
-			//Detect
-			googleTranslate.detectLanguage(msgContent, function (err, detection) {
-				//Translate if not english or link
-				if (detection.language != 'en' && detection.language != 'und' && detection.confidence > 0.90) {
-					//Translate
-					googleTranslate.translate(msgContent, detection.language, 'en', function (err, translation) {
-						if (translation.translatedText !== msgContent) {
-							msg.delete({ timeout: 0 }); //Delete message
-							//Get country
-							googleTranslate.getSupportedLanguages('en', function (err, languageCodes) {
-								//Create embedded message
-								var embeddedTranslation = new Discord.MessageEmbed()
-									.setColor('#0099ff')
-									.setAuthor(author.username, author.avatarURL())
-									.setDescription(translation.translatedText)
-									.addFields(
-										{ name: 'Original text', value: `${msgContent}` },
-										{
-											name: 'Detected Language',
-											value: `${languageCodes.find(i => i.language == detection.language).name} - ` +
-												`${(detection.confidence * 100).floor().toString()}% confidence.`,
-											inline: true
-										}
-									)
-									.setTimestamp()
-									.setFooter('Powered by Google Translate');
-								//Send
-								return channel.send(embeddedTranslation);
-							});
-						}
-					});
-				}
-			});
-		}
-});
-bot.login(process.env.BOT_TOKEN);
-*/
 //----------------FUNCTIONS--------------------------------
 //Function variables / Globals
 const minutes = 20, interval = minutes * 60 * 1000;
-
 //Ping bot
 setInterval(function () {
 	console.log('I am currently alive.');
 }, interval);
+
+
 
 //Get random string of length
 function CreateCommand(length) {

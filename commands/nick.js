@@ -541,6 +541,31 @@ exports.run = (bot, message, args) => {
                 } else {
                     HelpMessage(bot, message, args);
                 }
+            case 'fix':
+                break;
+            case 'save':
+                if (args.length != 0) {
+                    //Get command
+                    var command = args.shift().toLowerCase();
+                    //Switch case on command
+                    switch (command) {
+                        case 'nicknames':
+                            //Check if correct perms
+                            if (IsAdmin(message)) {
+
+                            } else {
+                                message.channel.send(new Discord.MessageEmbed().setDescription('Sorry, you need to be an administrator for this command.').setColor('#b50909'));
+                            }
+
+                            break;
+                        default:
+                            HelpMessage(bot, message, args);
+                            break;
+                    }
+                } else {
+                    HelpMessage(bot, message, args);
+                }
+                break;
             default:
                 HelpMessage(bot, message, args);
                 break;
@@ -569,6 +594,11 @@ function IsManager(message) {
 //Check if user has the correct permissions
 function IsNickNamer(message) {
     return message.member.hasPermission('MANAGE_NICKNAMES');
+}
+
+//Check if user has correct permissions
+function IsAdmin(message) {
+    return message.member.hasPermission('ADMINISTRATOR');
 }
 
 //help message
