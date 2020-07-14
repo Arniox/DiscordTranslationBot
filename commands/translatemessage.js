@@ -6,6 +6,7 @@ const googleTranslate = require('google-translate')(googleApiKey, { "concurrentL
 exports.run = (bot, message, args) => {
     //message.content = RemoveByMatches(message.content, bot.config.google["translate-ignored-patterns"]);
     if (!message.content) return;
+    if (!message.channel.id === '671214798914191372') return;
     //Detect
     googleTranslate.detectLanguage(message.content, function (err, detection) {
         //Translate if not english or link
