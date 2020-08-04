@@ -46,13 +46,13 @@ exports.run = (bot, message, args) => {
         var a, b, c = null;
         if (orderedArray.length > 0 && orderedArray.length < 2) {
             a = { name: ':first_place: Top Kisser:', value: `${message.guild.members.cache.filter(i => i.user.id == orderedArray[0]["data"]["person-id"]).user} with ${orderedArray[0]["data"]["number-of-kisses"]} kisses!` };
-            embeddedMessage.addField(a);
+            embeddedMessage.addFields(a);
         } else if (orderedArray.length > 1 && orderedArray.length < 3) {
             b = { name: ':second_place: Runner Up Kisser:', value: `${message.guild.members.cache.filter(i => i.user.id == orderedArray[1]["data"]["person-id"]).user} with ${orderedArray[1]["data"]["number-of-kisses"]} kisses!` };
-            embeddedMessage.addField(b);
+            embeddedMessage.addFields(b);
         } else if (orderedArray.length > 2 && orderedArray.length < 4) {
             c = { name: ':third_place: Third Kisser:', value: `${message.guild.members.cache.filter(i => i.user.id == orderedArray[2]["data"]["person-id"]).user} with ${orderedArray[2]["data"]["number-of-kisses"]} kisses!` };
-            embeddedMessage.addField(c);
+            embeddedMessage.addFields(c);
         }
 
         //send
