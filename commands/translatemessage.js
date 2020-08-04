@@ -36,7 +36,6 @@ exports.run = (bot, message, args) => {
                         //Send
                         message.channel.send(embeddedTranslation);
                     });
-                    return 'complete';
                 }
             });
         }

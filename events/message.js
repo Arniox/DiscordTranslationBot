@@ -31,46 +31,31 @@ module.exports = (bot, message) => {
         //Run translation
         if (!message.content) return;
 
+
+
+        //Get the specific kiss command data from client.commands Enmap
+        const kiss = bot.commands.get("kiss");
         //Get the specific translatemessage command data from client.commands Enmap
-        const cmd = bot.commands.get("translatemessage");
+        const trans = bot.commands.get("translatemessage");
 
         //If command doesn't exist, exit and do nothing
-        if (!cmd) return;
+        if (!trans || !kiss) return;
 
-        cmd.execCommand(bot, message, args)
-            .then((value) => {
-                console.log(value);
-            }).catch((err) => {
-                console.log('Translation completed');
-                //Just exit and return
-                return;
-            });
-
-        /*
         new Promise((resolve, reject) => {
-            console.log('translation test');
-            //Run the command
-            var value = cmd.run(bot, message, args);
-
-            console.log(value);
-
-            if (value == 'complete') reject('');
-            else resolve('');
-        }).then((value) => {
             console.log('kiss test');
 
-            //Get the specific kiss command data from client.commands Enmap
-            const cmd = bot.commands.get("kiss");
-
-            //If command doesn't exist, exit and do nothing
-            if (!cmd) return;
+            //Run the command
+            if (kiss.run(bot, message, args)) reject('');
+            else resolve('');
+        }).then((value) => {
+            console.log('translation test');
 
             //Run the command
-            cmd.run(bot, message, args);
+            trans.run(bot, message, args);
         }).catch((err) => {
-            console.log('Translation completed');
+            console.log('kiss completed');
             //Just exit and return
             return;
-        });*/
+        });
     }
 }

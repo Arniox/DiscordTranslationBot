@@ -29,5 +29,8 @@ exports.run = (bot, message, args) => {
 
             console.log("added 1 to new counted player", data);
         }
+
+        return true;
     }
+    else return false;
 }
