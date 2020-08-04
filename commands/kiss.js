@@ -12,7 +12,7 @@ exports.run = (bot, message, args) => {
 
         console.log(data);
 
-        if (data) {
+        if (data !== 'undefined') {
             //Update count
             data["data"]["number-of-kisses"] = data["data"]["number-of-kisses"] + 1;
             //Write to file
