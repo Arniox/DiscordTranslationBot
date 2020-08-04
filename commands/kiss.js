@@ -35,7 +35,7 @@ exports.run = (bot, message, args) => {
         orderedArray = orderedArray.slice(0, 2);
 
         //Styalise the leaderboard based on size of array
-        var topOutput = null;
+        var topOutput = [];
         for (var i = 0; i < orderedArray.length; i++) {
             topOutput.push({
                 name: `${(i == 0 ? ":first_place: Top Kisser" : (i == 1 ? ":second_place: Runner Up Kisser" : ":third_place: Third Kisser"))}`,
