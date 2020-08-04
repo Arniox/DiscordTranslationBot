@@ -31,8 +31,6 @@ module.exports = (bot, message) => {
         //Run translation
         if (!message.content) return;
 
-
-
         //Get the specific kiss command data from client.commands Enmap
         const kiss = bot.commands.get("kiss");
         //Get the specific translatemessage command data from client.commands Enmap
@@ -42,13 +40,19 @@ module.exports = (bot, message) => {
         if (!trans || !kiss) return;
 
         new Promise((resolve, reject) => {
+            console.log("kiss test");
+
             //Run the command
             if (kiss.run(bot, message, args)) reject;
             else resolve;
         }).then(() => {
+            console.log("kiss test failed, translation test");
+
             //Run the command
             trans.run(bot, message, args);
         }).catch(() => {
+            console.log("kiss test passed");
+
             //Just exit and return
             return;
         });
