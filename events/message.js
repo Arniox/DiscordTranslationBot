@@ -43,12 +43,12 @@ module.exports = (bot, message) => {
 
         new Promise((resolve, reject) => {
             //Run the command
-            if (kiss.run(bot, message, args)) reject('');
-            else resolve('');
-        }).then((value) => {
+            if (kiss.run(bot, message, args)) reject;
+            else resolve;
+        }).then(() => {
             //Run the command
             trans.run(bot, message, args);
-        }).catch((err) => {
+        }).catch(() => {
             //Just exit and return
             return;
         });
