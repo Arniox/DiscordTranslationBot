@@ -37,7 +37,7 @@ module.exports = (bot, message) => {
         //If command doesn't exist, exit and do nothing
         if (!cmd) return;
 
-        cmd.run(bot, message, args)
+        cmd.execCommand(bot, message, args)
             .then((value) => {
                 console.log(value);
             }).catch((err) => {
