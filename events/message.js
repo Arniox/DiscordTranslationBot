@@ -37,6 +37,16 @@ module.exports = (bot, message) => {
         //If command doesn't exist, exit and do nothing
         if (!cmd) return;
 
+        cmd.run(bot, message, args)
+            .then((value) => {
+                console.log(value);
+            }).catch((err) => {
+                console.log('Translation completed');
+                //Just exit and return
+                return;
+            });
+
+        /*
         new Promise((resolve, reject) => {
             console.log('translation test');
             //Run the command
@@ -61,6 +71,6 @@ module.exports = (bot, message) => {
             console.log('Translation completed');
             //Just exit and return
             return;
-        });
+        });*/
     }
 }
