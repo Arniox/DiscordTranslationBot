@@ -40,7 +40,7 @@ exports.run = (bot, message, args) => {
             .setAuthor(bot.user.username, bot.user.avatarURL())
             .setDescription(`${message.author.username} has kissed another person. Their score has increased!`)
             .setTimestamp()
-            .setFooter('Love you all :heart:!');
+            .setFooter('Love you all!');
 
         //Dynamically add fields
         var a, b, c = null;
