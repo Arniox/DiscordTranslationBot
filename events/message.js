@@ -38,12 +38,17 @@ module.exports = (bot, message) => {
         if (!cmd) return;
 
         new Promise((resolve, reject) => {
+            console.log('translation test');
             //Run the command
             var value = cmd.run(bot, message, args);
+
+            console.log(value);
 
             if (value == 'complete') reject('');
             else resolve('');
         }).then((value) => {
+            console.log('kiss test');
+
             //Get the specific kiss command data from client.commands Enmap
             const cmd = bot.commands.get("kiss");
 
@@ -53,6 +58,7 @@ module.exports = (bot, message) => {
             //Run the command
             cmd.run(bot, message, args);
         }).catch((err) => {
+            console.log('Translation completed');
             //Just exit and return
             return;
         });
