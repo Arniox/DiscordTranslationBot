@@ -8,11 +8,14 @@ exports.run = (bot, message, args) => {
     //Detect
     if (message.content.includes('kiss')) {
         //Check if person is already being counted
-        var data = bot.datatouse["kisses"].find(i => i["data"]["person-id"] == message.author.id);
+        var data = null;
+        if (bot.datatouse["kisses"].length > 0) {
+            data = bot.datatouse["kisses"].find(i => i["data"]["person-id"] == message.author.id);
+        }
 
         console.log(data);
 
-        if (data !== 'undefined') {
+        if (data) {
             //Update count
             data["data"]["number-of-kisses"] = data["data"]["number-of-kisses"] + 1;
             //Write to file
