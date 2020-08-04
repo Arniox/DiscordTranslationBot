@@ -34,8 +34,9 @@ exports.run = (bot, message, args) => {
         var orderedArray = bot.datatouse["kisses"].sort((a, b) => b["number-of-kisses"] - a["number-of-kisses"]);
         orderedArray = orderedArray.slice(0, 2);
 
+        //Styalise the leaderboard based on size of array
         var topOutput = null;
-        for (i = 0; i < orderedArray.length; i++) {
+        for (var i = 0; i < orderedArray.length; i++) {
             topOutput.push({
                 name: `${(i == 0 ? ":first_place: Top Kisser" : (i == 1 ? ":second_place: Runner Up Kisser" : ":third_place: Third Kisser"))}`,
                 value: `${message.guild.members.cache.filter(i => i.id == orderedArray[i]["data"]["person-id"]).user} with ${orderedArray[i]["data"]["number-of-kisses"]} kisses!`
