@@ -13,7 +13,7 @@ exports.run = (bot, message, args) => {
             data = bot.datatouse["kisses"].find(i => i["data"]["person-id"] == message.author.id);
         }
 
-        console.log(data);
+        console.log(bot.datatouse["kisses"]);
 
         if (data) {
             console.log('THIS PERSON DOES EXIST');
@@ -40,7 +40,7 @@ exports.run = (bot, message, args) => {
             console.log("added 1 to new counted player", bot.datatouse["kisses"]);
         }
 
-        console.log(data);
+        console.log(bot.datatouse["kisses"]);
 
         return true;
     }
