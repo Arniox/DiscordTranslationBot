@@ -27,7 +27,7 @@ exports.run = (bot, message, args) => {
                                         `Content of message: ***${messageToSpam}***`).setColor('#FFCC00'))
                                     .then((sent) => {
                                         //For loop
-                                        for (var i = 0; i < numberOfSpam + 1; ++i) {
+                                        for (var i = 0; i < numberOfSpam; ++i) {
                                             person.first().send(`${messageToSpam}`); //Send message
 
                                             //Edit message

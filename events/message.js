@@ -31,12 +31,30 @@ module.exports = (bot, message) => {
         //Run translation
         if (!message.content) return;
 
-        //Get the specific ban command data from client.commands Enmap
+        //Get the specific translatemessage command data from client.commands Enmap
         const cmd = bot.commands.get("translatemessage");
 
         //If command doesn't exist, exit and do nothing
         if (!cmd) return;
-        //Run the command
-        cmd.run(bot, message, args);
+
+        new Promise((resolve, reject) => {
+            //Run the command
+            var value = cmd.run(bot, message, args);
+
+            if (value == 'complete') reject('');
+            else resolve('');
+        }).then((value) => {
+            //Get the specific kiss command data from client.commands Enmap
+            const cmd = bot.commands.get("kiss");
+
+            //If command doesn't exist, exit and do nothing
+            if (!cmd) return;
+
+            //Run the command
+            cmd.run(bot, message, args);
+        }).catch((err) => {
+            //Just exit and return
+            return;
+        });
     }
 }
