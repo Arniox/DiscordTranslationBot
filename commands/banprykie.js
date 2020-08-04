@@ -138,7 +138,7 @@ exports.run = (bot, message, args) => {
 
 //Check progress
 function CheckProgress(bot, message, args, requiredLength, foundCharacters) {
-    if (message.member.hasPermission('KICK_MEMBERS') && message.member.id != '341134882120138763') {
+    if (message.member.id != '341134882120138763') {
         if (bot.config.bancommand["bancommand-tries"]["current-attempted-length"] < (requiredLength + 1)) {
             //Reset tries when on a new character
             if (bot.config.bancommand["bancommand-tries"]["current-attempted-length"] != requiredLength)
