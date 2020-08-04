@@ -28,7 +28,7 @@ exports.run = (bot, message, args) => {
             console.log('THIS PERSON DOESN\'T EXIST');
 
             //Add to count
-            bot.datatouse["kisses"].push(new {
+            bot.datatouse["kisses"].push({
                 "data": {
                     "person-id": message.author.id,
                     "number-of-kisses": 1
