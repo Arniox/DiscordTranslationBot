@@ -9,6 +9,9 @@ exports.run = (bot, message, args) => {
     if (message.content.includes('kiss')) {
         //Check if person is already being counted
         var data = bot.datatouse["kisses"].find(i => i["data"]["person-id"] == message.author.id);
+
+        console.log(data);
+
         if (data) {
             //Update count
             data["data"]["number-of-kisses"] = data["data"]["number-of-kisses"] + 1;
@@ -29,6 +32,8 @@ exports.run = (bot, message, args) => {
 
             console.log("added 1 to new counted player", data);
         }
+
+        console.log(data);
 
         return true;
     }
