@@ -16,13 +16,17 @@ exports.run = (bot, message, args) => {
         console.log(data);
 
         if (data) {
+            console.log('THIS PERSON DOES EXIST');
+
             //Update count
             data["data"]["number-of-kisses"] = data["data"]["number-of-kisses"] + 1;
             //Write to file
             fs.writeFileSync('./data-to-use.json', JSON.stringify(bot.datatouse));
 
-            console.log("added 1 to already counted player", data);
+            console.log("added 1 to already counted player", bot.datatouse["kisses"]);
         } else {
+            console.log('THIS PERSON DOESN\'T EXIST');
+
             //Add to count
             bot.datatouse["kisses"].push(new {
                 "data": {
@@ -33,7 +37,7 @@ exports.run = (bot, message, args) => {
             //Write to file
             fs.writeFileSync('./data-to-use.json', JSON.stringify(bot.datatouse));
 
-            console.log("added 1 to new counted player", data);
+            console.log("added 1 to new counted player", bot.datatouse["kisses"]);
         }
 
         console.log(data);
