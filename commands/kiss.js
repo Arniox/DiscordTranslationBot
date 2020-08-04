@@ -39,9 +39,9 @@ exports.run = (bot, message, args) => {
             .setAuthor(bot.user.username, bot.user.avatarURL())
             .setDescription(`${message.author.username} has kissed another person. Their score has increased!`)
             .addFields(
-                { name: 'Top Kisser:', value: `${message.guild.memebers.cache.filter(i => i.user.id == orderedArray[0]["data"]["person-id"]).user} with ${orderedArray[0]["data"]["number-of-kisses"]} kisses!` },
-                { name: 'Runner Up Kisser:', value: `${message.guild.members.cache.filter(i => i.user.id == orderedArray[1]["data"]["person-id"]).user} with ${orderedArray[1]["data"]["number-of-kisses"]} kisses!` },
-                { name: 'Third Kisser:', value: `${message.guild.members.cache.filter(i => i.user.id == orderedArray[2]["data"]["person-id"]).user} with ${orderedArray[2]["data"]["number-of-kisses"]} kisses!` }
+                { name: ':first_place: Top Kisser:', value: `${message.guild.memebers.cache.filter(i => i.user.id == orderedArray[0]["data"]["person-id"]).user} with ${orderedArray[0]["data"]["number-of-kisses"]} kisses!` },
+                { name: ':second_place: Runner Up Kisser:', value: `${message.guild.members.cache.filter(i => i.user.id == orderedArray[1]["data"]["person-id"]).user} with ${orderedArray[1]["data"]["number-of-kisses"]} kisses!` },
+                { name: ':third_place: Third Kisser:', value: `${message.guild.members.cache.filter(i => i.user.id == orderedArray[2]["data"]["person-id"]).user} with ${orderedArray[2]["data"]["number-of-kisses"]} kisses!` }
             )
             .setTimestamp()
             .setFooter('Love you all :heart:!');
