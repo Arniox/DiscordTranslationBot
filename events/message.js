@@ -43,14 +43,14 @@ module.exports = (bot, message) => {
             console.log("kiss test");
 
             //Run the command
-            if (kiss.run(bot, message, args)) reject;
-            else resolve;
-        }).then(() => {
+            if (kiss.run(bot, message, args)) reject('');
+            else resolve('');
+        }).then((value) => {
             console.log("kiss test failed, translation test");
 
             //Run the command
             trans.run(bot, message, args);
-        }).catch(() => {
+        }).catch((err) => {
             console.log("kiss test passed");
 
             //Just exit and return
