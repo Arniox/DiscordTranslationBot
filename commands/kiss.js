@@ -42,6 +42,11 @@ exports.run = (bot, message, args) => {
             .setTimestamp()
             .setFooter('Love you all :heart:!');
 
+
+        console.log(message.guild.members.cache.map((v, k) => k));
+        console.log(orderedArray.map(i => i["data"]["person-id"]));
+
+
         //Dynamically add fields
         var a, b, c = null;
         if (orderedArray.length > 0 && orderedArray.length < 2) {
