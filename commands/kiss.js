@@ -32,7 +32,15 @@ exports.run = (bot, message, args) => {
 
         //Print out top leaderboard
         var orderedArray = bot.datatouse["kisses"].sort((a, b) => b["number-of-kisses"] - a["number-of-kisses"]);
+
+        console.log(orderedArray);
+
         orderedArray = orderedArray.slice(0, 2);
+
+        console.log(orderedArray);
+
+        console.log(message.guild.memebers.cache.filter(i => i.user.id == orderedArray[0]["data"]["person-id"]).user);
+        console.log(orderedArray[0]["data"]["number-of-kisses"]);
 
         var embeddedMessage = new Discord.MessageEmbed()
             .setColor('#0099ff')
