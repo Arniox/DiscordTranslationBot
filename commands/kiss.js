@@ -34,25 +34,20 @@ exports.run = (bot, message, args) => {
         var orderedArray = bot.datatouse["kisses"].sort((a, b) => b["number-of-kisses"] - a["number-of-kisses"]);
         orderedArray = orderedArray.slice(0, 2);
 
-        //Styalise the leaderboard based on size of array
-
-        console.log(orderedArray.length);
-
-        var topOutput = [];
-        for (var i = 0; i < orderedArray.length; i++) {
-            topOutput.push({
-                name: `${(i == 0 ? ":first_place: Top Kisser" : (i == 1 ? ":second_place: Runner Up Kisser" : ":third_place: Third Kisser"))}`,
-                value: `${message.guild.members.cache.filter(i => i.id == orderedArray[i]["data"]["person-id"]).user} with ${orderedArray[i]["data"]["number-of-kisses"]} kisses!`
-            });
+        var a, b, c = null;
+        if (orderedArray.length > 0 && orderedArray.length < 2) {
+            a = { name: ':first_place: Top Kisser:', value: `${message.guild.memebers.cache.filter(i => i.user.id == orderedArray[0]["data"]["person-id"]).user} with ${orderedArray[0]["data"]["number-of-kisses"]} kisses!` };
+        } else if (orderedArray.length > 1 && orderedArray.length < 3) {
+            b = { name: ':second_place: Runner Up Kisser:', value: `${message.guild.members.cache.filter(i => i.user.id == orderedArray[1]["data"]["person-id"]).user} with ${orderedArray[1]["data"]["number-of-kisses"]} kisses!` };
+        } else if (orderedArray.length > 2 && orderedArray.length < 4) {
+            c = { name: ':third_place: Third Kisser:', value: `${message.guild.members.cache.filter(i => i.user.id == orderedArray[2]["data"]["person-id"]).user} with ${orderedArray[2]["data"]["number-of-kisses"]} kisses!` }
         }
-
-        console.log(topOutput);
 
         var embeddedMessage = new Discord.MessageEmbed()
             .setColor('#0099ff')
             .setAuthor(bot.user.username, bot.user.avatarURL())
             .setDescription(`${message.author.username} has kissed another person. Their score has increased!`)
-            .addFields(topOutput)
+            .addFields(a, b, c)
             .setTimestamp()
             .setFooter('Love you all :heart:!');
         //send
