@@ -43,7 +43,7 @@ exports.run = (bot, message, args) => {
             .setFooter('Love you all :heart:!');
 
 
-        console.log(message.guild.members.cache.map((v, k) => k));
+        console.log(message.guild.members.cache.filter(i => i.id == orderedArray[0]["data"]["person-id"]));
         console.log(orderedArray.map(i => i["data"]["person-id"]));
 
 
