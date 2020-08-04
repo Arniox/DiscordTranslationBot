@@ -32,25 +32,23 @@ exports.run = (bot, message, args) => {
 
         //Print out top leaderboard
         var orderedArray = bot.datatouse["kisses"].sort((a, b) => b["number-of-kisses"] - a["number-of-kisses"]);
-
-        console.log(orderedArray);
-
         orderedArray = orderedArray.slice(0, 2);
 
-        console.log(orderedArray);
+        var topOutput = null;
+        for (i = 0; i < orderedArray.length; i++) {
+            topOutput.push({
+                name: `${(i == 0 ? ":first_place: Top Kisser" : (i == 1 ? ":second_place: Runner Up Kisser" : ":third_place: Third Kisser"))}`,
+                value: `${message.guild.members.cache.filter(i => i.id == orderedArray[i]["data"]["person-id"]).user} with ${orderedArray[i]["data"]["number-of-kisses"]} kisses!`
+            });
+        }
 
-        console.log(message.guild.memebers.cache.filter(i => i.user.id == orderedArray[0]["data"]["person-id"]).user);
-        console.log(orderedArray[0]["data"]["number-of-kisses"]);
+        console.log(topOutput);
 
         var embeddedMessage = new Discord.MessageEmbed()
             .setColor('#0099ff')
             .setAuthor(bot.user.username, bot.user.avatarURL())
             .setDescription(`${message.author.username} has kissed another person. Their score has increased!`)
-            .addFields(
-                { name: ':first_place: Top Kisser:', value: `${message.guild.memebers.cache.filter(i => i.user.id == orderedArray[0]["data"]["person-id"]).user} with ${orderedArray[0]["data"]["number-of-kisses"]} kisses!` },
-                { name: ':second_place: Runner Up Kisser:', value: `${message.guild.members.cache.filter(i => i.user.id == orderedArray[1]["data"]["person-id"]).user} with ${orderedArray[1]["data"]["number-of-kisses"]} kisses!` },
-                { name: ':third_place: Third Kisser:', value: `${message.guild.members.cache.filter(i => i.user.id == orderedArray[2]["data"]["person-id"]).user} with ${orderedArray[2]["data"]["number-of-kisses"]} kisses!` }
-            )
+            .addFields(topOutput)
             .setTimestamp()
             .setFooter('Love you all :heart:!');
         //send
