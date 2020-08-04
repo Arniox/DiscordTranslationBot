@@ -35,6 +35,9 @@ exports.run = (bot, message, args) => {
         orderedArray = orderedArray.slice(0, 2);
 
         //Styalise the leaderboard based on size of array
+
+        console.log(orderedArray.length);
+
         var topOutput = [];
         for (var i = 0; i < orderedArray.length; i++) {
             topOutput.push({
