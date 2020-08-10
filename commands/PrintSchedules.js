@@ -90,5 +90,7 @@ exports.run = (bot) => {
                             });
                     });
             });
+    } else {
+        console.log(`Today is ${now.toDateString()}`);
     }
 }

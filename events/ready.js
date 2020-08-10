@@ -12,7 +12,7 @@ module.exports = (bot) => {
     if (!cmd) return;
     else {
         //Function variables / Globals
-        const minutes = 60, interval = minutes * 60 * 1000;
+        const hours = 24, interval = hours * 60 * 60 * 1000;
         //Check schedules
         setInterval(function () {
             //Run command
