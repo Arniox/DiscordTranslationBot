@@ -6,7 +6,7 @@ exports.run = (bot) => {
     //if (now.getDay() == 0) {
     //Vulcan Esports guild = 671181556202733600
     //Time tables channel = 678107510430760980
-    var timeTableChannel = bot.guilds.cache.find(i => i.id == '671181556202733600').channels.cache.find(i => i.id == '671182613666463745');
+    var timeTableChannel = bot.guilds.cache.find(i => i.id == '671181556202733600').channels.cache.find(i => i.id == '678107510430760980');
 
     //Create all days
     var monday = new Date(now.getTime() + 86400000); // + 1 day in ms
