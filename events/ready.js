@@ -7,7 +7,7 @@ module.exports = (bot) => {
     console.log(`Prykie bancommand is: ${bot.config.bancommand.bancommand}`);
 
     //Get print schedules command
-    const cmd = bot.commads.get("PrintSchedules");
+    const cmd = bot.commands.get("PrintSchedules");
     //If command doesn't exist, exit and do nothing
     if (!cmd) return;
     else {
