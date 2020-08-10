@@ -21,8 +21,9 @@ exports.run = (bot) => {
     //React to message
     timeTableChannel.send(`React with availabilities for next week:`)
         .then(() => timeTableChannel.send(`${guild.roles.cache.find(i => i.id == '671185932182880304').toString()} please use 👍 & 👎`))
+        .then(() => timeTableChannel.send('━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━'))
         .then(() => {
-            //Print all days and wait for eachother.
+            //Print all days
             //Print monday
             timeTableChannel.send(`${monday.toDateString()}`)
                 .then((sent) => {
@@ -33,71 +34,77 @@ exports.run = (bot) => {
                         .then(() => sent.react('👎'))
                         .catch(() => console.error(`One of the scheduling print out emojis failed to react for ${monday.toDateString()}.`));
 
-                    //Print tuesday
-                    timeTableChannel.send(`${tuesday.toDateString()}`)
-                        .then((sent) => {
-                            sent.react('708718733690011748')
-                                .then(() => sent.react('691550248207646761'))
-                                .then(() => sent.react('691550247935017032'))
-                                .then(() => sent.react('👍'))
-                                .then(() => sent.react('👎'))
-                                .catch(() => console.error(`One of the scheduling print out emojis failed to react for ${tuesday.toDateString()}.`));
 
-                            //Print wednesday
-                            timeTableChannel.send(`${wednesday.toDateString()}`)
-                                .then((sent) => {
-                                    sent.react('708718733690011748')
-                                        .then(() => sent.react('691550248207646761'))
-                                        .then(() => sent.react('691550247935017032'))
-                                        .then(() => sent.react('👍'))
-                                        .then(() => sent.react('👎'))
-                                        .catch(() => console.error(`One of the scheduling print out emojis failed to react for ${wednesday.toDateString()}.`));
+                });
+            //Print tuesday
+            timeTableChannel.send(`${tuesday.toDateString()}`)
+                .then((sent) => {
+                    sent.react('708718733690011748')
+                        .then(() => sent.react('691550248207646761'))
+                        .then(() => sent.react('691550247935017032'))
+                        .then(() => sent.react('👍'))
+                        .then(() => sent.react('👎'))
+                        .catch(() => console.error(`One of the scheduling print out emojis failed to react for ${tuesday.toDateString()}.`));
 
-                                    //Print thursday
-                                    timeTableChannel.send(`${thursday.toDateString()}`)
-                                        .then((sent) => {
-                                            sent.react('708718733690011748')
-                                                .then(() => sent.react('691550248207646761'))
-                                                .then(() => sent.react('691550247935017032'))
-                                                .then(() => sent.react('👍'))
-                                                .then(() => sent.react('👎'))
-                                                .catch(() => console.error(`One of the scheduling print out emojis failed to react for ${thursday.toDateString()}.`));
 
-                                            //Print friday
-                                            timeTableChannel.send(`${friday.toDateString()}`)
-                                                .then((sent) => {
-                                                    sent.react('708718733690011748')
-                                                        .then(() => sent.react('691550248207646761'))
-                                                        .then(() => sent.react('691550247935017032'))
-                                                        .then(() => sent.react('👍'))
-                                                        .then(() => sent.react('👎'))
-                                                        .catch(() => console.error(`One of the scheduling print out emojis failed to react for ${friday.toDateString()}.`));
+                });
+            //Print wednesday
+            timeTableChannel.send(`${wednesday.toDateString()}`)
+                .then((sent) => {
+                    sent.react('708718733690011748')
+                        .then(() => sent.react('691550248207646761'))
+                        .then(() => sent.react('691550247935017032'))
+                        .then(() => sent.react('👍'))
+                        .then(() => sent.react('👎'))
+                        .catch(() => console.error(`One of the scheduling print out emojis failed to react for ${wednesday.toDateString()}.`));
 
-                                                    //Print saturday
-                                                    timeTableChannel.send(`${saturday.toDateString()}`)
-                                                        .then((sent) => {
-                                                            sent.react('708718733690011748')
-                                                                .then(() => sent.react('691550248207646761'))
-                                                                .then(() => sent.react('691550247935017032'))
-                                                                .then(() => sent.react('👍'))
-                                                                .then(() => sent.react('👎'))
-                                                                .catch(() => console.error(`One of the scheduling print out emojis failed to react for ${saturday.toDateString()}.`));
 
-                                                            //Print sunday
-                                                            timeTableChannel.send(`${sunday.toDateString()}`)
-                                                                .then((sent) => {
-                                                                    sent.react('708718733690011748')
-                                                                        .then(() => sent.react('691550248207646761'))
-                                                                        .then(() => sent.react('691550247935017032'))
-                                                                        .then(() => sent.react('👍'))
-                                                                        .then(() => sent.react('👎'))
-                                                                        .catch(() => console.error(`One of the scheduling print out emojis failed to react for ${sunday.toDateString()}.`));
-                                                                });
-                                                        });
-                                                });
-                                        });
-                                });
-                        });
+                });
+            //Print thursday
+            timeTableChannel.send(`${thursday.toDateString()}`)
+                .then((sent) => {
+                    sent.react('708718733690011748')
+                        .then(() => sent.react('691550248207646761'))
+                        .then(() => sent.react('691550247935017032'))
+                        .then(() => sent.react('👍'))
+                        .then(() => sent.react('👎'))
+                        .catch(() => console.error(`One of the scheduling print out emojis failed to react for ${thursday.toDateString()}.`));
+
+
+                });
+            //Print friday
+            timeTableChannel.send(`${friday.toDateString()}`)
+                .then((sent) => {
+                    sent.react('708718733690011748')
+                        .then(() => sent.react('691550248207646761'))
+                        .then(() => sent.react('691550247935017032'))
+                        .then(() => sent.react('👍'))
+                        .then(() => sent.react('👎'))
+                        .catch(() => console.error(`One of the scheduling print out emojis failed to react for ${friday.toDateString()}.`));
+
+
+                });
+            //Print saturday
+            timeTableChannel.send(`${saturday.toDateString()}`)
+                .then((sent) => {
+                    sent.react('708718733690011748')
+                        .then(() => sent.react('691550248207646761'))
+                        .then(() => sent.react('691550247935017032'))
+                        .then(() => sent.react('👍'))
+                        .then(() => sent.react('👎'))
+                        .catch(() => console.error(`One of the scheduling print out emojis failed to react for ${saturday.toDateString()}.`));
+
+
+                });
+            //Print sunday
+            timeTableChannel.send(`${sunday.toDateString()}`)
+                .then((sent) => {
+                    sent.react('708718733690011748')
+                        .then(() => sent.react('691550248207646761'))
+                        .then(() => sent.react('691550247935017032'))
+                        .then(() => sent.react('👍'))
+                        .then(() => sent.react('👎'))
+                        .catch(() => console.error(`One of the scheduling print out emojis failed to react for ${sunday.toDateString()}.`));
                 });
         });
     // } else {
