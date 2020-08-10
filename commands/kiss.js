@@ -45,15 +45,15 @@ exports.run = (bot, message, args) => {
         //Dynamically add fields
         var a, b, c = null;
         if (orderedArray.length > 0) {
-            a = { name: ':first_place: Top Kisser:', value: `${message.guild.members.cache.filter(i => i.id == orderedArray[0]["data"]["person-id"]).first().toString()} with ${orderedArray[0]["data"]["number-of-kisses"]} kisses!` };
+            a = { name: ':first_place: Top Kisser:', value: `${message.guild.members.cache.find(i => i.id == orderedArray[0]["data"]["person-id"]).toString()} with ${orderedArray[0]["data"]["number-of-kisses"]} kisses!` };
             embeddedMessage.addFields(a);
         }
         if (orderedArray.length > 1) {
-            b = { name: ':second_place: Runner Up Kisser:', value: `${message.guild.members.cache.filter(i => i.id == orderedArray[1]["data"]["person-id"]).first().toString()} with ${orderedArray[1]["data"]["number-of-kisses"]} kisses!` };
+            b = { name: ':second_place: Runner Up Kisser:', value: `${message.guild.members.cache.find(i => i.id == orderedArray[1]["data"]["person-id"]).toString()} with ${orderedArray[1]["data"]["number-of-kisses"]} kisses!` };
             embeddedMessage.addFields(b);
         }
         if (orderedArray.length > 2) {
-            c = { name: ':third_place: Third Kisser:', value: `${message.guild.members.cache.filter(i => i.id == orderedArray[2]["data"]["person-id"]).first().toString()} with ${orderedArray[2]["data"]["number-of-kisses"]} kisses!` };
+            c = { name: ':third_place: Third Kisser:', value: `${message.guild.members.cache.find(i => i.id == orderedArray[2]["data"]["person-id"]).toString()} with ${orderedArray[2]["data"]["number-of-kisses"]} kisses!` };
             embeddedMessage.addFields(c);
         }
 
