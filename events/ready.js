@@ -11,12 +11,13 @@ module.exports = (bot) => {
     //If command doesn't exist, exit and do nothing
     if (!cmd) return;
     else {
+        cmd.run(bot);
         //Function variables / Globals
         const minutes = 60, interval = minutes * 60 * 1000;
         //Check schedules
         setInterval(function () {
             //Run command
-            cmd.run(bot);
+
         }, interval);
     }
 };
