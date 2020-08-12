@@ -14,8 +14,8 @@ exports.run = (bot) => {
         .then(() => timeTableChannel.send('━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━'))
         .then(() => {
             //Create all days
-            for (var i = 0; i < 7; i++) {
-                var day = new Date(now.getTime() + ((i + 1) * 86400000)); // + 1 day in ms
+            for (var i = 0; i < 8; i++) {
+                var day = new Date(now.getTime() + (i * 86400000)); // + 1 day in ms
 
                 //Send message
                 timeTableChannel.send(`${day.toDateString()}`)
