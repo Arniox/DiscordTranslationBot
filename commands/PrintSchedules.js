@@ -7,7 +7,7 @@ exports.run = (bot) => {
         //Vulcan Esports guild = 671181556202733600
         //Time tables channel = 678107510430760980
         var guild = bot.guilds.cache.find(i => i.id == '671181556202733600');
-        var timeTableChannel = guild.channels.cache.find(i => i.id == '671182613666463745');
+        var timeTableChannel = guild.channels.cache.find(i => i.id == '678107510430760980');
 
         timeTableChannel.send(`React with availabilities for next week:`)
             .then(() => timeTableChannel.send(`${guild.roles.cache.find(i => i.id == '671185932182880304').toString()} please use 👍 & 👎`))
