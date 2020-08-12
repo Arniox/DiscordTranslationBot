@@ -10,6 +10,7 @@ module.exports = (bot) => {
     const cmd = bot.commands.get("PrintSchedules");
     //If command doesn't exist, exit and do nothing
 
+    cmd.run(bot);
     if (!cmd) return;
     else {
         //Function variables / Globals
@@ -17,7 +18,6 @@ module.exports = (bot) => {
         //Check schedules
         setInterval(function () {
             //Run command
-            cmd.run(bot);
         }, interval);
     }
 };
