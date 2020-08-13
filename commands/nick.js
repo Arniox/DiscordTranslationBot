@@ -434,13 +434,13 @@ exports.run = (bot, message, args) => {
                                                 message.channel.send(new Discord.MessageEmbed().setDescription(`Sorry, I cannot set ${value.toString()}\'s nickname to nothing.`).setColor('#b50909'));
                                             }
                                         } else {
-                                            message.channel.send(new Discord.MessageEmbed().setDescription(`I hade problem translating ${value.toString()}\'s` +
+                                            message.channel.send(new Discord.MessageEmbed().setDescription(`I had problems setting ${value.toString()}\'s` +
                                                 ` nickname due to Missing Permissions`).setColor('#b50909'));
                                         }
                                     });
                                 } else {
                                     message.channel.send(new Discord.MessageEmbed().setDescription('Sorry, you either didn\'t select anyone or you selected too many people to run this command on.' +
-                                        'I can only translate one person at a time.').setColor('#b50909'));
+                                        'I can only set one person at a time.').setColor('#b50909'));
                                 }
                             } else {
                                 message.channel.send(new Discord.MessageEmbed().setDescription('Sorry, you need nick naming perms to run this command.').setColor('#b50909'));
@@ -541,31 +541,6 @@ exports.run = (bot, message, args) => {
                 } else {
                     HelpMessage(bot, message, args);
                 }
-            case 'fix':
-                break;
-            case 'save':
-                if (args.length != 0) {
-                    //Get command
-                    var command = args.shift().toLowerCase();
-                    //Switch case on command
-                    switch (command) {
-                        case 'nicknames':
-                            //Check if correct perms
-                            if (IsAdmin(message)) {
-
-                            } else {
-                                message.channel.send(new Discord.MessageEmbed().setDescription('Sorry, you need to be an administrator for this command.').setColor('#b50909'));
-                            }
-
-                            break;
-                        default:
-                            HelpMessage(bot, message, args);
-                            break;
-                    }
-                } else {
-                    HelpMessage(bot, message, args);
-                }
-                break;
             default:
                 HelpMessage(bot, message, args);
                 break;
@@ -594,11 +569,6 @@ function IsManager(message) {
 //Check if user has the correct permissions
 function IsNickNamer(message) {
     return message.member.hasPermission('MANAGE_NICKNAMES');
-}
-
-//Check if user has correct permissions
-function IsAdmin(message) {
-    return message.member.hasPermission('ADMINISTRATOR');
 }
 
 //help message
