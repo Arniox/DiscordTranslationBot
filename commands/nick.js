@@ -85,7 +85,7 @@ exports.run = (bot, message, args) => {
                         case 'me':
                             var query = args.shift();
                             if (IsLowerRoles(message, message.member)) {
-                                //Check if query eixsts
+                                //Check if query exists
                                 new Promise((resolve, reject) => {
                                     if (query) {
                                         googleTranslate.getSupportedLanguages('en', function (err, languageCodes) {
@@ -160,13 +160,23 @@ exports.run = (bot, message, args) => {
                         case 'someone':
                             //Check if correct perms
                             if (IsNickNamer(message)) {
+                                console.log(`${message.member.user.username} has the change nicknames permissions`);
+
                                 if (mentions.size == 1) {
+                                    console.log(`There was only ${mentions.size} mentioned players`)
+
                                     mentions.map((v, key) => {
                                         if (IsLowerRoles(message, v)) {
+                                            console.log(`${v.user.username} is lower roles than the bot.`);
+
                                             if (!bot.config["nick-ignored-playerids"].includes(key)) {
+                                                console.log(`${v.user.username} is not being nickname ignored`);
+
                                                 //Get query
                                                 args.shift(); //Remove mention
                                                 var query = args.shift();
+
+                                                console.log(`${query} is the chosen language`);
 
                                                 //Check if query exists
                                                 new Promise((resolve, reject) => {
@@ -178,16 +188,24 @@ exports.run = (bot, message, args) => {
                                                             else reject(`Unfortunately, my translation capabilities do not support ${query} as a language.`);
                                                         });
                                                     } else {
+                                                        console.log('Returning a random language');
+
                                                         googleTranslate.getSupportedLanguages('en', function (err, languageCodes) {
                                                             resolve(languageCodes[Math.floor(SiteRand(languageCodes.length - 1, 0))]);
                                                         });
                                                     }
                                                 }).then((value) => {
+                                                    console.log('Promise has returned the random language of: ', value);
+
                                                     //Get current member nickname
                                                     var currentUserNickName = NickName(v);
 
+                                                    console.log(`Current nickname of ${v.user.username} is ${currentUserNickName}`);
+
                                                     //Translate name
                                                     googleTranslate.translate(currentUserNickName, value.language, function (err, translation) {
+                                                        console.log(`Translating ${v.user.username} name into ${translation.translatedText}`);
+
                                                         //Change name
                                                         message.member.setNickname(translation.translatedText.substring(0, 32), `Translating name from ${currentUserNickName} to ${translation.translatedText} in ${value.name}`);
                                                         //Send message
@@ -195,6 +213,8 @@ exports.run = (bot, message, args) => {
                                                             ` in ${value.name}`).setColor('#09b50c'));
                                                     });
                                                 }).catch((err) => {
+                                                    console.log(`Failed to translate ${v.user.username} nickname`);
+
                                                     message.channel.send(new Discord.MessageEmbed().setDescription(`${err}`).setColor('#b50909'));
                                                 });
                                             } else {
