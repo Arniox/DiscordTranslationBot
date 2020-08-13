@@ -270,7 +270,7 @@ exports.run = (bot, message, args) => {
                                                                                     {
                                                                                         name: 'Language -> Language',
                                                                                         value: `Gone through \`${langCount} / ${languageCodes.length}\` languages.` +
-                                                                                            ` Just did \`${previousLanguage}\ to \`${lang.name}\``,
+                                                                                            ` Just did \`${previousLanguage}\` to \`${lang.name}\``,
                                                                                         inline: true
                                                                                     },
                                                                                     {
