@@ -146,11 +146,15 @@ function HelpMessage(bot, message, args) {
         .addFields(
             {
                 name: 'Command Patterns: ',
-                value: `${bot.config.prefix} today[commands]`
+                value: `${bot.config.prefix}today [commands] [selection/time range]`
             },
             {
                 name: 'Examples: ',
-                value: `${bot.config.prefix} today`
+                value: `${bot.config.prefix}today get [year/month/date/day/hour/min/sec/milli/time/time zone offset]\n` +
+                    `${bot.config.prefix}today now [short/full]\n` +
+                    `${bot.config.prefix}today [UTC/ISO]\n` +
+                    `${bot.config.prefix}today [+, -, *, /] [1y/1M/1d/1h/1m/1s/1ms]`,
+                inline: true
             }
         )
         .setTimestamp()
