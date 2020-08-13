@@ -78,11 +78,11 @@ exports.run = (bot, message, args) => {
                 new Promise((resolve, reject) => {
                     googleTranslate.getSupportedLanguages('en', function (err, languageCodes) {
                         if (!err) resolve(languageCodes.map(i => i.language));
-                    }).then((value) => {
-                        console.log(value);
-                    }).catch((err) => {
-                        message.channel.send(new Discord.MessageEmbed().setDescription(`${err}`).setColor('#b50909'));
                     });
+                }).then((value) => {
+                    console.log(value);
+                }).catch((err) => {
+                    message.channel.send(new Discord.MessageEmbed().setDescription(`${err}`).setColor('#b50909'));
                 });
                 break;
             default:
@@ -104,13 +104,14 @@ function HelpMessage(bot, message, args) {
             { name: 'Required Permissions: ', value: 'Manage Server (for adding and removing. Everyone else can use list the current patterns).' },
             {
                 name: 'Command Patterns: ',
-                value: `${bot.config.prefix}translate [add/remove] [pattern / (Remove by index)]\n\n${bot.config.prefix}translate patterns`
+                value: `${bot.config.prefix}translate [add/remove] [number (Remove by index)]\n\n${bot.config.prefix}translate patterns`
             },
             {
                 name: 'Examples: ',
                 value: `${bot.config.prefix}translate add /(<:[A-Za-z]+:\d+>)/gi\n\n` +
                     `${bot.config.prefix}translate remove 1\n\n` +
-                    `${bot.config.prefix}translate patterns`
+                    `${bot.config.prefix}translate patterns\n\n` +
+                    `${bot.config.prefix}translate languages`
             }
         )
         .setTimestamp()
