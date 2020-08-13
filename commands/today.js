@@ -18,7 +18,7 @@ exports.run = (bot, message, args) => {
                             message.channel.send(new Discord.MessageEmbed().setDescription(`Today's month is the: ${Ordinal(new Date().getMonth() + 1)} month of the year.`).setColor('#09b50c'));
                             break;
                         case 'date':
-                            message.channel.send(new Discord.MessageEmbed().setDescription(`Today's date is the: ${Ordinal(new Date().getMonth())}.`).setColor('#09b50c'));
+                            message.channel.send(new Discord.MessageEmbed().setDescription(`Today's date is the: ${Ordinal(new Date().getDate())}.`).setColor('#09b50c'));
                             break;
                         case 'day': case 'days':
                             message.channel.send(new Discord.MessageEmbed().setDescription(`Today is the : ${Ordinal(new Date().getDay() + 1)} day of the week.`).setColor('#09b50c'));
