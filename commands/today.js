@@ -76,7 +76,7 @@ exports.run = (bot, message, args) => {
             default:
                 if (args.length != 0) {
                     //get the left over strings
-                    var strings = args.shift().split('');
+                    var strings = args.shift().match(/[a-z]+|[^a-z]+/gi);
                     if (strings.length >= 2) {
                         //get the number
                         var number = strings.shift();
@@ -118,7 +118,7 @@ exports.run = (bot, message, args) => {
                                         break;
                                 }
                             } else {
-                                message.channel.send(new Discord.MessageEmbed().setDescription(`Sorry, ${digitRange} was not a date type I understood. You can apply years (y), months (M), days (d), hours (h), minutes (m), seconds (s), and milliseconds (ms)`).setColor('#b50909'));
+                                message.channel.send(new Discord.MessageEmbed().setDescription(`Sorry, ${digitRange} was not a date type I understood.\nYou can apply years (y), months (M), days (d), hours (h), minutes (m), seconds (s), and milliseconds (ms)`).setColor('#b50909'));
                             }
                         } else {
                             message.channel.send(new Discord.MessageEmbed().setDescription(`Sorry, ${number} was not a number I understood.`).setColor('#b50909'));
