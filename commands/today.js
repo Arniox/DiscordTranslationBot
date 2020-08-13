@@ -102,19 +102,33 @@ exports.run = (bot, message, args) => {
                                 //Switch on the mathematical method
                                 switch (command) {
                                     case '+':
-                                        message.channel.send(new Discord.MessageEmbed().setDescription(`Today (${now.toDateString()})\n+${number} ${usefulDigits[digitRange]["name"]}(s) is: \n${new Date(now.getTime() + usefulDigits[digitRange]["value"]).toString()}`).setColor('#09b50c'));
+                                        message.channel.send(
+                                            new Discord.MessageEmbed()
+                                                .setDescription(`Today (${now.toDateString()})\n+${number} ${usefulDigits[digitRange]["name"]}(s) is: \n${new Date(now.getTime() + (usefulDigits[digitRange]["value"] * parseInt(number))).toString()}`)
+                                                .setColor('#09b50c'));
                                         break;
                                     case '-':
-                                        message.channel.send(new Discord.MessageEmbed().setDescription(`Today (${now.toDateString()})\n-${number} ${usefulDigits[digitRange]["name"]}(s) is: \n${new Date(now.getTime() - usefulDigits[digitRange]["value"]).toString()}`).setColor('#09b50c'));
+                                        message.channel.send(
+                                            new Discord.MessageEmbed()
+                                                .setDescription(`Today (${now.toDateString()})\n-${number} ${usefulDigits[digitRange]["name"]}(s) is: \n${new Date(now.getTime() - (usefulDigits[digitRange]["value"] * parseInt(number))).toString()}`)
+                                                .setColor('#09b50c'));
                                         break;
                                     case '*':
-                                        message.channel.send(new Discord.MessageEmbed().setDescription(`Today (${now.toDateString()})\n*${number} ${usefulDigits[digitRange]["name"]}(s) is: \n${new Date(now.getTime() * usefulDigits[digitRange]["value"]).toString()}`).setColor('#09b50c'));
+                                        message.channel.send(
+                                            new Discord.MessageEmbed()
+                                                .setDescription(`Today (${now.toDateString()})\n*${number} ${usefulDigits[digitRange]["name"]}(s) is: \n${new Date(now.getTime() * (usefulDigits[digitRange]["value"] * parseInt(number))).toString()}`)
+                                                .setColor('#09b50c'));
                                         break;
                                     case '/':
-                                        message.channel.send(new Discord.MessageEmbed().setDescription(`Today (${now.toDateString()})\n/${number} ${usefulDigits[digitRange]["name"]}(s) is: \n${new Date(now.getTime() / usefulDigits[digitRange]["value"]).toString()}`).setColor('#09b50c'));
+                                        message.channel.send(
+                                            new Discord.MessageEmbed()
+                                                .setDescription(`Today (${now.toDateString()})\n/${number} ${usefulDigits[digitRange]["name"]}(s) is: \n${new Date(now.getTime() / (usefulDigits[digitRange]["value"] * parseInt(number))).toString()}`)
+                                                .setColor('#09b50c'));
                                         break;
                                     default:
-                                        message.channel.send(new Discord.MessageEmbed().setDescription(`Sorry, the mathematical method you selected is not possible right now.`).setColor('#b50909'));
+                                        message.channel.send(
+                                            new Discord.MessageEmbed()
+                                                .setDescription(`Sorry, the mathematical method you selected is not possible right now.`).setColor('#b50909'));
                                         break;
                                 }
                             } else {
