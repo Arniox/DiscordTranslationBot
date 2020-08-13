@@ -189,13 +189,7 @@ exports.run = (bot, message, args) => {
                                                     //Translate name
                                                     googleTranslate.translate(currentUserNickName, value.language, function (err, translation) {
                                                         //Change name
-                                                        message.member
-                                                            .setNickname(translation.translatedText.substring(0, 32), `Translating name from ${currentUserNickName} to ${translation.translatedText} in ${value.name}`)
-                                                            .then((value) => {
-                                                                console.log(value);
-                                                            }).catch((err) => {
-                                                                console.log(err);
-                                                            });
+                                                        v.setNickname(translation.translatedText.substring(0, 32), `Translating name from ${currentUserNickName} to ${translation.translatedText} in ${value.name}`);
                                                         //Send message
                                                         message.channel.send(new Discord.MessageEmbed().setDescription(`I have translated ${v.user.username}\'s nickname from ${currentUserNickName} to ${translation.translatedText}` +
                                                             ` in ${value.name}`).setColor('#09b50c'));
