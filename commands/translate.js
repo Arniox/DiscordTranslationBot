@@ -68,10 +68,12 @@ exports.run = (bot, message, args) => {
                 }
                 break;
             case 'patterns': //List out current patterns
+                console.log(`${bot.config.google["translate-ignored-patterns"].map((ele, index) => `Pattern ${index + 1} - ***${ele.toString()}***`).join('\n')}`);
+
                 var embeddedMessage = new Discord.MessageEmbed()
                     .setColor('#b50909')
                     .setAuthor(bot.user.username, bot.user.avatarURL())
-                    .setDescription(`${bot.config.google["translate-ignored-patterns"].map((i, index) => `Pattern ${index + 1} - ***${i.toString()}***`).join('\n')}`)
+                    .setDescription(`${bot.config.google["translate-ignored-patterns"].map((ele, index) => `Pattern ${index + 1} - ***${ele.toString()}***`).join('\n')}`)
                     .setTimestamp()
                     .setFooter('Thanks, and have a good day');
 
