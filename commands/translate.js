@@ -68,32 +68,34 @@ exports.run = (bot, message, args) => {
                 }
                 break;
             case 'patterns': //List out current patterns
-                console.log(`${bot.config.google["translate-ignored-patterns"].map((ele, index) => `Pattern ${index + 1} - ***${ele.toString()}***`).join('\n')}`);
-
-                var embeddedMessage = new Discord.MessageEmbed()
-                    .setColor('#b50909')
-                    .setAuthor(bot.user.username, bot.user.avatarURL())
-                    .setDescription(`${bot.config.google["translate-ignored-patterns"].map((ele, index) => `Pattern ${index + 1} - ***${ele.toString()}***`).join('\n')}`)
-                    .setTimestamp()
-                    .setFooter('Thanks, and have a good day');
-
-
-
                 var output = "";
                 for (var i = 0; i < bot.config.google["translate-ignored-patterns"].length; ++i) {
                     output = `${output} Pattern ${i + 1} - ***${bot.config.google["translate-ignored-patterns"][i].toString()}***\n`;
                 }
-                message.channel.send(embeddedMessage);
+                message.channel.send(new Discord.MessageEmbed().setDescription(`${bot.config.google["translate-ignored-patterns"].length} translation ignored patterns.\n${output}`).setColor('#0099ff'));
                 break;
             case 'languages': //List out all supported languages
                 new Promise((resolve, reject) => {
                     googleTranslate.getSupportedLanguages('en', function (err, languageCodes) {
-                        if (!err) resolve(languageCodes.map(i => i.language));
+                        if (!err) resolve(languageCodes);
                     });
                 }).then((value) => {
                     //Send message for list of languages
+                    var outputLangs = value.map(i => i.name).join(', ');
+                    var outputCodes = value.map(i => i.language).join(', ');
+
                     var embeddedMessage = new Discord.MessageEmbed()
-                        .setColor('#b50909');
+                        .setColor('#0099ff')
+                        .setAuthor(bot.user.username, bot.user.avatarURL())
+                        .addFields(
+                            { name: 'Languages: ', value: `${outputLangs}`, inline: true },
+                            { name: 'Codes: ', value: `${outputCodes}`, inline: true }
+                        )
+                        .setTimestamp()
+                        .setFooter('Thanks, and have a good day');
+
+                    //Send embedded message
+                    message.channel.send(embeddedMessage);
                 }).catch((err) => {
                     message.channel.send(new Discord.MessageEmbed().setDescription(`${err}`).setColor('#b50909'));
                 });
