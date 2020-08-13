@@ -74,8 +74,6 @@ exports.run = (bot, message, args) => {
                 message.channel.send(new Discord.MessageEmbed().setDescription(`The ISO date & time is: ${new Date().toISOString()}`).setColor('#09b50c'));
                 break;
             default:
-                //Get the user selected math method
-                var mathmethod = args.map(i => i.trim()).shift();
                 if (args.length != 0) {
                     //get the left over strings
                     var strings = args.join('').split('');
@@ -102,7 +100,7 @@ exports.run = (bot, message, args) => {
 
                             if (digitRange in usefulDigits) {
                                 //Switch on the mathematical method
-                                switch (mathmethod) {
+                                switch (command) {
                                     case '+':
                                         message.channel.send(new Discord.MessageEmbed().setDescription(`Today (${now.toDateString()}) + ${number} ${usefulDigits[digitRange]["name"]}(s) is: ${new Date(now.getTime() + usefulDigits[digitRange]["value"]).toString()}`));
                                         break;
