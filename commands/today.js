@@ -76,8 +76,8 @@ exports.run = (bot, message, args) => {
             default:
                 if (args.length != 0) {
                     //get the left over strings
-                    var strings = args.join('').split('');
-                    if (strings.length > 2) {
+                    var strings = args.shift().split('');
+                    if (strings.length >= 2) {
                         //get the number
                         var number = strings.shift();
                         if (/^\d+$/.test(number)) {
