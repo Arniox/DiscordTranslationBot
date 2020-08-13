@@ -68,11 +68,20 @@ exports.run = (bot, message, args) => {
                 }
                 break;
             case 'patterns': //List out current patterns
+                var embeddedMessage = new Discord.MessageEmbed()
+                    .setColor('#b50909')
+                    .setAuthor(bot.user.username, bot.user.avatarURL())
+                    .setDescription(`${bot.config.google["translate-ignored-patterns"].map((i, index) => `Pattern ${index + 1} - ***${i.toString()}***`).join('\n')}`)
+                    .setTimestamp()
+                    .setFooter('Thanks, and have a good day');
+
+
+
                 var output = "";
                 for (var i = 0; i < bot.config.google["translate-ignored-patterns"].length; ++i) {
                     output = `${output} Pattern ${i + 1} - ***${bot.config.google["translate-ignored-patterns"][i].toString()}***\n`;
                 }
-                message.channel.send(new Discord.MessageEmbed().setDescription(`${bot.config.google["translate-ignored-patterns"].length} translation ignored patterns.\n${output}`).setColor('#0099ff'));
+                message.channel.send(embeddedMessage);
                 break;
             case 'languages': //List out all supported languages
                 new Promise((resolve, reject) => {
@@ -80,7 +89,9 @@ exports.run = (bot, message, args) => {
                         if (!err) resolve(languageCodes.map(i => i.language));
                     });
                 }).then((value) => {
-                    console.log(value);
+                    //Send message for list of languages
+                    var embeddedMessage = new Discord.MessageEmbed()
+                        .setColor('#b50909');
                 }).catch((err) => {
                     message.channel.send(new Discord.MessageEmbed().setDescription(`${err}`).setColor('#b50909'));
                 });
