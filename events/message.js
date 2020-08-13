@@ -31,7 +31,7 @@ module.exports = (bot, message) => {
         //Run translation
         if (!message.content) return;
 
-        //Get the specific kiss command data from client.commands Enmap
+        //Get the specific kiss command data from client.commands Enmap 
         const kiss = bot.commands.get("kiss");
         //Get the specific translatemessage command data from client.commands Enmap
         const trans = bot.commands.get("translatemessage");
