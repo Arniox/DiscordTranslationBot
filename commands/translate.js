@@ -1,5 +1,7 @@
 //Import classes
+const googleApiKey = process.env.GOOGLE_API_KEY;
 const Discord = require('discord.js');
+const googleTranslate = require('google-translate')(googleApiKey, { "concurrentLimit": 20 });
 const fs = require('fs');
 
 exports.run = (bot, message, args) => {
@@ -71,6 +73,17 @@ exports.run = (bot, message, args) => {
                     output = `${output} Pattern ${i + 1} - ***${bot.config.google["translate-ignored-patterns"][i].toString()}***\n`;
                 }
                 message.channel.send(new Discord.MessageEmbed().setDescription(`${bot.config.google["translate-ignored-patterns"].length} translation ignored patterns.\n${output}`).setColor('#0099ff'));
+                break;
+            case 'languages': //List out all supported languages
+                new Promise((resolve, reject) => {
+                    googleTranslate.getSupportedLanguages('en', function (err, languageCodes) {
+                        if (!err) resolve(languageCodes.map(i => i.language));
+                    }).then((value) => {
+                        console.log(value);
+                    }).catch((err) => {
+                        message.channel.send(new Discord.MessageEmbed().setDescription(`${err}`).setColor('#b50909'));
+                    });
+                });
                 break;
             default:
                 HelpMessage(bot, message, args);
