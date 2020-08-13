@@ -82,8 +82,10 @@ exports.run = (bot, message, args) => {
                 }).then((value) => {
                     //Send message for list of languages
                     var outputLangs = value.map(i => i.name).join(', ');
+                    var outputCodes = value.map(i => i.language).join(', ');
                     //Send embedded message
-                    message.channel.send(new Discord.MessageEmbed().setDescription(`${outputLangs}`).setColor('#0099ff'));
+                    message.channel.send(new Discord.MessageEmbed().setDescription(`Codes: \n\n${outputCodes}`).setColor('#0099ff'));
+                    message.channel.send(new Discord.MessageEmbed().setDescription(`Languages: \n\n${outputLangs}`).setColor('#0099ff'));
                 }).catch((err) => {
                     message.channel.send(new Discord.MessageEmbed().setDescription(`${err}`).setColor('#b50909'));
                 });
