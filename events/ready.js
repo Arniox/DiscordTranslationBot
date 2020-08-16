@@ -10,9 +10,12 @@ module.exports = (bot) => {
     const cmd = bot.commands.get("PrintSchedules");
     //If command doesn't exist, exit and do nothing
 
+    console.log((cmd ? 'command extist' : 'command cannot be found'));
+    console.log(`today is: ${new Date().getDay()}`);
+
     if (cmd) {
         //Function variables / Globals
-        const hours = 24, interval = hours * 60 * 60 * 1000;
+        const hours = 1, interval = hours * 60 * 60 * 1000;
         //Check schedules
         setInterval(function () {
             //Run command
