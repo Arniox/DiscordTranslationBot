@@ -6,20 +6,19 @@ module.exports = (bot) => {
     console.log(`Prefix: ${bot.config.prefix}`);
     console.log(`Prykie bancommand is: ${bot.config.bancommand.bancommand}`);
 
+    //Function variables / Globals
+    const hours = 24, interval = hours * 60 * 60 * 1000;
     //Get print schedules command
     const cmd = bot.commands.get("PrintSchedules");
     //If command doesn't exist, exit and do nothing
 
-    console.log((cmd ? 'command extist' : 'command cannot be found'));
-    console.log(`today is: ${new Date().getDay()}`);
-
     if (cmd) {
-        //Function variables / Globals
-        const hours = 1, interval = hours * 60 * 60 * 1000;
+
+        cmd.run(bot);
+
         //Check schedules
         setInterval(function () {
             //Run command
-            cmd.run(bot);
         }, interval);
     }
 };
