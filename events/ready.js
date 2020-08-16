@@ -6,19 +6,23 @@ module.exports = (bot) => {
     console.log(`Prefix: ${bot.config.prefix}`);
     console.log(`Prykie bancommand is: ${bot.config.bancommand.bancommand}`);
 
-    //Function variables / Globals
-    const hours = 24, interval = hours * 60 * 60 * 1000;
     //Get print schedules command
     const cmd = bot.commands.get("PrintSchedules");
     //If command doesn't exist, exit and do nothing
 
     if (cmd) {
-
-        cmd.run(bot);
-
-        //Check schedules
+        //Function variables / Globals
+        const hours = 24, interval = hours * 60 * 60 * 1000;
         setInterval(function () {
-            //Run command
+            //check if sunday
+            var now = new Date();
+            if (now.getDay() == 0) {
+                //Run command
+                cmd.run(bot, now);
+            } else {
+                //Log
+                console.log(`Another day, another dollar. Today is ${now.toString()}`);
+            }
         }, interval);
     }
 };
