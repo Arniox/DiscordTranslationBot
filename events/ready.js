@@ -10,13 +10,6 @@ module.exports = (bot) => {
     const cmd = bot.commands.get("PrintSchedules");
     //If command doesn't exist, exit and do nothing
 
-    const test = 10;
-    setInterval(function () {
-        //Run command
-        console.log('test');
-    }, test);
-
-
     if (cmd) {
         //Function variables / Globals
         const hours = 24, interval = hours * 60 * 60 * 1000;
