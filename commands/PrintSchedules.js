@@ -9,8 +9,12 @@ exports.run = (bot) => {
         var guild = bot.guilds.cache.find(i => i.id == '671181556202733600');
         var timeTableChannel = guild.channels.cache.find(i => i.id == '678107510430760980');
 
-        timeTableChannel.send(`React with availabilities for next week:`)
-            .then(() => timeTableChannel.send(`${guild.roles.cache.find(i => i.id == '671185932182880304').toString()} please use 👍 & 👎`))
+        timeTableChannel.send(
+            `${guild.roles.cache.find(i => i.id == '742278066922848351').toString()}, ${guild.roles.cache.find(i => i.id == '671185517227933696')}, ` +
+            `${guild.roles.cache.find(i => i.id == '671185932182880304')}, ${guild.roles.cache.find(i => i.id == '671188740462608414')}. ` +
+            `Please react with availabilities for next week:`
+        )
+            .then(() => timeTableChannel.send(`Subs and Trials; please use 👍 & 👎`))
             .then(() => timeTableChannel.send('━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━'))
             .then(() => {
                 //Create all days
