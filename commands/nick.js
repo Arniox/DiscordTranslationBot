@@ -281,8 +281,7 @@ exports.run = (bot, message, args) => {
                                                                                 )
                                                                                 .setTimestamp()
                                                                             ).catch(() => {
-                                                                                message.channel.send(new Discord.MessageEmbed().setDescription(`User canceled Chinese Whispers with ${v.toString()}\'s nickname!`).setColor('#b50909'));
-                                                                                return;
+                                                                                reject();
                                                                             });
                                                                             //Change previous language name
                                                                             previousLanguage = lang.name;
@@ -317,6 +316,8 @@ exports.run = (bot, message, args) => {
                                                                                 );
                                                                             });
                                                                     });
+                                                                }).catch(() => {
+                                                                    message.channel.send(new Discord.MessageEmbed().setDescription(`User canceled Chinese Whispers with ${v.toString()}\'s nickname!`).setColor('#b50909'));
                                                                 });
                                                             });
                                                     });
