@@ -280,9 +280,7 @@ exports.run = (bot, message, args) => {
                                                                                     }
                                                                                 )
                                                                                 .setTimestamp()
-                                                                            ).catch(() => {
-                                                                                message.channel.send(new Discord.MessageEmbed().setDescription(`User canceled Chinese Whispers with ${v.toString()}\'s nickname!`).setColor('#b50909'));
-                                                                            });
+                                                                            );
                                                                             //Change previous language name
                                                                             previousLanguage = lang.name;
                                                                             //Update user name to translate
