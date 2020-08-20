@@ -6,6 +6,11 @@ module.exports = (bot) => {
     console.log(`Prefix: ${bot.config.prefix}`);
     console.log(`Prykie bancommand is: ${bot.config.bancommand.bancommand}`);
 
+    bot.generateInvite(['ADMINISTRATOR', 'SEND_MESSAGES', 'MANAGE_GUILD', 'MENTION_EVERYONE'])
+        .then((link) => {
+            console.log(`Generated bot invite link: ${link}`);
+        });
+
     //Get print schedules command
     const cmd = bot.commands.get("PrintSchedules");
     //If command doesn't exist, exit and do nothing
