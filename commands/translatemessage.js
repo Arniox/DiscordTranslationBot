@@ -7,7 +7,13 @@ exports.run = (bot, message, args) => {
     //message.content = RemoveByMatches(message.content, bot.config.google["translate-ignored-patterns"]);
     if (!message.content) return;
 
-    if (bot.config.google["translate-ignored-channels"].find(i => i.id == message.channel.id)) return;
+    //Ignore specific channels
+    if (bot.config.google["translate-ignored-channels"].find(i => i.id == message.channel.id)) {
+        console.log('This channel is ignored.');
+        return;
+    } else {
+        console.log('this channel is fine');
+    }
 
     //Detect
     googleTranslate.detectLanguage(message.content, function (err, detection) {
