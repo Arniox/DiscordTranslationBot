@@ -2,7 +2,19 @@
     "prefix": "$",
     "google": {
         "confidence-restriction": 0.90,
-        "translate-ignored-patterns": []
+        "translate-ignored-patterns": [],
+		"translate-ignored-channels": [
+			{"name": "schedules", "id": "691545225709092954"},
+			{"name": "applications", "id": "721642813489676290"},
+			{"name": "team-on-topic", "id": "671214798914191372"},
+			{"name": "team-off-topic", "id": "722276793767297126"},
+			{"name": "vod-reviews", "id": "672570917699715082"},
+			{"name": "strat-chat", "id": "672341317644320778"},
+			{"name": "strat-book", "id": "706415368494645328"},
+			{"name": "strat-book-visual", "id": "711817398092562473"},
+			{"name": "strat-videos", "id": "743456708998856726"},
+			{"name": "timetables", "id": "678107510430760980"}
+		]
     },
     "muteroles": [],
     "nick-ignored-playerids": [],

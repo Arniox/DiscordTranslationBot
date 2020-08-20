@@ -31,24 +31,11 @@ module.exports = (bot, message) => {
         //Run translation
         if (!message.content) return;
 
-        //Get the specific kiss command data from client.commands Enmap 
-        const kiss = bot.commands.get("kiss");
         //Get the specific translatemessage command data from client.commands Enmap
         const trans = bot.commands.get("translatemessage");
-
         //If command doesn't exist, exit and do nothing
-        if (!trans || !kiss) return;
+        if (!trans) return;
 
-        new Promise((resolve, reject) => {
-            //Run the command
-            if (kiss.run(bot, message, args)) reject('');
-            else resolve('');
-        }).then((value) => {
-            //Run the command
-            trans.run(bot, message, args);
-        }).catch((err) => {
-            //Just exit and return
-            return;
-        });
+        trans.run(bot, message, args);
     }
 }
