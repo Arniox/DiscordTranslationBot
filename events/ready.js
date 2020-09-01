@@ -21,9 +21,9 @@ module.exports = (bot) => {
         setInterval(function () {
             //check if sunday
             var now = new Date();
-            if (now.getDay() == 0) {
+            cmd.run(bot, now);
+            if (now.getDay() == 6) {
                 //Run command
-                cmd.run(bot, now);
             } else {
                 //Log
                 console.log(`Another day, another dollar. Today is ${now.toString()}`);
