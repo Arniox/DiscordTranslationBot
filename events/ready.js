@@ -16,14 +16,14 @@ module.exports = (bot) => {
     //If command doesn't exist, exit and do nothing
 
     if (cmd) {
-        var now = new Date();
-        cmd.run(bot, now);
         //Function variables / Globals
         const hours = 24, interval = hours * 60 * 60 * 1000;
         setInterval(function () {
             //check if sunday
+            var now = new Date();
             if (now.getDay() == 6) {
                 //Run command
+                cmd.run(bot, now);
             } else {
                 //Log
                 console.log(`Another day, another dollar. Today is ${now.toString()}`);
