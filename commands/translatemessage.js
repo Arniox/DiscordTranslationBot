@@ -10,6 +10,8 @@ exports.run = (bot, message, args) => {
     //Ignore specific channels
     if (bot.config.google["translate-ignored-channels"].find(i => i.id == message.channel.id)) return;
 
+    console.log(message.content); //log
+
     //Detect
     googleTranslate.detectLanguage(message.content, function (err, detection) {
         //Translate if not english or link
