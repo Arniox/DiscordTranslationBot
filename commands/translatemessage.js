@@ -13,7 +13,7 @@ exports.run = (bot, message, args) => {
     //Cut out emojis
     var messy = message.content.replace(/<:[a-zA-Z]+:\d+>/g, '');
     //If message is entirely emojis, just exit because it will be nothing after.
-    if (message.content) return;
+    if (!message.content) return;
 
     //Detect
     googleTranslate.detectLanguage(messy, function (err, detection) {
