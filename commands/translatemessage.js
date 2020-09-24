@@ -11,9 +11,14 @@ exports.run = (bot, message, args) => {
     if (bot.config.google["translate-ignored-channels"].find(i => i.id == message.channel.id)) return;
 
     console.log(message.content); //log
+    //Cut out emojis
+    var messy = message.content.replace(/<:[a-zA-Z]+:\d+>/g, '');
+    console.log(messy);
+    //If message is entirely emojis, just exit because it will be nothing after.
+    if (message.content) return;
 
     //Detect
-    googleTranslate.detectLanguage(message.content, function (err, detection) {
+    googleTranslate.detectLanguage(messy, function (err, detection) {
         //Translate if not english or link
         if (detection.language != 'en' && detection.language != 'und' && detection.confidence > bot.config.google["confidence-restriction"]) {
             //Translate
