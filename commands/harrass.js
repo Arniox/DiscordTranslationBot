@@ -65,36 +65,41 @@ exports.run = (bot, message, args) => {
                                 message.channel.send(new Discord.MessageEmbed().setDescription(`Sorry, ${person.first().toString()} is not currently in a voice channel.`).setColor('#b50909'));
                             }
                         } else {
-                            //Check if spamSelector is actually a number
-                            if (/^\d+$/.test(spamSelector)) {
-                                //Grab number from string
-                                var numberOfSpam = parseInt(spamSelector);
+                            //Check if message.member has admin power
+                            if (message.member.hasPermission('MANAGE_GUILD')) {
+                                //Check if spamSelector is actually a number
+                                if (/^\d+$/.test(spamSelector)) {
+                                    //Grab number from string
+                                    var numberOfSpam = parseInt(spamSelector);
 
-                                if (args.length != 0) {
-                                    //Get message
-                                    var messageToSpam = args.join(" ");
+                                    if (args.length != 0) {
+                                        //Get message
+                                        var messageToSpam = args.join(" ");
 
-                                    message.channel
-                                        .send(new Discord.MessageEmbed().setDescription(`Harrassing ${person.first().toString()} with 0 / ${numberOfSpam} messages.\n\n` +
-                                            `Content of message: ***${messageToSpam}***`).setColor('#FFCC00'))
-                                        .then((sent) => {
-                                            //For loop
-                                            for (var i = 0; i < numberOfSpam; ++i) {
-                                                person.first().send(`${messageToSpam}`); //Send message
+                                        message.channel
+                                            .send(new Discord.MessageEmbed().setDescription(`Harrassing ${person.first().toString()} with 0 / ${numberOfSpam} messages.\n\n` +
+                                                `Content of message: ***${messageToSpam}***`).setColor('#FFCC00'))
+                                            .then((sent) => {
+                                                //For loop
+                                                for (var i = 0; i < numberOfSpam; ++i) {
+                                                    person.first().send(`${messageToSpam}`); //Send message
 
-                                                //Edit message
-                                                sent.edit(new Discord.MessageEmbed().setDescription(`Harrassing ${person.first().toString()} ` +
-                                                    `with ${i} / ${numberOfSpam} messages.\n\nContent of message: ***${messageToSpam}***`).setColor('#FFCC00'));
-                                            }
-                                            //Update after loop
-                                            sent.edit(new Discord.MessageEmbed().setDescription(`✅ Finished Harrassing ${person.first().toString()} ` +
-                                                `with ${i} / ${numberOfSpam} messages.\n\nContent of message: ***${messageToSpam}***`).setColor('#09b50c'));
-                                        });
+                                                    //Edit message
+                                                    sent.edit(new Discord.MessageEmbed().setDescription(`Harrassing ${person.first().toString()} ` +
+                                                        `with ${i} / ${numberOfSpam} messages.\n\nContent of message: ***${messageToSpam}***`).setColor('#FFCC00'));
+                                                }
+                                                //Update after loop
+                                                sent.edit(new Discord.MessageEmbed().setDescription(`✅ Finished Harrassing ${person.first().toString()} ` +
+                                                    `with ${i} / ${numberOfSpam} messages.\n\nContent of message: ***${messageToSpam}***`).setColor('#09b50c'));
+                                            });
+                                    } else {
+                                        message.channel.send(new Discord.MessageEmbed().setDescription(`Sorry, I cannot harrass ${person.first().toString()} with an empty message.`).setColor('#b50909'));
+                                    }
                                 } else {
-                                    message.channel.send(new Discord.MessageEmbed().setDescription(`Sorry, I cannot harrass ${person.first().toString()} with an empty message.`).setColor('#b50909'));
+                                    message.channel.send(new Discord.MessageEmbed().setDescription(`Sorry, ${spamSelector} is not a number.`).setColor('#b50909'));
                                 }
                             } else {
-                                message.channel.send(new Discord.MessageEmbed().setDescription(`Sorry, ${spamSelector} is not a number.`).setColor('#b50909'));
+                                message.channel.send(new Discord.MessageEmbed().setDescription('Sorry, you need administrative powers for this command.').setColor('#b50909'));
                             }
                         }
                     } else {
@@ -107,7 +112,7 @@ exports.run = (bot, message, args) => {
                 message.channel.send(new Discord.MessageEmbed().setDescription('Sorry, you didn\'t select anyone to harrass.').setColor('#b50909'));
             }
         } else {
-            message.channel.send(new Discord.MessageEmbed().setDescription('Sorry, you need administrative powers for this command.').setColor('#b50909'));
+            message.channel.send(new Discord.MessageEmbed().setDescription('Sorry, you need move members powers for this command.').setColor('#b50909'));
         }
     } else {
         Helpmessage(bot, message, args);
