@@ -31,7 +31,7 @@ exports.run = (bot, message, args) => {
                                                     return ['⏸️'].includes(reaction.emoji.name) && user.id === message.author.id;
                                                 };
                                                 //Create reaction collector
-                                                const collector = sent.createReactionCollector(filter, { max: 1, time: 120000 });
+                                                const collector = sent.createReactionCollector(filter, { max: 1, time: 500000 });
 
                                                 //Await reaction
                                                 //stop collector and then remove reactions and then edit message
@@ -153,5 +153,5 @@ function next(collector, person, channelsTo) {
                     return; //Exit
                 }
             });
-    }, 500);
+    }, 100);
 }
