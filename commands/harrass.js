@@ -34,19 +34,13 @@ exports.run = (bot, message, args) => {
                                                 const collector = sent.createReactionCollector(filter, { max: 1, time: 120000 });
 
                                                 //Await reaction
-                                                collector.on('collect', r => {
-                                                    //stop collector and then remove reactions and then edit message
-                                                    collector.stop();
-                                                    sent.reactions.removeAll()
-                                                        .then(() => {
-                                                            sent.edit(new Discord.MessageEmbed().setDescription(`Stopped spam moving ${person.first().toString()}`).setColor('#09b50c'));
-                                                        }).catch((error) => { console.error('Failed to clear reactions: ', error) });
-                                                });
+                                                //stop collector and then remove reactions and then edit message
+                                                collector.on('collect', r => { collector.stop(); });
                                                 collector.on('end', r => {
                                                     //Remove reactions and then edit message
                                                     sent.reactions.removeAll()
                                                         .then(() => {
-                                                            sent.edit(new Discord.MessageEmbed().setDescription(`Spam move has been canceled.`).setColor('#b50909'));
+                                                            sent.edit(new Discord.MessageEmbed().setDescription(`Stopped spam moving ${person.first().toString()}`).setColor('#09b50c'));
                                                         }).catch((error) => { console.error('Failed to clear reactions: ', error) });
                                                 });
 
