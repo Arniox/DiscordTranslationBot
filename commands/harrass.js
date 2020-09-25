@@ -144,6 +144,3 @@ function Helpmessage(bot, message, args) {
 function Sample(aarr) {
     return aarr[Math.floor(Math.random() * aarr.length)];
 }
-
-//Function for moving people in channels
-function next()
