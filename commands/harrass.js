@@ -25,7 +25,7 @@ exports.run = (bot, message, args) => {
                                     //Set up emoji reaction filter.
                                     const filter = (reaction, user) => { reaction.emoji.name === '⏸️' };
                                     //Await reaction
-                                    message.awaitReactions(filter, { time: 60000 })
+                                    sent.awaitReactions(filter, { time: 60000 })
                                         .then(collected => {
                                             console.log(collected);
                                         })
