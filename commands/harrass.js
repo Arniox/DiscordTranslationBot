@@ -30,31 +30,33 @@ exports.run = (bot, message, args) => {
                                                 const filter = (reaction, user) => {
                                                     return ['⏸️'].includes(reaction.emoji.name) && user.id === message.author.id;
                                                 };
+                                                var move = true;
 
                                                 //Await reaction
                                                 sent.awaitReactions(filter, { max: 1, time: 120000 })
                                                     .then(collected => {
+                                                        move = false;
                                                         //Remove reactions and then edit message
                                                         sent.reactions.removeAll()
                                                             .then(() => {
                                                                 sent.edit(new Discord.MessageEmbed().setDescription(`Stopped spam moving ${person.first().toString()}`).setColor('#09b50c'));
-                                                                return;
                                                             }).catch((error) => { console.error('Failed to clear reactions: ', error) });
                                                     })
                                                     .catch(() => {
+                                                        move = false;
                                                         //Remove reactions and then edit message
                                                         sent.reactions.removeAll()
                                                             .then(() => {
                                                                 sent.edit(new Discord.MessageEmbed().setDescription(`Spam move has been canceled.`).setColor('#b50909'));
-                                                                return;
                                                             }).catch((error) => { console.error('Failed to clear reactions: ', error) });
                                                     });
-                                                // //While loop move 
-                                                // while (true) {
-                                                //     //Set the channel and then reverse the array so it selects the next channel
-                                                //     person.first().voice.setChannel(channelsTo[0]);
-                                                //     channelsTo.reverse();
-                                                // }
+
+                                                //While loop move 
+                                                while (move) {
+                                                    //Set the channel and then reverse the array so it selects the next channel
+                                                    person.first().voice.setChannel(channelsTo[0]);
+                                                    channelsTo.reverse();
+                                                }
                                             });
                                     });
                             } else {
