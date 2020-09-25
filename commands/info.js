@@ -159,13 +159,10 @@ exports.run = (bot, message, args) => {
                                     //Send loading message.
                                     message.channel
                                         .send(new Discord.MessageEmbed().setDescription(`**Total Messages in ${channelMentions.first().toString()}:**\n\n***Loading....***`).setColor('#FFCC00'))
-                                        .then((sent) => {
-                                            //Fetch all messages
-                                            channelMentions.first().messages.fetch()
-                                                .then((messages) => {
-                                                    sent.edit(new Discord.MessageEmbed().setDescription(`**Total Messages in ${channelMentions.first().toString()}:**\n\n${messages.size}`).setColor('#b50909'))
-                                                })
-                                                .catch((err) => console.log(err));
+                                        .then(async function (sent) {
+                                            //Fetch all messages and sequentially count them
+                                            var totalCount = await sumSequentially(channelMentions.first());
+                                            sent.edit(new Discord.MessageEmbed().setDescription(`**Total Messages in ${channelMentions.first().toString()}:**\n\n${totalCount}`).setColor('#0099ff'));
                                         });
                                     break;
                                 default:
@@ -260,4 +257,27 @@ function cjoin(array, seperator = '', splittingDistance = 0, splittingSeperator 
         }
         return out;
     }
+}
+
+//Sum all message count
+async function sumSequentially(channel) {
+    var sum = 0;
+    var last_id;
+
+    while (true) {
+        //Create options and update to next message id
+        const options = { limit: 100 };
+        if (last_id) {
+            options.before = last_id;
+        }
+
+        //Await fetch messages and sum their total count
+        const messages = await channel.fetch(options);
+        sum += messages.array().length;
+        last_id = messages.last().id;
+
+        //Break when reach the end of messages
+        if (messages.size != 100) break;
+    }
+    return sum;
 }
