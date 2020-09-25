@@ -5,44 +5,74 @@ exports.run = (bot, message, args) => {
     if (args.length != 0) {
         var person = message.mentions.members;
 
-        if (message.member.hasPermission('ADMINISTRATOR')) {
+        if (message.member.hasPermission('MOVE_MEMBERS')) {
             if (args.length != 0 && person.size != 0) {
                 if (person.size < 2) {
                     args.shift(); //Shift down past mention
 
                     if (args.length != 0) {
-                        var numberSelector = args.shift();
+                        //Check whether you want to spam them or spam move them.
+                        var spamSelector = args.shift();
+                        if (spamSelector == 'move') {
+                            //Spam move the member.
+                            //Grab random channel from voices
+                            var randomChannel = message.guild.channels.cache.filter(i => i.type == 'voice').sample();
 
-                        //Check if numberSelector is actually a number
-                        if (/^\d+$/.test(numberSelector)) {
-                            //Grab number from string
-                            var numberOfSpam = parseInt(numberSelector);
+                            message.channel
+                                .send(new Discord.MessageEmbed().setDescription(`Spam Moving ${person.first().toString()}. React with ⏸️ to stop spam moving the user.`).setColor('#FFCC00'))
+                                .then((sent) => {
+                                    sent.react('⏸️');
+                                    //Set up emoji reaction filter.
+                                    const filter = (reaction, user) => {
+                                        return ['⏸️'].includes(reaction.emoji.name);
+                                    };
 
-                            if (args.length != 0) {
-                                //Get message
-                                var messageToSpam = args.join(" ");
+                                    //Await reaction
+                                    message.awaitReactions(filter, { max: 1, time: 60000, errors: ['time'] })
+                                        .then(collected => {
+                                            //tests
+                                            const reaction = collected.first();
 
-                                message.channel
-                                    .send(new Discord.MessageEmbed().setDescription(`Harrassing ${person.first().toString()} with 0 / ${numberOfSpam} messages.\n\n` +
-                                        `Content of message: ***${messageToSpam}***`).setColor('#FFCC00'))
-                                    .then((sent) => {
-                                        //For loop
-                                        for (var i = 0; i < numberOfSpam; ++i) {
-                                            person.first().send(`${messageToSpam}`); //Send message
-
-                                            //Edit message
-                                            sent.edit(new Discord.MessageEmbed().setDescription(`Harrassing ${person.first().toString()} ` +
-                                                `with ${i} / ${numberOfSpam} messages.\n\nContent of message: ***${messageToSpam}***`).setColor('#FFCC00'));
-                                        }
-                                        //Update after loop
-                                        sent.edit(new Discord.MessageEmbed().setDescription(`✅ Finished Harrassing ${person.first().toString()} ` +
-                                            `with ${i} / ${numberOfSpam} messages.\n\nContent of message: ***${messageToSpam}***`).setColor('#09b50c'));
-                                    });
-                            } else {
-                                message.channel.send(new Discord.MessageEmbed().setDescription(`Sorry, I cannot harrass ${person.first().toString()} with an empty message.`).setColor('#b50909'));
-                            }
+                                            if (reaction.emoji.name === '⏸️') {
+                                                message.reply('replied with pause button');
+                                            }
+                                        })
+                                        .catch(collected => {
+                                            message.reply('You didn\'t react with ⏸️ correctly.');
+                                        });
+                                });
                         } else {
-                            message.channel.send(new Discord.MessageEmbed().setDescription(`Sorry, ${numberSelector} is not a number.`).setColor('#b50909'));
+                            //Check if spamSelector is actually a number
+                            if (/^\d+$/.test(spamSelector)) {
+                                //Grab number from string
+                                var numberOfSpam = parseInt(spamSelector);
+
+                                if (args.length != 0) {
+                                    //Get message
+                                    var messageToSpam = args.join(" ");
+
+                                    message.channel
+                                        .send(new Discord.MessageEmbed().setDescription(`Harrassing ${person.first().toString()} with 0 / ${numberOfSpam} messages.\n\n` +
+                                            `Content of message: ***${messageToSpam}***`).setColor('#FFCC00'))
+                                        .then((sent) => {
+                                            //For loop
+                                            for (var i = 0; i < numberOfSpam; ++i) {
+                                                person.first().send(`${messageToSpam}`); //Send message
+
+                                                //Edit message
+                                                sent.edit(new Discord.MessageEmbed().setDescription(`Harrassing ${person.first().toString()} ` +
+                                                    `with ${i} / ${numberOfSpam} messages.\n\nContent of message: ***${messageToSpam}***`).setColor('#FFCC00'));
+                                            }
+                                            //Update after loop
+                                            sent.edit(new Discord.MessageEmbed().setDescription(`✅ Finished Harrassing ${person.first().toString()} ` +
+                                                `with ${i} / ${numberOfSpam} messages.\n\nContent of message: ***${messageToSpam}***`).setColor('#09b50c'));
+                                        });
+                                } else {
+                                    message.channel.send(new Discord.MessageEmbed().setDescription(`Sorry, I cannot harrass ${person.first().toString()} with an empty message.`).setColor('#b50909'));
+                                }
+                            } else {
+                                message.channel.send(new Discord.MessageEmbed().setDescription(`Sorry, ${spamSelector} is not a number.`).setColor('#b50909'));
+                            }
                         }
                     } else {
                         message.channel.send(new Discord.MessageEmbed().setDescription(`Sorry, you didn\'t select the number of spam messages to send.`).setColor('#b50909'));
@@ -85,4 +115,9 @@ function Helpmessage(bot, message, args) {
 
     //Set embedded message
     message.channel.send(embeddedHelpMessage);
+}
+
+//Prototypes
+Array.prototype.sample = function () {
+    return this[Math.floor(Math.random() * this.length)];
 }
