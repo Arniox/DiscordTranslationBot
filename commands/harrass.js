@@ -141,6 +141,8 @@ function Sample(aarr) {
 
 //function for looping move harrass
 function next(collector, person, channelsTo) {
+    console.log(collector, person, channelsTo);
+
     //Return a recurssive programming
     return person.first().voice.setChannel(channelsTo[0])
         .then(() => {
