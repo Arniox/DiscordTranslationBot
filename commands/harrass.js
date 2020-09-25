@@ -45,9 +45,7 @@ exports.run = (bot, message, args) => {
                                                 });
 
                                                 //While loop and wait for collector to finish
-                                                next(collector, person, channelsTo)
-                                                    .then(() => { return; })
-                                                    .catch(() => { return; });
+                                                next(collector, person, channelsTo);
                                             });
                                     });
                             } else {
