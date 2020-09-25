@@ -27,33 +27,30 @@ exports.run = (bot, message, args) => {
                                         sent.react('⏸️')
                                             .then(() => {
                                                 //Set up emoji reaction filter.
-                                                var move = true;
                                                 const filter = (reaction, user) => {
                                                     return ['⏸️'].includes(reaction.emoji.name) && user.id === message.author.id;
                                                 };
+                                                //Create reaction collector
+                                                const collector = sent.createReactionCollector(filter, { max: 1, time: 120000 });
 
                                                 //Await reaction
-                                                sent.awaitReactions(filter, { max: 1, time: 120000 })
-                                                    .then(collected => {
-                                                        move = false;
-                                                        //Remove reactions and then edit message
-                                                        sent.reactions.removeAll()
-                                                            .then(() => {
-                                                                sent.edit(new Discord.MessageEmbed().setDescription(`Stopped spam moving ${person.first().toString()}`).setColor('#09b50c'));
-                                                            }).catch((error) => { console.error('Failed to clear reactions: ', error) });
-                                                    })
-                                                    .catch(() => {
-                                                        move = false;
-                                                        //Remove reactions and then edit message
-                                                        sent.reactions.removeAll()
-                                                            .then(() => {
-                                                                sent.edit(new Discord.MessageEmbed().setDescription(`Spam move has been canceled.`).setColor('#b50909'));
-                                                            }).catch((error) => { console.error('Failed to clear reactions: ', error) });
-                                                    });
+                                                collector.on('collect', r => {
+                                                    //Remove reactions and then edit message
+                                                    sent.reactions.removeAll()
+                                                        .then(() => {
+                                                            sent.edit(new Discord.MessageEmbed().setDescription(`Stopped spam moving ${person.first().toString()}`).setColor('#09b50c'));
+                                                        }).catch((error) => { console.error('Failed to clear reactions: ', error) });
+                                                });
+                                                collector.on('end', r => {
+                                                    //Remove reactions and then edit message
+                                                    sent.reactions.removeAll()
+                                                        .then(() => {
+                                                            sent.edit(new Discord.MessageEmbed().setDescription(`Spam move has been canceled.`).setColor('#b50909'));
+                                                        }).catch((error) => { console.error('Failed to clear reactions: ', error) });
+                                                });
 
-                                                //While loop move
-                                                var i = 1;
-                                                while (move) {
+                                                //While loop and wait for collector to finish
+                                                var i = 0; while (!collector.ended) {
                                                     setTimeout(function () {
                                                         //Set the channel and then reverse the array so it selects the next channel
                                                         person.first().voice.setChannel(channelsTo[0]);
@@ -146,3 +143,6 @@ function Helpmessage(bot, message, args) {
 function Sample(aarr) {
     return aarr[Math.floor(Math.random() * aarr.length)];
 }
+
+//Function for moving people in channels
+function next()
