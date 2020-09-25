@@ -148,7 +148,7 @@ async function next(collector, person, channelsTo) {
         await person.first().voice.setChannel(channelsTo[0]);
         setTimeout(function () {
             channelsTo.reverse();
-        }, i * 1000);
+        }, i * 300);
         i++; //Increment i for timeout.
     }
 }
