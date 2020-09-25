@@ -143,12 +143,12 @@ function Sample(aarr) {
 function next(collector, person, channelsTo) {
     var i = 1;
     while (!collector.ended) {
-        (function (i) {
-            setTimeout(async function () {
-                //Await for person to be moved to slow down the while loop and then reverse channel array
-                await person.first().voice.setChannel(channelsTo[0]);
+        (async function (i) {
+            //Await for person to be moved to slow down the while loop and then reverse channel array
+            await person.first().voice.setChannel(channelsTo[0]);
+            setTimeout(function () {
                 channelsTo.reverse();
-            }, i * 500);
+            }, i * 300);
         })(i++)//Increment i for timeout.
     }
 }
