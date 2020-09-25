@@ -142,13 +142,16 @@ function Sample(aarr) {
 //function for looping move harrass
 function next(collector, person, channelsTo) {
     var i = 1;
+    console.log('test');
     while (!collector.ended) {
+        console.log(`${i} loop`);
+
         setTimeout(async function () {
             //Await for promise
             await person.first().voice.setChannel(channelsTo[0]);
             //Reverse the channels after promise is complete
             channelsTo.reverse();
-        }, i * 200);
+        }, i * 300);
         i++;
     }
 }
