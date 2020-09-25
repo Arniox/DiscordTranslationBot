@@ -56,7 +56,7 @@ exports.run = (bot, message, args) => {
                                                         //Set the channel and then reverse the array so it selects the next channel
                                                         person.first().voice.setChannel(channelsTo[0]);
                                                         channelsTo.reverse();
-                                                    }, i * 3000);
+                                                    }, i * 10000);
                                                     i++;
                                                 }
                                             });
