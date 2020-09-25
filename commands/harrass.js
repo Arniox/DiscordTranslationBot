@@ -51,14 +51,9 @@ exports.run = (bot, message, args) => {
                                                 });
 
                                                 //While loop and wait for collector to finish
-                                                var i = 0; while (!collector.ended) {
-                                                    setTimeout(function () {
-                                                        //Set the channel and then reverse the array so it selects the next channel
-                                                        person.first().voice.setChannel(channelsTo[0]);
-                                                        channelsTo.reverse();
-                                                    }, i * 10000);
-                                                    i++;
-                                                }
+                                                next(collector, person, channelsTo)
+                                                    .then(() => { return; })
+                                                    .catch(() => { return; });
                                             });
                                     });
                             } else {
@@ -148,4 +143,19 @@ function Helpmessage(bot, message, args) {
 //function for random item from array
 function Sample(aarr) {
     return aarr[Math.floor(Math.random() * aarr.length)];
+}
+
+//function for looping move harrass
+function next(collector, person, channelsTo) {
+    //Return a recurssive programming
+    return person.first().voice.setChannel(channelsTo[0])
+        .then(() => {
+            //Reverse the channels after promise is complete
+            channelsTo.reverse();
+            if (!collector.ended) {
+                return next(collector, person, channelsTo); //Start again
+            } else {
+                return; //Exit
+            }
+        });
 }
