@@ -140,15 +140,12 @@ function Sample(aarr) {
 }
 
 //function for looping move harrass
-async function next(collector, person, channelsTo) {
-    var i = 1;
-    while (!collector.ended) {
+function next(collector, person, channelsTo) {
+    var intr = setInterval(async function () {
+        //Await for person to be moved to slow down the while loop and then reverse channel array
         await person.first().voice.setChannel(channelsTo[0]);
-        await (function (i) {
-            //Await for person to be moved to slow down the while loop and then reverse channel array
-            setTimeout(function () {
-                channelsTo.reverse();
-            }, i * 300);
-        })(i++)//Increment i for timeout.
-    }
+        channelsTo.reverse();
+        //Clear interval if collector has ended
+        if (collector.ended) clearInterval(intr);
+    }, 1000);
 }
