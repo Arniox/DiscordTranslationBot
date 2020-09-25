@@ -256,7 +256,7 @@ function cjoin(array, seperator = '', splittingDistance = 0, splittingSeperator 
         var out = '';
         for (var i = 0; i < array.length; i++) {
             if (i % splittingDistance == 0) out += splittingSeperator + array[i];
-            else out += array[i];
+            else out += seperator + array[i];
         }
         return out;
     }
