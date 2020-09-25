@@ -158,7 +158,7 @@ exports.run = (bot, message, args) => {
                                 case 'messages':
                                     //Send loading message.
                                     message.channel
-                                        .send(new Discord.MessageEmbed().setDescription(`**Total Messages in ${channelMentions.first().toString()}:**\n\n***Loading....***`).setColor('#FFCC00'))
+                                        .send(new Discord.MessageEmbed().setDescription(`**Total Messages in ${channelMentions.first().toString()}**\n\n***Loading....***`).setColor('#FFCC00'))
                                         .then(async function (sent) {
                                             //Fetch all messages and sequentially count them
                                             var totalCount = await sumSequentially(channelMentions.first());
@@ -273,7 +273,7 @@ async function sumSequentially(channel) {
 
         //Await fetch messages and sum their total count
         const messages = await channel.fetch(options);
-        sum += messages.array().length;
+        sum += messages.size;
         last_id = messages.last().id;
 
         //Break when reach the end of messages
