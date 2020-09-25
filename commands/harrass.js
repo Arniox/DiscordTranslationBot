@@ -14,29 +14,44 @@ exports.run = (bot, message, args) => {
                         //Check whether you want to spam them or spam move them.
                         var spamSelector = args.shift();
                         if (spamSelector == 'move') {
-                            //Spam move the member.
-                            //Grab random channel from voices
-                            var randomChannel = Sample(message.guild.channels.cache.filter(i => i.type == 'voice'));
+                            //Check that the user is in a voice channel.
+                            if (person.first().voice) {
+                                //Spam move the member.
+                                //Grab random channel from voices
+                                var channelsTo = [Sample(message.guild.channels.cache.filter(i => i.type == 'voice')), person.first().voice.channel];
 
-                            //Send message
-                            message.channel
-                                .send(new Discord.MessageEmbed().setDescription(`Spam Moving ${person.first().toString()}. React with ⏸️ to stop spam moving the user.`).setColor('#FFCC00'))
-                                .then((sent) => {
-                                    sent.react('⏸️')
-                                        .then(() => {
-                                            //Set up emoji reaction filter.
-                                            const filter = (reaction, user) => {
-                                                return ['⏸️'].includes(reaction.emoji.name) && user.id === message.author.id;
-                                            };
+                                //Send message
+                                message.channel
+                                    .send(new Discord.MessageEmbed().setDescription(`Spam Moving ${person.first().toString()}. React with ⏸️ to stop spam moving the user.`).setColor('#FFCC00'))
+                                    .then((sent) => {
+                                        sent.react('⏸️')
+                                            .then(() => {
+                                                //Set up emoji reaction filter.
+                                                const filter = (reaction, user) => {
+                                                    return ['⏸️'].includes(reaction.emoji.name) && user.id === message.author.id;
+                                                };
 
-                                            //Await reaction
-                                            sent.awaitReactions(filter, { max: 1, time: 120000 })
-                                                .then(collected => {
-                                                    sent.edit(new Discord.MessageEmbed().setDescription(`Stopped spam moving ${person.first().toString()}`).setColor('#09b50c'));
-                                                })
-                                                .catch(() => { return; });
-                                        });
-                                });
+                                                //Await reaction
+                                                sent.awaitReactions(filter, { max: 1, time: 120000 })
+                                                    .then(collected => {
+                                                        sent.edit(new Discord.MessageEmbed().setDescription(`Stopped spam moving ${person.first().toString()}`).setColor('#09b50c'));
+                                                        return;
+                                                    })
+                                                    .catch(() => {
+                                                        sent.edit(new Discord.MessageEmbed().setDescription(`Spam move has been canceled.`).setColor('#b50909'));
+                                                        return;
+                                                    });
+                                                //While loop move 
+                                                while (true) {
+                                                    //Set the channel and then reverse the array so it selects the next channel
+                                                    person.first().voice.setChannel(channelsTo[0]);
+                                                    channelsTo.reverse();
+                                                }
+                                            });
+                                    });
+                            } else {
+                                message.channel.send(new Discord.MessageEmbed().setDescription(`Sorry, ${person.first().toString()} is not currently in a voice channel.`).setColor('#b50909'));
+                            }
                         } else {
                             //Check if spamSelector is actually a number
                             if (/^\d+$/.test(spamSelector)) {
