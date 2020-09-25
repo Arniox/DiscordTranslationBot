@@ -16,7 +16,7 @@ exports.run = (bot, message, args) => {
                         if (spamSelector == 'move') {
                             //Spam move the member.
                             //Grab random channel from voices
-                            var randomChannel = message.guild.channels.cache.filter(i => i.type == 'voice').sample();
+                            var randomChannel = Sample(message.guild.channels.cache.filter(i => i.type == 'voice'));
 
                             message.channel
                                 .send(new Discord.MessageEmbed().setDescription(`Spam Moving ${person.first().toString()}. React with ⏸️ to stop spam moving the user.`).setColor('#FFCC00'))
@@ -117,7 +117,7 @@ function Helpmessage(bot, message, args) {
     message.channel.send(embeddedHelpMessage);
 }
 
-//Prototypes
-Array.prototype.sample = function () {
-    return this[Math.floor(Math.random() * this.length)];
+//function for random item from array
+function Sample(aarr) {
+    return aarr[Math.floor(Math.random() * aarr.length)];
 }
