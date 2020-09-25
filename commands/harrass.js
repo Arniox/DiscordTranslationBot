@@ -23,20 +23,11 @@ exports.run = (bot, message, args) => {
                                 .then((sent) => {
                                     sent.react('⏸️');
                                     //Set up emoji reaction filter.
-                                    const filter = (reaction, user) => {
-                                        return ['⏸️'].includes(reaction.emoji.name);
-                                    };
-
+                                    const filter = (reaction, user) => { reaction.emoji.name === '⏸️' };
                                     //Await reaction
-                                    message.awaitReactions(filter, { max: 2, time: 60000, errors: ['time'] })
+                                    message.awaitReactions(filter, { time: 60000 })
                                         .then(collected => {
-                                            //tests
-                                            const reaction = collected.first();
-                                            const user = collected.last();
-
-                                            if (reaction.emoji.name === '⏸️') {
-                                                message.reply('replied with pause button');
-                                            }
+                                            console.log(collected);
                                         })
                                         .catch(() => { return; });
                                 });
