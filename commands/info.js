@@ -109,33 +109,56 @@ exports.run = (bot, message, args) => {
                     //Switch on detail
                     switch (detail) {
                         case 'members':
-                            message.channel.send(new Discord.MessageEmbed().setDescription(`**List of all Members in this Discord:**\n\n${cjoin(message.guild.members.cache.map((v, k) => v.user.username), ', ', 5, '\n')}`).setColor('#0099ff'));
+                            //Split larger strings into chunks and send as individual messages
+                            var totalOutput = cjoin(message.guild.members.cache.map((v, k) => v.user.username), ', ', 5, '\n').match(/.{1,2047}/g);
+                            for (var a in totalOutput) {
+                                message.channel.send(new Discord.MessageEmbed().setDescription(`**List of all Members in this Discord:**\n\n${a}`).setColor('#0099ff'));
+                            }
                             break;
                         case 'emojis':
                             message.channel.send(new Discord.MessageEmbed().setDescription(`**List of all Emojis in this Discord:**\n\n${cjoin(message.guild.emojis.cache.map((v, k) => v.toString()), ', ', 10, '\n')}`).setColor('#0099ff'));
                             break;
                         case 'channels':
-                            message.channel.send(new Discord.MessageEmbed().setDescription(`**List of all Channels in this Discord:**\n\n${cjoin(message.guild.channels.cache.map((v, k) => v.toString()), ', ', 5, '\n')}`).setColor('#0099ff'));
+                            //Split larger strings into chunks and send as individual messages
+                            var totalOutput = cjoin(message.guild.channels.cache.map((v, k) => v.toString()), ', ', 5, '\n').match(/.{1,2047}/g);
+                            for (var a in totalOutput) {
+                                message.channel.send(new Discord.MessageEmbed().setDescription(`**List of all Channels in this Discord:**\n\n${a}`).setColor('#0099ff'));
+                            }
                             break;
                         case 'voice':
-                            message.channel.send(new Discord.MessageEmbed().setDescription(`**List of all Voice Channels in this Discord:**\n\n` +
-                                `${cjoin(message.guild.channels.cache.map((v, k) => v).filter(i => i.type == 'voice').map(v => v.toString()), ', ', 5, '\n')}`).setColor('#0099ff'));
+                            //Split larger strings into chunks and send as individual messages
+                            var totalOutput = cjoin(message.guild.channels.cache.map((v, k) => v).filter(i => i.type == 'voice').map(v => v.toString()), ', ', 5, '\n').match(/.{1,2047}/g);
+                            for (var a in totalOutput) {
+                                message.channel.send(new Discord.MessageEmbed().setDescription(`**List of all Voice Channels in this Discord:**\n\n${a}`).setColor('#0099ff'));
+                            }
                             break;
                         case 'text':
-                            message.channel.send(new Discord.MessageEmbed().setDescription(`**List of all Text Channels in this Discord:**\n\n` +
-                                `${cjoin(message.guild.channels.cache.map((v, k) => v).filter(i => i.type == 'text').map(v => v.toString()), ', ', 5, '\n')}`).setColor('#0099ff'));
+                            //Split larger strings into chunks and send as individual messages
+                            var totalOutput = cjoin(message.guild.channels.cache.map((v, k) => v).filter(i => i.type == 'text').map(v => v.toString()), ', ', 5, '\n').match(/.{1,2047}/g);
+                            for (var a in totalOutput) {
+                                message.channel.send(new Discord.MessageEmbed().setDescription(`**List of all Text Channels in this Discord:**\n\n${a}`).setColor('#0099ff'));
+                            }
                             break;
                         case 'categories':
-                            message.channel.send(new Discord.MessageEmbed().setDescription(`**List of all Categories in this Discord:**\n\n` +
-                                `${cjoin(message.guild.channels.cache.map((v, k) => v).filter(i => i.type == 'categories').map(v => v.toString()), ', ', 5, '\n')}`).setColor('#0099ff'));
+                            //Split larger strings into chunks and send as individual messages
+                            var totalOutput = cjoin(message.guild.channels.cache.map((v, k) => v).filter(i => i.type == 'categories').map(v => v.toString()), ', ', 5, '\n').match(/.{1,2047}/g);
+                            for (var a in totalOutput) {
+                                message.channel.send(new Discord.MessageEmbed().setDescription(`**List of all Categories in this Discord:**\n\n${a}`).setColor('#0099ff'));
+                            }
                             break;
                         case 'news':
-                            message.channel.send(new Discord.MessageEmbed().setDescription(`**List of all News Channels in this Discord:**\n\n` +
-                                `${cjoin(message.guild.channels.cache.map((v, k) => v).filter(i => i.type == 'news').map(v => v.toString()), ', ', 5, '\n')}`).setColor('#0099ff'));
+                            //Split larger strings into chunks and send as individual messages
+                            var totalOutput = cjoin(message.guild.channels.cache.map((v, k) => v).filter(i => i.type == 'news').map(v => v.toString()), ', ', 5, '\n').match(/.{1,2047}/g);
+                            for (var a in totalOutput) {
+                                message.channel.send(new Discord.MessageEmbed().setDescription(`**List of all News Channels in this Discord:**\n\n${a}`).setColor('#0099ff'));
+                            }
                             break;
                         case 'store':
-                            message.channel.send(new Discord.MessageEmbed().setDescription(`**List of all Store Channels in this Discord:**\n\n` +
-                                `${cjoin(message.guild.channels.cache.map((v, k) => v).filter(i => i.type == 'store').map(v => v.toString()), ', ', 5, '\n')}`).setColor('#0099ff'));
+                            //Split larger strings into chunks and send as individual messages
+                            var totalOutput = cjoin(message.guild.channels.cache.map((v, k) => v).filter(i => i.type == 'store').map(v => v.toString()), ', ', 5, '\n').match(/.{1,2047}/g);
+                            for (var a in totalOutput) {
+                                message.channel.send(new Discord.MessageEmbed().setDescription(`**List of all Store Channels in this Discord:**\n\n${a}`).setColor('#0099ff'));
+                            }
                             break;
                         default:
                             message.channel.send(new Discord.MessageEmbed().setDescription('Sorry, I did not understand the detail argument you provided.').setColor('#b50909'));
