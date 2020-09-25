@@ -28,20 +28,13 @@ exports.run = (bot, message, args) => {
                                             const filter = (reaction, user) => {
                                                 return ['⏸️'].includes(reaction.emoji.name) && user.id === message.author.id;
                                             };
-                                            //Create reaction collector
-                                            const collector = sent.createReactionCollector(filter, { max: 1, time: 120000 });
 
-                                            //While loop change someones voice channel
-                                            //Test
-                                            collector.on('collect', collected => console.log(collected));
-                                            collector.on('end', collected => console.log(collected));
-
-                                            // //Await reaction
-                                            // sent.awaitReactions(filter, { max: 1, time: 120000 })
-                                            //     .then(collected => {
-                                            //         console.log(collected);
-                                            //     })
-                                            //     .catch(() => { return; });
+                                            //Await reaction
+                                            sent.awaitReactions(filter, { max: 1, time: 120000 })
+                                                .then(collected => {
+                                                    sent.edit(new Discord.MessageEmbed().setDescription(`Stopped spam moving ${person.first().toString()}`).setColor('#09b50c'));
+                                                })
+                                                .catch(() => { return; });
                                         });
                                 });
                         } else {
