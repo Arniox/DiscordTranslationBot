@@ -32,14 +32,13 @@ exports.run = (bot, message, args) => {
                                         .then(collected => {
                                             //tests
                                             const reaction = collected.first();
+                                            const user = collected.last();
 
                                             if (reaction.emoji.name === '⏸️') {
                                                 message.reply('replied with pause button');
                                             }
                                         })
-                                        .catch(collected => {
-                                            message.reply('You didn\'t react with ⏸️ correctly.');
-                                        });
+                                        .catch(() => { return; });
                                 });
                         } else {
                             //Check if spamSelector is actually a number
