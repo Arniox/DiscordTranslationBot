@@ -277,7 +277,7 @@ async function sumSequentially(channel) {
         last_id = messages.messages.cache.last().id;
 
         //Break when reach the end of messages
-        if (messages.size != 100) break;
+        if (messages.messages.cache.size != 100) break;
     }
     return sum;
 }
