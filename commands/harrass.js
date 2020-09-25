@@ -18,18 +18,23 @@ exports.run = (bot, message, args) => {
                             //Grab random channel from voices
                             var randomChannel = Sample(message.guild.channels.cache.filter(i => i.type == 'voice'));
 
+                            //Send message
                             message.channel
                                 .send(new Discord.MessageEmbed().setDescription(`Spam Moving ${person.first().toString()}. React with ⏸️ to stop spam moving the user.`).setColor('#FFCC00'))
                                 .then((sent) => {
-                                    sent.react('⏸️');
-                                    //Set up emoji reaction filter.
-                                    const filter = (reaction, user) => { reaction.emoji.name == '⏸️' };
-                                    //Await reaction
-                                    message.awaitReactions(filter, { time: 0 })
-                                        .then(collected => {
-                                            message.channel.send(`It worked. ${collected}`);
-                                        })
-                                        .catch(() => { return; });
+                                    sent.react('⏸️')
+                                        .then(() => {
+                                            //Set up emoji reaction filter.
+                                            const filter = (reaction, user) => {
+                                                return ['⏸️'].includes(reaction.emoji.name) && user.id === message.author.id;
+                                            };
+                                            //Await reaction
+                                            message.awaitReactions(filter, { max: 1, time: 120000 })
+                                                .then(collected => {
+                                                    message.channel.send(`It worked. ${collected}`);
+                                                })
+                                                .catch(() => { return; });
+                                        });
                                 });
                         } else {
                             //Check if spamSelector is actually a number
