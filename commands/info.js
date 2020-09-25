@@ -16,7 +16,7 @@ exports.run = (bot, message, args) => {
                     //Switch on detail
                     switch (detail) {
                         case 'count':
-                            message.channel.send(new Discord.MessageEmbed().setDescription(`${bot.user.username} is part of ${bot.guilds.cache.count()} discord servers.`).setColor('#0099ff'));
+                            message.channel.send(new Discord.MessageEmbed().setDescription(`${bot.user.username} is part of ${bot.guilds.cache.size} discord servers.`).setColor('#0099ff'));
                             break;
                         case 'names': case 'name':
                             message.channel.send(new Discord.MessageEmbed().setDescription(`${bot.guilds.cache.map((value, key) => value.name).join(', ')}`).setColor('#0099ff'));
