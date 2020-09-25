@@ -41,12 +41,12 @@ exports.run = (bot, message, args) => {
                                                         sent.edit(new Discord.MessageEmbed().setDescription(`Spam move has been canceled.`).setColor('#b50909'));
                                                         return;
                                                     });
-                                                //While loop move 
-                                                while (true) {
-                                                    //Set the channel and then reverse the array so it selects the next channel
-                                                    person.first().voice.setChannel(channelsTo[0]);
-                                                    channelsTo.reverse();
-                                                }
+                                                // //While loop move 
+                                                // while (true) {
+                                                //     //Set the channel and then reverse the array so it selects the next channel
+                                                //     person.first().voice.setChannel(channelsTo[0]);
+                                                //     channelsTo.reverse();
+                                                // }
                                             });
                                     });
                             } else {
