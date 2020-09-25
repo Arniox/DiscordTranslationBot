@@ -127,7 +127,7 @@ exports.run = (bot, message, args) => {
                             break;
                         case 'categories':
                             message.channel.send(new Discord.MessageEmbed().setDescription(`**List of all Categories in this Discord:**\n\n` +
-                                `${cjoin(message.guild.channels.cache.map((v, k) => v).filter(i => i.type == 'categories').map(v => v.name), ', ', 5, '\n')}`).setColor('#0099ff'));
+                                `${cjoin(message.guild.channels.cache.map((v, k) => v).filter(i => i.type == 'cateogry').map(v => v.name), ', ', 5, '\n')}`).setColor('#0099ff'));
                             break;
                         case 'news':
                             message.channel.send(new Discord.MessageEmbed().setDescription(`**List of all News Channels in this Discord:**\n\n` +
