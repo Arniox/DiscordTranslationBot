@@ -258,6 +258,6 @@ function cjoin(array, seperator = '', splittingDistance = 0, splittingSeperator 
             if (i % splittingDistance == 0) out += splittingSeperator + array[i];
             else out += array[i];
         }
-        return array;
+        return out;
     }
 }
