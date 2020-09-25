@@ -147,5 +147,5 @@ function next(collector, person, channelsTo) {
         channelsTo.reverse();
         //Clear interval if collector has ended
         if (collector.ended) clearInterval(intr);
-    }, 1000);
+    }, 1050);
 }
