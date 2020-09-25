@@ -161,7 +161,7 @@ exports.run = (bot, message, args) => {
                                         .send(new Discord.MessageEmbed().setDescription(`**Total Messages in ${channelMentions.first().toString()}**\n\n***Loading....***`).setColor('#FFCC00'))
                                         .then(async function (sent) {
                                             //Fetch all messages and sequentially count them
-                                            var totalCount = await sumSequentially(channelMentions.first());
+                                            var totalCount = await sumSequentially(channelMentions.first(), sent);
                                             sent.edit(new Discord.MessageEmbed().setDescription(`**Total Messages in ${channelMentions.first().toString()}:**\n\n${totalCount}`).setColor('#0099ff'));
                                         });
                                     break;
@@ -260,7 +260,7 @@ function cjoin(array, seperator = '', splittingDistance = 0, splittingSeperator 
 }
 
 //Sum all message count
-async function sumSequentially(channel) {
+async function sumSequentially(channel, message) {
     var sum = 0;
     var last_id;
 
@@ -275,6 +275,9 @@ async function sumSequentially(channel) {
         const messages = await channel.messages.fetch(options);
         sum += messages.size;
         last_id = messages.last().id;
+
+        //Edit message with new number
+        message.edit(new Discord.MessageEmbed().setDescription(`**Total Messages in ${channelMentions.first().toString()}**\n\n*...${sum}...*`).setColor('#FFCC00'));
 
         //Break when reach the end of messages
         if (messages.size != 100) break;
