@@ -35,7 +35,8 @@ exports.run = (bot, message, args) => {
 
                                                 //Await reaction
                                                 collector.on('collect', r => {
-                                                    //Remove reactions and then edit message
+                                                    //stop collector and then remove reactions and then edit message
+                                                    collector.stop();
                                                     sent.reactions.removeAll()
                                                         .then(() => {
                                                             sent.edit(new Discord.MessageEmbed().setDescription(`Stopped spam moving ${person.first().toString()}`).setColor('#09b50c'));
