@@ -30,7 +30,6 @@ exports.run = (bot, message, args) => {
                                                 const filter = (reaction, user) => {
                                                     return ['⏸️'].includes(reaction.emoji.name) && user.id === message.author.id;
                                                 };
-                                                var move = true;
 
                                                 //Await reaction
                                                 sent.awaitReactions(filter, { max: 1, time: 120000 })
@@ -51,11 +50,15 @@ exports.run = (bot, message, args) => {
                                                             }).catch((error) => { console.error('Failed to clear reactions: ', error) });
                                                     });
 
-                                                //While loop move 
+                                                //While loop move
+                                                var i = 1;
                                                 while (move) {
-                                                    //Set the channel and then reverse the array so it selects the next channel
-                                                    person.first().voice.setChannel(channelsTo[0]);
-                                                    channelsTo.reverse();
+                                                    setTimeout(function () {
+                                                        //Set the channel and then reverse the array so it selects the next channel
+                                                        person.first().voice.setChannel(channelsTo[0]);
+                                                        channelsTo.reverse();
+                                                    }, i * 3000);
+                                                    i++;
                                                 }
                                             });
                                     });
