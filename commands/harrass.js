@@ -29,7 +29,7 @@ exports.run = (bot, message, args) => {
                                                 return ['⏸️'].includes(reaction.emoji.name) && user.id === message.author.id;
                                             };
                                             //Await reaction
-                                            message.awaitReactions(filter, { max: 1, time: 120000 })
+                                            sent.awaitReactions(filter, { max: 1, time: 120000 })
                                                 .then(collected => {
                                                     message.channel.send(`It worked. ${collected}`);
                                                 })
