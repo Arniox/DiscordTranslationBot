@@ -27,6 +27,7 @@ exports.run = (bot, message, args) => {
                                         sent.react('⏸️')
                                             .then(() => {
                                                 //Set up emoji reaction filter.
+                                                var move = true;
                                                 const filter = (reaction, user) => {
                                                     return ['⏸️'].includes(reaction.emoji.name) && user.id === message.author.id;
                                                 };
