@@ -28,7 +28,7 @@ exports.run = (bot, message, args) => {
                                     };
 
                                     //Await reaction
-                                    message.awaitReactions(filter, { max: 1, time: 60000, errors: ['time'] })
+                                    message.awaitReactions(filter, { max: 2, time: 60000, errors: ['time'] })
                                         .then(collected => {
                                             //tests
                                             const reaction = collected.first();
