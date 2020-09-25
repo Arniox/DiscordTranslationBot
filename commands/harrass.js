@@ -15,6 +15,8 @@ exports.run = (bot, message, args) => {
                         var spamSelector = args.shift();
                         if (spamSelector == 'move') {
                             //Check that the user is in a voice channel.
+                            console.log(person.first().voice);
+
                             if (person.first().voice) {
                                 //Spam move the member.
                                 //Grab random channel from voices
