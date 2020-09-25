@@ -27,7 +27,7 @@ exports.run = (bot, message, args) => {
                                     //Await reaction
                                     message.awaitReactions(filter, { time: 0 })
                                         .then(collected => {
-                                            console.log(collected);
+                                            message.channel.send(`It worked. ${collected}`);
                                         })
                                         .catch(() => { return; });
                                 });
