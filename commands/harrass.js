@@ -115,16 +115,18 @@ function Helpmessage(bot, message, args) {
     var embeddedHelpMessage = new Discord.MessageEmbed()
         .setColor('#b50909')
         .setAuthor(bot.user.username, bot.user.avatarURL())
-        .setDescription(`Use this command to spam a mentioned member with any number of messages. Useful to get them to listen to you. Only available to administrators.`)
+        .setDescription(`Use this command to harrass a specific person. You can either spam them with messages or spam move them between two channels. Useful to get them to listen to you. Only available to high permissions.`)
         .addFields(
-            { name: 'Required Permissions: ', value: 'Administrator' },
+            { name: 'Required Permissions: ', value: 'Server Manager, Administrator' },
             {
                 name: 'Command Patterns: ',
-                value: `${bot.config.prefix}harrass [number] [member mention] [message]`
+                value: `${bot.config.prefix}harrass [member mention] [number] [message]\n\n` +
+                    `${bot.config.prefix}harrass [member mention] move`
             },
             {
                 name: 'Examples: ',
-                value: `${bot.config.prefix}harrass 10 ${randomPerson.toString()} Hello, wake up. It's wakey wakey time!`
+                value: `${bot.config.prefix}harrass ${randomPerson.toString()} 10 Hello, wake up. It's wakey wakey time!\n\n` +
+                    `${bot.config.prefix}harrass ${randomPerson.toString()} move`
             }
         )
         .setTimestamp()
