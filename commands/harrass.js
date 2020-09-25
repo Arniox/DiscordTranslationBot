@@ -23,12 +23,13 @@ exports.run = (bot, message, args) => {
                                 .then((sent) => {
                                     sent.react('⏸️');
                                     //Set up emoji reaction filter.
-                                    const filter = (reaction, user) => { reaction.emoji.name === '⏸️' };
-                                    //Create collection
-                                    const collector = sent.createReactionCollector(filter, { time: 60000 });
-                                    //on collect and end
-                                    collector.on('collect', r => console.log(`Collected ${r.emoji.name}`));
-                                    collector.on('end', collected => console.log(`Collected ${collected.size} items`));
+                                    const filter = (reaction, user) => { reaction.emoji.name == '⏸️' };
+                                    //Await reaction
+                                    message.awaitReactions(filter, { time: 0 })
+                                        .then(collected => {
+                                            console.log(collected);
+                                        })
+                                        .catch(() => { return; });
                                 });
                         } else {
                             //Check if spamSelector is actually a number
