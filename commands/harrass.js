@@ -34,12 +34,20 @@ exports.run = (bot, message, args) => {
                                                 //Await reaction
                                                 sent.awaitReactions(filter, { max: 1, time: 120000 })
                                                     .then(collected => {
-                                                        sent.edit(new Discord.MessageEmbed().setDescription(`Stopped spam moving ${person.first().toString()}`).setColor('#09b50c'));
-                                                        return;
+                                                        //Remove reactions and then edit message
+                                                        sent.reactions.removeAll()
+                                                            .then(() => {
+                                                                sent.edit(new Discord.MessageEmbed().setDescription(`Stopped spam moving ${person.first().toString()}`).setColor('#09b50c'));
+                                                                return;
+                                                            }).catch((error) => { console.error('Failed to clear reactions: ', error) });
                                                     })
                                                     .catch(() => {
-                                                        sent.edit(new Discord.MessageEmbed().setDescription(`Spam move has been canceled.`).setColor('#b50909'));
-                                                        return;
+                                                        //Remove reactions and then edit message
+                                                        sent.reactions.removeAll()
+                                                            .then(() => {
+                                                                sent.edit(new Discord.MessageEmbed().setDescription(`Spam move has been canceled.`).setColor('#b50909'));
+                                                                return;
+                                                            }).catch((error) => { console.error('Failed to clear reactions: ', error) });
                                                     });
                                                 // //While loop move 
                                                 // while (true) {
