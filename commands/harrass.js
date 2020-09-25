@@ -140,18 +140,16 @@ function Sample(aarr) {
 }
 
 //function for looping move harrass
-function next(collector, person, channelsTo) {
+async function next(collector, person, channelsTo) {
     var i = 1;
     console.log('test');
     while (!collector.ended) {
         console.log(`${i} loop`);
-
-        setTimeout(async function () {
-            //Await for promise
-            await person.first().voice.setChannel(channelsTo[0]);
-            //Reverse the channels after promise is complete
+        //Await for person to be moved and then slow down the while loop and reverse channel array
+        await person.first().voice.setChannel(channelsTo[0]);
+        setTimeout(function () {
             channelsTo.reverse();
         }, i * 300);
-        i++;
+        i++; //Increment i for timeout.
     }
 }
