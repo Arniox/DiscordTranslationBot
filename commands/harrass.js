@@ -18,7 +18,7 @@ exports.run = (bot, message, args) => {
                             if (person.first().voice.channel) {
                                 //Spam move the member.
                                 //Grab random channel from voices
-                                console.log(message.guild.channels.cache.filter(i => i.type == 'voice'));
+                                console.log(message.guild.channels.cache.filter(i => i.type == 'voice').map((value, key) => value.name));
 
                                 var channelsTo = [Sample(message.guild.channels.cache.filter(i => i.type == 'voice')), person.first().voice.channel];
 
