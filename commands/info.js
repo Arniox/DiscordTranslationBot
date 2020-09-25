@@ -273,10 +273,8 @@ async function sumSequentially(channel) {
 
         //Await fetch messages and sum their total count
         const messages = await channel.fetch(options);
-        console.log(messages);
-
-        sum += messages.size;
-        last_id = messages.last().id;
+        sum += messages.messages.cache.size;
+        last_id = messages.messages.cache.last().id;
 
         //Break when reach the end of messages
         if (messages.size != 100) break;
