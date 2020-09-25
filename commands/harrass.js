@@ -18,7 +18,8 @@ exports.run = (bot, message, args) => {
                             if (person.first().voice.channel) {
                                 //Spam move the member.
                                 //Grab random channel from voices
-                                var channelsTo = [Sample(message.guild.channels.cache.filter(i => i.type == 'voice').map((value, key) => value)), person.first().voice.channel];
+                                var currentChannel = person.first().voice.channel;
+                                var channelsTo = [Sample(message.guild.channels.cache.filter(i => i.type == 'voice').map((value, key) => value)), currentChannel];
 
                                 //Send message
                                 message.channel
@@ -37,6 +38,7 @@ exports.run = (bot, message, args) => {
                                                 //stop collector and then remove reactions and then edit message
                                                 collector.on('collect', r => { collector.stop(); });
                                                 collector.on('end', r => {
+                                                    person.first().voice.setChannel(currentChannel);
                                                     //Remove reactions and then edit message
                                                     sent.reactions.removeAll()
                                                         .then(() => {
@@ -138,18 +140,15 @@ function Sample(aarr) {
 }
 
 //function for looping move harrass
-function next(collector, person, channelsTo) {
-    setTimeout(() => {
-        //Return a recurssive programming
-        return person.first().voice.setChannel(channelsTo[0])
-            .then(() => {
-                //Reverse the channels after promise is complete
-                channelsTo.reverse();
-                if (!collector.ended) {
-                    return next(collector, person, channelsTo); //Start again
-                } else {
-                    return; //Exit
-                }
-            });
-    }, 100);
+async function next(collector, person, channelsTo) {
+    var i = 1;
+    while (!collector.ended) {
+        setTimeout(() => {
+            //Await for promise
+            await person.first().voice.setChannel(channelsTo[0]);
+            //Reverse the channels after promise is complete
+            channelsTo.reverse();
+        }, i * 200);
+        i++;
+    }
 }
