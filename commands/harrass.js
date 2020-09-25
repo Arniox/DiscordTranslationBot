@@ -141,18 +141,17 @@ function Sample(aarr) {
 
 //function for looping move harrass
 function next(collector, person, channelsTo) {
-    console.log('-----------------------------------');
-    console.log(channelsTo);
-
-    //Return a recurssive programming
-    return person.first().voice.setChannel(channelsTo[0])
-        .then(() => {
-            //Reverse the channels after promise is complete
-            channelsTo.reverse();
-            if (!collector.ended) {
-                return next(collector, person, channelsTo); //Start again
-            } else {
-                return; //Exit
-            }
-        });
+    setTimeout(() => {
+        //Return a recurssive programming
+        return person.first().voice.setChannel(channelsTo[0])
+            .then(() => {
+                //Reverse the channels after promise is complete
+                channelsTo.reverse();
+                if (!collector.ended) {
+                    return next(collector, person, channelsTo); //Start again
+                } else {
+                    return; //Exit
+                }
+            });
+    }, 500);
 }
