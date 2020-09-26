@@ -142,7 +142,7 @@ exports.run = (bot, message, args) => {
                                         collector.resetTimer();
                                     });
                                     //Await end
-                                    collector.end('end', r => {
+                                    collector.on('end', r => {
                                         //Remove reactions and then edit edit message
                                         sent.reactions.removeAll()
                                             .then(() => {
