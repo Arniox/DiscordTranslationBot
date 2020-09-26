@@ -3,8 +3,8 @@
     "google": {
         "confidence-restriction": 0.90,
         "translate-ignored-patterns": [
-        	{"name": "Get rid of emojis", "pattern": "/<:[a-zA-Z]+:\\d+>/"},
-        	{"name": "Get rid of tagging members", "pattern": "/<[@][!]?\\d+>/"}
+        	{"name": "Get rid of emojis", "pattern": "<:[a-zA-Z]+:\\d+>"},
+        	{"name": "Get rid of tagging members", "pattern": "<[@][!]?\\d+>"}
         ],
         "translate-ignored-channels": [
 			{"name": "schedules", "id": "691545225709092954"},
