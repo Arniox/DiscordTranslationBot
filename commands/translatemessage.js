@@ -11,15 +11,9 @@ exports.run = (bot, message, args) => {
     if (bot.config.google["translate-ignored-channels"].find(i => i.id == message.channel.id)) return;
     //Cut out translation ignored patterns
     var messy = message.content;
-    console.log(messy);
-
     bot.config.google["translate-ignored-patterns"].forEach((e) => {
-        console.log(new RegExp(e.pattern, 'g'));
-
         messy = messy.replace(new RegExp(e.pattern, 'g'), '');
     });
-
-    console.log(messy);
     //If message is entirely emojis, just exit because it will be nothing after.
     if (!message.content) return;
 
