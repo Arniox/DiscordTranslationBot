@@ -32,8 +32,9 @@ exports.run = (bot, message, args) => {
 
                                         //Await message collector on collect
                                         collector.on('collect', m => {
+                                            m.delete({ timeout: 100 }); //Delete message
                                             //Add pattern
-                                            bot.config.google["translate-ignored-patterns"].push({ "name": `${m}`, "pattern": `${query}` });
+                                            bot.config.google["translate-ignored-patterns"].push({ "name": `${m.content}`, "pattern": `${query}` });
                                             //Write to file
                                             fs.writeFileSync('./configure.json', JSON.stringify(bot.config));
                                             //Message
@@ -74,7 +75,7 @@ exports.run = (bot, message, args) => {
                                             //Write to file
                                             fs.writeFileSync('./configure.json', JSON.stringify(bot.config));
                                             //Message
-                                            message.channel.send(new Discord.MessageEmbed().setDescription(`Removed\n***${existingPattern}***\nfrom the translation ignored patterns.`).setColor('#09b50c'));
+                                            message.channel.send(new Discord.MessageEmbed().setDescription(`Removed\n***${existingPattern.pattern}***\nfrom the translation ignored patterns.`).setColor('#09b50c'));
                                         } else {
                                             message.channel.send(new Discord.MessageEmbed().setDescription(`I couldn\'t find this quote for some reason...`).setColor('#b50909'));
                                         }
