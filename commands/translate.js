@@ -43,8 +43,7 @@ exports.run = (bot, message, args) => {
                                         //Await message collector on end
                                         collector.on('end', m => {
                                             //Do not add pattern
-                                            if (m.size != 0) return;
-                                            else
+                                            if (m.size == 0)
                                                 //Message
                                                 sent.edit(new Discord.MessageEmbed().setDescription(`No pattern description for ***${query}*** was provided in time. So pattern was not added to database.`).setColor('#b50909'));
                                         });
