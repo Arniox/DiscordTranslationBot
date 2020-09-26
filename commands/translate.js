@@ -135,13 +135,8 @@ exports.run = (bot, message, args) => {
                                             sent.edit(outputCodes);
                                         }
 
-                                        //Remove reaction hy user
-                                        const userReactions = sent.reactions.cache.filter(reaction = reaction.users.cache.has(user.id));
-                                        try {
-                                            for (const reaction of userReactions.values()) {
-                                                await reaction.users.remove(userId);
-                                            }
-                                        } catch (error) { }
+                                        //Remove reaction by user
+                                        sent.reactions.cache.map((v, k) => v).filter(reaction = reaction.users.cache.has(user.id)).first().users.remove(user.id);
                                         //Empty the collector and reset the timer
                                         collector.empty();
                                         collector.resetTimer();
