@@ -23,12 +23,22 @@ exports.run = (bot, message, args) => {
 
                             //Check if query exists
                             if (query) {
-                                //Add pattern
-                                bot.config.google["translate-ignored-patterns"].push(query);
-                                //Write to file
-                                fs.writeFileSync('./configure.json', JSON.stringify(bot.config));
-                                //Message
-                                message.channel.send(new Discord.MessageEmbed().setDescription(`Added new pattern to translation ignored patterns:\n${query}`).setColor('#09b50c'));
+                                message.channel
+                                    .send(new Discord.MessageEmbed().setDescription(`What description do you want to add for the translation pattern:\n${query}`).setColor('#FFCC00'))
+                                    .then((sent) => {
+                                        //message filter and collector
+                                        const filter = m => m.member.id == message.member.id && m.content;
+                                        const collector = sent.channel.createMessageCollector(filter, { time: 15000 });
+
+                                        collector.on('collect', m => {
+                                            //Add pattern
+                                            bot.config.google["translate-ignored-patterns"].push({ "name": `${m}`, "pattern": `${query}` });
+                                            //Write to file
+                                            fs.writeFileSync('./configure.json', JSON.stringify(bot.config));
+                                            //Message
+                                            sent.edit(new Discord.MessageEmbed().setDescription(`Successfully added new pattern to translation ignored patterns:\n${query}`).setColor('#09b50c'));
+                                        });
+                                    });
                             } else {
                                 message.channel.send(new Discord.MessageEmbed().setDescription('I did not see any pattern to add sorry.').setColor('#b50909'));
                             }
