@@ -146,7 +146,7 @@ exports.run = (bot, message, args) => {
                                         //Remove reactions and then edit edit message
                                         sent.reactions.removeAll()
                                             .then(() => {
-                                                sent.edit(new Discord.MessageEmbed().setDescription(`View languages message has been disabled. ` +
+                                                sent.edit(new Discord.MessageEmbed().setDescription(`${value.map(i => i.language).join(', ')}\n\n` +
                                                     `You can view the list of supported languages again with: ***${bot.config.prefix}translate languages***`).setColor('#09b50c'));
                                             }).catch((error) => { return; });
                                     });
