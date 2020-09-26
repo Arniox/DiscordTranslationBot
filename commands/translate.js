@@ -123,7 +123,7 @@ exports.run = (bot, message, args) => {
                                         return ['⬅️', '➡️'].includes(reaction.emoji.name) && user.id === message.author.id;
                                     };
                                     //Create reaction collector
-                                    const collector = sent.createReactionCollector(filter, { max: 1, time: 500000 });
+                                    const collector = sent.createReactionCollector(filter, { max: 1, time: 30000 });
 
                                     //Await reaction
                                     collector.on('collect', (reaction, user) => {
@@ -133,10 +133,10 @@ exports.run = (bot, message, args) => {
                                         } else if (reaction.emoji.name === '⬅️') { //Go backward
                                             //Edit to out put codes
                                             sent.edit(outputCodes);
-                                        } else { //Catch errors
-                                            sent.reactions.cache.get(reaction.emoji.id).remove().catch(error => console.error('Failed to remove reactions: ', error));
                                         }
 
+                                        //Remove reaction
+                                        sent.reactions.cache.get(reaction.emoji.id).remove().catch(error => console.error('Failed to remove reactions: ', error));
                                         //Empty the collector and reset the timer
                                         collector.empty();
                                         collector.resetTimer();
@@ -148,7 +148,7 @@ exports.run = (bot, message, args) => {
                                             .then(() => {
                                                 sent.edit(new Discord.MessageEmbed().setDescription(`View languages message has been disabled. ` +
                                                     `You can view the list of supported languages again with: ***${bot.config.prefix}translate languages***`).setColor('#09b50c'));
-                                            }).catch((error) => { console.error('Failed to clear reactions: ', error) });
+                                            }).catch((error) => { return; });
                                     });
                                 })
                         })
