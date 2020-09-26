@@ -2,8 +2,11 @@
     "prefix": "$",
     "google": {
         "confidence-restriction": 0.90,
-        "translate-ignored-patterns": [],
-		"translate-ignored-channels": [
+        "translate-ignored-patterns": [
+        	{"name": "Get rid of emojis", "pattern": "/<:[a-zA-Z]+:\\d+>/"},
+        	{"name": "Get rid of tagging members", "pattern": "/<[@][!]?\\d+>/"}
+        ],
+        "translate-ignored-channels": [
 			{"name": "schedules", "id": "691545225709092954"},
 			{"name": "applications", "id": "721642813489676290"},
 			{"name": "team-on-topic", "id": "671214798914191372"},
