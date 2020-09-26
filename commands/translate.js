@@ -21,7 +21,7 @@ exports.run = (bot, message, args) => {
                         if (message.member.hasPermission('MANAGE_GUILD')) {
                             var query = args.join("");
 
-                            //Check if quiery exists
+                            //Check if query exists
                             if (query) {
                                 //Add pattern
                                 bot.config.google["translate-ignored-patterns"].push(query);
@@ -32,6 +32,8 @@ exports.run = (bot, message, args) => {
                             } else {
                                 message.channel.send(new Discord.MessageEmbed().setDescription('I did not see any pattern to add sorry.').setColor('#b50909'));
                             }
+                        } else {
+                            message.channel.send(new Discord.MessageEmbed().setDescription('Sorry, you do not have manage server permissions.').setColor('#b50909'));
                         }
                         break;
                     case 'remove': //Remove a pattern by index
@@ -67,6 +69,8 @@ exports.run = (bot, message, args) => {
                             } else {
                                 message.channel.send(new Discord.MessageEmbed().setDescription('I did not see any pattern to remove sorry.').setColor('#b50909'));
                             }
+                        } else {
+                            message.channel.send(new Discord.MessageEmbed().setDescription('Sorry, you do not have manage server permissions.').setColor('#b50909'));
                         }
                         break;
                     case 'list': //List all patterns
@@ -82,16 +86,68 @@ exports.run = (bot, message, args) => {
                         HelpMessage(bot, message, args);
                         break;
                 }
-
                 break;
             case 'channel':
                 var specifics = args.shift().toLowerCase();
                 switch (specifics) {
                     case 'add': //Add a channel
+                        //Check if has perms
+                        if (message.member.hasPermission('MANAGE_GUILD')) {
+                            var channelMentions = message.mentions.channels.map((v, k) => v);
+
+                            //Check if channel exists
+                            if (channelMentions.size != 0) {
+                                //For each channel
+                                channelMentions.forEach((c) => {
+                                    //Add channel with id and name
+                                    bot.config.google["translate-ignored-channels"].push({ "name": `${c.name}`, "id": `${c.id}` });
+                                });
+                                //Write to file
+                                fs.writeFileSync('./configure.json', JSON.stringify(bot.config));
+                                //Message
+                                message.channel.send(new Discord.MessageEmbed().setDescription(`Added new channel(s) to translation ignored channels:\n${channelMentions.map(i => i.toString()).join(',\n')}`).setColor('#09b50c'));
+                            } else {
+                                message.channel.send(new Discord.MessageEmbed().setDescription('Sorry, you did not supply a channel(s).').setColor('#b50909'));
+                            }
+                        } else {
+                            message.channel.send(new Discord.MessageEmbed().setDescription('Sorry, you do not have manage server permissions.').setColor('#b50909'));
+                        }
                         break;
                     case 'remove': //Remove a channel by tag
+                        //Check if has perms
+                        if (message.member.hasPermission('MANAGE_GUILD')) {
+                            var channelMentions = message.mentions.channels.map((v, k) => v);
+
+                            //Check if the channel
+                            if (channelMentions.size != 0) {
+                                //For each channel
+                                channelMentions.forEach((c) => {
+                                    //Check if exists in the config
+                                    if (!bot.config.google["translate-ignored-channels"].find(i => i.id == c.id)) {
+                                        //Remove channel from database
+                                        bot.config.google["translate-ignored-channels"].splice(channelMentions.map(i => i.id).indexOf(c.id), 1);
+                                    } else {
+                                        message.channel.send(new Discord.MessageEmbed().setDescription(`Sorry, ${c.toString()} isn't being translation ignored so cannot be removed.`).setColor('#b50909'));
+                                        return;
+                                    }
+                                });
+                                //Write to file
+                                fs.writeFileSync('./configure.json', JSON.stringify(bot.config));
+                                //Message
+                                message.channel.send(new Discord.MessageEmbed().setDescription(`Removed\n${channelMentions.map(i => i.toString()).join(',\n')}`).setColor('#09b50c'));
+                            } else {
+                                message.channel.send(new Discord.MessageEmbed().setDescription('Sorry, you did not supply a channel(s).').setColor('#b50909'));
+                            }
+                        } else {
+                            message.channel.send(new Discord.MessageEmbed().setDescription('Sorry, you do not have manage server permissions.').setColor('#b50909'));
+                        }
                         break;
                     case 'list': //List all channels
+                        //Send message
+                        message.channel.send(new Discord.MessageEmbed().setDescription(
+                            `${bot.config.google["translate-ignored-channels"].length} translation ignored channels.\n` +
+                            `${message.guild.channels.cache.map((v, k) => v).filter(i => bot.config.google["translate-ignored-channels"].map(v => v.id).includes(i.id)).map(v => v.toString()).join(',\n')}`
+                        ).setColor('#0099ff'));
                         break;
                     default:
                         HelpMessage(bot, message, args);
@@ -105,10 +161,10 @@ exports.run = (bot, message, args) => {
                     });
                 }).then((value) => {
                     //Send messages for list of languages
-                    var outputLangs = new Discord.MessageEmbed().setDescription(`**Language Names:**\n**React with ➡️ to view languages names and ⬅️ to go back to codes.**\n\n` +
-                        `${value.map(i => i.name).join(', ')}`).setColor('#0099ff');
-                    var outputCodes = new Discord.MessageEmbed().setDescription(`**Language Codes:**\n**React with ⬅️ to view languages codes and ➡️ to go back to names.**\n\n` +
-                        `${value.map(i => i.language).join(', ')}`).setColor('#0099ff');
+                    var outputLangs = new Discord.MessageEmbed().setDescription(`** Language Names:**\n ** React with ➡️ to view languages names and ⬅️ to go back to codes.**\n\n` +
+                        `${value.map(i => i.name).join(', ')} `).setColor('#0099ff');
+                    var outputCodes = new Discord.MessageEmbed().setDescription(`** Language Codes:**\n ** React with ⬅️ to view languages codes and ➡️ to go back to names.**\n\n` +
+                        `${value.map(i => i.language).join(', ')} `).setColor('#0099ff');
 
                     //Send embedded message
                     message.channel
@@ -145,14 +201,14 @@ exports.run = (bot, message, args) => {
                                         //Remove reactions and then edit edit message
                                         sent.reactions.removeAll()
                                             .then(() => {
-                                                sent.edit(new Discord.MessageEmbed().setDescription(`${value.map(i => i.language).join(', ')}\n\n` +
-                                                    `You can view the list of supported languages again with: ***${bot.config.prefix}translate languages***`).setColor('#09b50c'));
+                                                sent.edit(new Discord.MessageEmbed().setDescription(`${value.map(i => i.language).join(', ')} \n\n` +
+                                                    `You can view the list of supported languages again with: *** ${bot.config.prefix} translate languages *** `).setColor('#09b50c'));
                                             }).catch((error) => { return; });
                                     });
                                 })
                         })
                 }).catch((err) => {
-                    message.channel.send(new Discord.MessageEmbed().setDescription(`${err}`).setColor('#b50909'));
+                    message.channel.send(new Discord.MessageEmbed().setDescription(`${err} `).setColor('#b50909'));
                 });
                 break;
             default:
@@ -176,7 +232,8 @@ function HelpMessage(bot, message, args) {
             { name: 'Required Permissions: ', value: 'Manage Server (for adding and removing. Everyone else can use the list commands).' },
             {
                 name: 'Command Patterns: ',
-                value: `${bot.config.prefix}translate [pattern/channel] [add/remove/list] {number (Remove by index)}\n\n` +
+                value: `${bot.config.prefix} translate[pattern / channel][add / remove / list] {
+                            (pattern / tagged channel(s)) / number (Remove by index)}\n\n` +
                     `${bot.config.prefix}translate [languages/language]`
             },
             {
@@ -184,7 +241,7 @@ function HelpMessage(bot, message, args) {
                 value: `${bot.config.prefix}translate pattern add /(<:[A-Za-z]+:\d+>)/gi\n\n` +
                     `${bot.config.prefix}translate pattern remove 1\n\n` +
                     `${bot.config.prefix}translate pattern list\n\n` +
-                    `${bot.config.prefix}translate channel add ${randomChannel.toString()}\n\n` +
+                    `${bot.config.prefix}translate channel add ${randomChannel.toString()} *You can tag multiple to add*\n\n` +
                     `${bot.config.prefix}translate channel remove ${randomChannel.toString()}\n\n` +
                     `${bot.config.prefix}translate channel list\n\n` +
                     `${bot.config.prefix}translate [languages/language]\n\n`
