@@ -112,7 +112,7 @@ exports.run = (bot, message, args) => {
                     case 'add': //Add a channel
                         //Check if has perms
                         if (message.member.hasPermission('MANAGE_GUILD')) {
-                            var channelMentions = message.mentions.channels.map((key, value) => value);
+                            var channelMentions = message.mentions.channels.map((v, k) => v);
 
                             //Output
                             var channelsAdded = { "string": "", "count": 0 };
@@ -150,7 +150,7 @@ exports.run = (bot, message, args) => {
                     case 'remove': //Remove a channel by tag
                         //Check if has perms
                         if (message.member.hasPermission('MANAGE_GUILD')) {
-                            var channelMentions = message.mentions.channels.map((key, value) => value);
+                            var channelMentions = message.mentions.channels.map((v, k) => v);
 
                             //Output
                             var channelsRemoved = { "string": "", "count": 0 };
