@@ -105,11 +105,10 @@ exports.run = (bot, message, args) => {
                     });
                 }).then((value) => {
                     //Send messages for list of languages
-                    var outputLangs = new Discord.MessageEmbed().setDescription(`**Language Codes:**\n**React with ➡️ to view languages names and ⬅️ to go back to codes.**\n\n` +
+                    var outputLangs = new Discord.MessageEmbed().setDescription(`**Language Names:**\n**React with ➡️ to view languages names and ⬅️ to go back to codes.**\n\n` +
                         `${value.map(i => i.name).join(', ')}`).setColor('#0099ff');
                     var outputCodes = new Discord.MessageEmbed().setDescription(`**Language Codes:**\n**React with ⬅️ to view languages codes and ➡️ to go back to names.**\n\n` +
                         `${value.map(i => i.language).join(', ')}`).setColor('#0099ff');
-
 
                     //Send embedded message
                     message.channel
