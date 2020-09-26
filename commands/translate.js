@@ -142,12 +142,11 @@ exports.run = (bot, message, args) => {
                                 //For each channel
                                 channelMentions.forEach((c) => {
                                     //Check if exists in the config
-                                    if (!bot.config.google["translate-ignored-channels"].find(i => i.id == c.id)) {
+                                    if (bot.config.google["translate-ignored-channels"].find(i => i.id == c.id)) {
+                                        message.channel.send(new Discord.MessageEmbed().setDescription(`Sorry, ${c.toString()} isn't being translation ignored so cannot be removed.`).setColor('#b50909'));
+                                    } else {
                                         //Remove channel from database
                                         bot.config.google["translate-ignored-channels"].splice(channelMentions.map(i => i.id).indexOf(c.id), 1);
-                                    } else {
-                                        message.channel.send(new Discord.MessageEmbed().setDescription(`Sorry, ${c.toString()} isn't being translation ignored so cannot be removed.`).setColor('#b50909'));
-                                        return;
                                     }
                                 });
                                 //Write to file
