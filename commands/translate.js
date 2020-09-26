@@ -30,6 +30,7 @@ exports.run = (bot, message, args) => {
                                         const filter = m => m.member.id == message.member.id && m.content;
                                         const collector = sent.channel.createMessageCollector(filter, { time: 15000 });
 
+                                        //Await message collector on collect
                                         collector.on('collect', m => {
                                             //Add pattern
                                             bot.config.google["translate-ignored-patterns"].push({ "name": `${m}`, "pattern": `${query}` });
@@ -37,6 +38,12 @@ exports.run = (bot, message, args) => {
                                             fs.writeFileSync('./configure.json', JSON.stringify(bot.config));
                                             //Message
                                             sent.edit(new Discord.MessageEmbed().setDescription(`Successfully added new pattern to translation ignored patterns:\n${query}`).setColor('#09b50c'));
+                                        });
+                                        //Await message collector on end
+                                        collector.on('end', m => {
+                                            //Do not add pattern
+                                            //Message
+                                            sent.edit(new Discord.MessageEmbed().setDescription(`No pattern description for ***${query}*** as provided in time. So pattern was not added to database.`).setColor('#b50909'));
                                         });
                                     });
                             } else {
