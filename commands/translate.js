@@ -115,12 +115,12 @@ exports.run = (bot, message, args) => {
                     message.channel
                         .send(outputCodes)
                         .then((sent) => {
-                            sent.react('➡️')
-                                .then(() => sent.react('⬅️'))
+                            sent.react('⬅️')
+                                .then(() => sent.react('➡️'))
                                 .then(() => {
                                     //Set up emoji reaction filter.
                                     const filter = (reaction, user) => {
-                                        return ['➡️'].includes(reaction.emoji.name) && user.id === message.author.id;
+                                        return ['⬅️', '➡️'].includes(reaction.emoji.name) && user.id === message.author.id;
                                     };
                                     //Create reaction collector
                                     const collector = sent.createReactionCollector(filter, { max: 1, time: 500000 });
