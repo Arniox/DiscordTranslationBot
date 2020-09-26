@@ -116,16 +116,17 @@ exports.run = (bot, message, args) => {
 
                             //Check if channel exists
                             if (channelMentions.size != 0) {
-                                //For each channel
-                                channelMentions.forEach((c) => {
+                                for (var c in channelMentions) {
                                     //Check if exists in the config
-                                    if (bot.config.google["translate-ignored-channels"].find(i => i.id == c.id))
+                                    if (bot.config.google["translate-ignored-channels"].find(i => i.id == c.id)) {
                                         message.channel.send(new Discord.MessageEmbed().setDescription(`Sorry, ${c.toString()} is already being ignored so can't be added again`).setColor('#b50909'));
-                                    else
+                                        //Remove from collection.
+                                        channelMentions.delete(c);
+                                    } else {
                                         //Add channel with id and name
                                         bot.config.google["translate-ignored-channels"].push({ "name": `${c.name}`, "id": `${c.id}` });
-
-                                });
+                                    }
+                                }
                                 //Write to file
                                 fs.writeFileSync('./configure.json', JSON.stringify(bot.config));
                                 //Message
@@ -145,18 +146,17 @@ exports.run = (bot, message, args) => {
                             //Check if the channel
                             if (channelMentions.size != 0) {
                                 //For each channel
-                                channelMentions.forEach((c) => {
-                                    //Check if exists in the config
-                                    if (bot.config.google["translate-ignored-channels"].find(i => i.id == c.id))
+                                for (var c in channelMentions) {
+                                    if (bot.config.google["translate-ignored-channels"].find(i => i.id == c.id)) {
                                         //Remove channel from database
                                         bot.config.google["translate-ignored-channels"].splice(bot.config.google["translate-ignored-channels"].map(i => i.id).indexOf(c.id), 1);
-                                    else {
+                                    } else {
                                         //Message
                                         message.channel.send(new Discord.MessageEmbed().setDescription(`Sorry, ${c.toString()} isn't being translation ignored so cannot be removed.`).setColor('#b50909'));
                                         //Remove from collection.
                                         channelMentions.delete(c);
                                     }
-                                });
+                                }
                                 //Write to file
                                 fs.writeFileSync('./configure.json', JSON.stringify(bot.config));
                                 //Message
