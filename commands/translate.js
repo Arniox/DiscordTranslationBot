@@ -42,8 +42,6 @@ exports.run = (bot, message, args) => {
                                         });
                                         //Await message collector on end
                                         collector.on('end', m => {
-                                            console.log(m);
-
                                             //Do not add pattern
                                             if (m.size != 0) return;
                                             else
