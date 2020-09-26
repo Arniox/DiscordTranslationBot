@@ -120,7 +120,10 @@ exports.run = (bot, message, args) => {
 
                             //Check if channel exists
                             if (channelMentions.size != 0) {
-                                for (var c in channelMentions) {
+                                console.log(channelMentions);
+                                for (let c in channelMentions) {
+                                    console.log(c);
+
                                     //Check if exists in the config
                                     if (bot.config.google["translate-ignored-channels"].find(i => i.id == c.id)) {
                                         //Add to the output for channels not added
@@ -158,7 +161,7 @@ exports.run = (bot, message, args) => {
                             //Check if the channel
                             if (channelMentions.size != 0) {
                                 //For each channel
-                                for (var c in channelMentions) {
+                                for (let c in channelMentions) {
                                     if (bot.config.google["translate-ignored-channels"].find(i => i.id == c.id)) {
                                         //Add to the output for channels removed
                                         channelsRemoved.string += `${c.toString()},\n`;
