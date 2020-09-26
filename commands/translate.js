@@ -120,21 +120,22 @@ exports.run = (bot, message, args) => {
 
                             //Check if channel exists
                             if (channelMentions.size != 0) {
-                                console.log(channelMentions);
-                                for (let c in channelMentions) {
-                                    //Check if exists in the config
-                                    if (bot.config.google["translate-ignored-channels"].find(i => i.id == c.id)) {
-                                        //Add to the output for channels not added
-                                        channelsNot.string += `${c.toString()},\n`;
-                                        channelsNot.count++;
-                                    } else {
-                                        //Add to the output for channels added
-                                        channelsAdded.string += `${c.toString()},\n`;
-                                        channelsAdded.count++;
-                                        //Add channel with id and name
-                                        bot.config.google["translate-ignored-channels"].push({ "name": `${c.name}`, "id": `${c.id}` });
+                                channelMentions.forEach((c) => {
+                                    for (let c in channelMentions) {
+                                        //Check if exists in the config
+                                        if (bot.config.google["translate-ignored-channels"].find(i => i.id == c.id)) {
+                                            //Add to the output for channels not added
+                                            channelsNot.string += `${c.toString()},\n`;
+                                            channelsNot.count++;
+                                        } else {
+                                            //Add to the output for channels added
+                                            channelsAdded.string += `${c.toString()},\n`;
+                                            channelsAdded.count++;
+                                            //Add channel with id and name
+                                            bot.config.google["translate-ignored-channels"].push({ "name": `${c.name}`, "id": `${c.id}` });
+                                        }
                                     }
-                                }
+                                });
                                 //Write to file
                                 fs.writeFileSync('./configure.json', JSON.stringify(bot.config));
                                 //Message
@@ -159,7 +160,7 @@ exports.run = (bot, message, args) => {
                             //Check if the channel
                             if (channelMentions.size != 0) {
                                 //For each channel
-                                for (let c in channelMentions) {
+                                channelMentions.forEach((c) => {
                                     if (bot.config.google["translate-ignored-channels"].find(i => i.id == c.id)) {
                                         //Add to the output for channels removed
                                         channelsRemoved.string += `${c.toString()},\n`;
@@ -171,7 +172,7 @@ exports.run = (bot, message, args) => {
                                         channelsNot.string += `${c.toString()},\n`;
                                         channelsNot.count++;
                                     }
-                                }
+                                });
                                 //Write to file
                                 fs.writeFileSync('./configure.json', JSON.stringify(bot.config));
                                 //Message
