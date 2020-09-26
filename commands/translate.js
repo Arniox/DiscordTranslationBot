@@ -136,7 +136,7 @@ exports.run = (bot, message, args) => {
                                         }
 
                                         //Remove reaction by user
-                                        sent.reactions.cache.map((v, k) => v).filter(reaction = reaction.users.cache.has(user.id)).first().users.remove(user.id);
+                                        sent.reactions.cache.map((v, k) => v).filter(reaction => reaction.users.cache.has(user.id)).first().users.remove(user.id);
                                         //Empty the collector and reset the timer
                                         collector.empty();
                                         collector.resetTimer();
