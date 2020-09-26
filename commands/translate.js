@@ -135,8 +135,13 @@ exports.run = (bot, message, args) => {
                                             sent.edit(outputCodes);
                                         }
 
-                                        //Remove reaction
-                                        sent.reactions.cache.map((v, k) => v).find(v => v.emoji.id == reaction.emoji.id).remove().catch(error => console.error('Failed to remove reactions: ', error));
+                                        //Remove reaction hy user
+                                        const userReactions = sent.reactions.cache.filter(reaction = reaction.users.cache.has(user.id));
+                                        try {
+                                            for (const reaction of userReactions.values()) {
+                                                await reaction.users.remove(userId);
+                                            }
+                                        } catch (error) { }
                                         //Empty the collector and reset the timer
                                         collector.empty();
                                         collector.resetTimer();
