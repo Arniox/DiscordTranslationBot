@@ -146,6 +146,8 @@ exports.run = (bot, message, args) => {
                             if (channelMentions.size != 0) {
                                 //For each channel
                                 channelMentions.forEach((c) => {
+                                    console.log(channelMentions.map(i => i.id));
+
                                     //Check if exists in the config
                                     if (bot.config.google["translate-ignored-channels"].find(i => i.id == c.id))
                                         //Remove channel from database
