@@ -45,7 +45,7 @@ exports.run = (bot, message, args) => {
                                             console.log(m);
 
                                             //Do not add pattern
-                                            if (m) return;
+                                            if (m.size != 0) return;
                                             else
                                                 //Message
                                                 sent.edit(new Discord.MessageEmbed().setDescription(`No pattern description for ***${query}*** was provided in time. So pattern was not added to database.`).setColor('#b50909'));
