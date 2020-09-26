@@ -48,7 +48,7 @@ exports.run = (bot, message, args) => {
                                             if (m) return;
                                             else
                                                 //Message
-                                                sent.edit(new Discord.MessageEmbed().setDescription(`No pattern description for ***${query}*** as provided in time. So pattern was not added to database.`).setColor('#b50909'));
+                                                sent.edit(new Discord.MessageEmbed().setDescription(`No pattern description for ***${query}*** was provided in time. So pattern was not added to database.`).setColor('#b50909'));
                                         });
                                     });
                             } else {
