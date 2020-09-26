@@ -14,6 +14,8 @@ exports.run = (bot, message, args) => {
     console.log(messy);
 
     bot.config.google["translate-ignored-patterns"].forEach((e) => {
+        console.log(new RegExp(e, 'g'));
+
         messy = messy.replace(new RegExp(e, 'g'), '');
     });
 
