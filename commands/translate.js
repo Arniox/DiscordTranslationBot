@@ -122,8 +122,6 @@ exports.run = (bot, message, args) => {
                             if (channelMentions.size != 0) {
                                 console.log(channelMentions);
                                 for (let c in channelMentions) {
-                                    console.log(c);
-
                                     //Check if exists in the config
                                     if (bot.config.google["translate-ignored-channels"].find(i => i.id == c.id)) {
                                         //Add to the output for channels not added
