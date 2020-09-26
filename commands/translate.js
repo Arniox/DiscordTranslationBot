@@ -112,7 +112,7 @@ exports.run = (bot, message, args) => {
                     case 'add': //Add a channel
                         //Check if has perms
                         if (message.member.hasPermission('MANAGE_GUILD')) {
-                            var channelMentions = message.mentions.channels.map((v, k) => v);
+                            var channelMentions = message.mentions.channels.map((k, v) => v);
 
                             //Output
                             var channelsAdded = { "string": "", "count": 0 };
