@@ -234,8 +234,6 @@ exports.run = (bot, guild, message, args) => {
                                                                 ` in ${value.name}`).setColor('#09b50c'));
                                                         });
                                                     }).catch((err) => {
-                                                        console.log(`Failed to translate ${v.user.username} nickname`);
-
                                                         message.channel.send(new Discord.MessageEmbed().setDescription(`${err}`).setColor('#b50909'));
                                                     });
                                                 } else {
