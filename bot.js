@@ -26,7 +26,6 @@ pool.then((p) => {
 
 	//Attach settings to bot
 	bot.config = settings;
-	bot.datatouse = dataToUse;
 
 	//Attaches all event files to event
 	fs.readdir('./events/', (err, files) => {
