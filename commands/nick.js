@@ -416,7 +416,7 @@ exports.run = (bot, guild, message, args) => {
                                         if (error) return console.error(error); //Return error console log and return
 
                                         //Grab members
-                                        var members = message.guild.memebers.cache.filter(i => !i.user.bot && !results.map(v => v.PlayerId).includes(i.id));
+                                        var members = message.guild.members.cache.filter(i => !i.user.bot && !results.map(v => v.PlayerId).includes(i.id));
                                         var discludedMembers = message.guild.members.cache.filter(i => !i.user.bot && results.map(v => v.PlayerId).includes(i.id));
 
                                         //Message
