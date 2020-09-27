@@ -1,6 +1,5 @@
 //Import classes
 const googleApiKey = process.env.GOOGLE_API_KEY;
-const { ifError } = require('assert');
 const Discord = require('discord.js');
 const googleTranslate = require('google-translate')(googleApiKey, { "concurrentLimit": 20 });
 const fs = require('fs');
@@ -39,6 +38,7 @@ exports.run = (bot, message, args) => {
                                             fs.writeFileSync('./configure.json', JSON.stringify(bot.config));
                                             //Message
                                             sent.edit(new Discord.MessageEmbed().setDescription(`Successfully added new pattern to translation ignored patterns:\n${query}`).setColor('#09b50c'));
+                                            collector.stop();
                                         });
                                         //Await message collector on end
                                         collector.on('end', m => {
