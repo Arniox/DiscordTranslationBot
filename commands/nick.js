@@ -62,35 +62,28 @@ exports.run = (bot, guild, message, args) => {
                                                 var count = 0;
 
                                                 //For all members in the guild
-                                                new Promise((resolve, reject) => {
-                                                    members.map((v, key) => {
-                                                        //Increase count
-                                                        count++;
-                                                        if (IsLowerRoles(message, v)) {
-                                                            //Get current user nickname
-                                                            var currentUserNickName = NickName(v);
+                                                members.map((v, key) => {
+                                                    //Increase count
+                                                    count++;
+                                                    if (IsLowerRoles(message, v)) {
+                                                        //Get current user nickname
+                                                        var currentUserNickName = NickName(v);
 
-                                                            //Translate
-                                                            googleTranslate.translate(currentUserNickName, value.language, function (err, translation) {
-                                                                //Change name
-                                                                v.setNickname(translation.translatedText.substring(0, 32), `Translating name from ${currentUserNickName} to ${translation.translatedText} in ${value.name}`)
-                                                                    .then(() => {
-                                                                        //Edit message
-                                                                        sent.edit(new Discord.MessageEmbed().setDescription(`Translating ${count} / ${members.size} members nicknames into ${value.name}`).setColor('#FFCC00'));
-                                                                    });
-                                                            });
-                                                        } else {
-                                                            message.channel.send(new Discord.MessageEmbed().setDescription(`I had problem translating ${v.toString()}\'s` +
-                                                                ` nickname due to Missing Permissions`).setColor('#b50909'));
-                                                        }
-                                                        console.log(count);
-
-                                                        if (count == members.size) resolve();
-                                                    });
-                                                }).then(() => {
-                                                    sent.edit(new Discord.MessageEmbed().setDescription(`✅ Translated ${count} / ${members.size} members nicknames into ${value.name}`).setColor('#09b50c'));
+                                                        //Translate
+                                                        googleTranslate.translate(currentUserNickName, value.language, function (err, translation) {
+                                                            //Change name
+                                                            v.setNickname(translation.translatedText.substring(0, 32), `Translating name from ${currentUserNickName} to ${translation.translatedText} in ${value.name}`)
+                                                                .then(() => {
+                                                                    //Edit message
+                                                                    sent.edit(new Discord.MessageEmbed().setDescription(`Translating ${count} / ${members.size} members nicknames into ${value.name}`).setColor('#FFCC00'));
+                                                                });
+                                                        });
+                                                    } else {
+                                                        message.channel.send(new Discord.MessageEmbed().setDescription(`I had problem translating ${v.toString()}\'s` +
+                                                            ` nickname due to Missing Permissions`).setColor('#b50909'));
+                                                    }
                                                 });
-
+                                                sent.edit(new Discord.MessageEmbed().setDescription(`✅ Translated ${count} / ${members.size} members nicknames into ${value.name}`).setColor('#09b50c'));
                                             });
                                     });
                                 }).catch((err) => {
