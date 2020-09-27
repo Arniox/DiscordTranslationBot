@@ -61,11 +61,11 @@ exports.run = (bot, guild, message, args) => {
                                                     if (IsLowerRoles(message, v)) {
                                                         //Get current user nickname
                                                         var currentUserNickName = NickName(v);
+                                                        //Increase count
+                                                        count++;
 
                                                         //Translate
                                                         googleTranslate.translate(currentUserNickName, value.language, function (err, translation) {
-                                                            //Increase count
-                                                            count++;
                                                             //Change name
                                                             v.setNickname(translation.translatedText.substring(0, 32), `Translating name from ${currentUserNickName} to ${translation.translatedText} in ${value.name}`);
                                                             //Edit message
@@ -407,8 +407,8 @@ exports.run = (bot, guild, message, args) => {
                                         if (error) return console.error(error); //Return error console log and return
 
                                         //Grab members
-                                        var members = message.guild.members.cache.filter(i => !i.user.bot && (!results || !results.length ? true : !results.map(v => v.PlayerId).includes(i.id)));
-
+                                        return message.guild.members.cache.filter(i => !i.user.bot && (!results || !results.length ? true : !results.map(v => v.PlayerId).includes(i.id)));
+                                    }).then((members) => {
                                         //Send message
                                         message.channel
                                             .send(new Discord.MessageEmbed().setDescription(`Setting 0 / ${members.size} members nicknames to ${query}`).setColor('#FFCC00'))
@@ -419,14 +419,13 @@ exports.run = (bot, guild, message, args) => {
                                                 members.map((value, key) => {
                                                     //Increase count
                                                     count++;
+
                                                     //Check if bot has perms
                                                     if (IsLowerRoles(message, value)) {
                                                         //Change nickname
-                                                        value.setNickname(query.substring(0, 32), `Set ${value.user.username}\'s nickname to ${query}.`)
-                                                            .then(() => {
-                                                                //Edit message
-                                                                sent.edit(new Discord.MessageEmbed().setDescription(`Setting ${count} / ${members.size} members nicknames to ${query}`).setColor('#FFCC00'));
-                                                            });
+                                                        value.setNickname(query.substring(0, 32), `Set ${value.user.username}\'s nickname to ${query}.`);
+                                                        //Edit message
+                                                        sent.edit(new Discord.MessageEmbed().setDescription(`Setting ${count} / ${members.size} members nicknames to ${query}`).setColor('#FFCC00'));
                                                     } else {
                                                         message.channel.send(new Discord.MessageEmbed().setDescription(`I had a problem setting ${value.toString()}\'s nickname due to Missing Permissions.`).setColor('#b50909'));
                                                     }
@@ -532,13 +531,12 @@ exports.run = (bot, guild, message, args) => {
                                                 var currentUserNickName = NickName(value);
                                                 //Increase count
                                                 count++;
+
                                                 if (IsLowerRoles(message, value)) {
                                                     //Reset nickname
-                                                    value.setNickname(value.user.username, `Reset ${currentUserNickName}\'s nickname to default username (${value.user.username}).`)
-                                                        .then(() => {
-                                                            //Edit message
-                                                            sent.edit(new Discord.MessageEmbed().setDescription(`Resetting ${count} / ${members.size} members usernames.`).setColor('#FFCC00'));
-                                                        });
+                                                    value.setNickname(value.user.username, `Reset ${currentUserNickName}\'s nickname to default username (${value.user.username}).`);
+                                                    //Edit message
+                                                    sent.edit(new Discord.MessageEmbed().setDescription(`Resetting ${count} / ${members.size} members usernames.`).setColor('#FFCC00'));
                                                 } else {
                                                     message.channel.send(new Discord.MessageEmbed().setDescription(`I had a problem resetting ${value.toString()}\'s nickname due to Missing Permissions.`).setColor('#b50909'));
                                                 }
