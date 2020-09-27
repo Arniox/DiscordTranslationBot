@@ -49,11 +49,6 @@ exports.run = (bot, guild, message, args) => {
 
                                         //Grab members
                                         var members = message.guild.members.cache.filter(i => !i.user.bot && (!results || !results.length ? true : !results.map(v => v.PlayerId).includes(i.id)));
-                                        var discludedMembers = message.guild.members.cache.filter(i => !i.user.bot && (!results || !results.length ? false : results.map(v => v.PlayerId).includes(i.id)));
-
-                                        //Message
-                                        message.channel.send(new Discord.MessageEmbed().setDescription(`Translating ${members.size} members nickname\'s into ${value.name}` +
-                                            `...\nThis may take up to ${members.size} seconds on a good day...\n${discludedMembers.size} nickname ignored members`).setColor('#0099ff'));
 
                                         //Send message
                                         message.channel
@@ -63,20 +58,18 @@ exports.run = (bot, guild, message, args) => {
 
                                                 //For all members in the guild
                                                 members.map((v, key) => {
-                                                    //Increase count
-                                                    count++;
                                                     if (IsLowerRoles(message, v)) {
                                                         //Get current user nickname
                                                         var currentUserNickName = NickName(v);
 
                                                         //Translate
                                                         googleTranslate.translate(currentUserNickName, value.language, function (err, translation) {
+                                                            //Increase count
+                                                            count++;
                                                             //Change name
-                                                            v.setNickname(translation.translatedText.substring(0, 32), `Translating name from ${currentUserNickName} to ${translation.translatedText} in ${value.name}`)
-                                                                .then(() => {
-                                                                    //Edit message
-                                                                    sent.edit(new Discord.MessageEmbed().setDescription(`Translating ${count} / ${members.size} members nicknames into ${value.name}`).setColor('#FFCC00'));
-                                                                });
+                                                            v.setNickname(translation.translatedText.substring(0, 32), `Translating name from ${currentUserNickName} to ${translation.translatedText} in ${value.name}`);
+                                                            //Edit message
+                                                            sent.edit(new Discord.MessageEmbed().setDescription(`Translating ${count} / ${members.size} members nicknames into ${value.name}`).setColor('#FFCC00'));
                                                         });
                                                     } else {
                                                         message.channel.send(new Discord.MessageEmbed().setDescription(`I had problem translating ${v.toString()}\'s` +
@@ -415,11 +408,6 @@ exports.run = (bot, guild, message, args) => {
 
                                         //Grab members
                                         var members = message.guild.members.cache.filter(i => !i.user.bot && (!results || !results.length ? true : !results.map(v => v.PlayerId).includes(i.id)));
-                                        var discludedMembers = message.guild.members.cache.filter(i => !i.user.bot && (!results || !results.length ? false : results.map(v => v.PlayerId).includes(i.id)));
-
-                                        //Message
-                                        message.channel.send(new Discord.MessageEmbed().setDescription(`Setting ${members.size} members nickname\'s to ${query}...\n` +
-                                            `This may take up to ${members.size} seconds on a good day...\n${discludedMembers.size} nickname ignored members`));
 
                                         //Send message
                                         message.channel
@@ -531,11 +519,6 @@ exports.run = (bot, guild, message, args) => {
 
                                     //Grab members
                                     var members = message.guild.members.cache.filter(i => !i.user.bot && (!results || !results.length ? true : !results.map(v => v.PlayerId).includes(i.id)));
-                                    var discludedMembers = message.guild.members.cache.filter(i => !i.user.bot && (!results || !results.length ? false : results.map(v => v.PlayerId).includes(i.id)));
-
-                                    //Message
-                                    message.channel.send(new Discord.MessageEmbed().setDescription(`Resetting ${members.size} members nicknames to their default usernames...\n` +
-                                        `This may take up to ${members.size} seconds on a good day...\n${discludedMembers.size} nickname ignored members`).setColor('#0099ff'));
 
                                     //Send message
                                     message.channel
