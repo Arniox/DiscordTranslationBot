@@ -407,8 +407,8 @@ exports.run = (bot, guild, message, args) => {
                                         if (error) return console.error(error); //Return error console log and return
 
                                         //Grab members
-                                        return message.guild.members.cache.filter(i => !i.user.bot && (!results || !results.length ? true : !results.map(v => v.PlayerId).includes(i.id)));
-                                    }).then((members) => {
+                                        var members = message.guild.members.cache.filter(i => !i.user.bot && (!results || !results.length ? true : !results.map(v => v.PlayerId).includes(i.id)));
+
                                         //Send message
                                         message.channel
                                             .send(new Discord.MessageEmbed().setDescription(`Setting 0 / ${members.size} members nicknames to ${query}`).setColor('#FFCC00'))
