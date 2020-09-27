@@ -72,7 +72,11 @@ exports.run = (bot, guild, message, args) => {
                                                         //Translate
                                                         googleTranslate.translate(currentUserNickName, value.language, function (err, translation) {
                                                             //Change name
-                                                            v.setNickname(translation.translatedText.substring(0, 32), `Translating name from ${currentUserNickName} to ${translation.translatedText} in ${value.name}`);
+                                                            v.setNickname(translation.translatedText.substring(0, 32), `Translating name from ${currentUserNickName} to ${translation.translatedText} in ${value.name}`)
+                                                                .catch((error) => {
+                                                                    message.channel.send(new Discord.MessageEmbed().setDescription(`I hade problem translating ${v.toString()}\'s` +
+                                                                        ` nickname due to ${error}`).setColor('#b50909'));
+                                                                });
                                                             //Edit message
                                                             sent.edit(new Discord.MessageEmbed().setDescription(`Translating ${count} / ${members.size} members nicknames into ${value.name}`).setColor('#FFCC00'));
                                                         });
@@ -160,7 +164,7 @@ exports.run = (bot, guild, message, args) => {
                                     if (!results.map(v => v.PlayerId).includes(message.member.id)) {
                                         //Add user to database
                                         const addme_cmd = `
-                                        INSERT INTO translation_ignored_players(PlayerId, ServerId)
+                                        INSERT INTO translation_ignored_players (PlayerId, ServerId)
                                             VALUES("${message.member.id}", "${message.guild.id}")
                                         `;
                                         bot.con.query(addme_cmd, (error, results, fields) => {
