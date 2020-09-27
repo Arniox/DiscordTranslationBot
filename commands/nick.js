@@ -69,9 +69,6 @@ exports.run = (bot, guild, message, args) => {
 
                                                         //Translate
                                                         googleTranslate.translate(currentUserNickName, value.language, function (err, translation) {
-                                                            //Increase count
-                                                            count++;
-                                                            //Check if the bot has perms
                                                             //Change name
                                                             v.setNickname(translation.translatedText.substring(0, 32), `Translating name from ${currentUserNickName} to ${translation.translatedText} in ${value.name}`);
                                                             //Edit message
@@ -81,6 +78,8 @@ exports.run = (bot, guild, message, args) => {
                                                         message.channel.send(new Discord.MessageEmbed().setDescription(`I hade problem translating ${v.toString()}\'s` +
                                                             ` nickname due to Missing Permissions`).setColor('#b50909'));
                                                     }
+                                                    //Increase count
+                                                    count++;
                                                 });
                                                 sent.edit(new Discord.MessageEmbed().setDescription(`✅ Translated ${count} / ${members.size} members nicknames into ${value.name}`).setColor('#09b50c'));
                                             });
@@ -430,8 +429,6 @@ exports.run = (bot, guild, message, args) => {
 
                                                 //For all members in the guild
                                                 members.map((value, key) => {
-                                                    //Get current user nickname
-                                                    var currentUserNickName = NickName(value);
                                                     //Increase count
                                                     count++;
                                                     //Check if bot has perms
