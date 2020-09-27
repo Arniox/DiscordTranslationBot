@@ -74,7 +74,11 @@ exports.run = (bot, guild, message, args) => {
                                                             //Change name
                                                             v.setNickname(translation.translatedText.substring(0, 32), `Translating name from ${currentUserNickName} to ${translation.translatedText} in ${value.name}`);
                                                             //Edit message
+
+                                                            console.log('test first');
                                                             sent.edit(new Discord.MessageEmbed().setDescription(`Translating ${count} / ${members.size} members nicknames into ${value.name}`).setColor('#FFCC00'));
+
+                                                            console.log('test final');
                                                         });
                                                     } else {
                                                         message.channel.send(new Discord.MessageEmbed().setDescription(`I had problem translating ${v.toString()}\'s` +
@@ -82,8 +86,9 @@ exports.run = (bot, guild, message, args) => {
                                                     }
                                                 });
 
-                                                console.log('test');
+                                                console.log('test before');
                                                 sent.edit(new Discord.MessageEmbed().setDescription(`✅ Translated ${count} / ${members.size} members nicknames into ${value.name}`).setColor('#09b50c'));
+                                                console.log('test after');
                                             });
                                     });
                                 }).catch((err) => {
