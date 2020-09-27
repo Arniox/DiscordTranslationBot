@@ -81,7 +81,7 @@ exports.run = (bot, guild, message, args) => {
                                                             sent.edit(new Discord.MessageEmbed().setDescription(`Translating ${count} / ${members.size} members nicknames into ${value.name}`).setColor('#FFCC00'));
                                                         });
                                                     } else {
-                                                        message.channel.send(new Discord.MessageEmbed().setDescription(`I hade problem translating ${v.toString()}\'s` +
+                                                        message.channel.send(new Discord.MessageEmbed().setDescription(`I had problem translating ${v.toString()}\'s` +
                                                             ` nickname due to Missing Permissions`).setColor('#b50909'));
                                                     }
                                                 });
@@ -624,7 +624,11 @@ exports.run = (bot, guild, message, args) => {
 //Functions
 
 function IsLowerRoles(message, member) {
-    return message.guild.me.roles.highest.comparePositionTo(member.roles.highest) > 0;
+    return message.guild.me.roles.highest.comparePositionTo(member.roles.highest) > 0 && !IsOwner(message, member);
+}
+
+function IsOwner(message, member) {
+    return message.guild.owner == member;
 }
 
 //Get nickname / name of member
