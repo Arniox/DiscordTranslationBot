@@ -77,7 +77,8 @@ exports.run = (bot, guild, message, args) => {
                                                             ` nickname due to Missing Permissions`).setColor('#b50909'));
                                                     }
                                                 });
-                                                sent.edit(new Discord.MessageEmbed().setDescription(`✅ Translated ${count} / ${members.size} members nicknames into ${value.name}`).setColor('#09b50c'));
+                                            }).then((sent) => {
+                                                sent.edit(new Discord.MessageEmbed().setDescription(`✅ Translated ${members.size} / ${members.size} members nicknames into ${value.name}`).setColor('#09b50c'));
                                             });
                                     });
                                 }).catch((err) => {
