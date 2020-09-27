@@ -62,7 +62,7 @@ exports.run = (bot, guild, message, args) => {
                                                 var count = 0;
 
                                                 //For all members in the guild
-                                                members.map(async function (v, key) {
+                                                members.map((v, key) => {
                                                     //Increase count
                                                     count++;
                                                     if (IsLowerRoles(message, v)) {
@@ -70,25 +70,20 @@ exports.run = (bot, guild, message, args) => {
                                                         var currentUserNickName = NickName(v);
 
                                                         //Translate
-                                                        await googleTranslate.translate(currentUserNickName, value.language, function (err, translation) {
+                                                        googleTranslate.translate(currentUserNickName, value.language, function (err, translation) {
                                                             //Change name
-                                                            v.setNickname(translation.translatedText.substring(0, 32), `Translating name from ${currentUserNickName} to ${translation.translatedText} in ${value.name}`);
-                                                            //Edit message
-
-                                                            console.log('test first');
-                                                            sent.edit(new Discord.MessageEmbed().setDescription(`Translating ${count} / ${members.size} members nicknames into ${value.name}`).setColor('#FFCC00'));
-
-                                                            console.log('test final');
+                                                            v.setNickname(translation.translatedText.substring(0, 32), `Translating name from ${currentUserNickName} to ${translation.translatedText} in ${value.name}`)
+                                                                .then(() => {
+                                                                    //Edit message
+                                                                    sent.edit(new Discord.MessageEmbed().setDescription(`Translating ${count} / ${members.size} members nicknames into ${value.name}`).setColor('#FFCC00'));
+                                                                });
                                                         });
                                                     } else {
                                                         message.channel.send(new Discord.MessageEmbed().setDescription(`I had problem translating ${v.toString()}\'s` +
                                                             ` nickname due to Missing Permissions`).setColor('#b50909'));
                                                     }
                                                 });
-
-                                                console.log('test before');
                                                 sent.edit(new Discord.MessageEmbed().setDescription(`✅ Translated ${count} / ${members.size} members nicknames into ${value.name}`).setColor('#09b50c'));
-                                                console.log('test after');
                                             });
                                     });
                                 }).catch((err) => {
@@ -435,15 +430,17 @@ exports.run = (bot, guild, message, args) => {
                                                 var count = 0;
 
                                                 //For all members in the guild
-                                                members.map(async function (value, key) {
+                                                members.map((value, key) => {
                                                     //Increase count
                                                     count++;
                                                     //Check if bot has perms
                                                     if (IsLowerRoles(message, value)) {
                                                         //Change nickname
-                                                        await value.setNickname(query.substring(0, 32), `Set ${value.user.username}\'s nickname to ${query}.`);
-                                                        //Edit message
-                                                        sent.edit(new Discord.MessageEmbed().setDescription(`Setting ${count} / ${members.size} members nicknames to ${query}`).setColor('#FFCC00'));
+                                                        value.setNickname(query.substring(0, 32), `Set ${value.user.username}\'s nickname to ${query}.`)
+                                                            .then(() => {
+                                                                //Edit message
+                                                                sent.edit(new Discord.MessageEmbed().setDescription(`Setting ${count} / ${members.size} members nicknames to ${query}`).setColor('#FFCC00'));
+                                                            });
                                                     } else {
                                                         message.channel.send(new Discord.MessageEmbed().setDescription(`I had a problem setting ${value.toString()}\'s nickname due to Missing Permissions.`).setColor('#b50909'));
                                                     }
@@ -549,16 +546,18 @@ exports.run = (bot, guild, message, args) => {
                                             var count = 0;
 
                                             //For all members in the guild
-                                            members.map(async function (value, key) {
+                                            members.map((value, key) => {
                                                 //Get current user nickname
                                                 var currentUserNickName = NickName(value);
                                                 //Increase count
                                                 count++;
                                                 if (IsLowerRoles(message, value)) {
                                                     //Reset nickname
-                                                    await value.setNickname(value.user.username, `Reset ${currentUserNickName}\'s nickname to default username (${value.user.username}).`);
-                                                    //Edit message
-                                                    sent.edit(new Discord.MessageEmbed().setDescription(`Resetting ${count} / ${members.size} members usernames.`).setColor('#FFCC00'));
+                                                    value.setNickname(value.user.username, `Reset ${currentUserNickName}\'s nickname to default username (${value.user.username}).`)
+                                                        .then(() => {
+                                                            //Edit message
+                                                            sent.edit(new Discord.MessageEmbed().setDescription(`Resetting ${count} / ${members.size} members usernames.`).setColor('#FFCC00'));
+                                                        });
                                                 } else {
                                                     message.channel.send(new Discord.MessageEmbed().setDescription(`I had a problem resetting ${value.toString()}\'s nickname due to Missing Permissions.`).setColor('#b50909'));
                                                 }
