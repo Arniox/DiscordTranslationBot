@@ -1,7 +1,7 @@
 //Import classes
 const Discord = require('discord.js');
 
-exports.run = (bot, message, args) => {
+exports.run = (bot, guild, message, args) => {
     if (args.length != 0) {
         if (message.member.hasPermission('MUTE_MEMBERS')) {
             var voiceChannel = args.join(' ');
@@ -42,11 +42,11 @@ exports.run = (bot, message, args) => {
             message.channel.send(new Discord.MessageEmbed().setDescription('Sorry, you need muting permissions to run this command.').setColor('#b50909'));
         }
     } else {
-        HelpMessage(bot, message, args);
+        HelpMessage(bot, guild, message, args);
     }
 };
 
-function HelpMessage(bot, message, args) {
+function HelpMessage(bot, guild, message, args) {
     var randomChannel = message.guild.channels.cache.filter(i => i.type == 'voice').random().name;
 
     var embeddedHelpMessage = new Discord.MessageEmbed()
@@ -54,10 +54,10 @@ function HelpMessage(bot, message, args) {
         .setAuthor(bot.user.username, bot.user.avatarURL())
         .setDescription('The mute command allows you to server mute everyone in a selected voice channel barring mute ignored roles. This works fine with spaces in the name and is case insensitive.')
         .addFields(
-            { name: 'Command Patterns: ', value: `${bot.config.prefix}mute [voice channel name]` },
+            { name: 'Command Patterns: ', value: `${guild.Prefix}mute [voice channel name]` },
             {
                 name: 'Examples: ',
-                value: `${bot.config.prefix}mute ${randomChannel}`
+                value: `${guild.Prefix}mute ${randomChannel}`
             }
         )
         .setTimestamp()

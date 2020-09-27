@@ -15,7 +15,7 @@ module.exports = (bot, message) => {
         //if else on message that starts with prefix
         if (message.content.startsWith(results[0].Prefix)) {
             //Argument/command name definition.
-            var args = message.content.substring(bot.config.prefix.length).split(' ');
+            var args = message.content.substring(results[0].Prefix.length).split(' ');
             var command = args.shift().toLowerCase();
 
             //Get the command data from client.commands Enmap
@@ -23,7 +23,7 @@ module.exports = (bot, message) => {
             //If command doesn't exist, exiot and do nothing
             if (!cmd) return;
             //Run the command
-            cmd.run(bot, message, args);
+            cmd.run(bot, results[0], message, args);
             message.delete({ timeout: 100 }); //Delete message
         } else {
             //If message is empty

@@ -1,7 +1,7 @@
 //Import classes
 const Discord = require('discord.js');
 
-exports.run = (bot, message, args) => {
+exports.run = (bot, guild, message, args) => {
     //Grab member voice channel
     var voiceChannel = message.member.voice.channel;
     var botVoice = message.guild.me.voice.channel;
@@ -57,7 +57,7 @@ exports.run = (bot, message, args) => {
     //HelpMessage(bot, message, args);
 };
 
-function HelpMessage(bot, message, args) {
+function HelpMessage(bot, guild, message, args) {
     var embeddedHelpMessage = new Discord.MessageEmbed()
         .setColor('#b50909')
         .setAuthor(bot.user.username, bot.user.avatarURL())
@@ -67,7 +67,7 @@ function HelpMessage(bot, message, args) {
                 name: 'Required: ',
                 value: 'You must be in a voice channel for this to work.' +
                     ' If the bot is already listening to a channel, it wont move to a new one. You must ' +
-                    `${bot.config.prefix}leave first and then ${bot.config.prefix}listen for it to listen to your current voice channel.`
+                    `${guild.Prefix}leave first and then ${guild.Prefix}listen for it to listen to your current voice channel.`
             }
         )
         .setTimestamp()

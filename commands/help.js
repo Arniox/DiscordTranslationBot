@@ -3,7 +3,7 @@ const googleApiKey = process.env.GOOGLE_API_KEY;
 const Discord = require('discord.js');
 const googleTranslate = require('google-translate')(googleApiKey, { "concurrentLimit": 20 });
 
-exports.run = (bot, message, args) => {
+exports.run = (bot, guild, message, args) => {
     if (args.length != 0) {
         var command = args.shift().toLowerCase();
 
@@ -13,7 +13,7 @@ exports.run = (bot, message, args) => {
                 var embeddedHelpMessage = new Discord.MessageEmbed()
                     .setColor('#0099ff')
                     .setAuthor(bot.user.username, bot.user.avatarURL())
-                    .setDescription(`The ping command is very simple. It prints out the bot uptime and current server prefix. Just use *${bot.config.prefix}ping* to run this command.`)
+                    .setDescription(`The ping command is very simple. It prints out the bot uptime and current server prefix. Just use *${guild.Prefix}ping* to run this command.`)
                     .setTimestamp()
                     .setFooter('Thanks, and have a good day');
 
@@ -24,22 +24,11 @@ exports.run = (bot, message, args) => {
                 var embeddedHelpMessage = new Discord.MessageEmbed()
                     .setColor('#0099ff')
                     .setAuthor(bot.user.username, bot.user.avatarURL())
-                    .setDescription(`You can use prefix by running *${bot.config.prefix}prefix current* to list the current prefix, or *${bot.config.prefix}prefix change [new prefix]* to change the prefix.`)
+                    .setDescription(`You can use prefix by running *${guild.Prefix}prefix current* to list the current prefix, or *${guild.Prefix}prefix change [new prefix]* to change the prefix.`)
                     .addFields(
                         { name: 'Required Permissions: ', value: 'Manage Server' },
-                        { name: 'Example: ', value: `${bot.config.prefix}prefix current\n\n${bot.config.prefix}prefix change =` }
+                        { name: 'Example: ', value: `${guild.Prefix}prefix current\n\n${guild.Prefix}prefix change =` }
                     )
-                    .setTimestamp()
-                    .setFooter('Thanks, and have a good day');
-
-                //Send embedded message
-                message.channel.send(embeddedHelpMessage);
-                break;
-            case 'when':
-                var embeddedHelpMessage = new Discord.MessageEmbed()
-                    .setColor('#0099ff')
-                    .setAuthor(bot.user.username, bot.user.avatarURL())
-                    .setDescription(`The when command is very simple. It just prints out a random sarcastic comment. Just use *${bot.config.prefix}when* to run this command.`)
                     .setTimestamp()
                     .setFooter('Thanks, and have a good day');
 
@@ -57,16 +46,16 @@ exports.run = (bot, message, args) => {
                         { name: 'Required Permissions: ', value: 'Manage Server' },
                         {
                             name: 'Command Patterns: ',
-                            value: `${bot.config.prefix}muterole [add/remove] [@role]\n\n` +
-                                `${bot.config.prefix}muterole remove {optional: all}\n\n` +
-                                `${bot.config.prefix}muterole list`
+                            value: `${guild.Prefix}muterole [add/remove] [@role]\n\n` +
+                                `${guild.Prefix}muterole remove {optional: all}\n\n` +
+                                `${guild.Prefix}muterole list`
                         },
                         {
                             name: 'Examples: ',
-                            value: `${bot.config.prefix}muterole add ${randomRole}\n\n` +
-                                `${bot.config.prefix}muterole remove ${randomRole}\n\n` +
-                                `${bot.config.prefix}muterole remove all\n\n` +
-                                `${bot.config.prefix}muterole list`
+                            value: `${guild.Prefix}muterole add ${randomRole}\n\n` +
+                                `${guild.Prefix}muterole remove ${randomRole}\n\n` +
+                                `${guild.Prefix}muterole remove all\n\n` +
+                                `${guild.Prefix}muterole list`
                         }
                     )
                     .setTimestamp()
@@ -83,10 +72,10 @@ exports.run = (bot, message, args) => {
                     .setAuthor(bot.user.username, bot.user.avatarURL())
                     .setDescription('The mute command allows you to server mute everyone in a selected voice channel barring mute ignored roles. This works fine with spaces in the name and is case insensitive.')
                     .addFields(
-                        { name: 'Command Patterns: ', value: `${bot.config.prefix}mute [voice channel name]` },
+                        { name: 'Command Patterns: ', value: `${guild.Prefix}mute [voice channel name]` },
                         {
                             name: 'Examples: ',
-                            value: `${bot.config.prefix}mute ${randomChannel}`
+                            value: `${guild.Prefix}mute ${randomChannel}`
                         }
                     )
                     .setTimestamp()
@@ -103,10 +92,10 @@ exports.run = (bot, message, args) => {
                     .setAuthor(bot.user.username, bot.user.avatarURL())
                     .setDescription('The unmute command allows you to server unmute everyone in a selected voice channel barring mute ignored roles. This works fine with spaces in the name and is case insensitive.')
                     .addFields(
-                        { name: 'Command Patterns: ', value: `${bot.config.prefix}unmute [voice channel name]` },
+                        { name: 'Command Patterns: ', value: `${guild.Prefix}unmute [voice channel name]` },
                         {
                             name: 'Examples: ',
-                            value: `${bot.config.prefix}unmute ${randomChannel}`
+                            value: `${guild.Prefix}unmute ${randomChannel}`
                         }
                     )
                     .setTimestamp()
@@ -125,7 +114,7 @@ exports.run = (bot, message, args) => {
                             name: 'Required: ',
                             value: 'You must be in a voice channel for this to work.' +
                                 ' If the bot is already listening to a channel, it wont move to a new one. You must ' +
-                                `${bot.config.prefix}leave first and then ${bot.config.prefix}listen for it to listen to your current voice channel.`
+                                `${guild.Prefix}leave first and then ${guild.Prefix}listen for it to listen to your current voice channel.`
                         }
                     )
                     .setTimestamp()
@@ -157,13 +146,13 @@ exports.run = (bot, message, args) => {
                         { name: 'Required Permissions: ', value: 'Manage Server (for adding and removing. Everyone else can use list the current patterns).' },
                         {
                             name: 'Command Patterns: ',
-                            value: `${bot.config.prefix}translate [add/remove] [pattern / (Remove by index)]\n\n${bot.config.prefix}translate patterns`
+                            value: `${guild.Prefix}translate [add/remove] [pattern / (Remove by index)]\n\n${guild.Prefix}translate patterns`
                         },
                         {
                             name: 'Examples: ',
-                            value: `${bot.config.prefix}translate add /(<:[A-Za-z]+:\d+>)/gi\n\n` +
-                                `${bot.config.prefix}translate remove 1\n\n` +
-                                `${bot.config.prefix}translate patterns`
+                            value: `${guild.Prefix}translate add /(<:[A-Za-z]+:\d+>)/gi\n\n` +
+                                `${guild.Prefix}translate remove 1\n\n` +
+                                `${guild.Prefix}translate patterns`
                         }
                     )
                     .setTimestamp()
@@ -181,7 +170,7 @@ exports.run = (bot, message, args) => {
                     .setAuthor(bot.user.username, bot.user.avatarURL())
                     .setDescription('Nick allows you to translate (into any supported language), set, and reset either you\'re own nickname, someone specific granted you have nickname managemental permissions,' +
                         ' or everyone\'s granted you have management permissions.\n' +
-                        `You can also run *${bot.config.prefix}nick ignore* to add/remove yourself from being translated.`)
+                        `You can also run *${guild.Prefix}nick ignore* to add/remove yourself from being translated.`)
                     .addFields(
                         {
                             name: 'Required Permissions: ', value: 'Manage Server (for translating, setting, or resetting eveyone\'s nickname)\n' +
@@ -189,57 +178,30 @@ exports.run = (bot, message, args) => {
                         },
                         {
                             name: 'Command Patterns: ',
-                            value: `${bot.config.prefix}nick [translate/set/reset] [all/me/someone/{translate:ignore/whisper}] [newname/{translate: languagecode (optional)}]\n\n` +
-                                `${bot.config.prefix}nick translate [all/me/someone/ignore/whisper] {translate:languagecode (optional)}\n\n` +
-                                `${bot.config.prefix}nick set [all/me/someone] newname\n\n` +
-                                `${bot.config.prefix}nick reset [all/me/someone]\n\n` +
-                                `Any ${bot.config.prefix}nick [translate] command without a language specified will pick a random language.`
+                            value: `${guild.Prefix}nick [translate/set/reset] [all/me/someone/{translate:ignore/whisper}] [newname/{translate: languagecode (optional)}]\n\n` +
+                                `${guild.Prefix}nick translate [all/me/someone/ignore/whisper] {translate:languagecode (optional)}\n\n` +
+                                `${guild.Prefix}nick set [all/me/someone] newname\n\n` +
+                                `${guild.Prefix}nick reset [all/me/someone]\n\n` +
+                                `Any ${guild.Prefix}nick [translate] command without a language specified will pick a random language.`
                         },
                         {
                             name: 'Examples: ',
-                            value: `${bot.config.prefix}nick translate all RU - (will translate everyone\'s name to Russian)\n` +
-                                `${bot.config.prefix}nick translate all\n` +
-                                `${bot.config.prefix}nick translate me RU - (will translate your name to Russuan)\n` +
-                                `${bot.config.prefix}nick translate me\n` +
-                                `${bot.config.prefix}nick translate someone ${randomMember.toString()} RU\n` +
-                                `${bot.config.prefix}nick translate someone ${randomMember.toString()}\n` +
-                                `${bot.config.prefix}nick translate ignore - ` +
-                                `(will add/remove you from the database of translation ignored members. This still allows you personally to use ***${bot.config.prefix}nick translate me*** still)\n` +
-                                `${bot.config.prefix}nick translate whisper ${randomMember.toString()} EN - ` +
+                            value: `${guild.Prefix}nick translate all RU - (will translate everyone\'s name to Russian)\n` +
+                                `${guild.Prefix}nick translate all\n` +
+                                `${guild.Prefix}nick translate me RU - (will translate your name to Russuan)\n` +
+                                `${guild.Prefix}nick translate me\n` +
+                                `${guild.Prefix}nick translate someone ${randomMember.toString()} RU\n` +
+                                `${guild.Prefix}nick translate someone ${randomMember.toString()}\n` +
+                                `${guild.Prefix}nick translate ignore - ` +
+                                `(will add/remove you from the database of translation ignored members. This still allows you personally to use ***${guild.Prefix}nick translate me*** still)\n` +
+                                `${guild.Prefix}nick translate whisper ${randomMember.toString()} EN - ` +
                                 `(will play Chinese whispers with a members name through every single language and finish with EN. No language specificed remember will end on a random language)\n` +
-                                `${bot.config.prefix}nick set all StuffAndThings\n` +
-                                `${bot.config.prefix}nick set me StuffAndThings\n` +
-                                `${bot.config.prefix}nick set someone ${randomMember.toString()} StuffAndThings\n` +
-                                `${bot.config.prefix}nick reset all\n` +
-                                `${bot.config.prefix}nick reset me\n` +
-                                `${bot.config.prefix}nick reset someone ${randomMember.toString()}`
-                        }
-                    )
-                    .setTimestamp()
-                    .setFooter('Thanks, and have a good day');
-
-                //Send embedded message
-                message.channel.send(embeddedHelpMessage);
-                break;
-            case 'prykie':
-                var embeddedHelpMessage = new Discord.MessageEmbed()
-                    .setColor('#0099ff')
-                    .setAuthor(bot.user.username, bot.user.avatarURL())
-                    .setDescription('The prykie command allows you to list, add, remove or print out a random prykie quote. Removing a quote needs server management permissions.')
-                    .addFields(
-                        { name: 'Required Permissions: ', value: 'Just for removing quotes; Manage Server is needed.' },
-                        {
-                            name: 'Command Patterns: ',
-                            value: `${bot.config.prefix}prykie\n\n` +
-                                `${bot.config.prefix}prykie [add/remove] [quote]\n\n` +
-                                `${bot.config.prefix}prykie list`
-                        },
-                        {
-                            name: 'Examples: ',
-                            value: `${bot.config.prefix}prykie\n\n` +
-                                `${bot.config.prefix}prykie add I love massive black cocks!\n\n` +
-                                `${bot.config.prefix}prykie remove I love massive black cocks!\n\n` +
-                                `${bot.config.prefix}prykie list`
+                                `${guild.Prefix}nick set all StuffAndThings\n` +
+                                `${guild.Prefix}nick set me StuffAndThings\n` +
+                                `${guild.Prefix}nick set someone ${randomMember.toString()} StuffAndThings\n` +
+                                `${guild.Prefix}nick reset all\n` +
+                                `${guild.Prefix}nick reset me\n` +
+                                `${guild.Prefix}nick reset someone ${randomMember.toString()}`
                         }
                     )
                     .setTimestamp()
@@ -261,18 +223,18 @@ exports.run = (bot, message, args) => {
                         { name: 'Required Permissions: ', value: 'Move Members' },
                         {
                             name: 'Command Patterns: ',
-                            value: `${bot.config.prefix}move [Selector] [Split/Direct command prefix] [Channel(s)]\n\n` +
-                                `${bot.config.prefix}move [Selector] - [Channel]\n\n` +
-                                `${bot.config.prefix}move [Selector] = [Channel] & [Channel] & [Channel]`
+                            value: `${guild.Prefix}move [Selector] [Split/Direct command prefix] [Channel(s)]\n\n` +
+                                `${guild.Prefix}move [Selector] - [Channel]\n\n` +
+                                `${guild.Prefix}move [Selector] = [Channel] & [Channel] & [Channel]`
                         },
                         {
                             name: 'Examples: ',
-                            value: `${bot.config.prefix}move ${randomChannel1} - ${randomChannel2} (Move everyone in one voice channel to another voice channel)\n\n` +
-                                `${bot.config.prefix}move * - ${randomChannel1} (Move everyone currently in any voice channel to a specific voice channel)\n\n` +
-                                `${bot.config.prefix}move 5 > ${randomChannel1} - ${randomChannel2} (Move 5 randomly picked players from one voice channel to another voice channel)\n\n` +
-                                `${bot.config.prefix}move ${randomChannel1} = ${randomChannel2} & ${randomChannel3} (Equally split everyone in one voice channel into any number of voice channels seperated by &)\n\n` +
-                                `${bot.config.prefix}move * = ${randomChannel1} & ${randomChannel2} (Split everyone currently in any voice channel into any number of voice channels seperated by &)\n\n` +
-                                `${bot.config.prefix}move 5 > ${randomChannel1} = ${randomChannel2} & ${randomChannel3}` +
+                            value: `${guild.Prefix}move ${randomChannel1} - ${randomChannel2} (Move everyone in one voice channel to another voice channel)\n\n` +
+                                `${guild.Prefix}move * - ${randomChannel1} (Move everyone currently in any voice channel to a specific voice channel)\n\n` +
+                                `${guild.Prefix}move 5 > ${randomChannel1} - ${randomChannel2} (Move 5 randomly picked players from one voice channel to another voice channel)\n\n` +
+                                `${guild.Prefix}move ${randomChannel1} = ${randomChannel2} & ${randomChannel3} (Equally split everyone in one voice channel into any number of voice channels seperated by &)\n\n` +
+                                `${guild.Prefix}move * = ${randomChannel1} & ${randomChannel2} (Split everyone currently in any voice channel into any number of voice channels seperated by &)\n\n` +
+                                `${guild.Prefix}move 5 > ${randomChannel1} = ${randomChannel2} & ${randomChannel3}` +
                                 ` (Equally split 5 randomly picked players from one voice channel into any number of voice channels seperated by &).`
                         }
                     )
@@ -293,43 +255,16 @@ exports.run = (bot, message, args) => {
                         'delete messages on a ban, this is a good way to clear a players messages.')
                     .addFields(
                         { name: 'Required Permissions: ', value: 'Administrator (banning multiple players at once needs max permissions).' },
-                        { name: 'Command Patterns: ', value: `${bot.config.prefix}softban [mention]+` },
+                        { name: 'Command Patterns: ', value: `${guild.Prefix}softban [mention]+` },
                         {
-                            name: 'Examples: ', value: `${bot.config.prefix}softban ${message.guild.members.cache.random().toString()}\n\n` +
-                                `${bot.config.prefix}softban ${randomPerson1.toString()}${randomPerson2.toString()}`
+                            name: 'Examples: ', value: `${guild.Prefix}softban ${message.guild.members.cache.random().toString()}\n\n` +
+                                `${guild.Prefix}softban ${randomPerson1.toString()}${randomPerson2.toString()}`
                         },
                     )
                     .setTimestamp()
                     .setFooter('Thanks, and have a good day');
 
                 //Send embedded message
-                message.channel.send(embeddedHelpMessage);
-                break;
-            case 'bancommand':
-                var embeddedHelpMessage = new Discord.MessageEmbed()
-                    .setColor('#b50909')
-                    .setAuthor(bot.user.username, bot.user.avatarURL())
-                    .setDescription('Lets admins view and change the currently randomly generated Prykie ban command. It is always a three (10) letter/number command with no prefix.')
-                    .addFields(
-                        { name: 'Required Permissions: ', value: 'Administrator' },
-                        {
-                            name: 'Command Patterns: ',
-                            value: `${bot.config.prefix}bancommand\n\n${bot.config.prefix}bancommand [change] [new 10 character ban command]`
-                        },
-                        {
-                            name: 'Examples: ',
-                            value: `${bot.config.prefix}bancommand\n\n` +
-                                `${bot.config.prefix}bancommand change ${CreateCommand(10, bot)}\n\n` +
-                                `${bot.config.prefix}bancommand change ${CreateCommand(20, bot)}` +
-                                ` (This will automatically cut away the rest of the command change the command to the first 10 characters).\n\n` +
-                                `${bot.config.prefix}bancommand change ${CreateCommand(4, bot)}` +
-                                ` (This will not work and will give you an error. The command must be 10 characters long).`
-                        }
-                    )
-                    .setTimestamp()
-                    .setFooter('Thanks, and have a good day');
-
-                //Set embedded message
                 message.channel.send(embeddedHelpMessage);
                 break;
             case 'harrass':
@@ -343,33 +278,17 @@ exports.run = (bot, message, args) => {
                         { name: 'Required Permissions: ', value: 'Administrator' },
                         {
                             name: 'Command Patterns: ',
-                            value: `${bot.config.prefix}harrass [number] [member mention] [message]`
+                            value: `${guild.Prefix}harrass [number] [member mention] [message]`
                         },
                         {
                             name: 'Examples: ',
-                            value: `${bot.config.prefix}harrass 10 ${randomPerson.toString()} Hello, wake up. It's wakey wakey time!`
+                            value: `${guild.Prefix}harrass 10 ${randomPerson.toString()} Hello, wake up. It's wakey wakey time!`
                         }
                     )
                     .setTimestamp()
                     .setFooter('Thanks, and have a good day');
 
                 //Set embedded message
-                message.channel.send(embeddedHelpMessage);
-                break;
-            case 'f10':
-                var embeddedHelpMessage = new Discord.MessageEmbed()
-                    .setColor('#0099ff')
-                    .setAuthor(bot.user.username, bot.user.avatarURL())
-                    .setDescription('This command is a meme. It will instantly ban Prykie and only Prykie. After banning, it will instantly unban and then send a reinvite to the server in a dm.\n' +
-                        'Each time someone uses this command, the prefix will randomly change to a new 5 character command. Letters and numbers are used.')
-                    .addFields(
-                        { name: 'Required Permissions: ', value: 'Kick Members' },
-                        { name: 'Info: ', value: 'This is the only command that does not require a prefix. It can just be run with f10 by itself in chat.' },
-                    )
-                    .setTimestamp()
-                    .setFooter('Thanks, and have a good day');
-
-                //Send embedded message
                 message.channel.send(embeddedHelpMessage);
                 break;
             default:
@@ -381,59 +300,47 @@ exports.run = (bot, message, args) => {
         var embeddedHelpMessage = new Discord.MessageEmbed()
             .setColor('#0099ff')
             .setAuthor(bot.user.username, bot.user.avatarURL())
-            .setDescription(`You asked for help? Well here it is. The following commands can be used. You can use *${bot.config.prefix}help [command]* to view more settings on the command`)
+            .setDescription(`You asked for help? Well here it is. The following commands can be used. You can use *${guild.Prefix}help [command]* to view more settings on the command`)
             .addFields({
-                name: `${bot.config.prefix}ping`,
+                name: `${guild.Prefix}ping`,
                 value: 'Ping allows you to see the current uptime and current prefix of the server and double checks that the bot is running.'
             }, {
-                name: `${bot.config.prefix}prefix`,
+                name: `${guild.Prefix}prefix`,
                 value: 'Prefix allows you to view and edit the prefix of the server granted you have management permissions.'
             }, {
-                name: `${bot.config.prefix}when`,
-                value: 'Will post a randomly chosen sarcastic quote.'
-            }, {
-                name: `${bot.config.prefix}muterole`,
+                name: `${guild.Prefix}muterole`,
                 value: 'Muterole allows you to add, list, or remove (all or some) roles to a list that is ignored by the mute command, granted you have management permissions.'
             }, {
-                name: `${bot.config.prefix}mute`,
+                name: `${guild.Prefix}mute`,
                 value: 'Mute a voice channel but ignore the mute ignored roles, granted you have mute members permissions.'
             }, {
-                name: `${bot.config.prefix}unmute`,
+                name: `${guild.Prefix}unmute`,
                 value: 'Unmute a voice channel completely. This command wont ignore mute ignored roles. So everyone in the voice channel will be server unmuted, granted you have mute members permissions.'
             }, {
-                name: `${bot.config.prefix}listen`,
+                name: `${guild.Prefix}listen`,
                 value: '[WIP] Currently this command wont do much. It\'ll simply connect the bot to your current voice channel.'
             }, {
-                name: `${bot.config.prefix}leave`,
+                name: `${guild.Prefix}leave`,
                 value: '[WIP] Currently this command wont do much. It\'ll simply disconnect the bot from it\'s current voice channel.'
             }, {
-                name: `${bot.config.prefix}translate`,
+                name: `${guild.Prefix}translate`,
                 value: 'List, add or remove translation ignored patterns to the database for your server. Adding or removing needs the management permissions.'
             }, {
-                name: `${bot.config.prefix}nick`,
-                value: `Translate your nickname into a specified language code.Use ${bot.config.prefix}help nick to see all the available language codes and more info.`
+                name: `${guild.Prefix}nick`,
+                value: `Translate your nickname into a specified language code.Use ${guild.Prefix}help nick to see all the available language codes and more info.`
             }, {
-                name: `${bot.config.prefix}prykie`,
-                value: 'Used on it\'s own, it will post a random prykie quote. Otherwise, you can list, add or remove prykie quotes. Removing quotes needs the management permissions.'
-            }, {
-                name: `${bot.config.prefix}move`,
+                name: `${guild.Prefix}move`,
                 value: 'Use a selector to move players from voice channels to voice channels all at once. Easy way to move players around, granted you have move member permissions.'
             }, {
-                name: `${bot.config.prefix}softban`,
+                name: `${guild.Prefix}softban`,
                 value: 'Bans and then instantly unbans any mentioned members. Then sends them an invite.'
             }, {
-                name: `${bot.config.prefix}bancommand`,
-                value: 'Lets only admins see and change the current randomly generated Prykie ban command.'
-            }, {
-                name: `${bot.config.prefix}harrass`,
+                name: `${guild.Prefix}harrass`,
                 value: 'Lets only admins spam someone with a specified message.'
             }, {
-                name: 'f10',
-                value: 'Instantly ban, unban and reinvite Prykie from the server, granted you have kick member permissions.',
-                inline: true
-            }, {
                 name: 'Other Features',
-                value: `${bot.user.username} will automatically read all messages sent in any chat and detect message languages. If the bot has over 75% confidence that the language is not english, it will replace your message with an English translated version.`
+                value: `${bot.user.username} will automatically read all messages sent in any chat and detect message languages.` +
+                    ` If the bot has over ${(guild.Translation_Confidence * 100).toString()}% confidence that the language is not english, it will replace your message with an English translated version.`
             })
             .setTimestamp()
             .setFooter('Thanks, and have a good day');
@@ -442,14 +349,3 @@ exports.run = (bot, message, args) => {
         message.channel.send(embeddedHelpMessage);
     }
 };
-
-
-//Get random string of length
-function CreateCommand(length, bot) {
-    var result = '',
-        characters = bot.datatouse["strings-to-chose-for-ban-command"],
-        charactersLength = characters.length;
-    for (var i = 0; i < length; ++i)
-        result += characters.charAt(Math.floor(Math.random() * charactersLength));
-    return result;
-}

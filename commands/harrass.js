@@ -1,7 +1,7 @@
 //Import classes
 const Discord = require('discord.js');
 
-exports.run = (bot, message, args) => {
+exports.run = (bot, guild, message, args) => {
     if (args.length != 0) {
         var person = message.mentions.members;
 
@@ -104,12 +104,12 @@ exports.run = (bot, message, args) => {
             message.channel.send(new Discord.MessageEmbed().setDescription('Sorry, you need move members powers for this command.').setColor('#b50909'));
         }
     } else {
-        Helpmessage(bot, message, args);
+        Helpmessage(bot, guild, message, args);
     }
 };
 
 //Functions
-function Helpmessage(bot, message, args) {
+function Helpmessage(bot, guild, message, args) {
     var randomPerson = message.guild.members.cache.random();
 
     var embeddedHelpMessage = new Discord.MessageEmbed()
@@ -120,13 +120,13 @@ function Helpmessage(bot, message, args) {
             { name: 'Required Permissions: ', value: 'Server Manager, Administrator' },
             {
                 name: 'Command Patterns: ',
-                value: `${bot.config.prefix}harrass [member mention] [number] [message]\n\n` +
-                    `${bot.config.prefix}harrass [member mention] move`
+                value: `${guild.Prefix}harrass [member mention] [number] [message]\n\n` +
+                    `${guild.Prefix}harrass [member mention] move`
             },
             {
                 name: 'Examples: ',
-                value: `${bot.config.prefix}harrass ${randomPerson.toString()} 10 Hello, wake up. It's wakey wakey time!\n\n` +
-                    `${bot.config.prefix}harrass ${randomPerson.toString()} move`
+                value: `${guild.Prefix}harrass ${randomPerson.toString()} 10 Hello, wake up. It's wakey wakey time!\n\n` +
+                    `${guild.Prefix}harrass ${randomPerson.toString()} move`
             }
         )
         .setTimestamp()

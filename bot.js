@@ -5,7 +5,6 @@ const mysql = require('promise-mysql');
 
 //WIP - to be removed
 var settings = require('./configure.json');
-var dataToUse = require('./data-to-use.json');
 var fs = require('fs');
 
 //Create mysql connection pool

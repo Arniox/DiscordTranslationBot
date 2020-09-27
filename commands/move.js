@@ -1,7 +1,7 @@
 //Import classes
 const Discord = require('discord.js');
 
-exports.run = (bot, message, args) => {
+exports.run = (bot, guild, message, args) => {
     if (args.length != 0) {
         if (message.member.hasPermission('MOVE_MEMBERS')) {
             //If the length of the array is over 1, then it's a direct channel - channel
@@ -375,18 +375,18 @@ exports.run = (bot, message, args) => {
                     }
                 }
             } else {
-                HelpMessage(bot, message, args);
+                HelpMessage(bot, guild, message, args);
             }
         } else {
             message.channel.send(new Discord.MessageEmbed().setDescription('Sorry, you need moving powers to run this command.').setColor('#b50909'));
         }
     } else {
-        HelpMessage(bot, message, args);
+        HelpMessage(bot, guild, message, args);
     }
 };
 
 //Functions
-function HelpMessage(bot, message, args) {
+function HelpMessage(bot, guild, message, args) {
     var randomChannel1 = message.guild.channels.cache.filter(i => i.type == 'voice').random().name;
     var randomChannel2 = message.guild.channels.cache.filter(i => i.type == 'voice').random().name;
     var randomChannel3 = message.guild.channels.cache.filter(i => i.type == 'voice').random().name;
@@ -399,18 +399,18 @@ function HelpMessage(bot, message, args) {
             { name: 'Required Permissions: ', value: 'Move Members' },
             {
                 name: 'Command Patterns: ',
-                value: `${bot.config.prefix}move [Selector] [Split/Direct command prefix] [Channel(s)]\n\n` +
-                    `${bot.config.prefix}move [Selector] - [Channel]\n\n` +
-                    `${bot.config.prefix}move [Selector] = [Channel] & [Channel] & [Channel]`
+                value: `${guild.Prefix}move [Selector] [Split/Direct command prefix] [Channel(s)]\n\n` +
+                    `${guild.Prefix}move [Selector] - [Channel]\n\n` +
+                    `${guild.Prefix}move [Selector] = [Channel] & [Channel] & [Channel]`
             },
             {
                 name: 'Examples: ',
-                value: `${bot.config.prefix}move ${randomChannel1} - ${randomChannel2} (Move everyone in one voice channel to another voice channel)\n\n` +
-                    `${bot.config.prefix}move * - ${randomChannel1} (Move everyone currently in any voice channel to a specific voice channel)\n\n` +
-                    `${bot.config.prefix}move 5 > ${randomChannel1} - ${randomChannel2} (Move 5 randomly picked players from one voice channel to another voice channel)\n\n` +
-                    `${bot.config.prefix}move ${randomChannel1} = ${randomChannel2} & ${randomChannel3} (Equally split everyone in one voice channel into any number of voice channels seperated by &)\n\n` +
-                    `${bot.config.prefix}move * = ${randomChannel1} & ${randomChannel2} (Split everyone currently in any voice channel into any number of voice channels seperated by &)\n\n` +
-                    `${bot.config.prefix}move 5 > ${randomChannel1} = ${randomChannel2} & ${randomChannel3}` +
+                value: `${guild.Prefix}move ${randomChannel1} - ${randomChannel2} (Move everyone in one voice channel to another voice channel)\n\n` +
+                    `${guild.Prefix}move * - ${randomChannel1} (Move everyone currently in any voice channel to a specific voice channel)\n\n` +
+                    `${guild.Prefix}move 5 > ${randomChannel1} - ${randomChannel2} (Move 5 randomly picked players from one voice channel to another voice channel)\n\n` +
+                    `${guild.Prefix}move ${randomChannel1} = ${randomChannel2} & ${randomChannel3} (Equally split everyone in one voice channel into any number of voice channels seperated by &)\n\n` +
+                    `${guild.Prefix}move * = ${randomChannel1} & ${randomChannel2} (Split everyone currently in any voice channel into any number of voice channels seperated by &)\n\n` +
+                    `${guild.Prefix}move 5 > ${randomChannel1} = ${randomChannel2} & ${randomChannel3}` +
                     ` (Equally split 5 randomly picked players from one voice channel into any number of voice channels seperated by &).`
             }
         )
