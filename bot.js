@@ -81,16 +81,6 @@ setInterval(function () {
 	console.log('I am currently alive.');
 }, interval);
 
-//Get random string of length
-function CreateCommand(length) {
-	var result = '',
-		characters = dataToUse["strings-to-chose-for-ban-command"],
-		charactersLength = characters.length;
-	for (var i = 0; i < length; ++i)
-		result += characters.charAt(Math.floor(Math.random() * charactersLength));
-	return result;
-}
-
 //To funny case
 function ToFunnyCase(str) {
 	return str.split('').map((v, i) => i % 2 == 0 ? v.toLowerCase() : v.toUpperCase()).join('');
