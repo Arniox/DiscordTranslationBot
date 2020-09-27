@@ -24,10 +24,6 @@ pool.then((p) => {
 	console.log(`Connection to ${process.env.CLEARDB_DATABASE_URL} was successful!`);
 	bot.con = connection; //Attach connection to bot
 
-	//Randomise prykie ban command
-	settings.bancommand.bancommand = CreateCommand(10);
-	//Write to file
-	fs.writeFileSync('./configure.json', JSON.stringify(settings));
 	//Attach settings to bot
 	bot.config = settings;
 	bot.datatouse = dataToUse;
