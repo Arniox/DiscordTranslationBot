@@ -1,11 +1,31 @@
 module.exports = (bot) => {
-    //Set bot activity and log
-    bot.user.setActivity(`the ${bot.config.prefix}`, { type: 'WATCHING' });
+    //Check all guilds
+    const sql_cmd = `SELECT ServerId FROM servers`;
+    bot.con.query(sql_cmd, (error, results, fields) => {
+        if (error) return console.error(error); //Return error console log and continue
+
+        //Check all guilds
+        bot.guilds.cache.map((value, key) => {
+            //If this guild isn;t in database, then add
+            if (!results.map(v => v.ServerId).includes(key)) {
+                //Create default server controller
+                const server_controller_cmd = `
+                INSERT INTO servers (ServerId, ServerName, Prefix)
+                    VALUES("${key}", "${value.name}", "$")
+                `;
+                //Insert new server details
+                bot.con.query(server_controller_cmd, (error, results, fields) => {
+                    if (error) return console.error(error); //Throw error and return
+                });
+            }
+        });
+    });
+
+    //log
     console.log('Connected!');
     console.log(`Logged in as ${bot.user.username} - (${bot.user.id})`);
-    console.log(`Prefix: ${bot.config.prefix}`);
-    console.log(`Prykie bancommand is: ${bot.config.bancommand.bancommand}`);
-
+    console.log(`Ready to serve in ${bot.channels.cache.size} channels on ${bot.guilds.cache.size} servers, for a total of ${bot.users.cache.size} users.`);
+    //Generate invite link
     bot.generateInvite(['ADMINISTRATOR', 'SEND_MESSAGES', 'MANAGE_GUILD', 'MENTION_EVERYONE'])
         .then((link) => {
             console.log(`Generated bot invite link: ${link}`);
