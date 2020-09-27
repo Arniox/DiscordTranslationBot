@@ -29,9 +29,7 @@ module.exports = (bot, message) => {
             //If message is empty
             if (!message.content) return;
             //If discord server is not allowed translation
-            console.log(results[0]);
-
-            if (results[0].Allowed_Translation == false) return;
+            if (results[0].Allowed_Translation == 0) return;
 
             //Get the specific translatemessage command data from client.commands Enmap
             const trans = bot.commands.get("translatemessage");
