@@ -1,8 +1,8 @@
 //Import classes
 const Discord = require('discord.js');
 
-exports.run = (bot, message, args) => {
-    message.channel.send(new Discord.MessageEmbed().setDescription(`Right back at you! Yes, I am alive. Current uptime is: ${UpTime()}. Current Prefix is: ${bot.config.prefix}`));
+exports.run = (bot, guild, message, args) => {
+    message.channel.send(new Discord.MessageEmbed().setDescription(`Right back at you! Yes, I am alive. Current uptime is: ${UpTime()}. Current Prefix is: ${guild.Prefix}`));
 }
 
 //Functions
