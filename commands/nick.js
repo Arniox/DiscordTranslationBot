@@ -72,11 +72,7 @@ exports.run = (bot, guild, message, args) => {
                                                         //Translate
                                                         googleTranslate.translate(currentUserNickName, value.language, function (err, translation) {
                                                             //Change name
-                                                            v.setNickname(translation.translatedText.substring(0, 32), `Translating name from ${currentUserNickName} to ${translation.translatedText} in ${value.name}`)
-                                                                .catch((error) => {
-                                                                    message.channel.send(new Discord.MessageEmbed().setDescription(`I hade problem translating ${v.toString()}\'s` +
-                                                                        ` nickname due to ${error}`).setColor('#b50909'));
-                                                                });
+                                                            v.setNickname(translation.translatedText.substring(0, 32), `Translating name from ${currentUserNickName} to ${translation.translatedText} in ${value.name}`);
                                                             //Edit message
                                                             sent.edit(new Discord.MessageEmbed().setDescription(`Translating ${count} / ${members.size} members nicknames into ${value.name}`).setColor('#FFCC00'));
                                                         });
