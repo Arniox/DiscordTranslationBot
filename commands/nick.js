@@ -4,7 +4,7 @@ const Discord = require('discord.js');
 const googleTranslate = require('google-translate')(googleApiKey, { "concurrentLimit": 20 });
 const fs = require('fs');
 
-exports.run = (bot, message, args) => {
+exports.run = (bot, guild, message, args) => {
     if (args.length != 0) {
         //Get all message mentions
         var mentions = message.mentions.members;
@@ -39,42 +39,52 @@ exports.run = (bot, message, args) => {
                                         });
                                     }
                                 }).then((value) => {
-                                    //Grab members
-                                    var members = message.guild.members.cache.filter(i => !i.user.bot && !bot.config["nick-ignored-playerids"].includes(i.id));
-                                    var discludedMembers = message.guild.members.cache.filter(i => !i.user.bot && bot.config["nick-ignored-playerids"].includes(i.id));
+                                    //Get all translation ignored players
+                                    const sql_cmd = `
+                                    SELECT * FROM translation_ignored_players
+                                        WHERE ServerId = "${message.guild.id}"
+                                    `;
+                                    bot.con.query(sql_cmd, (error, results, fields) => {
+                                        if (error) return console.error(error); //Return error console log and return
 
-                                    //Message
-                                    message.channel.send(new Discord.MessageEmbed().setDescription(`Translating ${members.size} members nickname\'s into ${value.name}` +
-                                        `...\nThis may take up to ${members.size} seconds on a good day...\n${discludedMembers.size} nickname ignored members`).setColor('#0099ff'));
-                                    //Send message
-                                    message.channel
-                                        .send(new Discord.MessageEmbed().setDescription(`Translating 0 / ${members.size} members nicknames into ${value.name}`).setColor('#FFCC00'))
-                                        .then((sent) => {
-                                            var count = 0;
+                                        //Grab members
+                                        var members = message.guild.members.cache.filter(i => !i.user.bot && !results.map(v => v.PlayerId).includes(i.id));
+                                        var discludedMembers = message.guild.members.cache.filter(i => !i.user.bot && results.map(v => v.PlayerId).includes(i.id));
 
-                                            //For all members in the guild
-                                            members.map((v, key) => {
-                                                if (IsLowerRoles(message, v)) {
-                                                    //Get current user nickname
-                                                    var currentUserNickName = NickName(v);
+                                        //Message
+                                        message.channel.send(new Discord.MessageEmbed().setDescription(`Translating ${members.size} members nickname\'s into ${value.name}` +
+                                            `...\nThis may take up to ${members.size} seconds on a good day...\n${discludedMembers.size} nickname ignored members`).setColor('#0099ff'));
 
-                                                    //Translate
-                                                    googleTranslate.translate(currentUserNickName, value.language, function (err, translation) {
-                                                        //Increase count
-                                                        count++;
-                                                        //Check if the bot has perms
-                                                        //Change name
-                                                        v.setNickname(translation.translatedText.substring(0, 32), `Translating name from ${currentUserNickName} to ${translation.translatedText} in ${value.name}`);
-                                                        //Edit message
-                                                        sent.edit(new Discord.MessageEmbed().setDescription(`Translating ${count} / ${members.size} members nicknames into ${value.name}`).setColor('#FFCC00'));
-                                                    });
-                                                } else {
-                                                    message.channel.send(new Discord.MessageEmbed().setDescription(`I hade problem translating ${v.toString()}\'s` +
-                                                        ` nickname due to Missing Permissions`).setColor('#b50909'));
-                                                }
+                                        //Send message
+                                        message.channel
+                                            .send(new Discord.MessageEmbed().setDescription(`Translating 0 / ${members.size} members nicknames into ${value.name}`).setColor('#FFCC00'))
+                                            .then((sent) => {
+                                                var count = 0;
+
+                                                //For all members in the guild
+                                                members.map((v, key) => {
+                                                    if (IsLowerRoles(message, v)) {
+                                                        //Get current user nickname
+                                                        var currentUserNickName = NickName(v);
+
+                                                        //Translate
+                                                        googleTranslate.translate(currentUserNickName, value.language, function (err, translation) {
+                                                            //Increase count
+                                                            count++;
+                                                            //Check if the bot has perms
+                                                            //Change name
+                                                            v.setNickname(translation.translatedText.substring(0, 32), `Translating name from ${currentUserNickName} to ${translation.translatedText} in ${value.name}`);
+                                                            //Edit message
+                                                            sent.edit(new Discord.MessageEmbed().setDescription(`Translating ${count} / ${members.size} members nicknames into ${value.name}`).setColor('#FFCC00'));
+                                                        });
+                                                    } else {
+                                                        message.channel.send(new Discord.MessageEmbed().setDescription(`I hade problem translating ${v.toString()}\'s` +
+                                                            ` nickname due to Missing Permissions`).setColor('#b50909'));
+                                                    }
+                                                });
+                                                sent.edit(new Discord.MessageEmbed().setDescription(`✅ Translated ${count} / ${members.size} members nicknames into ${value.name}`).setColor('#09b50c'));
                                             });
-                                            sent.edit(new Discord.MessageEmbed().setDescription(`✅ Translated ${count} / ${members.size} members nicknames into ${value.name}`).setColor('#09b50c'));
-                                        });
+                                    });
                                 }).catch((err) => {
                                     message.channel.send(new Discord.MessageEmbed().setDescription(`${err}`).setColor('#b50909'));
                                 });
@@ -121,41 +131,61 @@ exports.run = (bot, message, args) => {
                         case 'ignore':
                             var option = args.shift();
 
-                            //Check if option exists
-                            if (option) {
-                                //Switch on option
-                                switch (option) {
-                                    case 'list':
-                                        //List out members
-                                        var membersList = message.guild.members.cache
-                                            .filter((value, key) => bot.config["nick-ignored-playerids"].includes(key))
-                                            .map((value, key) => value.toString());
-                                        //Send message
-                                        message.channel.send(new Discord.MessageEmbed().setDescription(`${membersList.length} members are being nickname ignored.\n` +
-                                            `${membersList.join(`\n`)}`).setColor('#0099ff'));
-                                        break;
-                                    default:
-                                        HelpMessage(bot, message, args);
-                                        break;
-                                }
-                            } else {
-                                //Check if you already exists in the data base
-                                if (!bot.config["nick-ignored-playerids"].includes(message.member.id)) {
-                                    //Add user to database
-                                    bot.config["nick-ignored-playerids"].push(message.member.id);
-                                    //Write to file
-                                    fs.writeFileSync('./configure.json', JSON.stringify(bot.config));
-                                    //Message
-                                    message.channel.send(new Discord.MessageEmbed().setDescription(`I have added you, ${message.member.toString()} to the nickname ignored members list.`).setColor('#09b50c'));
+                            //Get a list of translation ignored players
+                            const list_cmd = `
+                            SELECT * FROM translation_ignored_players
+                                WHERE ServerId = "${message.guild.id}"
+                            `;
+                            bot.con.query(list_cmd, (error, results, fields) => {
+                                if (error) return console.error(error); //Throw error and return
+
+                                //Check if option exists
+                                if (option) {
+                                    //Switch on option
+                                    switch (option) {
+                                        case 'list':
+                                            //List out members
+                                            var membersList = message.guild.members.cache
+                                                .filter((value, key) => results.map(v => v.PlayerId).includes(key))
+                                                .map((value, key) => value.toString());
+                                            //Send message
+                                            message.channel.send(new Discord.MessageEmbed().setDescription(`${membersList.length} members are being nickname ignored.\n` +
+                                                `${membersList.join(`\n`)}`).setColor('#0099ff'));
+                                            break;
+                                        default:
+                                            HelpMessage(bot, guild, message, args);
+                                            break;
+                                    }
                                 } else {
-                                    //Remove user from database
-                                    bot.config["nick-ignored-playerids"] = bot.config["nick-ignored-playerids"].filter(i => i !== message.member.id);
-                                    //Write file
-                                    fs.writeFileSync('./configure.json', JSON.stringify(bot.config));
-                                    //Message
-                                    message.channel.send(new Discord.MessageEmbed().setDescription(`I have removed you, ${message.member.toString()} from the nickname ignored members list.`).setColor('#09b50c'));
+                                    //Check if you alraedy exist in the data base
+                                    if (!results.map(v => v.PlayerId).includes(message.member.id)) {
+                                        //Add user to database
+                                        const addme_cmd = `
+                                        INSERT INTO translation_ignored_players(PlayerId, ServerId)
+                                            VALUES("${message.member.id}", "${message.guild.id}")
+                                        `;
+                                        bot.con.query(addme_cmd, (error, results, fields) => {
+                                            if (error) return console.error(error); //Throw error and return
+
+                                            //Message
+                                            message.channel.send(new Discord.MessageEmbed().setDescription(`I have added you, ${message.member.toString()} to the nickname ignored members list.`).setColor('#09b50c'));
+                                        });
+                                    } else {
+                                        //Remove user from database
+                                        const removeme_cmd = `
+                                        DELETE FROM translation_ignored_players
+                                            WHERE PlayerId = "${message.member.id}"
+                                            AND ServerId = "${message.guild.id}"
+                                        `;
+                                        bot.con.query(removeme_cmd, (error, results, fields) => {
+                                            if (error) return console.error(error); //Throw error and return
+
+                                            //Message
+                                            message.channel.send(new Discord.MessageEmbed().setDescription(`I have removed you, ${message.member.toString()} from the nickname ignored members list.`).setColor('#09b50c'));
+                                        });
+                                    }
                                 }
-                            }
+                            });
                             break;
                         case 'someone':
                             //Check if correct perms
@@ -163,46 +193,55 @@ exports.run = (bot, message, args) => {
                                 if (mentions.size == 1) {
                                     mentions.map((v, key) => {
                                         if (IsLowerRoles(message, v)) {
-                                            if (!bot.config["nick-ignored-playerids"].includes(key)) {
-                                                //Get query
-                                                args.shift(); //Remove mention
-                                                var query = args.shift();
+                                            //Get all translation ignored players
+                                            const sql_cmd = `
+                                            SELECT * FROM translation_ignored_players
+                                                WHERE ServerId = "${message.guild.id}"
+                                            `;
+                                            bot.con.query(sql_cmd, (error, results, fields) => {
+                                                if (error) return console.error(error); //Throw error and return
 
-                                                //Check if query exists
-                                                new Promise((resolve, reject) => {
-                                                    if (query) {
-                                                        googleTranslate.getSupportedLanguages('en', function (err, languageCodes) {
-                                                            var language = languageCodes.find(i => i.language == query);
-                                                            //Return actual language or error
-                                                            if (language) resolve(language);
-                                                            else reject(`Unfortunately, my translation capabilities do not support ${query} as a language.`);
-                                                        });
-                                                    } else {
-                                                        googleTranslate.getSupportedLanguages('en', function (err, languageCodes) {
-                                                            resolve(languageCodes[Math.floor(SiteRand(languageCodes.length - 1, 0))]);
-                                                        });
-                                                    }
-                                                }).then((value) => {
-                                                    //Get current member nickname
-                                                    var currentUserNickName = NickName(v);
+                                                if (!results.map(v => v.PlayerId).includes(key)) {
+                                                    //Get query
+                                                    args.shift(); //Remove mention
+                                                    var query = args.shift();
 
-                                                    //Translate name
-                                                    googleTranslate.translate(currentUserNickName, value.language, function (err, translation) {
-                                                        //Change name
-                                                        v.setNickname(translation.translatedText.substring(0, 32), `Translating name from ${currentUserNickName} to ${translation.translatedText} in ${value.name}`);
-                                                        //Send message
-                                                        message.channel.send(new Discord.MessageEmbed().setDescription(`I have translated ${v.user.username}\'s nickname from ${currentUserNickName} to ${translation.translatedText}` +
-                                                            ` in ${value.name}`).setColor('#09b50c'));
+                                                    //Check if query exists
+                                                    new Promise((resolve, reject) => {
+                                                        if (query) {
+                                                            googleTranslate.getSupportedLanguages('en', function (err, languageCodes) {
+                                                                var language = languageCodes.find(i => i.language == query);
+                                                                //Return actual language or error
+                                                                if (language) resolve(language);
+                                                                else reject(`Unfortunately, my translation capabilities do not support ${query} as a language.`);
+                                                            });
+                                                        } else {
+                                                            googleTranslate.getSupportedLanguages('en', function (err, languageCodes) {
+                                                                resolve(languageCodes[Math.floor(SiteRand(languageCodes.length - 1, 0))]);
+                                                            });
+                                                        }
+                                                    }).then((value) => {
+                                                        //Get current member nickname
+                                                        var currentUserNickName = NickName(v);
+
+                                                        //Translate name
+                                                        googleTranslate.translate(currentUserNickName, value.language, function (err, translation) {
+                                                            //Change name
+                                                            v.setNickname(translation.translatedText.substring(0, 32), `Translating name from ${currentUserNickName} to ${translation.translatedText} in ${value.name}`);
+                                                            //Send message
+                                                            message.channel.send(new Discord.MessageEmbed().setDescription(`I have translated ${v.user.username}\'s nickname from ${currentUserNickName} to ${translation.translatedText}` +
+                                                                ` in ${value.name}`).setColor('#09b50c'));
+                                                        });
+                                                    }).catch((err) => {
+                                                        console.log(`Failed to translate ${v.user.username} nickname`);
+
+                                                        message.channel.send(new Discord.MessageEmbed().setDescription(`${err}`).setColor('#b50909'));
                                                     });
-                                                }).catch((err) => {
-                                                    console.log(`Failed to translate ${v.user.username} nickname`);
-
-                                                    message.channel.send(new Discord.MessageEmbed().setDescription(`${err}`).setColor('#b50909'));
-                                                });
-                                            } else {
-                                                message.channel.send(new Discord.MessageEmbed().setDescription(`${v.toString()} has chosen to ignore his nickname from translation.` +
-                                                    ` You cannot change his nickname unfortunately. Sorry.`).setColor('#b50909'));
-                                            }
+                                                } else {
+                                                    message.channel.send(new Discord.MessageEmbed().setDescription(`${v.toString()} has chosen to ignore his nickname from translation.` +
+                                                        ` You cannot change his nickname unfortunately. Sorry.`).setColor('#b50909'));
+                                                }
+                                            });
                                         } else {
                                             message.channel.send(new Discord.MessageEmbed().setDescription(`I hade problem translating ${v.toString()}\'s` +
                                                 ` nickname due to Missing Permissions`).setColor('#b50909'));
@@ -222,108 +261,117 @@ exports.run = (bot, message, args) => {
                                 if (mentions.size == 1) {
                                     mentions.map((v, key) => {
                                         if (IsLowerRoles(message, v)) {
-                                            if (!bot.config["nick-ignored-playerids"].includes(key)) {
-                                                //Get query
-                                                args.shift(); //Remove mention
-                                                var query = args.shift();
+                                            //Get all translation ignored players
+                                            const sql_cmd = `
+                                            SELECT * FROM translation_ignored_players
+                                                WHERE ServerId = "${message.guild.id}"
+                                            `;
+                                            bot.con.query(sql_cmd, (error, results, fields) => {
+                                                if (error) return console.error(error);
 
-                                                //Check if query exists
-                                                new Promise((resolve, reject) => {
-                                                    if (query) {
+                                                if (!results.map(v => v.PlayerId).includes(key)) {
+                                                    //Get query
+                                                    args.shift(); //Remove mention
+                                                    var query = args.shift();
+
+                                                    //Check if query exists
+                                                    new Promise((resolve, reject) => {
+                                                        if (query) {
+                                                            googleTranslate.getSupportedLanguages('en', function (err, languageCodes) {
+                                                                var language = languageCodes.find(i => i.language == query);
+                                                                //Return actual language or error
+                                                                if (language) resolve(language);
+                                                                else reject(`Unfortunately, my translation capabilities do not support ${query} as a language.`);
+                                                            });
+                                                        } else {
+                                                            googleTranslate.getSupportedLanguages('en', function (err, languageCodes) {
+                                                                resolve(languageCodes[Math.floor(SiteRand(languageCodes.length - 1, 0))]);
+                                                            });
+                                                        }
+                                                    }).then((value) => {
+                                                        //Get current member nickname
+                                                        var currentUserNickName = NickName(v);
+
                                                         googleTranslate.getSupportedLanguages('en', function (err, languageCodes) {
-                                                            var language = languageCodes.find(i => i.language == query);
-                                                            //Return actual language or error
-                                                            if (language) resolve(language);
-                                                            else reject(`Unfortunately, my translation capabilities do not support ${query} as a language.`);
-                                                        });
-                                                    } else {
-                                                        googleTranslate.getSupportedLanguages('en', function (err, languageCodes) {
-                                                            resolve(languageCodes[Math.floor(SiteRand(languageCodes.length - 1, 0))]);
-                                                        });
-                                                    }
-                                                }).then((value) => {
-                                                    //Get current member nickname
-                                                    var currentUserNickName = NickName(v);
+                                                            //Send message and uodate
+                                                            message.channel
+                                                                .send(new Discord.MessageEmbed().setDescription(`Playing Chinese whispers with ${v.toString()}\'s nickname...`).setColor('#FFCC00'))
+                                                                .then((sent) => {
+                                                                    var langCount = 0;
+                                                                    var previousLanguage = '***Auto Detected****';
+                                                                    //Shuffle array
+                                                                    languageCodes = Shuffle(languageCodes);
+                                                                    var firstLanguage = `${languageCodes[0].name}`;
+                                                                    var outPutName = currentUserNickName;
 
-                                                    googleTranslate.getSupportedLanguages('en', function (err, languageCodes) {
-                                                        //Send message and uodate
-                                                        message.channel
-                                                            .send(new Discord.MessageEmbed().setDescription(`Playing Chinese whispers with ${v.toString()}\'s nickname...`).setColor('#FFCC00'))
-                                                            .then((sent) => {
-                                                                var langCount = 0;
-                                                                var previousLanguage = '***Auto Detected****';
-                                                                //Shuffle array
-                                                                languageCodes = Shuffle(languageCodes);
-                                                                var firstLanguage = `${languageCodes[0].name}`;
-                                                                var outPutName = currentUserNickName;
-
-                                                                //Create promise
-                                                                new Promise((resolve, reject) => {
-                                                                    languageCodes.forEach((lang, index, array) => {
-                                                                        googleTranslate.translate(outPutName, lang.language, function (err, translation) {
-                                                                            langCount++;
-                                                                            //Edit message
-                                                                            sent.edit(new Discord.MessageEmbed()
-                                                                                .setColor('#FFCC00')
-                                                                                .setDescription(`Playing Chinese whispers with ${v.toString()}\'s nickname...`)
-                                                                                .addFields(
-                                                                                    {
-                                                                                        name: 'Language -> Language',
-                                                                                        value: `Gone through \`${langCount} / ${languageCodes.length}\` languages.` +
-                                                                                            ` Just did \`${previousLanguage}\` to \`${lang.name}\``,
-                                                                                        inline: true
-                                                                                    },
-                                                                                    {
-                                                                                        name: 'Name -> Name',
-                                                                                        value: `Name changed from \`${outPutName}\` to \`${translation.translatedText}\``,
-                                                                                        inline: true
-                                                                                    }
-                                                                                )
-                                                                                .setTimestamp()
-                                                                            );
-                                                                            //Change previous language name
-                                                                            previousLanguage = lang.name;
-                                                                            //Update user name to translate
-                                                                            outPutName = translation.translatedText;
-                                                                            //Resolve once the loop is done
-                                                                            if (index === array.length - 1) resolve();
-                                                                        });
-                                                                    });
-                                                                }).then(() => {
-                                                                    //After loop, google translate to end language
-                                                                    googleTranslate.translate(outPutName, value.language, function (err, translation) {
-                                                                        //Change username
-                                                                        v.setNickname(translation.translatedText.substring(0, 32), `Chinese whispers with ${v.user.username}\'s` +
-                                                                            ` nickname from ${firstLanguage} to ${value.name}`)
-                                                                            .then(() => {
+                                                                    //Create promise
+                                                                    new Promise((resolve, reject) => {
+                                                                        languageCodes.forEach((lang, index, array) => {
+                                                                            googleTranslate.translate(outPutName, lang.language, function (err, translation) {
+                                                                                langCount++;
+                                                                                //Edit message
                                                                                 sent.edit(new Discord.MessageEmbed()
-                                                                                    .setColor('#09b50c')
-                                                                                    .setDescription(`✅ Finished playing Chinese whispers with ${v.toString()}\'s nickname.`)
+                                                                                    .setColor('#FFCC00')
+                                                                                    .setDescription(`Playing Chinese whispers with ${v.toString()}\'s nickname...`)
                                                                                     .addFields(
                                                                                         {
-                                                                                            name: 'Language',
-                                                                                            value: `Went through all \`${langCount} / ${languageCodes.length}\` languages.`,
+                                                                                            name: 'Language -> Language',
+                                                                                            value: `Gone through \`${langCount} / ${languageCodes.length}\` languages.` +
+                                                                                                ` Just did \`${previousLanguage}\` to \`${lang.name}\``,
                                                                                             inline: true
                                                                                         },
                                                                                         {
-                                                                                            name: 'Name',
-                                                                                            value: `Original Name: \`${currentUserNickName}\` ane now, current name: \`${translation.translatedText}\``
+                                                                                            name: 'Name -> Name',
+                                                                                            value: `Name changed from \`${outPutName}\` to \`${translation.translatedText}\``,
+                                                                                            inline: true
                                                                                         }
                                                                                     )
                                                                                     .setTimestamp()
                                                                                 );
+                                                                                //Change previous language name
+                                                                                previousLanguage = lang.name;
+                                                                                //Update user name to translate
+                                                                                outPutName = translation.translatedText;
+                                                                                //Resolve once the loop is done
+                                                                                if (index === array.length - 1) resolve();
                                                                             });
+                                                                        });
+                                                                    }).then(() => {
+                                                                        //After loop, google translate to end language
+                                                                        googleTranslate.translate(outPutName, value.language, function (err, translation) {
+                                                                            //Change username
+                                                                            v.setNickname(translation.translatedText.substring(0, 32), `Chinese whispers with ${v.user.username}\'s` +
+                                                                                ` nickname from ${firstLanguage} to ${value.name}`)
+                                                                                .then(() => {
+                                                                                    sent.edit(new Discord.MessageEmbed()
+                                                                                        .setColor('#09b50c')
+                                                                                        .setDescription(`✅ Finished playing Chinese whispers with ${v.toString()}\'s nickname.`)
+                                                                                        .addFields(
+                                                                                            {
+                                                                                                name: 'Language',
+                                                                                                value: `Went through all \`${langCount} / ${languageCodes.length}\` languages.`,
+                                                                                                inline: true
+                                                                                            },
+                                                                                            {
+                                                                                                name: 'Name',
+                                                                                                value: `Original Name: \`${currentUserNickName}\` ane now, current name: \`${translation.translatedText}\``
+                                                                                            }
+                                                                                        )
+                                                                                        .setTimestamp()
+                                                                                    );
+                                                                                });
+                                                                        });
                                                                     });
                                                                 });
-                                                            });
+                                                        });
+                                                    }).catch((err) => {
+                                                        message.channel.send(new Discord.MessageEmbed().setDescription(`${err}`).setColor('#b50909'));
                                                     });
-                                                }).catch((err) => {
-                                                    message.channel.send(new Discord.MessageEmbed().setDescription(`${err}`).setColor('#b50909'));
-                                                });
-                                            } else {
-                                                message.channel.send(new Discord.MessageEmbed().setDescription(`${v.toString()} has chosen to ignore his nickname from translation.` +
-                                                    ` You cannot change his nickname unfortunately.Sorry.`).setColor('#b50909'));
-                                            }
+                                                } else {
+                                                    message.channel.send(new Discord.MessageEmbed().setDescription(`${v.toString()} has chosen to ignore his nickname from translation.` +
+                                                        ` You cannot change his nickname unfortunately.Sorry.`).setColor('#b50909'));
+                                                }
+                                            });
                                         } else {
                                             message.channel.send(new Discord.MessageEmbed().setDescription(`I hade problem translating ${v.toString()}\'s` +
                                                 ` nickname due to Missing Permissions`).setColor('#b50909'));
@@ -338,12 +386,12 @@ exports.run = (bot, message, args) => {
                             }
                             break;
                         default:
-                            HelpMessage(bot, message, args);
+                            HelpMessage(bot, guild, message, args);
                             break;
                     }
                     break;
                 } else {
-                    HelpMessage(bot, message, args);
+                    HelpMessage(bot, guild, message, args);
                 }
             case 'set':
                 if (args.length != 0) {
@@ -358,36 +406,47 @@ exports.run = (bot, message, args) => {
 
                                 //Check if query exists
                                 if (query) {
-                                    //Grab members
-                                    var members = message.guild.members.cache.filter(i => !i.user.bot); //Forget about nick ignored players here. That's only for translation
+                                    //Get all translated ignored players
+                                    const sql_cmd = `
+                                    SELECT * FROM translation_ignored_players
+                                        WHERE ServerId = "${message.guild.id}"
+                                    `;
+                                    bot.con.query(sql_cmd, (error, results, fields) => {
+                                        if (error) return console.error(error); //Return error console log and return
 
-                                    //Message
-                                    message.channel.send(new Discord.MessageEmbed().setDescription(`Setting ${members.size} members nickname\'s to ${query}...\n` +
-                                        `This may take up to ${members.size} seconds on a good day...\n`).setColor('#0099ff'));
-                                    //Send message
-                                    message.channel
-                                        .send(new Discord.MessageEmbed().setDescription(`Setting 0 / ${members.size} members nicknames to ${query}`).setColor('#FFCC00'))
-                                        .then((sent) => {
-                                            var count = 0;
+                                        //Grab members
+                                        var members = message.guild.memebers.cache.filter(i => !i.user.bot && !results.map(v => v.PlayerId).includes(i.id));
+                                        var discludedMembers = message.guild.members.cache.filter(i => !i.user.bot && results.map(v => v.PlayerId).includes(i.id));
 
-                                            //For all members in the guild
-                                            members.map((value, key) => {
-                                                //Get current user nickname
-                                                var currentUserNickName = NickName(value);
-                                                //Increase count
-                                                count++;
-                                                //Check if bot has perms
-                                                if (IsLowerRoles(message, value)) {
-                                                    //Change nickname
-                                                    value.setNickname(query.substring(0, 32), `Set ${value.user.username}\'s nickname to ${query}.`);
-                                                    //Edit message
-                                                    sent.edit(new Discord.MessageEmbed().setDescription(`Setting ${count} / ${members.size} members nicknames to ${query}`).setColor('#FFCC00'));
-                                                } else {
-                                                    message.channel.send(new Discord.MessageEmbed().setDescription(`I had a problem setting ${value.toString()}\'s nickname due to Missing Permissions.`).setColor('#b50909'));
-                                                }
+                                        //Message
+                                        message.channel.send(new Discord.MessageEmbed().setDescription(`Setting ${members.size} members nickname\'s to ${query}...\n` +
+                                            `This may take up to ${members.size} seconds on a good day...\n${discludedMembers.size} nickname ignored members`));
+
+                                        //Send message
+                                        message.channel
+                                            .send(new Discord.MessageEmbed().setDescription(`Setting 0 / ${members.size} members nicknames to ${query}`).setColor('#FFCC00'))
+                                            .then((sent) => {
+                                                var count = 0;
+
+                                                //For all members in the guild
+                                                members.map((value, key) => {
+                                                    //Get current user nickname
+                                                    var currentUserNickName = NickName(value);
+                                                    //Increase count
+                                                    count++;
+                                                    //Check if bot has perms
+                                                    if (IsLowerRoles(message, value)) {
+                                                        //Change nickname
+                                                        value.setNickname(query.substring(0, 32), `Set ${value.user.username}\'s nickname to ${query}.`);
+                                                        //Edit message
+                                                        sent.edit(new Discord.MessageEmbed().setDescription(`Setting ${count} / ${members.size} members nicknames to ${query}`).setColor('#FFCC00'));
+                                                    } else {
+                                                        message.channel.send(new Discord.MessageEmbed().setDescription(`I had a problem setting ${value.toString()}\'s nickname due to Missing Permissions.`).setColor('#b50909'));
+                                                    }
+                                                });
+                                                sent.edit(new Discord.MessageEmbed().setDescription(`✅ Set ${count} / ${members.size} members nicknames to ${query}`).setColor('#09b50c'));
                                             });
-                                            sent.edit(new Discord.MessageEmbed().setDescription(`✅ Set ${count} / ${members.size} members nicknames to ${query}`).setColor('#09b50c'));
-                                        });
+                                    });
                                 } else {
                                     message.channel.send(new Discord.MessageEmbed().setDescription('Sorry, you cannot set everyone\'s name to nothing.').setColor('#b50909'));
                                 }
@@ -426,8 +485,6 @@ exports.run = (bot, message, args) => {
 
                                             //Check if query exists
                                             if (query) {
-                                                //Get current user nickname
-                                                var currentUserNickName = NickName(value);
                                                 //Change nickname
                                                 value.setNickname(query.substring(0, 32), `Set ${value.user.username}\'s nickname to ${query}.`);
                                                 //send message
@@ -436,8 +493,8 @@ exports.run = (bot, message, args) => {
                                                 message.channel.send(new Discord.MessageEmbed().setDescription(`Sorry, I cannot set ${value.toString()}\'s nickname to nothing.`).setColor('#b50909'));
                                             }
                                         } else {
-                                            message.channel.send(new Discord.MessageEmbed().setDescription(`I had problems setting ${value.toString()}\'s` +
-                                                ` nickname due to Missing Permissions`).setColor('#b50909'));
+                                            message.channel.send(new Discord.MessageEmbed().setDescription(`${value.toString()} has chosen to ignore his nickname from translation.` +
+                                                ` You cannot change his nickname unfortunately. Sorry.`).setColor('#b50909'));
                                         }
                                     });
                                 } else {
@@ -449,12 +506,12 @@ exports.run = (bot, message, args) => {
                             }
                             break;
                         default:
-                            HelpMessage(bot, message, args);
+                            HelpMessage(bot, guild, message, args);
                             break;
                     }
                     break;
                 } else {
-                    HelpMessage(bot, message, args);
+                    HelpMessage(bot, guild, message, args);
                 }
             case 'reset':
                 if (args.length != 0) {
@@ -465,35 +522,46 @@ exports.run = (bot, message, args) => {
                         case 'all':
                             //Check if correct perms
                             if (IsManager(message)) {
-                                //Grab members
-                                var members = message.guild.members.cache.filter(i => !i.user.bot); //Forget abouit nick ignored members. That's only for translation
+                                //Get all translated ignored players
+                                const sql_cmd = `
+                                SELECT * FROM translation_ignored_players
+                                    WHERE ServerId = "${message.guild.id}"
+                                `;
+                                bot.con.query(sql_cmd, (error, results, fields) => {
+                                    if (error) return console.error(error); //Return error console log and return
 
-                                //Message
-                                message.channel.send(new Discord.MessageEmbed().setDescription(`Resetting ${members.size} members nicknames to their default usernames...\n` +
-                                    `This may take up to ${members.size} seconds on a good day...\n`).setColor('#0099ff'));
-                                //Send message
-                                message.channel
-                                    .send(new Discord.MessageEmbed().setDescription(`Resetting 0 / ${members.size} members usernames.`).setColor('#FFCC00'))
-                                    .then((sent) => {
-                                        var count = 0;
+                                    //Grab members
+                                    var members = message.guild.members.cache.filter(i => !i.user.bot && !results.map(v => v.PlayerId).includes(i.id));
+                                    var discludedMembers = message.guild.members.cache.filter(i => !i.user.bot && results.map(v => v.PlayerId).includes(i.id));
 
-                                        //For all members in the guild
-                                        members.map((value, key) => {
-                                            //Get current user nickname
-                                            var currentUserNickName = NickName(value);
-                                            //Increase count
-                                            count++;
-                                            if (IsLowerRoles(message, value)) {
-                                                //Reset nickname
-                                                value.setNickname(value.user.username, `Reset ${currentUserNickName}\'s nickname to default username (${value.user.username}).`);
-                                                //Edit message
-                                                sent.edit(new Discord.MessageEmbed().setDescription(`Resetting ${count} / ${members.size} members usernames.`).setColor('#FFCC00'));
-                                            } else {
-                                                message.channel.send(new Discord.MessageEmbed().setDescription(`I had a problem resetting ${value.toString()}\'s nickname due to Missing Permissions.`).setColor('#b50909'));
-                                            }
+                                    //Message
+                                    message.channel.send(new Discord.MessageEmbed().setDescription(`Resetting ${members.size} members nicknames to their default usernames...\n` +
+                                        `This may take up to ${members.size} seconds on a good day...\n${discludedMembers.size} nickname ignored members`).setColor('#0099ff'));
+
+                                    //Send message
+                                    message.channel
+                                        .send(new Discord.MessageEmbed().setDescription(`Resetting 0 / ${members.size} members usernames.`).setColor('#FFCC00'))
+                                        .then((sent) => {
+                                            var count = 0;
+
+                                            //For all members in the guild
+                                            members.map((value, key) => {
+                                                //Get current user nickname
+                                                var currentUserNickName = NickName(value);
+                                                //Increase count
+                                                count++;
+                                                if (IsLowerRoles(message, value)) {
+                                                    //Reset nickname
+                                                    value.setNickname(value.user.username, `Reset ${currentUserNickName}\'s nickname to default username (${value.user.username}).`);
+                                                    //Edit message
+                                                    sent.edit(new Discord.MessageEmbed().setDescription(`Resetting ${count} / ${members.size} members usernames.`).setColor('#FFCC00'));
+                                                } else {
+                                                    message.channel.send(new Discord.MessageEmbed().setDescription(`I had a problem resetting ${value.toString()}\'s nickname due to Missing Permissions.`).setColor('#b50909'));
+                                                }
+                                            });
+                                            sent.edit(new Discord.MessageEmbed().setDescription(`✅ Reset ${count} / ${members.size} members usernames.`).setColor('#09b50c'));
                                         });
-                                        sent.edit(new Discord.MessageEmbed().setDescription(`✅ Reset ${count} / ${members.size} members usernames.`).setColor('#09b50c'));
-                                    });
+                                });
                             } else {
                                 message.channel.send(new Discord.MessageEmbed().setDescription('Sorry, you need management perms to run this command.').setColor('#b50909'));
                             }
@@ -536,19 +604,19 @@ exports.run = (bot, message, args) => {
                             }
                             break;
                         default:
-                            HelpMessage(bot, message, args);
+                            HelpMessage(bot, guild, message, args);
                             break;
                     }
                     break;
                 } else {
-                    HelpMessage(bot, message, args);
+                    HelpMessage(bot, guild, message, args);
                 }
             default:
-                HelpMessage(bot, message, args);
+                HelpMessage(bot, guild, message, args);
                 break;
         }
     } else {
-        HelpMessage(bot, message, args);
+        HelpMessage(bot, guild, message, args);
     }
 };
 
@@ -574,7 +642,7 @@ function IsNickNamer(message) {
 }
 
 //help message
-function HelpMessage(bot, message, args) {
+function HelpMessage(bot, guild, message, args) {
     var randomMember = message.guild.members.cache.random();
 
     //Get all available language codes
@@ -583,7 +651,7 @@ function HelpMessage(bot, message, args) {
         .setAuthor(bot.user.username, bot.user.avatarURL())
         .setDescription('Nick allows you to translate (into any supported language), set, and reset either you\'re own nickname, someone specific granted you have nickname managemental permissions,' +
             ' or everyone\'s granted you have management permissions.\n' +
-            `You can also run *${bot.config.prefix}nick ignore* to add/remove yourself from being translated.`)
+            `You can also run *${guild.Prefix}nick ignore* to add/remove yourself from being translated.`)
         .addFields(
             {
                 name: 'Required Permissions: ', value: 'Manage Server (for translating, setting, or resetting eveyone\'s nickname)\n' +
@@ -591,30 +659,30 @@ function HelpMessage(bot, message, args) {
             },
             {
                 name: 'Command Patterns: ',
-                value: `${bot.config.prefix}nick [translate/set/reset] [all/me/someone/{translate:ignore/whisper}] [newname/{translate: languagecode (optional)}]\n\n` +
-                    `${bot.config.prefix}nick translate [all/me/someone/ignore/whisper] {translate:languagecode (optional)}\n\n` +
-                    `${bot.config.prefix}nick set [all/me/someone] newname\n\n` +
-                    `${bot.config.prefix}nick reset [all/me/someone]\n\n` +
-                    `Any ${bot.config.prefix}nick [translate] command without a language specified will pick a random language.`
+                value: `${guild.Prefix}nick [translate/set/reset] [all/me/someone/{translate:ignore/whisper}] [newname/{translate: languagecode (optional)}]\n\n` +
+                    `${guild.Prefix}nick translate [all/me/someone/ignore/whisper] {translate:languagecode (optional)}\n\n` +
+                    `${guild.Prefix}nick set [all/me/someone] newname\n\n` +
+                    `${guild.Prefix}nick reset [all/me/someone]\n\n` +
+                    `Any ${guild.Prefix}nick [translate] command without a language specified will pick a random language.`
             },
             {
                 name: 'Examples: ',
-                value: `${bot.config.prefix}nick translate all RU - (will translate everyone\'s name to Russian)\n` +
-                    `${bot.config.prefix}nick translate all\n` +
-                    `${bot.config.prefix}nick translate me RU - (will translate your name to Russuan)\n` +
-                    `${bot.config.prefix}nick translate me\n` +
-                    `${bot.config.prefix}nick translate someone ${randomMember.toString()} RU\n` +
-                    `${bot.config.prefix}nick translate someone ${randomMember.toString()}\n` +
-                    `${bot.config.prefix}nick translate ignore - ` +
-                    `(will add/remove you from the database of translation ignored members. This still allows you personally to use ***${bot.config.prefix}nick translate me*** still)\n` +
-                    `${bot.config.prefix}nick translate whisper ${randomMember.toString()} EN - ` +
+                value: `${guild.Prefix}nick translate all RU - (will translate everyone\'s name to Russian)\n` +
+                    `${guild.Prefix}nick translate all\n` +
+                    `${guild.Prefix}nick translate me RU - (will translate your name to Russuan)\n` +
+                    `${guild.Prefix}nick translate me\n` +
+                    `${guild.Prefix}nick translate someone ${randomMember.toString()} RU\n` +
+                    `${guild.Prefix}nick translate someone ${randomMember.toString()}\n` +
+                    `${guild.Prefix}nick translate ignore - ` +
+                    `(will add/remove you from the database of translation ignored members. This still allows you personally to use ***${guild.Prefix}nick translate me*** still)\n` +
+                    `${guild.Prefix}nick translate whisper ${randomMember.toString()} EN - ` +
                     `(will play Chinese whispers with a members name through every single language and finish with EN. No language specificed remember will end on a random language)\n` +
-                    `${bot.config.prefix}nick set all StuffAndThings\n` +
-                    `${bot.config.prefix}nick set me StuffAndThings\n` +
-                    `${bot.config.prefix}nick set someone ${randomMember.toString()} StuffAndThings\n` +
-                    `${bot.config.prefix}nick reset all\n` +
-                    `${bot.config.prefix}nick reset me\n` +
-                    `${bot.config.prefix}nick reset someone ${randomMember.toString()}`
+                    `${guild.Prefix}nick set all StuffAndThings\n` +
+                    `${guild.Prefix}nick set me StuffAndThings\n` +
+                    `${guild.Prefix}nick set someone ${randomMember.toString()} StuffAndThings\n` +
+                    `${guild.Prefix}nick reset all\n` +
+                    `${guild.Prefix}nick reset me\n` +
+                    `${guild.Prefix}nick reset someone ${randomMember.toString()}`
             }
         )
         .setTimestamp()
