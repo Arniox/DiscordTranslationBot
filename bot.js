@@ -22,7 +22,7 @@ var bot = new Discord.Client();
 pool.then((p) => {
 	return p.getConnection();
 }).then((connection) => {
-	console.error(err, `Connection to ${process.env.CLEARDB_DATABASE_URL} has failed!`);
+	console.log(`Connection to ${process.env.CLEARDB_DATABASE_URL} was successful!`);
 	bot.con = connection; //Attach connection to bot
 
 	//Randomise prykie ban command
