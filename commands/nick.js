@@ -63,7 +63,7 @@ exports.run = (bot, guild, message, args) => {
 
                                                 //For all members in the guild
                                                 new Promise((resolve, reject) => {
-                                                    members.map((v, key, i) => {
+                                                    members.map((v, key) => {
                                                         //Increase count
                                                         count++;
                                                         if (IsLowerRoles(message, v)) {
@@ -83,7 +83,7 @@ exports.run = (bot, guild, message, args) => {
                                                             message.channel.send(new Discord.MessageEmbed().setDescription(`I had problem translating ${v.toString()}\'s` +
                                                                 ` nickname due to Missing Permissions`).setColor('#b50909'));
                                                         }
-                                                        if (i == members.size - 1) resolve();
+                                                        if (count == members.size) resolve();
                                                     });
                                                 }).then(() => {
                                                     sent.edit(new Discord.MessageEmbed().setDescription(`✅ Translated ${count} / ${members.size} members nicknames into ${value.name}`).setColor('#09b50c'));
