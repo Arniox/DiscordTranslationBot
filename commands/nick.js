@@ -415,6 +415,8 @@ exports.run = (bot, guild, message, args) => {
                                     bot.con.query(sql_cmd, (error, results, fields) => {
                                         if (error) return console.error(error); //Return error console log and return
 
+                                        console.log(results);
+
                                         //Grab members
                                         var members = message.guild.members.cache.filter(i => !i.user.bot && !results.map(v => v.PlayerId).includes(i.id));
                                         var discludedMembers = message.guild.members.cache.filter(i => !i.user.bot && results.map(v => v.PlayerId).includes(i.id));
