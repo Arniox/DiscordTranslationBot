@@ -8,7 +8,7 @@ module.exports = (bot, message) => {
     const sql_cmd = `
     SELECT *
         FROM servers
-        WHERE ServerId = ${message.guild.id}`;
+        WHERE ServerId = "${message.guild.id}"`;
     bot.con.query(sql_cmd, (error, results, fields) => {
         if (error || !results || results.length < 1) return console.error(error); //Return error console log and return
 
