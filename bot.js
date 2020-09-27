@@ -15,7 +15,10 @@ const pool = mysql.createPool({
 	database: process.env.CLEARDB_DATABASE_URL.match(/([a-zA-Z]\/)[a-zA-Z\d_]+/).join('').replace(/([a-zA-Z]\/)/, '') //Get database
 });
 
-console.log(pool);
+console.log(process.env.CLEARDB_DATABASE_URL.match(/(@)[a-zA-Z\d-.]+/).join('').replace(/(@)/, ''));
+console.log(process.env.CLEARDB_DATABASE_URL.match(/(\/\/)[a-zA-Z\d]+/).join('').replace(/(\/\/)/, ''));
+console.log(process.env.CLEARDB_DATABASE_URL.match(/(:)[a-zA-Z\d]+/).join('').replace(/(:)/, ''));
+console.log(process.env.CLEARDB_DATABASE_URL.match(/([a-zA-Z]\/)[a-zA-Z\d_]+/).join('').replace(/([a-zA-Z]\/)/, ''));
 
 //Initialize Discord bot 
 var bot = new Discord.Client();
