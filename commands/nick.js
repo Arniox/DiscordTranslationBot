@@ -63,6 +63,8 @@ exports.run = (bot, guild, message, args) => {
 
                                                 //For all members in the guild
                                                 members.map((v, key) => {
+                                                    //Increase count
+                                                    count++;
                                                     if (IsLowerRoles(message, v)) {
                                                         //Get current user nickname
                                                         var currentUserNickName = NickName(v);
@@ -78,8 +80,6 @@ exports.run = (bot, guild, message, args) => {
                                                         message.channel.send(new Discord.MessageEmbed().setDescription(`I hade problem translating ${v.toString()}\'s` +
                                                             ` nickname due to Missing Permissions`).setColor('#b50909'));
                                                     }
-                                                    //Increase count
-                                                    count++;
                                                 });
                                                 sent.edit(new Discord.MessageEmbed().setDescription(`✅ Translated ${count} / ${members.size} members nicknames into ${value.name}`).setColor('#09b50c'));
                                             });
