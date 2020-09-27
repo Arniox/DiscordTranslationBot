@@ -83,7 +83,7 @@ exports.run = (bot, guild, message, args) => {
                                                             message.channel.send(new Discord.MessageEmbed().setDescription(`I had problem translating ${v.toString()}\'s` +
                                                                 ` nickname due to Missing Permissions`).setColor('#b50909'));
                                                         }
-                                                        if (i == members.size) resolve();
+                                                        if (i == members.size - 1) resolve();
                                                     });
                                                 }).then(() => {
                                                     sent.edit(new Discord.MessageEmbed().setDescription(`✅ Translated ${count} / ${members.size} members nicknames into ${value.name}`).setColor('#09b50c'));
