@@ -48,8 +48,8 @@ exports.run = (bot, guild, message, args) => {
                                         if (error) return console.error(error); //Return error console log and return
 
                                         //Grab members
-                                        var members = message.guild.members.cache.filter(i => !i.user.bot && !results.map(v => v.PlayerId).includes(i.id));
-                                        var discludedMembers = message.guild.members.cache.filter(i => !i.user.bot && results.map(v => v.PlayerId).includes(i.id));
+                                        var members = message.guild.members.cache.filter(i => !i.user.bot && (!results || !results.length ? true : !results.map(v => v.PlayerId).includes(i.id)));
+                                        var discludedMembers = message.guild.members.cache.filter(i => !i.user.bot && (!results || !results.length ? false : results.map(v => v.PlayerId).includes(i.id)));
 
                                         //Message
                                         message.channel.send(new Discord.MessageEmbed().setDescription(`Translating ${members.size} members nickname\'s into ${value.name}` +
@@ -202,7 +202,7 @@ exports.run = (bot, guild, message, args) => {
                                             bot.con.query(sql_cmd, (error, results, fields) => {
                                                 if (error) return console.error(error); //Throw error and return
 
-                                                if (!results.map(v => v.PlayerId).includes(key)) {
+                                                if ((!results || !results.length ? true : !results.map(v => v.PlayerId).includes(key))) {
                                                     //Get query
                                                     args.shift(); //Remove mention
                                                     var query = args.shift();
@@ -270,7 +270,7 @@ exports.run = (bot, guild, message, args) => {
                                             bot.con.query(sql_cmd, (error, results, fields) => {
                                                 if (error) return console.error(error);
 
-                                                if (!results.map(v => v.PlayerId).includes(key)) {
+                                                if ((!results || !results.length ? true : !results.map(v => v.PlayerId).includes(key))) {
                                                     //Get query
                                                     args.shift(); //Remove mention
                                                     var query = args.shift();
@@ -415,11 +415,9 @@ exports.run = (bot, guild, message, args) => {
                                     bot.con.query(sql_cmd, (error, results, fields) => {
                                         if (error) return console.error(error); //Return error console log and return
 
-                                        console.log(results);
-
                                         //Grab members
-                                        var members = message.guild.members.cache.filter(i => !i.user.bot && !results.map(v => v.PlayerId).includes(i.id));
-                                        var discludedMembers = message.guild.members.cache.filter(i => !i.user.bot && results.map(v => v.PlayerId).includes(i.id));
+                                        var members = message.guild.members.cache.filter(i => !i.user.bot && (!results || !results.length ? true : !results.map(v => v.PlayerId).includes(i.id)));
+                                        var discludedMembers = message.guild.members.cache.filter(i => !i.user.bot && (!results || !results.length ? false : results.map(v => v.PlayerId).includes(i.id)));
 
                                         //Message
                                         message.channel.send(new Discord.MessageEmbed().setDescription(`Setting ${members.size} members nickname\'s to ${query}...\n` +
@@ -534,8 +532,8 @@ exports.run = (bot, guild, message, args) => {
                                     if (error) return console.error(error); //Return error console log and return
 
                                     //Grab members
-                                    var members = message.guild.members.cache.filter(i => !i.user.bot && !results.map(v => v.PlayerId).includes(i.id));
-                                    var discludedMembers = message.guild.members.cache.filter(i => !i.user.bot && results.map(v => v.PlayerId).includes(i.id));
+                                    var members = message.guild.members.cache.filter(i => !i.user.bot && (!results || !results.length ? true : !results.map(v => v.PlayerId).includes(i.id)));
+                                    var discludedMembers = message.guild.members.cache.filter(i => !i.user.bot && (!results || !results.length ? false : results.map(v => v.PlayerId).includes(i.id)));
 
                                     //Message
                                     message.channel.send(new Discord.MessageEmbed().setDescription(`Resetting ${members.size} members nicknames to their default usernames...\n` +
