@@ -61,6 +61,7 @@ exports.run = (bot, guild, message, args) => {
                                             .then((sent) => {
                                                 var count = 0;
 
+                                                sent.edit(new Discord.MessageEmbed().setDescription(`✅ Translated ${count} / ${members.size} members nicknames into ${value.name}`).setColor('#09b50c'));
                                                 //For all members in the guild
                                                 members.map((v, key) => {
                                                     //Increase count
@@ -81,7 +82,6 @@ exports.run = (bot, guild, message, args) => {
                                                             ` nickname due to Missing Permissions`).setColor('#b50909'));
                                                     }
                                                 });
-                                                sent.edit(new Discord.MessageEmbed().setDescription(`✅ Translated ${count} / ${members.size} members nicknames into ${value.name}`).setColor('#09b50c'));
                                             });
                                     });
                                 }).catch((err) => {
