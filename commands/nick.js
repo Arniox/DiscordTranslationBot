@@ -61,6 +61,8 @@ exports.run = (bot, guild, message, args) => {
                                             .then((sent) => {
                                                 var count = 0;
 
+                                                console.log(members.map((v, key)));
+
                                                 //For all members in the guild
                                                 members.map((v, key) => v).forEach(v => {
                                                     //Increase count
