@@ -1,10 +1,21 @@
 //const { OpusEncoder } = require('@discordjs/opus');
 const Enmap = require("enmap");
-var Discord = require('discord.js');
+const Discord = require('discord.js');
+const mysql = require('promise-mysql');
+
+//WIP - to be removed
 var settings = require('./configure.json');
 var dataToUse = require('./data-to-use.json');
-var tools = require('./extra-functions');
 var fs = require('fs');
+
+const pool = mysql.createPool({
+	host: process.env.CLEARDB_DATABASE_URL.match(/(@)[a-zA-Z\d-.]+/).join('').replace(/(@)/, ''), //Get host
+	user: process.env.CLEARDB_DATABASE_URL.match(/(\/\/)[a-zA-Z\d]+/).join('').replace(/(\/\/)/, ''), //Get user
+	password: process.env.CLEARDB_DATABASE_URL.match(/(:)[a-zA-Z\d]+/).join('').replace(/(:)/, ''), //Get password
+	database: process.env.CLEARDB_DATABASE_URL.match(/([a-zA-Z]\/)[a-zA-Z\d_]+/).join('').replace(/([a-zA-Z]\/)/, '') //Get database
+});
+
+console.log(pool);
 
 //Initialize Discord bot 
 var bot = new Discord.Client();
