@@ -58,11 +58,12 @@ exports.run = (bot, guild, message, args) => {
 
                                                 //For all members in the guild
                                                 members.map((v, key) => {
+                                                    //Get current user nickname
+                                                    var currentUserNickName = NickName(v);
+                                                    //Increase count
+                                                    count++;
+
                                                     if (IsLowerRoles(message, v)) {
-                                                        //Get current user nickname
-                                                        var currentUserNickName = NickName(v);
-                                                        //Increase count
-                                                        count++;
 
                                                         //Translate
                                                         googleTranslate.translate(currentUserNickName, value.language, function (err, translation) {
@@ -422,6 +423,7 @@ exports.run = (bot, guild, message, args) => {
 
                                                     //Check if bot has perms
                                                     if (IsLowerRoles(message, value)) {
+
                                                         //Change nickname
                                                         value.setNickname(query.substring(0, 32), `Set ${value.user.username}\'s nickname to ${query}.`);
                                                         //Edit message
@@ -533,6 +535,7 @@ exports.run = (bot, guild, message, args) => {
                                                 count++;
 
                                                 if (IsLowerRoles(message, value)) {
+
                                                     //Reset nickname
                                                     value.setNickname(value.user.username, `Reset ${currentUserNickName}\'s nickname to default username (${value.user.username}).`);
                                                     //Edit message
