@@ -9,32 +9,41 @@ exports.run = (bot, guild, message, args) => {
             //Channel name, find the voice channel
             var channelToMute = message.guild.channels.cache.find(i => i.name.toLowerCase() == voiceChannel.toLowerCase() && i.type == 'voice');
             if (channelToMute) {
-                //Grab all players in this voice that aren't ignored
-                var playersFoundInVoice = message.guild.members.cache.filter(i => i.voice.channelID == channelToMute.id && !i._roles.some(r => bot.config.muteroles.includes(r)));
+                //Get all mute ignored roles
+                const sql_cmd = `
+                SELECT * FROM ignored_muteroles
+                    WHERE ServerId = "${message.guild.id}"
+                `;
+                bot.con.query(sql_cmd, (error, results, fields) => {
+                    if (error) return console.error(error); //Return error console log and return
 
-                if (playersFoundInVoice.size != 0) {
-                    //send message promise
-                    message.channel
-                        .send(new Discord.MessageEmbed().setDescription(`Muting 0 / ${playersFoundInVoice.size} members in ${channelToMute.toString()}`).setColor('#FFCC00'))
-                        .then((sent) => {
-                            var countofMutedPlayers = 0;
+                    //Grab all players in this voice that aren't ignored
+                    var playersFoundInVoice = message.guild.members.cache.filter(i => i.voice.channelID == channelToMute && !i._roles.some(r => results.map(v => v.RoleId).includes(r)));
 
-                            //Mute everyone that we found
-                            playersFoundInVoice.map((value, key) => {
-                                countofMutedPlayers++; //Count muted players
+                    if (playersFoundInVoice.size != 0) {
+                        //send message promise
+                        message.channel
+                            .send(new Discord.MessageEmbed().setDescription(`Muting 0 / ${playersFoundInVoice.size} members in ${channelToMute.toString()}`).setColor('#FFCC00'))
+                            .then((sent) => {
+                                var countofMutedPlayers = 0;
 
-                                value.voice.setMute(true);
-                                //Edit message
-                                sent.edit(new Discord.MessageEmbed().setDescription(`Muting ${countofMutedPlayers} / ${playersFoundInVoice.size} members ` +
-                                    `in ${channelToMute.toString()}`).setColor('#FFCC00'));
+                                //Mute everyone that we found
+                                playersFoundInVoice.map((value, key) => {
+                                    countofMutedPlayers++; //Count muted players
+
+                                    value.voice.setMute(true);
+                                    //Edit message
+                                    sent.edit(new Discord.MessageEmbed().setDescription(`Muting ${countofMutedPlayers} / ${playersFoundInVoice.size} members ` +
+                                        `in ${channelToMute.toString()}`).setColor('#FFCC00'));
+                                });
+                                //Update after loop
+                                sent.edit(new Discord.MessageEmbed().setDescription(`✅ Muted ${countofMutedPlayers} / ${playersFoundInVoice.size} members ` +
+                                    `in ${channelToMute.toString()}`).setColor('#09b50c'));
                             });
-                            //Update after loop
-                            sent.edit(new Discord.MessageEmbed().setDescription(`✅ Muted ${countofMutedPlayers} / ${playersFoundInVoice.size} members ` +
-                                `in ${channelToMute.toString()}`).setColor('#09b50c'));
-                        });
-                } else {
-                    message.channel.send(new Discord.MessageEmbed().setDescription(`There\'s no one in ${channelToMute.toString()} to mute.`).setColor('#b50909'));
-                }
+                    } else {
+                        message.channel.send(new Discord.MessageEmbed().setDescription(`There\'s no one in ${channelToMute.toString()} to mute.`).setColor('#b50909'));
+                    }
+                });
             } else {
                 message.channel.send(new Discord.MessageEmbed().setDescription(`Could not find a voice channel with the name ${voiceChannel} `).setColor('#b50909'));
             }
