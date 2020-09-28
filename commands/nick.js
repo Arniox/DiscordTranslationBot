@@ -331,38 +331,37 @@ exports.run = (bot, guild, message, args) => {
                                                                             previousLanguage = lang.name;
                                                                             //Update user name to translate
                                                                             outPutName = translation.translatedText;
+
+                                                                            console.log(langCount);
+                                                                            console.log(languageCodes.length);
+                                                                            console.log(langCount == languageCodes.length);
+                                                                            //At end of loop, change nickname and edit message
+                                                                            if (langCount == languageCodes.length) {
+                                                                                //After loop, google translate to end language
+                                                                                googleTranslate.translate(outPutName, value.language, function (err, translation) {
+                                                                                    //Change username
+                                                                                    v.setNickname(translation.translatedText.substring(0, 32), `Chinese whispers with ${v.user.username}\'s` +
+                                                                                        ` nickname from ${firstLanguage} to ${value.name}`);
+                                                                                    //Edit message
+                                                                                    sent.edit(new Discord.MessageEmbed()
+                                                                                        .setColor('#09b50c')
+                                                                                        .setDescription(`✅ Finished playing Chinese whispers with ${v.toString()}\'s nickname.`)
+                                                                                        .addFields(
+                                                                                            {
+                                                                                                name: 'Language',
+                                                                                                value: `Went through all \`${langCount} / ${languageCodes.length}\` languages.`,
+                                                                                                inline: true
+                                                                                            },
+                                                                                            {
+                                                                                                name: 'Name',
+                                                                                                value: `Original Name: \`${currentUserNickName}\` ane now, current name: \`${translation.translatedText}\``
+                                                                                            }
+                                                                                        )
+                                                                                        .setTimestamp()
+                                                                                    );
+                                                                                });
+                                                                            }
                                                                         });
-
-
-                                                                        console.log(langCount);
-                                                                        console.log(languageCodes.length);
-                                                                        console.log(langCount == languageCodes.length);
-                                                                        //At end of loop, change nickname and edit message
-                                                                        if (langCount == languageCodes.length) {
-                                                                            //After loop, google translate to end language
-                                                                            googleTranslate.translate(outPutName, value.language, function (err, translation) {
-                                                                                //Change username
-                                                                                v.setNickname(translation.translatedText.substring(0, 32), `Chinese whispers with ${v.user.username}\'s` +
-                                                                                    ` nickname from ${firstLanguage} to ${value.name}`);
-                                                                                //Edit message
-                                                                                sent.edit(new Discord.MessageEmbed()
-                                                                                    .setColor('#09b50c')
-                                                                                    .setDescription(`✅ Finished playing Chinese whispers with ${v.toString()}\'s nickname.`)
-                                                                                    .addFields(
-                                                                                        {
-                                                                                            name: 'Language',
-                                                                                            value: `Went through all \`${langCount} / ${languageCodes.length}\` languages.`,
-                                                                                            inline: true
-                                                                                        },
-                                                                                        {
-                                                                                            name: 'Name',
-                                                                                            value: `Original Name: \`${currentUserNickName}\` ane now, current name: \`${translation.translatedText}\``
-                                                                                        }
-                                                                                    )
-                                                                                    .setTimestamp()
-                                                                                );
-                                                                            });
-                                                                        }
                                                                     });
                                                                 });
                                                         });
