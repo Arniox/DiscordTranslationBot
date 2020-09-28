@@ -17,12 +17,12 @@ const pool = mysql.createPool({
 
 //Initialize Discord bot 
 var bot = new Discord.Client();
+bot.dbpool = pool; //Attach pool to bot
 
-pool.then((p) => {
+bot.dbpool.then((p) => {
 	return p.getConnection();
 }).then((connection) => {
 	console.log(`Connection to ${process.env.CLEARDB_DATABASE_URL} was successful!`);
-	bot.con = connection; //Attach connection to bot
 
 	//Attach settings to bot
 	bot.config = settings;
@@ -60,13 +60,16 @@ pool.then((p) => {
 			bot.commands.set(commandName, props);
 		});
 	});
-	//Handle promise rejections
-	process.on('unhandledRejection', error => console.error('Uncaught Promise Rejection', error));
+
+	//Release connection
+	connection.release();
 }).catch(err => {
 	console.error(err, `Connection to ${process.env.CLEARDB_DATABASE_URL} has failed!`);
 });
 //Bot loggin
 bot.login(process.env.BOT_TOKEN);
+//Handle promise rejections
+process.on('unhandledRejection', error => console.error('Uncaught Promise Rejection', error));
 
 //----------------FUNCTIONS--------------------------------
 //Function variables / Globals
