@@ -30,8 +30,6 @@ module.exports = (bot, guild) => {
 
         //Release connection when done
         bot.con.release();
-        //Clear bot.con to nothing
-        bot.con = null;
     }).catch((err) => {
         console.log(err, `Connection failed on guildCreate`);
     })
