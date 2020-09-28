@@ -21,8 +21,7 @@ exports.run = (bot, guild, message, args) => {
                         //Soft Ban members with message
                         message.channel
                             .send(new Discord.MessageEmbed().setDescription(`Soft banning 0 / ${mentions.size} members\n` +
-                                `**Reason: ${reason ? reason : 'non given'}**\n` +
-                                `I couldn\'t ban 0 / ${mentions.size} members due to permissions.`).setColor('#FFCC00'))
+                                `**Reason: ${reason ? reason : 'non given'}**`).setColor('#FFCC00'))
                             .then((sent) => {
                                 var count = 0;
                                 var errorCount = 0;
@@ -54,12 +53,12 @@ exports.run = (bot, guild, message, args) => {
                                     //Update message
                                     if ((count + errorCount) == mentions.size) //Update after loop
                                         sent.edit(new Discord.MessageEmbed().setDescription(`✅ Soft banned ${count} / ${mentions.size} members\n` +
-                                            `**Reason: ${reason ? reason : 'non given'}**\n` +
-                                            `I could\'t ban ${errorCount} / ${mentions.size} members due to permissions.`).setColor('#09b50c'));
+                                            `**Reason: ${reason ? reason : 'non given'}**` +
+                                            `${errorCount > 0 ? (`\nI could\'t ban ${errorCount} / ${mentions.size} members due to permissions.`) : ''}`).setColor('#09b50c'));
                                     else //Edit message
                                         sent.edit(new Discord.MessageEmbed().setDescription(`Soft banning ${count} / ${mentions.size} members\n` +
-                                            `**Reason: ${reason ? reason : 'non given'}**\n` +
-                                            `I couldn\'t ban ${errorCount} / ${mentions.size} members due to permissions.`).setColor('#FFCC00'));
+                                            `**Reason: ${reason ? reason : 'non given'}**` +
+                                            `${errorCount > 0 ? (`\nI could\'t ban ${errorCount} / ${mentions.size} members due to permissions.`) : ''}`).setColor('#FFCC00'));
                                 });
                             })
                         break;
@@ -67,8 +66,7 @@ exports.run = (bot, guild, message, args) => {
                         //Hard Ban members with message
                         message.channel
                             .send(new Discord.MessageEmbed().setDescription(`Hard banning 0 / ${mentions.size} members\n` +
-                                `**Reason: ${reason ? reason : 'non given'}**\n` +
-                                `I couldn\'t ban 0 / ${mentions.size} members due to permissions.`).setColor('#FFCC00'))
+                                `**Reason: ${reason ? reason : 'non given'}**\n`).setColor('#FFCC00'))
                             .then((sent) => {
                                 var count = 0;
                                 var errorCount = 0;
@@ -92,12 +90,12 @@ exports.run = (bot, guild, message, args) => {
                                     //Update message
                                     if ((count + errorCount) == members.size) //Update after loop
                                         sent.edit(new Discord.MessageEmbed().setDescription(`✅ Hard banned ${count} / ${mentions.size} members\n` +
-                                            `Reason: ${reason ? reason : 'non given'}\n` +
-                                            `I couldn\'t ban ${errorCount} / ${mentions.size} members due to permissions.`).setColor('#09b50c'));
+                                            `Reason: ${reason ? reason : 'non given'}` +
+                                            `${errorCount > 0 ? (`\nI could\'t ban ${errorCount} / ${mentions.size} members due to permissions.`) : ''}`).setColor('#09b50c'));
                                     else //Edit message
                                         sent.edit(new Discord.MessageEmbed().setDescription(`Hard banning ${count} / ${mentions.size} members\n` +
-                                            `Reason: ${reason ? reason : 'non given'}\n` +
-                                            `I couldn'\t ban ${errorCount} / ${mentions.size} members due to permissions.`).setColor('#FFCC00'));
+                                            `Reason: ${reason ? reason : 'non given'}` +
+                                            `${errorCount > 0 ? (`\nI could\'t ban ${errorCount} / ${mentions.size} members due to permissions.`) : ''}`).setColor('#FFCC00'));
                                 });
                             });
                         break;
