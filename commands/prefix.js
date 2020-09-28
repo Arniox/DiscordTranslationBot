@@ -2,9 +2,8 @@
 const Discord = require('discord.js');
 
 exports.run = (bot, guild, message, args) => {
-    if (args.length != 0) {
-        var command = args.shift().toLowerCase();
-
+    var command = args.shift().toLowerCase();
+    if (command) {
         //Check which option you want
         switch (command) {
             case 'change': //Change bot prefix
@@ -43,7 +42,7 @@ exports.run = (bot, guild, message, args) => {
                 break;
         }
     } else {
-        HelpMessage(bot, guild, message, args);
+        message.channel.send(new Discord.MessageEmbed().setDescription(`Current Bot Prefix is: ${guild.Prefix}`).setColor('#0099ff'));
     }
 };
 
