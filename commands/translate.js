@@ -194,11 +194,10 @@ exports.run = (bot, guild, message, args) => {
                                                         `;
                                                         bot.con.query(add_sql, (error, results, fields) => {
                                                             if (error) return console.error(error); //Return error console log
-
-                                                            //Edit message
-                                                            channelsAdded.string += `${c.toString()}\n`;
-                                                            channelsAdded.count++;
                                                         });
+                                                        //Edit message
+                                                        channelsAdded.string += `${c.toString()}\n`;
+                                                        channelsAdded.count++;
                                                     } else {
                                                         //Edit message
                                                         channelsNot.string += `${c.toString()}\n`;
@@ -206,10 +205,10 @@ exports.run = (bot, guild, message, args) => {
                                                     }
                                                     //Edit
                                                     if (overallCount == channelMentions.size) //Finish after loop
-                                                        sent.edit(new Discord.MessageEmbed().setDescription(`✅ **Adding ${channelsAdded.count} / ${channelMentions.size} new channel(s) to translation ignored channels:**\n` +
+                                                        sent.edit(new Discord.MessageEmbed().setDescription(`✅ **Adding ${channelsAdded.count} / ${channelMentions.length} new channel(s) to translation ignored channels:**\n` +
                                                             `${channelsAdded.string}\n**${channelsNot.count} where not added because they where already being translated ignored:**\n${channelsNot.string}`).setColor('#09b50c'))
                                                     else
-                                                        sent.edit(new Discord.MessageEmbed().setDescription(`**Adding ${channelsAdded.count} / ${channelMentions.size} new channel(s) to translation ignored channels:**\n` +
+                                                        sent.edit(new Discord.MessageEmbed().setDescription(`**Adding ${channelsAdded.count} / ${channelMentions.length} new channel(s) to translation ignored channels:**\n` +
                                                             `${channelsAdded.string}\n**${channelsNot.count} where not added because they where already being translated ignored:**\n${channelsNot.string}`).setColor('#FFCC00'));
                                                 });
                                             });
@@ -261,11 +260,10 @@ exports.run = (bot, guild, message, args) => {
                                                         `;
                                                         bot.con.query(remove_sql, (error, results, fields) => {
                                                             if (error) return console.error(error); //Return error console log
-
-                                                            //Edit message
-                                                            channelsRemoved.string += `${c.toString()},\n`;
-                                                            channelsRemoved.count++;
                                                         });
+                                                        //Edit message
+                                                        channelsRemoved.string += `${c.toString()},\n`;
+                                                        channelsRemoved.count++;
                                                     } else {
                                                         //Add to the output for channels not removed
                                                         channelsNot.string += `${c.toString()},\n`;
@@ -273,11 +271,11 @@ exports.run = (bot, guild, message, args) => {
                                                     }
                                                     //Edit
                                                     if (overallCount == channelMentions.size) //Finish after loop
-                                                        sent.edit(new Discord.MessageEmbed().setDescription(`✅ **Removed ${channelsRemoved.count} / ${channelMentions.size} channel(s) from the translation ignored channels:**\n` +
+                                                        sent.edit(new Discord.MessageEmbed().setDescription(`✅ **Removed ${channelsRemoved.count} / ${channelMentions.length} channel(s) from the translation ignored channels:**\n` +
                                                             `${channelsRemoved.string}\n**${channelsNot.count} where not removed because they where already not in the translation ignored list:**\n${channelsNot.string}`).setColor('#09b50c'));
                                                     else
                                                         //Message
-                                                        sent.edit(new Discord.MessageEmbed().setDescription(`**Removing ${channelsRemoved.count} / ${channelMentions.size} channel(s) from the translation ignored channels:**\n` +
+                                                        sent.edit(new Discord.MessageEmbed().setDescription(`**Removing ${channelsRemoved.count} / ${channelMentions.length} channel(s) from the translation ignored channels:**\n` +
                                                             `${channelsRemoved.string}\n**${channelsNot.count} where not removed because they where already not in the translation ignored list:**\n${channelsNot.string}`).setColor('#FFCC00'));
                                                 });
                                             });
