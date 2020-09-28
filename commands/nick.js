@@ -301,11 +301,38 @@ exports.run = (bot, guild, message, args) => {
                                                                     var firstLanguage = `${languageCodes[0].name}`;
                                                                     var outPutName = currentUserNickName;
 
-                                                                    //Create promise
-                                                                    new Promise((resolve, reject) => {
-                                                                        languageCodes.forEach((lang, index, array) => {
-                                                                            googleTranslate.translate(outPutName, lang.language, function (err, translation) {
-                                                                                langCount++;
+                                                                    //For loop through all languages
+                                                                    languageCodes.forEach((lang, index, array) => {
+                                                                        googleTranslate.translate(outPutName, lang.language, function (err, translation) {
+                                                                            langCount++;
+
+                                                                            //Resolve once the loop is done
+                                                                            if (index === array.length - 1) {
+                                                                                //After loop, google translate to end language
+                                                                                googleTranslate.translate(outPutName, value.language, function (err, translation) {
+                                                                                    //Change username
+                                                                                    v.setNickname(translation.translatedText.substring(0, 32), `Chinese whispers with ${v.user.username}\'s` +
+                                                                                        ` nickname from ${firstLanguage} to ${value.name}`)
+                                                                                        .then(() => {
+                                                                                            sent.edit(new Discord.MessageEmbed()
+                                                                                                .setColor('#09b50c')
+                                                                                                .setDescription(`✅ Finished playing Chinese whispers with ${v.toString()}\'s nickname.`)
+                                                                                                .addFields(
+                                                                                                    {
+                                                                                                        name: 'Language',
+                                                                                                        value: `Went through all \`${langCount} / ${languageCodes.length}\` languages.`,
+                                                                                                        inline: true
+                                                                                                    },
+                                                                                                    {
+                                                                                                        name: 'Name',
+                                                                                                        value: `Original Name: \`${currentUserNickName}\` ane now, current name: \`${translation.translatedText}\``
+                                                                                                    }
+                                                                                                )
+                                                                                                .setTimestamp()
+                                                                                            );
+                                                                                        });
+                                                                                });
+                                                                            } else {
                                                                                 //Edit message
                                                                                 sent.edit(new Discord.MessageEmbed()
                                                                                     .setColor('#FFCC00')
@@ -329,34 +356,7 @@ exports.run = (bot, guild, message, args) => {
                                                                                 previousLanguage = lang.name;
                                                                                 //Update user name to translate
                                                                                 outPutName = translation.translatedText;
-                                                                                //Resolve once the loop is done
-                                                                                if (index === array.length - 1) resolve();
-                                                                            });
-                                                                        });
-                                                                    }).then(() => {
-                                                                        //After loop, google translate to end language
-                                                                        googleTranslate.translate(outPutName, value.language, function (err, translation) {
-                                                                            //Change username
-                                                                            v.setNickname(translation.translatedText.substring(0, 32), `Chinese whispers with ${v.user.username}\'s` +
-                                                                                ` nickname from ${firstLanguage} to ${value.name}`)
-                                                                                .then(() => {
-                                                                                    sent.edit(new Discord.MessageEmbed()
-                                                                                        .setColor('#09b50c')
-                                                                                        .setDescription(`✅ Finished playing Chinese whispers with ${v.toString()}\'s nickname.`)
-                                                                                        .addFields(
-                                                                                            {
-                                                                                                name: 'Language',
-                                                                                                value: `Went through all \`${langCount} / ${languageCodes.length}\` languages.`,
-                                                                                                inline: true
-                                                                                            },
-                                                                                            {
-                                                                                                name: 'Name',
-                                                                                                value: `Original Name: \`${currentUserNickName}\` ane now, current name: \`${translation.translatedText}\``
-                                                                                            }
-                                                                                        )
-                                                                                        .setTimestamp()
-                                                                                    );
-                                                                                });
+                                                                            }
                                                                         });
                                                                     });
                                                                 });
