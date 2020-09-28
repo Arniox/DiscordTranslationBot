@@ -1,24 +1,41 @@
 module.exports = (bot) => {
-    //Check all guilds
-    const sql_cmd = `SELECT ServerId FROM servers`;
-    bot.con.query(sql_cmd, (error, results, fields) => {
-        if (error) return console.error(error); //Return error console log and continue
+    //Get connection
+    bot.dbpool.then((p) => {
+        return p.getConnection();
+    }).then((connection) => {
+        //Attach connection to bot
+        bot.con = connection;
 
         //Check all guilds
-        bot.guilds.cache.map((value, key) => {
-            //If this guild isn;t in database, then add
-            if (!results.map(v => v.ServerId).includes(key)) {
-                //Create default server controller
-                const server_controller_cmd = `
-                INSERT INTO servers (ServerId, ServerName, Prefix)
-                    VALUES("${key}", "${value.name}", "$")
-                `;
-                //Insert new server details
-                bot.con.query(server_controller_cmd, (error, results, fields) => {
-                    if (error) return console.error(error); //Throw error and return
-                });
-            }
+        const sql_cmd = `SELECT ServerId FROM servers`;
+        bot.con.query(sql_cmd, (error, results, fields) => {
+            if (error) return console.error(error); //Return error console log and continue
+
+            //Check all guilds
+            bot.guilds.cache.map((value, key) => {
+                //If this guild isn;t in database, then add
+                if (!results.map(v => v.ServerId).includes(key)) {
+                    //Create default server controller
+                    const server_controller_cmd = `
+                    INSERT INTO servers (ServerId, ServerName, Prefix)
+                        VALUES("${key}", "${value.name}", "$")
+                    `;
+                    //Insert new server details
+                    bot.con.query(server_controller_cmd, (error, results, fields) => {
+                        if (error) return console.error(error); //Throw error and return
+                    });
+                }
+            });
+
+            //Release connection when done
+            bot.con.release();
+            //Clear bot.con to nothing
+            bot.con = null;
+            //Handle error once released
+            if (error) throw error;
         });
+    }).catch((err) => {
+        console.log(err, `Connection failed on ready`);
     });
 
     //log
