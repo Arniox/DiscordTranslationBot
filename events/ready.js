@@ -7,7 +7,7 @@ module.exports = (bot) => {
         bot.con = connection;
 
         //Check all guilds
-        const sql_cmd = `SELECT ServerId FROM servers`;
+        const sql_cmd = `SELECT * FROM servers`;
         bot.con.query(sql_cmd, (error, results, fields) => {
             if (error) throw error; //Return error console log and continue
 
@@ -23,7 +23,12 @@ module.exports = (bot) => {
                     //Insert new server details
                     bot.con.query(server_controller_cmd, (error, results, fields) => {
                         if (error) return console.error(error); //Throw error and return
+                        //Set the bot user activity for this specific server
+                        value.me.user.setActivity(`the $ prefix`, { type: 'WATCHING' });
                     });
+                } else {
+                    //Set the bot user activity for this specific server
+                    value.me.user.setActivity(`the ${results.find(i => i.ServerId == key).Prefix} prefix`, { type: 'WATCHING' });
                 }
             });
         });

@@ -588,9 +588,9 @@ exports.run = (bot, guild, message, args) => {
                         if (!results.map(v => v.PlayerId).includes(message.member.id)) {
                             //Add user to database
                             const addme_cmd = `
-                                        INSERT INTO translation_ignored_players (PlayerId, ServerId)
-                                            VALUES("${message.member.id}", "${message.guild.id}")
-                                        `;
+                            INSERT INTO translation_ignored_players (PlayerId, ServerId)
+                                VALUES("${message.member.id}", "${message.guild.id}")
+                            `;
                             bot.con.query(addme_cmd, (error, results, fields) => {
                                 if (error) return console.error(error); //Throw error and return
 

@@ -2,7 +2,7 @@
 const Discord = require('discord.js');
 const fs = require('fs');
 
-exports.run = (bot, message, args) => {
+exports.run = (bot, guild, message, args) => {
     if (args.length != 0) {
         var command = args.shift().toLowerCase();
 
@@ -14,15 +14,21 @@ exports.run = (bot, message, args) => {
 
                     //Check if the query exists
                     if (query) {
-                        var previousPrefix = bot.config.prefix;
+                        var previousPrefix = guild.Prefix;
 
-                        //Change prefix
-                        bot.config.prefix = query;
-                        //Write to file
-                        fs.writeFileSync('./configure.json', JSON.stringify(bot.config));
-                        bot.user.setActivity(`the ${bot.config.prefix} prefix`, { type: 'WATCHING' });
-                        //Message
-                        message.channel.send(new Discord.MessageEmbed().setDescription(`Changed Prefix from: ${previousPrefix} to: ${bot.config.prefix}`).setColor('#09b50c'));
+                        //Update new prefix
+                        const update_cmd = `
+                        UPDATE servers
+                        SET Prefix = "${query}"
+                        WHERE ServerId = "${message.guild.id}"
+                        `;
+                        bot.con.query(update_cmd, (error, results, fields) => {
+                            if (error) return console.error(error); //Throw error and return
+
+                            bot.user.setActivity(`the ${guild.Prefix} prefix`, { type: 'WATCHING' });
+                            //Message
+                            message.channel.send(new Discord.MessageEmbed().setDescription(`Changed Prefix from: ${previousPrefix} to: ${guild.Prefix}`).setColor('#09b50c'));
+                        });
                     } else {
                         message.channel.send(new Discord.MessageEmbed().setDescription('Sorry, I cannot change your prefix to nothing!').setColor('#b50909'));
                     }
@@ -31,27 +37,27 @@ exports.run = (bot, message, args) => {
                 }
                 break;
             case 'current':
-                message.channel.send(new Discord.MessageEmbed().setDescription(`Current Bot Prefix is: ${bot.config.prefix}`).setColor('#0099ff'));
+                message.channel.send(new Discord.MessageEmbed().setDescription(`Current Bot Prefix is: ${guild.Prefix}`).setColor('#0099ff'));
                 break;
             default: //Error on prefix command
-                HelpMessage(bot, message, args);
+                HelpMessage(bot, guild, message, args);
                 break;
         }
     } else {
-        HelpMessage(bot, message, args);
+        HelpMessage(bot, guild, message, args);
     }
 };
 
 //Help message
-function HelpMessage(bot, message, args) {
+function HelpMessage(bot, guild, message, args) {
     //Reply with help message
     var embeddedHelpMessage = new Discord.MessageEmbed()
         .setColor('#b50909')
         .setAuthor(bot.user.username, bot.user.avatarURL())
-        .setDescription(`You can use prefix by running *${bot.config.prefix}prefix current* to list the current prefix, or *${bot.config.prefix}prefix change [new prefix]* to change the prefix.`)
+        .setDescription(`You can use prefix by running *${guild.Prefix}prefix current* to list the current prefix, or *${guild.Prefix}prefix change [new prefix]* to change the prefix.`)
         .addFields(
             { name: 'Required Permissions: ', value: 'Manage Server' },
-            { name: 'Example: ', value: `${bot.config.prefix}prefix current\n\n${bot.config.prefix}prefix change =` }
+            { name: 'Example: ', value: `${guild.Prefix}prefix current\n\n${guild.Prefix}prefix change =` }
         )
         .setTimestamp()
         .setFooter('Thanks, and have a good day');
