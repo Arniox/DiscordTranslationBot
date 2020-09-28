@@ -1,6 +1,6 @@
 const Discord = require('discord.js');
 
-exports.run = (bot) => {
+exports.run = (bot, guild = null, message = null, args = null) => {
     //Get now
     var now = new Date();
 
