@@ -26,14 +26,14 @@ module.exports = (bot) => {
                     });
                 }
             });
-
-            //Release connection when done
-            bot.con.release();
-            //Clear bot.con to nothing
-            bot.con = null;
-            //Handle error once released
-            if (error) throw error;
         });
+
+        //Release connection when done
+        bot.con.release();
+        //Clear bot.con to nothing
+        bot.con = null;
+        //Handle error once released
+        if (error) throw error;
     }).catch((err) => {
         console.log(err, `Connection failed on ready`);
     });
