@@ -330,13 +330,13 @@ exports.run = (bot, guild, message, args) => {
                                 HelpMessage(bot, guild, message, args);
                                 break;
                         }
-                        break;
                     } else {
                         HelpMessage(bot, guild, message, args);
                     }
                 } else {
                     message.channel.send(new Discord.MessageEmbed().setDescription(`Sorry, your discord server is dissallowed to use translation commands. This is a premium service.`).setColor('#b50909'));
                 }
+                break;
             case 'set':
                 if (args.length != 0) {
                     //Get command
