@@ -160,46 +160,60 @@ exports.run = (bot, guild, message, args) => {
                             if (message.member.hasPermission('MANAGE_GUILD')) {
                                 //Get mentions
                                 var channelMentions = message.mentions.channels.map((v, k) => v);
-                                //Output
-                                var channelsAdded = { "string": "", "count": 0 };
-                                var channelsNot = { "string": "", "count": 0 };
 
                                 //Check if channel exists
                                 if (channelMentions.size != 0) {
-                                    //Look for existing channels
-                                    const sql_cmd = `
-                                    SELECT * FROM translation_ignored_channels
-                                        WHERE ServerId = "${message.guild.id}"
-                                    `;
-                                    bot.con.query(sql_cmd, async function (error, results, fields) {
-                                        if (error) return console.error(error); //Return error console log
 
-                                        //Check each mentioned channel
-                                        await channelMentions.forEach(async function (c) {
-                                            //Check if exists in the database
-                                            if (!results.map(v => v.ChannelId).includes(c.id)) {
-                                                //Add channel to database
-                                                const add_sql = `
-                                                INSERT INTO translation_ignored_channels (ChannelId, ServerId)
-                                                    VALUES ("${c.id}", "${message.guild.id}")
-                                                `;
-                                                await bot.con.query(add_sql, (error, results, fields) => {
-                                                    if (error) return console.error(error); //Return error console log
+                                    //Message
+                                    message.channel.send(new Discord.MessageEmbed().setDescription(`**Adding 0 / ${channelMentions.size} new channel(s) to translation ignored channels:**`).setColor('#FFCC00'))
+                                        .then((sent) => {
+                                            //Count channels added and count channels not added
+                                            var channelsAdded = { "string": "", "count": 0 };
+                                            var channelsNot = { "string": "", "count": 0 };
+                                            var overallCount = 0;
 
-                                                    //Add to the out for channels added
-                                                    channelsAdded.string += `${c.toString()},\n`;
-                                                    channelsAdded.count++;
+                                            //Look for existing channels
+                                            const sql_cmd = `
+                                            SELECT * FROM translation_ignored_channels
+                                                WHERE ServerId = "${message.guild.id}"
+                                            `;
+                                            bot.con.query(sql_cmd, (error, results, fields) => {
+                                                if (error) return console.error(error); //Return error console log
+
+                                                //Check each mentioned channel
+                                                channelMentions.forEach((c) => {
+                                                    //Count
+                                                    overallCount++;
+
+                                                    //Check if exists in the database
+                                                    if (!results.map(v => v.ChannelId).includes(c.id)) {
+                                                        //Add channel to database
+                                                        const add_sql = `
+                                                        INSERT INTO translation_ignored_channels (ChannelId, ServerId)
+                                                            VALUES ("${c.id}", "${message.guild.id}")
+                                                        `;
+                                                        bot.con.query(add_sql, (error, results, fields) => {
+                                                            if (error) return console.error(error); //Return error console log
+
+                                                            //Edit message
+                                                            channelsAdded.string += `${c.toString()}\n`;
+                                                            channelsAdded.count++;
+                                                            //Edit
+                                                            if (overallCount == channelMentions.size) //Finish after loop
+                                                                sent.edit(new Discord.MessageEmbed().setDescription(`✅ **Adding ${channelsAdded.count} / ${channelMentions.size} new channel(s) to translation ignored channels:**\n` +
+                                                                    `${channelsAdded.string}\n**${channelsNot.count} where not added because they where already being translated ignored:**\n${channelsNot.string}`).setColor('#09b50c'))
+                                                            else
+                                                                sent.edit(new Discord.MessageEmbed().setDescription(`**Adding ${channelsAdded.count} / ${channelMentions.size} new channel(s) to translation ignored channels:**\n` +
+                                                                    `${channelsAdded.string}\n**${channelsNot.count} where not added because they where already being translated ignored:**\n${channelsNot.string}`).setColor('#FFCC00'));
+                                                        });
+                                                    } else {
+                                                        //Edit message
+                                                        channelsNot.string += `${c.toString()}\n`;
+                                                        channelsNot.count++;
+                                                    }
                                                 });
-                                            } else {
-                                                //Add to the output for channels not added
-                                                channelsNot.string += `${c.toString()},\n`;
-                                                channelsNot.count++;
-                                            }
+                                            });
                                         });
-                                        //Message
-                                        message.channel.send(new Discord.MessageEmbed().setDescription(`**Added ${channelsAdded.count} new channel(s) to translation ignored channels:**\n${channelsAdded.string}` +
-                                            `**${channelsNot.count} where not added because they where already being translation ignored:**\n${channelsNot.string}`).setColor('#09b50c'));
-                                    });
                                 } else {
                                     message.channel.send(new Discord.MessageEmbed().setDescription('Sorry, you did not supply a channel(s).').setColor('#b50909'));
                                 }
@@ -212,47 +226,62 @@ exports.run = (bot, guild, message, args) => {
                             if (message.member.hasPermission('MANAGE_GUILD')) {
                                 //Get mentioned channels
                                 var channelMentions = message.mentions.channels.map((v, k) => v);
-                                //Output
-                                var channelsRemoved = { "string": "", "count": 0 };
-                                var channelsNot = { "string": "", "count": 0 };
 
                                 //Check if channels where mentioned
                                 if (channelMentions.size != 0) {
-                                    //Look for existing channels
-                                    const sql_cmd = `
-                                    SELECT * FROM translation_ignored_channels
-                                        WHERE ServerId = "${message.guild.id}"
-                                    `;
-                                    bot.con.query(sql_cmd, async function (error, results, fields) {
-                                        if (error) return console.error(error); //Return error console log
 
-                                        //Check each mentioned channel
-                                        await channelMentions.forEach(async function (c) {
-                                            //Check if exists in the database
-                                            if (results.map(v => v.ChannelId).includes(c.id)) {
-                                                //Remove channel from database
-                                                const remove_sql = `
-                                                DELETE FROM translation_ignored_channels
-                                                    WHERE ChannelId = "${c.id}"
-                                                    AND ServerId = "${message.guild.id}"
-                                                `;
-                                                await bot.con.query(remove_sql, (error, results, fields) => {
-                                                    if (error) return console.error(error); //Return error console log
+                                    //Message
+                                    message.channel.send(new Discord.MessageEmbed().setDescription(`**Removing 0 / ${channelMentions.size}** channel(s) from the translation ignored channels:**`).setColor('#FFCC00'))
+                                        .then((sent) => {
+                                            //Count channels added and count channels not added
+                                            var channelsRemoved = { "string": "", "count": 0 };
+                                            var channelsNot = { "string": "", "count": 0 };
+                                            var overallCount = 0;
 
-                                                    //Add to the output for channels removed
-                                                    channelsRemoved.string += `${c.toString()},\n`;
-                                                    channelsRemoved.count++;
+                                            //Look for existing channels
+                                            const sql_cmd = `
+                                            SELECT * FROM translation_ignored_channels
+                                                WHERE ServerId = "${message.guild.id}"
+                                            `;
+                                            bot.con.query(sql_cmd, (error, results, fields) => {
+                                                if (error) return console.error(error); //Return error console log
+
+                                                //Check each mentioned channel
+                                                channelMentions.forEach((c) => {
+                                                    //Count
+                                                    overallCount++;
+
+                                                    //Check if exists in the database
+                                                    if (results.map(v => v.ChannelId).includes(c.id)) {
+                                                        //Remove channel from database
+                                                        const remove_sql = `
+                                                        DELETE FROM translation_ignored_channels
+                                                            WHERE ChannelId = "${c.id}"
+                                                            AND ServerId = "${message.guild.id}"
+                                                        `;
+                                                        bot.con.query(remove_sql, (error, results, fields) => {
+                                                            if (error) return console.error(error); //Return error console log
+
+                                                            //Edit message
+                                                            channelsRemoved.string += `${c.toString()},\n`;
+                                                            channelsRemoved.count++;
+                                                            //Edit
+                                                            if (overallCount == channelMentions.size) //Finish after loop
+                                                                sent.edit(new Discord.MessageEmbed().setDescription(`✅ **Removed ${channelsRemoved.count} / ${channelMentions.size} channel(s) from the translation ignored channels:**\n` +
+                                                                    `${channelsRemoved.string}\n**${channelsNot.count} where not removed because they where already not in the translation ignored list:**\n${channelsNot.string}`).setColor('#09b50c'));
+                                                            else
+                                                                //Message
+                                                                sent.edit(new Discord.MessageEmbed().setDescription(`**Removing ${channelsRemoved.count} / ${channelMentions.size} channel(s) from the translation ignored channels:**\n` +
+                                                                    `${channelsRemoved.string}\n**${channelsNot.count} where not removed because they where already not in the translation ignored list:**\n${channelsNot.string}`).setColor('#FFCC00'));
+                                                        });
+                                                    } else {
+                                                        //Add to the output for channels not removed
+                                                        channelsNot.string += `${c.toString()},\n`;
+                                                        channelsNot.count++;
+                                                    }
                                                 });
-                                            } else {
-                                                //Add to the output for channels not removed
-                                                channelsNot.string += `${c.toString()},\n`;
-                                                channelsNot.count++;
-                                            }
+                                            });
                                         });
-                                        //Message
-                                        message.channel.send(new Discord.MessageEmbed().setDescription(`**Removed ${channelsRemoved.count} channels from the translation ignored channels:**\n${channelsRemoved.string}` +
-                                            `**${channelsNot.count} where not removed because they where already not in the translation ignored list:**\n${channelsNot.string}`).setColor('#09b50c'));
-                                    });
                                 } else {
                                     message.channel.send(new Discord.MessageEmbed().setDescription('Sorry, you did not supply a channel(s).').setColor('#b50909'));
                                 }
