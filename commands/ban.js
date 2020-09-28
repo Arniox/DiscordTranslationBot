@@ -109,7 +109,7 @@ exports.run = (bot, guild, message, args) => {
 };
 
 function HelpMessage(bot, guild, message, args) {
-    var randomMember = message.guild.memebers.cache.random();
+    var randomMember = message.guild.members.cache.random();
 
     var embeddedHelpMessage = new Discord.MessageEmbed()
         .setColor('#b50909')
