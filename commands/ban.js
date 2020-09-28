@@ -20,7 +20,8 @@ exports.run = (bot, guild, message, args) => {
                     case 'soft':
                         //Soft Ban members with message
                         message.channel
-                            .send(new Discord.MessageEmbed().setDescription(`Soft banning 0 / ${mentions.size} members\n\n` +
+                            .send(new Discord.MessageEmbed().setDescription(`Soft banning 0 / ${mentions.size} members\n` +
+                                `**Reason: ${reason ? reason : 'non given'}**\n` +
                                 `I couldn\'t ban 0 / ${mentions.size} members due to permissions.`).setColor('#FFCC00'))
                             .then((sent) => {
                                 var count = 0;
@@ -35,7 +36,8 @@ exports.run = (bot, guild, message, args) => {
                                         //Send reinvite
                                         message.channel.createInvite({ maxAge: 0, maxUses: 1, unique: true, reason: `${reason}` })
                                             .then((invite) => {
-                                                value.send(`You where soft banned from ${message.guild.name}. Reason: ${reason}. Here is a reinvite ${invite.toString()}`)
+                                                value.send(`You where soft banned from ${message.guild.name}\n` +
+                                                    `Reason: ${reason ? reason : 'non given'}\nHere is a reinvite ${invite.toString()}`)
                                                     .then(() => {
                                                         //Ban and reinvite
                                                         message.guild.members.ban(value, { reason: `${reason}` }); //Ban
@@ -51,10 +53,12 @@ exports.run = (bot, guild, message, args) => {
                                     }
                                     //Update message
                                     if ((count + errorCount) == mentions.size) //Update after loop
-                                        sent.edit(new Discord.MessageEmbed().setDescription(`✅ Soft banned ${count} / ${mentions.size} members\n\n` +
+                                        sent.edit(new Discord.MessageEmbed().setDescription(`✅ Soft banned ${count} / ${mentions.size} members\n` +
+                                            `**Reason: ${reason ? reason : 'non given'}**\n` +
                                             `I could\'t ban ${errorCount} / ${mentions.size} members due to permissions.`).setColor('#09b50c'));
                                     else //Edit message
-                                        sent.edit(new Discord.MessageEmbed().setDescription(`Soft banning ${count} / ${mentions.size} members\n\n` +
+                                        sent.edit(new Discord.MessageEmbed().setDescription(`Soft banning ${count} / ${mentions.size} members\n` +
+                                            `**Reason: ${reason ? reason : 'non given'}**\n` +
                                             `I couldn\'t ban ${errorCount} / ${mentions.size} members due to permissions.`).setColor('#FFCC00'));
                                 });
                             })
@@ -62,7 +66,8 @@ exports.run = (bot, guild, message, args) => {
                     case 'hard':
                         //Hard Ban members with message
                         message.channel
-                            .send(new Discord.MessageEmbed().setDescription(`Hard banning 0 / ${mentions.size} members\n\n` +
+                            .send(new Discord.MessageEmbed().setDescription(`Hard banning 0 / ${mentions.size} members\n` +
+                                `**Reason: ${reason ? reason : 'non given'}**\n` +
                                 `I couldn\'t ban 0 / ${mentions.size} members due to permissions.`).setColor('#FFCC00'))
                             .then((sent) => {
                                 var count = 0;
@@ -73,7 +78,8 @@ exports.run = (bot, guild, message, args) => {
                                     if (message.guild.me.roles.highest.comparePositionTo(value.roles.highest) > 0) {
                                         count++;
                                         //Send message
-                                        value.send(`You where hard banned from ${message.guild.name}. Reason: ${reason}.`)
+                                        value.send(`You where hard banned from ${message.guild.name}\n` +
+                                            `Reason: ${reason ? reason : 'non given'}`)
                                             .then(() => {
                                                 //Ban
                                                 message.guild.memebers.ban(value, { reason: `${reason}` }); //Ban
@@ -85,10 +91,12 @@ exports.run = (bot, guild, message, args) => {
                                     }
                                     //Update message
                                     if ((count + errorCount) == members.size) //Update after loop
-                                        sent.edit(new Discord.MessageEmbed().setDescription(`✅ Hard banned ${count} / ${mentions.size} members\n\n` +
+                                        sent.edit(new Discord.MessageEmbed().setDescription(`✅ Hard banned ${count} / ${mentions.size} members\n` +
+                                            `Reason: ${reason ? reason : 'non given'}\n` +
                                             `I couldn\'t ban ${errorCount} / ${mentions.size} members due to permissions.`).setColor('#09b50c'));
                                     else //Edit message
-                                        sent.edit(new Discord.MessageEmbed().setDescription(`Hard banning ${count} / ${mentions.size} members\n\n` +
+                                        sent.edit(new Discord.MessageEmbed().setDescription(`Hard banning ${count} / ${mentions.size} members\n` +
+                                            `Reason: ${reason ? reason : 'non given'}\n` +
                                             `I couldn'\t ban ${errorCount} / ${mentions.size} members due to permissions.`).setColor('#FFCC00'));
                                 });
                             });
