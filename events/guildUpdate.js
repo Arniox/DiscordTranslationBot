@@ -29,7 +29,7 @@ module.exports = (bot, oldGuild, newGuild) => {
                 //Update server controller
                 const server_controller_cmd = `
                 UPDATE servers
-                SET ServerId = "${newGuild.id}"
+                SET ServerId = "${newGuild.id}",
                     ServerName = "${newGuild.name}"
                 WHERE ServerId = "${oldGuild.id}"
                 `;
