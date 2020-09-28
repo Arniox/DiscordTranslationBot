@@ -9,7 +9,14 @@ module.exports = (bot, message) => {
     SELECT *
         FROM servers
         WHERE ServerId = "${message.guild.id}"`;
+
+    console.log(sql_cmd);
+
     bot.con.query(sql_cmd, (error, results, fields) => {
+        console.log(error);
+        console.log(results);
+        console.log(fields);
+
         if (error || !results || results.length < 1) return console.error(error); //Return error console log and return
 
         //if else on message that starts with prefix
