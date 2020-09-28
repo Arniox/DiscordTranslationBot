@@ -12,13 +12,8 @@ module.exports = (bot, oldGuild, newGuild) => {
         bot.con = connection;
 
         //Check if guild exists in database
-        const sql_cmd = `SELECT * FROM servers WHERE ServerId = "${oldGuild}"`;
+        const sql_cmd = `SELECT * FROM servers WHERE ServerId = "${oldGuild.id}"`;
         bot.con.query(sql_cmd, (error, results, fields) => {
-            console.log(results);
-            console.log(results.length);
-
-            console.log(!results || !results.length);
-
             if (error) throw error; //Return error and return
             else if (!results || !results.length) {
                 //Create default server controller
