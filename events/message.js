@@ -52,7 +52,9 @@ module.exports = (bot, message) => {
 
         //Release connection when done
         bot.con.release();
-    }).catch((error) => {
+        //Handle error once released
+        if (error) throw error;
+    }).catch((err) => {
         console.log(err, `Connection failed on message.`);
     });
 }
