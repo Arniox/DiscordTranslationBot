@@ -17,13 +17,13 @@ exports.run = (bot, guild, message, args) => {
                             message.channel.send(new Discord.MessageEmbed().setDescription(`Today's full year is: ${new Date().getFullYear()}.`).setColor('#09b50c'));
                             break;
                         case 'month': case 'months':
-                            message.channel.send(new Discord.MessageEmbed().setDescription(`Today's month is the: ${Ordinal(new Date().getMonth() + 1)} month of the year.`).setColor('#09b50c'));
+                            message.channel.send(new Discord.MessageEmbed().setDescription(`Today's month is the: ${(new Date().getMonth() + 1).ordinal()} month of the year.`).setColor('#09b50c'));
                             break;
                         case 'date':
-                            message.channel.send(new Discord.MessageEmbed().setDescription(`Today's date is the: ${Ordinal(new Date().getDate())}.`).setColor('#09b50c'));
+                            message.channel.send(new Discord.MessageEmbed().setDescription(`Today's date is the: ${(new Date().getDate()).ordinal()}.`).setColor('#09b50c'));
                             break;
                         case 'day': case 'days':
-                            message.channel.send(new Discord.MessageEmbed().setDescription(`Today is the : ${Ordinal(new Date().getDay() + 1)} day of the week.`).setColor('#09b50c'));
+                            message.channel.send(new Discord.MessageEmbed().setDescription(`Today is the : ${(new Date().getDay() + 1).ordinal()} day of the week.`).setColor('#09b50c'));
                             break;
                         case 'h': case 'hour': case 'hours':
                             message.channel.send(new Discord.MessageEmbed().setDescription(`It is ${new Date().getHours().toString().padEnd(3, '0').padStart(4, '0')} hours.`).setColor('#09b50c'));
@@ -44,7 +44,7 @@ exports.run = (bot, guild, message, args) => {
                                     .addField('Fact: ', 'This value in programming is the number of milliseconds after the incredably specific date of Jan 1, 1970, 00:00:00.000 GMT').setColor('#09b50c'));
                             break;
                         case 'timezoneoffset': case 'timezoneoff': case 'timezone': case 'zone':
-                            message.channel.send(new Discord.MessageEmbed().setDescription(`Your timezone offset is ${new Date().getTimezoneOffset()}`).setColor('#09b50c'));
+                            message.channel.send(new Discord.MessageEmbed().setDescription(`Your timezone offset is ${new Date().getTimezoneOffset()} `).setColor('#09b50c'));
                             break;
                         default:
                             message.channel.send(new Discord.MessageEmbed().setDescription(`Sorry, you need to select something to get from today's date.`).setColor('#b50909'));
@@ -176,31 +176,4 @@ function HelpMessage(bot, guild, message, args) {
 
     //Send embedded message
     message.channel.send(embeddedHelpMessage);
-}
-
-//Ordinal
-function Ordinal(number) {
-    var ones = number % 10;
-    var tens = (number / 10).floor() % 10;
-    var stuff = "";
-
-    if (tens == 1) {
-        stuff = "th";
-    } else {
-        switch (ones) {
-            case 1:
-                stuff = "st";
-                break;
-            case 2:
-                stuff = "nd";
-                break;
-            case 3:
-                stuff = "rd";
-                break;
-            default:
-                stuff = "th";
-        }
-    }
-
-    return number.toString() + stuff;
 }
