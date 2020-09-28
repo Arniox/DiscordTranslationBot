@@ -204,7 +204,7 @@ exports.run = (bot, guild, message, args) => {
                                                         channelsNot.count++;
                                                     }
                                                     //Edit
-                                                    if (overallCount == channelMentions.size) //Finish after loop
+                                                    if (overallCount == channelMentions.length) //Finish after loop
                                                         sent.edit(new Discord.MessageEmbed().setDescription(`✅ **Adding ${channelsAdded.count} / ${channelMentions.length} new channel(s) to translation ignored channels:**\n` +
                                                             `${channelsAdded.string}\n**${channelsNot.count} where not added because they where already being translated ignored:**\n${channelsNot.string}`).setColor('#09b50c'))
                                                     else
@@ -270,7 +270,7 @@ exports.run = (bot, guild, message, args) => {
                                                         channelsNot.count++;
                                                     }
                                                     //Edit
-                                                    if (overallCount == channelMentions.size) //Finish after loop
+                                                    if (overallCount == channelMentions.length) //Finish after loop
                                                         sent.edit(new Discord.MessageEmbed().setDescription(`✅ **Removed ${channelsRemoved.count} / ${channelMentions.length} channel(s) from the translation ignored channels:**\n` +
                                                             `${channelsRemoved.string}\n**${channelsNot.count} where not removed because they where already not in the translation ignored list:**\n${channelsNot.string}`).setColor('#09b50c'));
                                                     else
