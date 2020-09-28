@@ -1,8 +1,10 @@
 const Discord = require('discord.js');
 
-exports.run = (bot, message, args) => {
+exports.run = (bot, guild, message, args) => {
     if (args.length != 0) {
         var command = args.shift().toLowerCase();
+
+        console.log(message.guild.region);
 
         //Switch on today command
         switch (command) {
@@ -146,11 +148,11 @@ exports.run = (bot, message, args) => {
                 break;
         }
     } else {
-        HelpMessage(bot, message, args);
+        HelpMessage(bot, guild, message, args);
     }
 }
 
-function HelpMessage(bot, message, args) {
+function HelpMessage(bot, guild, message, args) {
     var embeddedHelpMessage = new Discord.MessageEmbed()
         .setColor('#b50909')
         .setAuthor(bot.user.username, bot.user.avatarURL())
@@ -158,14 +160,14 @@ function HelpMessage(bot, message, args) {
         .addFields(
             {
                 name: 'Command Patterns: ',
-                value: `${bot.config.prefix}today [commands] [selection/time range]`
+                value: `${guild.Prefix}today [commands] [selection/time range]`
             },
             {
                 name: 'Examples: ',
-                value: `${bot.config.prefix}today get [year/month/date/day/hour/min/sec/milli/time/time zone offset]\n` +
-                    `${bot.config.prefix}today now [short/full]\n` +
-                    `${bot.config.prefix}today [UTC/ISO]\n` +
-                    `${bot.config.prefix}today [+, -, *, /] [1y/1M/1d/1h/1m/1s/1ms]`,
+                value: `${guild.Prefix}today get [year/month/date/day/hour/min/sec/milli/time/time zone offset]\n` +
+                    `${guild.Prefix}today now [short/full]\n` +
+                    `${guild.Prefix}today [UTC/ISO]\n` +
+                    `${guild.Prefix}today [+, -, *, /] [1y/1M/1d/1h/1m/1s/1ms]`,
                 inline: true
             }
         )
