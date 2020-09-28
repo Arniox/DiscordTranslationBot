@@ -2,6 +2,7 @@
 const Enmap = require("enmap");
 const Discord = require('discord.js');
 const mysql = require('promise-mysql');
+var tools = require('./extra-functions');
 
 //WIP - to be removed
 var settings = require('./configure.json');
