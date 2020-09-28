@@ -88,7 +88,7 @@ exports.run = (bot, guild, message, args) => {
                                         errorCount++;
                                     }
                                     //Update message
-                                    if ((count + errorCount) == members.size) //Update after loop
+                                    if ((count + errorCount) == mentions.size) //Update after loop
                                         sent.edit(new Discord.MessageEmbed().setDescription(`✅ Hard banned ${count} / ${mentions.size} members\n` +
                                             `Reason: ${reason ? reason : 'non given'}` +
                                             `${errorCount > 0 ? (`\nI could\'t ban ${errorCount} / ${mentions.size} members due to permissions.`) : ''}`).setColor('#09b50c'));
