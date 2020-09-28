@@ -326,7 +326,7 @@ exports.run = (bot, guild, message, args) => {
                                                                                     }
                                                                                 )
                                                                                 .setTimestamp()
-                                                                            );
+                                                                            ).catch((err) => { return; });
                                                                             //Change previous language name
                                                                             previousLanguage = lang.name;
                                                                             //Update user name to translate
@@ -358,7 +358,7 @@ exports.run = (bot, guild, message, args) => {
                                                                                             }
                                                                                         )
                                                                                         .setTimestamp()
-                                                                                    );
+                                                                                    ).catch((err) => { return; });
                                                                                 });
                                                                             }
                                                                         });
