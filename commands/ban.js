@@ -39,7 +39,7 @@ exports.run = (bot, guild, message, args) => {
                                                     `Reason: ${reason ? reason : 'non given'}\nHere is a reinvite ${invite.toString()}`)
                                                     .then(() => {
                                                         //Ban and reinvite
-                                                        message.guild.members.ban(value, { reason: `${reason}` }); //Ban
+                                                        message.guild.members.ban(value, { reason: `${reason ? reason : 'non given'}` }); //Ban
                                                         message.guild.members.unban(personId); //Unban
                                                     }).catch((err) => {
                                                         return; //Ignore error
@@ -80,7 +80,7 @@ exports.run = (bot, guild, message, args) => {
                                             `Reason: ${reason ? reason : 'non given'}`)
                                             .then(() => {
                                                 //Ban
-                                                message.guild.memebers.ban(value, { reason: `${reason}` }); //Ban
+                                                message.guild.members.ban(value, { reason: `${reason ? reason : 'non given'}` }); //Ban
                                             }).catch((err) => {
                                                 return; //Ignore error
                                             });
