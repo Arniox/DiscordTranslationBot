@@ -181,7 +181,7 @@ exports.run = (bot, guild, message, args) => {
                                                 //Add channel to database
                                                 const add_sql = `
                                                 INSERT INTO translation_ignored_channels (ChannelId, ServerId)
-                                                    VALUES ("${c.id}", "${c.id}")
+                                                    VALUES ("${c.id}", "${message.guild.id}")
                                                 `;
                                                 bot.con.query(add_sql, (error, results, fields) => {
                                                     if (error) return console.error(error); //Return error console log
