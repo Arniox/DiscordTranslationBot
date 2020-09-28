@@ -333,6 +333,10 @@ exports.run = (bot, guild, message, args) => {
                                                                             outPutName = translation.translatedText;
                                                                         });
 
+
+                                                                        console.log(langCount);
+                                                                        console.log(languageCodes.length);
+                                                                        console.log(langCount == languageCodes.length);
                                                                         //At end of loop, change nickname and edit message
                                                                         if (langCount == languageCodes.length) {
                                                                             //After loop, google translate to end language
