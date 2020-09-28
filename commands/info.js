@@ -21,6 +21,8 @@ exports.run = (bot, guild, message, args) => {
                         case 'names': case 'name':
                             message.channel.send(new Discord.MessageEmbed().setDescription(`**List of All Servers:**\n\n${bot.guilds.cache.map((value, key) => value.name).join(', ')}`).setColor('#0099ff'));
                             break;
+                        default:
+                            message.channel.send(new Discord.MessageEmbed().setDescription('Sorry, I did not understand the detail argument you provided.').setColor('#b50909'));
                     }
                 } else {
                     message.channel.send(new Discord.MessageEmbed().setDescription('Sorry, you did not supply the detail arugment.').setColor('#b50909'));
