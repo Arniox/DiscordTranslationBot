@@ -127,65 +127,6 @@ exports.run = (bot, guild, message, args) => {
                                 message.channel.send(new Discord.MessageEmbed().setDescription(`I cannot translate your nickname ${message.member.toString()} due to Missing Permissions`).setColor('#b50909'));
                             }
                             break;
-                        case 'ignore':
-                            var option = args.shift();
-
-                            //Get a list of translation ignored players
-                            const list_cmd = `
-                            SELECT * FROM translation_ignored_players
-                                WHERE ServerId = "${message.guild.id}"
-                            `;
-                            bot.con.query(list_cmd, (error, results, fields) => {
-                                if (error) return console.error(error); //Throw error and return
-
-                                //Check if option exists
-                                if (option) {
-                                    //Switch on option
-                                    switch (option) {
-                                        case 'list':
-                                            //List out members
-                                            var membersList = message.guild.members.cache
-                                                .filter((value, key) => results.map(v => v.PlayerId).includes(key))
-                                                .map((value, key) => value.toString());
-                                            //Send message
-                                            message.channel.send(new Discord.MessageEmbed().setDescription(`${membersList.length} members are being nickname ignored.\n` +
-                                                `${membersList.join(`\n`)}`).setColor('#0099ff'));
-                                            break;
-                                        default:
-                                            HelpMessage(bot, guild, message, args);
-                                            break;
-                                    }
-                                } else {
-                                    //Check if you alraedy exist in the data base
-                                    if (!results.map(v => v.PlayerId).includes(message.member.id)) {
-                                        //Add user to database
-                                        const addme_cmd = `
-                                        INSERT INTO translation_ignored_players (PlayerId, ServerId)
-                                            VALUES("${message.member.id}", "${message.guild.id}")
-                                        `;
-                                        bot.con.query(addme_cmd, (error, results, fields) => {
-                                            if (error) return console.error(error); //Throw error and return
-
-                                            //Message
-                                            message.channel.send(new Discord.MessageEmbed().setDescription(`I have added you, ${message.member.toString()} to the nickname ignored members list.`).setColor('#09b50c'));
-                                        });
-                                    } else {
-                                        //Remove user from database
-                                        const removeme_cmd = `
-                                        DELETE FROM translation_ignored_players
-                                            WHERE PlayerId = "${message.member.id}"
-                                            AND ServerId = "${message.guild.id}"
-                                        `;
-                                        bot.con.query(removeme_cmd, (error, results, fields) => {
-                                            if (error) return console.error(error); //Throw error and return
-
-                                            //Message
-                                            message.channel.send(new Discord.MessageEmbed().setDescription(`I have removed you, ${message.member.toString()} from the nickname ignored members list.`).setColor('#09b50c'));
-                                        });
-                                    }
-                                }
-                            });
-                            break;
                         case 'someone':
                             //Check if correct perms
                             if (IsNickNamer(message)) {
@@ -332,16 +273,13 @@ exports.run = (bot, guild, message, args) => {
                                                                             //Update user name to translate
                                                                             outPutName = translation.translatedText;
 
-                                                                            console.log(langCount);
-                                                                            console.log(languageCodes.length);
-                                                                            console.log(langCount == languageCodes.length);
                                                                             //At end of loop, change nickname and edit message
                                                                             if (langCount == languageCodes.length) {
                                                                                 //After loop, google translate to end language
                                                                                 googleTranslate.translate(outPutName, value.language, function (err, translation) {
                                                                                     //Change username
                                                                                     v.setNickname(translation.translatedText.substring(0, 32), `Chinese whispers with ${v.user.username}\'s` +
-                                                                                        ` nickname from ${firstLanguage} to ${value.name}`);
+                                                                                        ` nickname from ${firstLanguage} through ${languageCodes.length} languages to ${value.name}`);
                                                                                     //Edit message
                                                                                     sent.edit(new Discord.MessageEmbed()
                                                                                         .setColor('#09b50c')
@@ -612,6 +550,65 @@ exports.run = (bot, guild, message, args) => {
                 } else {
                     HelpMessage(bot, guild, message, args);
                 }
+            case 'ignore':
+                var option = args.shift();
+
+                //Get a list of translation ignored players
+                const list_cmd = `
+                SELECT * FROM translation_ignored_players
+                    WHERE ServerId = "${message.guild.id}"
+                `;
+                bot.con.query(list_cmd, (error, results, fields) => {
+                    if (error) return console.error(error); //Throw error and return
+
+                    //Check if option exists
+                    if (option) {
+                        //Switch on option
+                        switch (option) {
+                            case 'list':
+                                //List out members
+                                var membersList = message.guild.members.cache
+                                    .filter((value, key) => results.map(v => v.PlayerId).includes(key))
+                                    .map((value, key) => value.toString());
+                                //Send message
+                                message.channel.send(new Discord.MessageEmbed().setDescription(`${membersList.length} members are being nickname ignored.\n` +
+                                    `${membersList.join(`\n`)}`).setColor('#0099ff'));
+                                break;
+                            default:
+                                HelpMessage(bot, guild, message, args);
+                                break;
+                        }
+                    } else {
+                        //Check if you alraedy exist in the data base
+                        if (!results.map(v => v.PlayerId).includes(message.member.id)) {
+                            //Add user to database
+                            const addme_cmd = `
+                                        INSERT INTO translation_ignored_players (PlayerId, ServerId)
+                                            VALUES("${message.member.id}", "${message.guild.id}")
+                                        `;
+                            bot.con.query(addme_cmd, (error, results, fields) => {
+                                if (error) return console.error(error); //Throw error and return
+
+                                //Message
+                                message.channel.send(new Discord.MessageEmbed().setDescription(`I have added you, ${message.member.toString()} to the nickname ignored members list.`).setColor('#09b50c'));
+                            });
+                        } else {
+                            //Remove user from database
+                            const removeme_cmd = `
+                                        DELETE FROM translation_ignored_players
+                                            WHERE PlayerId = "${message.member.id}"
+                                            AND ServerId = "${message.guild.id}"
+                                        `;
+                            bot.con.query(removeme_cmd, (error, results, fields) => {
+                                if (error) return console.error(error); //Throw error and return
+
+                                //Message
+                                message.channel.send(new Discord.MessageEmbed().setDescription(`I have removed you, ${message.member.toString()} from the nickname ignored members list.`).setColor('#09b50c'));
+                            });
+                        }
+                    }
+                });
+                break;
             default:
                 HelpMessage(bot, guild, message, args);
                 break;
