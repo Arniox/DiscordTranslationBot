@@ -303,35 +303,32 @@ exports.run = (bot, guild, message, args) => {
 
                                                                     //For loop through all languages
                                                                     languageCodes.forEach((lang, index, array) => {
-                                                                        googleTranslate.translate(outPutName, lang.language, function (err, translation) {
+                                                                        googleTranslate.translate(outPutName, (index == array.length - 1 ? value.language : lang.language), function (err, translation) {
                                                                             langCount++;
 
                                                                             //Resolve once the loop is done
-                                                                            if (index === array.length - 1) {
-                                                                                //After loop, google translate to end language
-                                                                                googleTranslate.translate(outPutName, value.language, function (err, translation) {
-                                                                                    //Change username
-                                                                                    v.setNickname(translation.translatedText.substring(0, 32), `Chinese whispers with ${v.user.username}\'s` +
-                                                                                        ` nickname from ${firstLanguage} to ${value.name}`)
-                                                                                        .then(() => {
-                                                                                            sent.edit(new Discord.MessageEmbed()
-                                                                                                .setColor('#09b50c')
-                                                                                                .setDescription(`✅ Finished playing Chinese whispers with ${v.toString()}\'s nickname.`)
-                                                                                                .addFields(
-                                                                                                    {
-                                                                                                        name: 'Language',
-                                                                                                        value: `Went through all \`${langCount} / ${languageCodes.length}\` languages.`,
-                                                                                                        inline: true
-                                                                                                    },
-                                                                                                    {
-                                                                                                        name: 'Name',
-                                                                                                        value: `Original Name: \`${currentUserNickName}\` ane now, current name: \`${translation.translatedText}\``
-                                                                                                    }
-                                                                                                )
-                                                                                                .setTimestamp()
-                                                                                            );
-                                                                                        });
-                                                                                });
+                                                                            if (index == array.length - 1) {
+                                                                                //Change username
+                                                                                v.setNickname(translation.translatedText.substring(0, 32), `Chinese whispers with ${v.user.username}\'s` +
+                                                                                    ` nickname from ${firstLanguage} to ${value.name}`)
+                                                                                    .then(() => {
+                                                                                        sent.edit(new Discord.MessageEmbed()
+                                                                                            .setColor('#09b50c')
+                                                                                            .setDescription(`✅ Finished playing Chinese whispers with ${v.toString()}\'s nickname.`)
+                                                                                            .addFields(
+                                                                                                {
+                                                                                                    name: 'Language',
+                                                                                                    value: `Went through all \`${langCount} / ${languageCodes.length}\` languages.`,
+                                                                                                    inline: true
+                                                                                                },
+                                                                                                {
+                                                                                                    name: 'Name',
+                                                                                                    value: `Original Name: \`${currentUserNickName}\` ane now, current name: \`${translation.translatedText}\``
+                                                                                                }
+                                                                                            )
+                                                                                            .setTimestamp()
+                                                                                        );
+                                                                                    });
                                                                             } else {
                                                                                 //Edit message
                                                                                 sent.edit(new Discord.MessageEmbed()
