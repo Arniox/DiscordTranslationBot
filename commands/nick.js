@@ -70,14 +70,16 @@ exports.run = (bot, guild, message, args) => {
                                                             //Change name
                                                             v.setNickname(translation.translatedText.substring(0, 32), `Translating name from ${currentUserNickName} to ${translation.translatedText} in ${value.name}`);
                                                             //Edit message
-                                                            sent.edit(new Discord.MessageEmbed().setDescription(`Translating ${count} / ${members.size} members nicknames into ${value.name}`).setColor('#FFCC00'));
+                                                            if (count == members.size)
+                                                                sent.edit(new Discord.MessageEmbed().setDescription(`✅ Translated ${count} / ${members.size} members nicknames into ${value.name}`).setColor('#09b50c'));
+                                                            else
+                                                                sent.edit(new Discord.MessageEmbed().setDescription(`Translating ${count} / ${members.size} members nicknames into ${value.name}`).setColor('#FFCC00'));
                                                         });
                                                     } else {
                                                         message.channel.send(new Discord.MessageEmbed().setDescription(`I had problem translating ${v.toString()}\'s` +
                                                             ` nickname due to Missing Permissions`).setColor('#b50909'));
                                                     }
                                                 });
-                                                sent.edit(new Discord.MessageEmbed().setDescription(`✅ Translated ${count} / ${members.size} members nicknames into ${value.name}`).setColor('#09b50c'));
                                             });
                                     });
                                 }).catch((err) => {
@@ -427,12 +429,14 @@ exports.run = (bot, guild, message, args) => {
                                                         //Change nickname
                                                         value.setNickname(query.substring(0, 32), `Set ${value.user.username}\'s nickname to ${query}.`);
                                                         //Edit message
-                                                        sent.edit(new Discord.MessageEmbed().setDescription(`Setting ${count} / ${members.size} members nicknames to ${query}`).setColor('#FFCC00'));
+                                                        if (count == members.size)
+                                                            sent.edit(new Discord.MessageEmbed().setDescription(`✅ Set ${count} / ${members.size} members nicknames to ${query}`).setColor('#09b50c'));
+                                                        else
+                                                            sent.edit(new Discord.MessageEmbed().setDescription(`Setting ${count} / ${members.size} members nicknames to ${query}`).setColor('#FFCC00'));
                                                     } else {
                                                         message.channel.send(new Discord.MessageEmbed().setDescription(`I had a problem setting ${value.toString()}\'s nickname due to Missing Permissions.`).setColor('#b50909'));
                                                     }
                                                 });
-                                                sent.edit(new Discord.MessageEmbed().setDescription(`✅ Set ${count} / ${members.size} members nicknames to ${query}`).setColor('#09b50c'));
                                             });
                                     });
                                 } else {
@@ -539,12 +543,14 @@ exports.run = (bot, guild, message, args) => {
                                                     //Reset nickname
                                                     value.setNickname(value.user.username, `Reset ${currentUserNickName}\'s nickname to default username (${value.user.username}).`);
                                                     //Edit message
-                                                    sent.edit(new Discord.MessageEmbed().setDescription(`Resetting ${count} / ${members.size} members usernames.`).setColor('#FFCC00'));
+                                                    if (count == members.size)
+                                                        sent.edit(new Discord.MessageEmbed().setDescription(`✅ Reset ${count} / ${members.size} members usernames.`).setColor('#09b50c'));
+                                                    else
+                                                        sent.edit(new Discord.MessageEmbed().setDescription(`Resetting ${count} / ${members.size} members usernames.`).setColor('#FFCC00'));
                                                 } else {
                                                     message.channel.send(new Discord.MessageEmbed().setDescription(`I had a problem resetting ${value.toString()}\'s nickname due to Missing Permissions.`).setColor('#b50909'));
                                                 }
                                             });
-                                            sent.edit(new Discord.MessageEmbed().setDescription(`✅ Reset ${count} / ${members.size} members usernames.`).setColor('#09b50c'));
                                         });
                                 });
                             } else {
