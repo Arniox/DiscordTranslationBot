@@ -2,8 +2,8 @@
 const Discord = require('discord.js');
 
 exports.run = (bot, guild, message, args) => {
-    var command = args.shift().toLowerCase();
-    if (command) {
+    if (args.length > 0) {
+        var command = args.shift().toLowerCase();
         //Check which option you want
         switch (command) {
             case 'change': //Change bot prefix
