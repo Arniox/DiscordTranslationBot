@@ -84,12 +84,12 @@ exports.run = (bot, guild, message, args) => {
                                         errorCount++;
                                     }
                                     //Update message
-                                    if ((count + errorCount) == members.size) //Edit message
-                                        sent.edit(new Discord.MessageEmbed().setDescription(`Hard banning ${count} / ${mentions.size} members\n\n` +
-                                            `I couldn'\t ban ${errorCount} / ${mentions.size} members due to permissions.`).setColor('#FFCC00'));
-                                    else //Update after loop
+                                    if ((count + errorCount) == members.size) //Update after loop
                                         sent.edit(new Discord.MessageEmbed().setDescription(`✅ Hard banned ${count} / ${mentions.size} members\n\n` +
                                             `I couldn\'t ban ${errorCount} / ${mentions.size} members due to permissions.`).setColor('#09b50c'));
+                                    else //Edit message
+                                        sent.edit(new Discord.MessageEmbed().setDescription(`Hard banning ${count} / ${mentions.size} members\n\n` +
+                                            `I couldn'\t ban ${errorCount} / ${mentions.size} members due to permissions.`).setColor('#FFCC00'));
                                 });
                             });
                         break;
