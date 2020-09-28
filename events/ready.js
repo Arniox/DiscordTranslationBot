@@ -50,7 +50,7 @@ module.exports = (bot) => {
         });
 
     //Get print schedules command
-    const cmd = bot.commands.get("PrintSchedules");
+    const cmd = bot.commands.get("printschedules");
     //If command doesn't exist, exit and do nothing
 
     if (cmd) {
