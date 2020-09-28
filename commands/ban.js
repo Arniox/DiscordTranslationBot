@@ -4,17 +4,17 @@ const Discord = require('discord.js');
 exports.run = (bot, guild, message, args) => {
     var mentions = message.mentions.members; //Get all mentions
 
-    //Check that you mentioned anyone at all
-    if (mentions.size != 0) {
+    //Check that args exist
+    if (args.length != 0) {
+        //Get command
+        var command = args.shift().toLowerCase();
+        //Get reason
+        var reason = args.join(' ').split(',')[1];
+
         //Check permissions
         if (message.member.hasPermission('BAN_MEMBERS')) {
-            //Check that args exist
-            if (args.length != 0) {
-                //Get command
-                var command = args.shift().toLowerCase();
-                //Get reason
-                var reason = args.join(' ').split(',')[1];
-
+            //Check that you mentioned anyone at all
+            if (mentions.size != 0) {
                 //Switch case on command
                 switch (command) {
                     case 'soft':
@@ -98,13 +98,13 @@ exports.run = (bot, guild, message, args) => {
                         break;
                 }
             } else {
-                message.channel.send(new Discord.MessageEmbed().setDescription(`You didn\'t select whether to soft or hard ban ${mentions.map((v, k) => v.toString()).join(', ')}`).setColor('#FFCC00'));
+                message.channel.send(new Discord.MessageEmbed().setDescription('You didn\'t select anyone to ban.').setColor('#b50909'));
             }
         } else {
             message.channel.send(new Discord.MessageEmbed().setDescription('Sorry, you need banning powers.').setColor('#b50909'));
         }
     } else {
-        message.channel.send(new Discord.MessageEmbed().setDescription('You didn\'t select anyone to ban.').setColor('#b50909'));
+        HelpMessage(bot, guild, message, args);
     }
 };
 
