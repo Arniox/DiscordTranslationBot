@@ -61,7 +61,7 @@ module.exports = (bot) => {
             var now = new Date();
             if (now.getDay() == 6) {
                 //Run command
-                cmd.run(bot, now);
+                cmd.run(bot);
             } else {
                 //Log
                 console.log(`Another day, another dollar. Today is ${now.toString()}`);

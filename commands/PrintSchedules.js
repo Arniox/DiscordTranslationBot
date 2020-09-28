@@ -1,6 +1,9 @@
 const Discord = require('discord.js');
 
-exports.run = (bot, now) => {
+exports.run = (bot) => {
+    //Get now
+    var now = new Date();
+
     //Vulcan Esports guild = 671181556202733600
     //Time tables channel = 678107510430760980
     var guild = bot.guilds.cache.find(i => i.id == '671181556202733600');

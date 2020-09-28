@@ -1,6 +1,5 @@
 //Import classes
 const Discord = require('discord.js');
-const fs = require('fs');
 
 exports.run = (bot, guild, message, args) => {
     if (args.length != 0) {
