@@ -42,9 +42,9 @@ exports.run = (bot, guild, message, args) => {
                                     }).then((value) => {
                                         //Get all translation ignored players
                                         const sql_cmd = `
-                                    SELECT * FROM translation_ignored_players
-                                        WHERE ServerId = "${message.guild.id}"
-                                    `;
+                                        SELECT * FROM translation_ignored_players
+                                            WHERE ServerId = "${message.guild.id}"
+                                        `;
                                         bot.con.query(sql_cmd, (error, results, fields) => {
                                             if (error) return console.error(error); //Return error console log and return
 
@@ -136,9 +136,9 @@ exports.run = (bot, guild, message, args) => {
                                             if (IsLowerRoles(message, v)) {
                                                 //Get all translation ignored players
                                                 const sql_cmd = `
-                                            SELECT * FROM translation_ignored_players
-                                                WHERE ServerId = "${message.guild.id}"
-                                            `;
+                                                SELECT * FROM translation_ignored_players
+                                                    WHERE ServerId = "${message.guild.id}"
+                                                `;
                                                 bot.con.query(sql_cmd, (error, results, fields) => {
                                                     if (error) return console.error(error); //Throw error and return
 
@@ -202,9 +202,9 @@ exports.run = (bot, guild, message, args) => {
                                             if (IsLowerRoles(message, v)) {
                                                 //Get all translation ignored players
                                                 const sql_cmd = `
-                                            SELECT * FROM translation_ignored_players
-                                                WHERE ServerId = "${message.guild.id}"
-                                            `;
+                                                SELECT * FROM translation_ignored_players
+                                                    WHERE ServerId = "${message.guild.id}"
+                                                `;
                                                 bot.con.query(sql_cmd, (error, results, fields) => {
                                                     if (error) return console.error(error);
 
