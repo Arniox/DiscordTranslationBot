@@ -9,7 +9,7 @@ module.exports = (bot) => {
         //Check all guilds
         const sql_cmd = `SELECT ServerId FROM servers`;
         bot.con.query(sql_cmd, (error, results, fields) => {
-            if (error) return console.error(error); //Return error console log and continue
+            if (error) throw error; //Return error console log and continue
 
             //Check all guilds
             bot.guilds.cache.map((value, key) => {
@@ -32,8 +32,6 @@ module.exports = (bot) => {
         bot.con.release();
         //Clear bot.con to nothing
         bot.con = null;
-        //Handle error once released
-        if (error) throw error;
     }).catch((err) => {
         console.log(err, `Connection failed on ready`);
     });

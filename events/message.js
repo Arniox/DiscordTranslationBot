@@ -19,7 +19,7 @@ module.exports = (bot, message) => {
             WHERE ServerId = "${message.guild.id}"
         `;
         bot.con.query(sql_cmd, (error, results, fields) => {
-            if (error || !results || results.length < 1) return console.error(error); //Return error console log and return
+            if (error || !results || results.length < 1) throw error; //Return error console log and return
 
             //if else on message that starts with prefix
             if (message.content.startsWith(results[0].Prefix)) {
@@ -54,8 +54,6 @@ module.exports = (bot, message) => {
         bot.con.release();
         //Clear bot.con to nothing
         bot.con = null;
-        //Handle error once released
-        if (error) throw error;
     }).catch((err) => {
         console.log(err, `Connection failed on message`);
     });
