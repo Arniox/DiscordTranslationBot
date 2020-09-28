@@ -73,7 +73,7 @@ Number.prototype.ordinal = function () {
                 break;
         }
     }
-    return number.toString() + stuff;
+    return this.toString() + stuff;
 }
 
 //Pad a number and return as string
