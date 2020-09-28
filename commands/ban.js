@@ -50,7 +50,7 @@ exports.run = (bot, guild, message, args) => {
                                         errorCount++;
                                     }
                                     //Update message
-                                    if ((count + errorCount) == members.size) //Edit message
+                                    if ((count + errorCount) == mentions.size) //Edit message
                                         sent.edit(new Discord.MessageEmbed().setDescription(`Soft banning ${count} / ${mentions.size} members\n\n` +
                                             `I couldn\'t ban ${errorCount} / ${mentions.size} members due to permissions.`).setColor('#FFCC00'));
                                     else //Update after loop
