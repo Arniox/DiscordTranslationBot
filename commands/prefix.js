@@ -27,7 +27,7 @@ exports.run = (bot, guild, message, args) => {
 
                             bot.user.setActivity(`the ${guild.Prefix} prefix`, { type: 'WATCHING' });
                             //Message
-                            message.channel.send(new Discord.MessageEmbed().setDescription(`Changed Prefix from: ${previousPrefix} to: ${guild.Prefix}`).setColor('#09b50c'));
+                            message.channel.send(new Discord.MessageEmbed().setDescription(`Changed Prefix from: ${previousPrefix} to: ${query}`).setColor('#09b50c'));
                         });
                     } else {
                         message.channel.send(new Discord.MessageEmbed().setDescription('Sorry, I cannot change your prefix to nothing!').setColor('#b50909'));
