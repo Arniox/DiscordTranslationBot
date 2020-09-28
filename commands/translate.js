@@ -171,11 +171,11 @@ exports.run = (bot, guild, message, args) => {
                                     SELECT * FROM translation_ignored_channels
                                         WHERE ServerId = "${message.guild.id}"
                                     `;
-                                    bot.con.query(sql_cmd, (error, results, fields) => {
+                                    bot.con.query(sql_cmd, async function (error, results, fields) {
                                         if (error) return console.error(error); //Return error console log
 
                                         //Check each mentioned channel
-                                        channelMentions.forEach((c) => {
+                                        await channelMentions.forEach(async function (c) {
                                             //Check if exists in the database
                                             if (!results.map(v => v.ChannelId).includes(c.id)) {
                                                 //Add channel to database
@@ -183,7 +183,7 @@ exports.run = (bot, guild, message, args) => {
                                                 INSERT INTO translation_ignored_channels (ChannelId, ServerId)
                                                     VALUES ("${c.id}", "${message.guild.id}")
                                                 `;
-                                                bot.con.query(add_sql, (error, results, fields) => {
+                                                await bot.con.query(add_sql, (error, results, fields) => {
                                                     if (error) return console.error(error); //Return error console log
 
                                                     //Add to the out for channels added
@@ -196,10 +196,10 @@ exports.run = (bot, guild, message, args) => {
                                                 channelsNot.count++;
                                             }
                                         });
+                                        //Message
+                                        message.channel.send(new Discord.MessageEmbed().setDescription(`**Added ${channelsAdded.count} new channel(s) to translation ignored channels:**\n${channelsAdded.string}` +
+                                            `**${channelsNot.count} where not added because they where already being translation ignored:**\n${channelsNot.string}`).setColor('#09b50c'));
                                     });
-                                    //Message
-                                    message.channel.send(new Discord.MessageEmbed().setDescription(`**Added ${channelsAdded.count} new channel(s) to translation ignored channels:**\n${channelsAdded.string}` +
-                                        `**${channelsNot.count} where not added because they where already being translation ignored:**\n${channelsNot.string}`).setColor('#09b50c'));
                                 } else {
                                     message.channel.send(new Discord.MessageEmbed().setDescription('Sorry, you did not supply a channel(s).').setColor('#b50909'));
                                 }
@@ -223,11 +223,11 @@ exports.run = (bot, guild, message, args) => {
                                     SELECT * FROM translation_ignored_channels
                                         WHERE ServerId = "${message.guild.id}"
                                     `;
-                                    bot.con.query(sql_cmd, (error, results, fields) => {
+                                    bot.con.query(sql_cmd, async function (error, results, fields) {
                                         if (error) return console.error(error); //Return error console log
 
                                         //Check each mentioned channel
-                                        channelMentions.forEach((c) => {
+                                        await channelMentions.forEach(async function (c) {
                                             //Check if exists in the database
                                             if (results.map(v => v.ChannelId).includes(c.id)) {
                                                 //Remove channel from database
@@ -236,7 +236,7 @@ exports.run = (bot, guild, message, args) => {
                                                     WHERE ChannelId = "${c.id}"
                                                     AND ServerId = "${message.guild.id}"
                                                 `;
-                                                bot.con.query(remove_sql, (error, results, fields) => {
+                                                await bot.con.query(remove_sql, (error, results, fields) => {
                                                     if (error) return console.error(error); //Return error console log
 
                                                     //Add to the output for channels removed
@@ -249,10 +249,10 @@ exports.run = (bot, guild, message, args) => {
                                                 channelsNot.count++;
                                             }
                                         });
+                                        //Message
+                                        message.channel.send(new Discord.MessageEmbed().setDescription(`**Removed ${channelsRemoved.count} channels from the translation ignored channels:**\n${channelsRemoved.string}` +
+                                            `**${channelsNot.count} where not removed because they where already not in the translation ignored list:**\n${channelsNot.string}`).setColor('#09b50c'));
                                     });
-                                    //Message
-                                    message.channel.send(new Discord.MessageEmbed().setDescription(`**Removed ${channelsRemoved.count} channels from the translation ignored channels:**\n${channelsRemoved.string}` +
-                                        `**${channelsNot.count} where not removed because they where already not in the translation ignored list:**\n${channelsNot.string}`).setColor('#09b50c'));
                                 } else {
                                     message.channel.send(new Discord.MessageEmbed().setDescription('Sorry, you did not supply a channel(s).').setColor('#b50909'));
                                 }
