@@ -34,32 +34,6 @@ module.exports = {
             }
         }
     },
-    //Ordinal
-    ordinal: function (number) {
-        var ones = number % 10;
-        var tens = (number / 10).floor() % 10;
-        var stuff = "";
-
-        if (tens == 1) {
-            stuff = "th";
-        } else {
-            switch (ones) {
-                case 1:
-                    stuff = "st";
-                    break;
-                case 2:
-                    stuff = "nd";
-                    break;
-                case 3:
-                    stuff = "rd";
-                    break;
-                default:
-                    stuff = "th";
-            }
-        }
-
-        return number.toString() + stuff;
-    },
     //Randomly grab a number of elements from an array
     getRandomFromArray: function (arr, n) {
         return arr.sort(() => Math.random() - Math.random()).slice(0, n);
@@ -78,6 +52,28 @@ module.exports = {
         }
         return result;
     }
+}
+
+//Ordinal of number
+Number.prototype.ordinal = function () {
+    var ones = this % 10;
+    var tens = (this / 10).floor() % 10;
+    var stuff = "";
+
+    if (tens == 1) stuff = "th";
+    else {
+        switch (ones) {
+            case 1: stuff = "st";
+                break;
+            case 2: stuff = "nd";
+                break;
+            case 3: stuff = "rd";
+                break;
+            default: stuff = "th";
+                break;
+        }
+    }
+    return number.toString() + stuff;
 }
 
 //Pad a number and return as string
