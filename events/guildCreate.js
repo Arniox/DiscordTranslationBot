@@ -19,11 +19,11 @@ module.exports = (bot, guild) => {
                 //Create default server controller
                 const server_controller_cmd = `
                 INSERT INTO servers (ServerId, ServerName, Prefix)
-                    VALUES("${key}", "${value.name}", "$")
+                    VALUES("${guild.id}", "${guild.name}", "$")
                 `;
                 //Insert new server details
                 bot.con.query(server_controller_cmd, (error, results, fields) => {
-                    if (error) return console.error(error); //Throw error and return
+                    if (error) throw error; //Throw error and return
                 });
             }
         });
