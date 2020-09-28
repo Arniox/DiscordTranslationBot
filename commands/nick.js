@@ -304,11 +304,10 @@ exports.run = (bot, guild, message, args) => {
 
                                                                     //For loop through all languages
                                                                     languageCodes.forEach((lang) => {
-                                                                        //Count lang
-                                                                        langCount++;
-
                                                                         //Translate loop
                                                                         googleTranslate.translate(outPutName, lang.language, function (err, translation) {
+                                                                            //Count lang
+                                                                            langCount++;
                                                                             //Edit message
                                                                             sent.edit(new Discord.MessageEmbed()
                                                                                 .setColor('#FFCC00')
