@@ -3,9 +3,11 @@ const googleApiKey = process.env.GOOGLE_API_KEY;
 const Discord = require('discord.js');
 const googleTranslate = require('google-translate')(googleApiKey, { "concurrentLimit": 20 });
 
-exports.run = (bot, message, args) => {
+exports.run = (bot, guild, message, args) => {
     //message.content = RemoveByMatches(message.content, bot.config.google["translate-ignored-patterns"]);
     if (!message.content) return;
+    //If discord server is not allowed translation
+    if (guild.Allowed_Translation == 0) return;
 
     //Ignore specific channels
     if (bot.config.google["translate-ignored-channels"].find(i => i.id == message.channel.id)) return;
