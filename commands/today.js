@@ -4,8 +4,6 @@ exports.run = (bot, guild, message, args) => {
     if (args.length != 0) {
         var command = args.shift().toLowerCase();
 
-        console.log(message.guild.region);
-
         //Switch on today command
         switch (command) {
             case 'get':
@@ -115,18 +113,6 @@ exports.run = (bot, guild, message, args) => {
                                                 .setDescription(`Today (${now.toDateString()})\n-${number} ${usefulDigits[digitRange]["name"]}(s) is: \n${new Date(now.getTime() - (usefulDigits[digitRange]["value"] * parseInt(number))).toString()}`)
                                                 .setColor('#09b50c'));
                                         break;
-                                    case '*':
-                                        message.channel.send(
-                                            new Discord.MessageEmbed()
-                                                .setDescription(`Today (${now.toDateString()})\n*${number} ${usefulDigits[digitRange]["name"]}(s) is: \n${new Date(now.getTime() * (usefulDigits[digitRange]["value"] * parseInt(number))).toString()}`)
-                                                .setColor('#09b50c'));
-                                        break;
-                                    case '/':
-                                        message.channel.send(
-                                            new Discord.MessageEmbed()
-                                                .setDescription(`Today (${now.toDateString()})\n/${number} ${usefulDigits[digitRange]["name"]}(s) is: \n${new Date(now.getTime() / (usefulDigits[digitRange]["value"] * parseInt(number))).toString()}`)
-                                                .setColor('#09b50c'));
-                                        break;
                                     default:
                                         message.channel.send(
                                             new Discord.MessageEmbed()
@@ -134,7 +120,8 @@ exports.run = (bot, guild, message, args) => {
                                         break;
                                 }
                             } else {
-                                message.channel.send(new Discord.MessageEmbed().setDescription(`Sorry, ${digitRange} was not a date type I understood.\nYou can apply years (y), months (M), days (d), hours (h), minutes (m), seconds (s), and milliseconds (ms)`).setColor('#b50909'));
+                                message.channel.send(new Discord.MessageEmbed().setDescription(`Sorry, ${digitRange} was not a date type I understood.\n` +
+                                    `You can apply years (y), months (M), days (d), hours (h), minutes (m), seconds (s), and milliseconds (ms)`).setColor('#b50909'));
                             }
                         } else {
                             message.channel.send(new Discord.MessageEmbed().setDescription(`Sorry, ${number} was not a number I understood.`).setColor('#b50909'));
@@ -167,7 +154,7 @@ function HelpMessage(bot, guild, message, args) {
                 value: `${guild.Prefix}today get [year/month/date/day/hour/min/sec/milli/time/time zone offset]\n` +
                     `${guild.Prefix}today now [short/full]\n` +
                     `${guild.Prefix}today [UTC/ISO]\n` +
-                    `${guild.Prefix}today [+, -, *, /] [1y/1M/1d/1h/1m/1s/1ms]`,
+                    `${guild.Prefix}today [+, -] [1y/1M/1d/1h/1m/1s/1ms]`,
                 inline: true
             }
         )
