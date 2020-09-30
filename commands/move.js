@@ -47,7 +47,7 @@ exports.run = (bot, guild, message, args) => {
 
                                                     //Disconnect players from voiceChannelFrom
                                                     playersFoundInVoice.forEach(e => {
-                                                        countOfMovedPlayers++; //Count moved players
+                                                        countOfDisPlayers++; //Count moved players
 
                                                         e.voice.kick(`Disconnected with $move > ${numberOfPlayers} ${voiceChannelFROM.name} - ! (${countOfDisPlayers.ordinal()}` +
                                                             ` member to be kicked out of ${playersFoundInVoice.length} members)`);
