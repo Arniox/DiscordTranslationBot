@@ -22,8 +22,6 @@ exports.run = (bot, guild, message, args) => {
                         `;
                         bot.con.query(update_cmd, (error, results, fields) => {
                             if (error) return console.error(error); //Throw error and return
-
-                            message.guild.me.user.setActivity(`the ${query} prefix`, { type: 'WATCHING' });
                             //Message
                             message.channel.send(new Discord.MessageEmbed().setDescription(`Changed Prefix from: ${previousPrefix} to: ${query}`).setColor('#09b50c'));
                         });

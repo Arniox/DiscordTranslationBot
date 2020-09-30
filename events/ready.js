@@ -23,8 +23,6 @@ module.exports = (bot) => {
                     //Insert new server details
                     bot.con.query(server_controller_cmd, (error, results, fields) => {
                         if (error) return console.error(error); //Throw error and return
-                        //Set the bot user activity for this specific server
-                        value.me.user.setActivity(`the $ prefix`, { type: 'WATCHING' });
                     });
                 } else {
                     //Set the bot user activity for this specific server
@@ -48,6 +46,9 @@ module.exports = (bot) => {
         .then((link) => {
             console.log(`Generated bot invite link: ${link}`);
         });
+
+    //Set global bot activity
+    bot.user.setActivity(`the $ prefix`, { type: 'WATCHING' });
 
     //Get print schedules command
     const cmd = bot.commands.get("printschedules");
