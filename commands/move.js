@@ -6,6 +6,11 @@ exports.run = (bot, guild, message, args) => {
         if (message.member.hasPermission('MOVE_MEMBERS')) {
             //If the length of the array is over 1, then it's a direct channel - channel
             if (args.join(' ').split(/[-]|(to)/).length > 1) {
+                console.log(args);
+                console.log(args.join(' '));
+                console.log(args.join(' ').split(/[-]|(to)/));
+                console.log(args.join(' ').split('-'));
+
                 //Grab new array
                 args = args.join(' ').split(/[-]|(to)/).map(i => i.trim());
                 var selector = args.shift();
