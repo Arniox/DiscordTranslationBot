@@ -9,7 +9,7 @@ exports.run = (bot, guild, message, args) => {
         //Check which direction you want the role to go
         switch (direction) {
             case 'add':
-                if (message.member.hasPermission('MANAGE_GUILD')) {
+                if (message.member.hasPermission('MUTE_MEMBERS')) {
                     if (roles.size != 0) {
                         if (roles.size < 2) {
                             //Look for existing role
@@ -47,7 +47,7 @@ exports.run = (bot, guild, message, args) => {
                 }
                 break;
             case 'remove':
-                if (message.member.hasPermission('MANAGE_GUILD')) {
+                if (message.member.hasPermission('MUTE_MEMBERS')) {
                     if (roles.size != 0) {
                         if (roles.size < 2) {
                             //Look for existing role
@@ -142,7 +142,7 @@ function HelpMessage(bot, guild, message, args) {
         .setAuthor(bot.user.username, bot.user.avatarURL())
         .setDescription('The muterole command allows you to add, list, or remove mute ignored roles to the server database.')
         .addFields(
-            { name: 'Required Permissions: ', value: 'Manage Server' },
+            { name: 'Required Permissions: ', value: 'Mute Members' },
             {
                 name: 'Command Patterns: ',
                 value: `${guild.Prefix}muterole [add/remove] [@role]\n\n` +

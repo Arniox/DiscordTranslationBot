@@ -300,22 +300,22 @@ exports.run = (bot, guild, message, args) => {
         var embeddedHelpMessage = new Discord.MessageEmbed()
             .setColor('#0099ff')
             .setAuthor(bot.user.username, bot.user.avatarURL())
-            .setDescription(`You asked for help? Well here it is. The following commands can be used. You can use *${guild.Prefix}help [command]* to view more settings on the command`)
+            .setDescription(`You asked for help? Well here it is. The following commands can be used. You can use **${guild.Prefix}help [command]** to view more settings on the command`)
             .addFields({
                 name: `${guild.Prefix}ping`,
                 value: 'Ping allows you to see the current uptime and current prefix of the server and double checks that the bot is running.'
             }, {
                 name: `${guild.Prefix}prefix`,
-                value: 'Prefix allows you to view and edit the prefix of the server granted you have management permissions.'
+                value: 'Prefix allows you to view and edit the prefix of the server granted you have manage server permissions.'
             }, {
                 name: `${guild.Prefix}muterole`,
-                value: 'Muterole allows you to add, list, or remove (all or some) roles to a list that is ignored by the mute command, granted you have management permissions.'
+                value: 'Muterole allows you to add, list, or remove (all or some) roles to a list that is ignored by the mute command, granted you have mute role permissions.'
             }, {
                 name: `${guild.Prefix}mute`,
                 value: 'Mute a voice channel but ignore the mute ignored roles, granted you have mute members permissions.'
             }, {
                 name: `${guild.Prefix}unmute`,
-                value: 'Unmute a voice channel completely. This command wont ignore mute ignored roles. So everyone in the voice channel will be server unmuted, granted you have mute members permissions.'
+                value: 'Unmute a voice channel but leave the mute ignored roles muted, granted you have mute members permissions.'
             }, {
                 name: `${guild.Prefix}listen`,
                 value: '[WIP] Currently this command wont do much. It\'ll simply connect the bot to your current voice channel.'
@@ -324,22 +324,24 @@ exports.run = (bot, guild, message, args) => {
                 value: '[WIP] Currently this command wont do much. It\'ll simply disconnect the bot from it\'s current voice channel.'
             }, {
                 name: `${guild.Prefix}translate`,
-                value: 'List, add or remove translation ignored patterns to the database for your server. Adding or removing needs the management permissions.'
+                value: 'List, add or remove translation ignored patterns/channels or set the translation confidence restriction for your server, granted you have management permissions.\n' +
+                    `You can also use **${guild.Prefix}translate languages** to list out available languages codes and more info.`
             }, {
                 name: `${guild.Prefix}nick`,
-                value: `Translate your nickname into a specified language code.Use ${guild.Prefix}help nick to see all the available language codes and more info.`
+                value: `Translate your nickname into a specified language code. Use **${guild.Prefix}translate languages** to see all the available language codes and more info.`
             }, {
                 name: `${guild.Prefix}move`,
                 value: 'Use a selector to move players from voice channels to voice channels all at once. Easy way to move players around, granted you have move member permissions.'
             }, {
-                name: `${guild.Prefix}softban`,
-                value: 'Bans and then instantly unbans any mentioned members. Then sends them an invite.'
+                name: `${guild.Prefix}ban`,
+                value: `${guild.Prefix}ban soft will ban and then instantly unban any mentioned members (supports pinging multiple members at once). Then sends them an invite.\n` +
+                    `${guild.Prefix}ban hard will just ban any mentioned members (supports pining multiple members at once).`
             }, {
                 name: `${guild.Prefix}harrass`,
-                value: 'Lets only admins spam someone with a specified message.'
+                value: 'You can spam people with messages or spam move someone back and forth in a channel.'
             }, {
                 name: 'Other Features',
-                value: `${bot.user.username} will automatically read all messages sent in any chat and detect message languages.` +
+                value: `If you have premium, ${bot.user.username} will automatically read all messages sent in any chat and detect message languages.` +
                     ` If the bot has over ${(guild.Translation_Confidence * 100).toString()}% confidence that the language is not english, it will replace your message with an English translated version.`
             })
             .setTimestamp()

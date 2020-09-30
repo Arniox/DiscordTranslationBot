@@ -53,7 +53,10 @@ function HelpMessage(bot, guild, message, args) {
         .setDescription(`You can use prefix by running *${guild.Prefix}prefix current* to list the current prefix, or *${guild.Prefix}prefix change [new prefix]* to change the prefix.`)
         .addFields(
             { name: 'Required Permissions: ', value: 'Manage Server' },
-            { name: 'Example: ', value: `${guild.Prefix}prefix current\n\n${guild.Prefix}prefix change =` }
+            {
+                name: 'Example: ', value: `${guild.Prefix}prefix :?current\n\n` +
+                    `${guild.Prefix}prefix change =`
+            }
         )
         .setTimestamp()
         .setFooter('Thanks, and have a good day');

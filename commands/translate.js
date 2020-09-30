@@ -13,11 +13,11 @@ exports.run = (bot, guild, message, args) => {
         if (guild.Allowed_Translation == 1) {
             //Check for either patterns or channels
             switch (command) {
-                case 'pattern':
+                case 'patterns': case 'pattern': case 'pat':
                     //Get the specific command you want to perform
                     var specifics = args.shift().toLowerCase();
                     switch (specifics) {
-                        case 'add': //Add a pattern
+                        case 'add': case 'a': //Add a pattern
                             //Check if has perms
                             if (message.member.hasPermission('MANAGE_GUILD')) {
                                 var query = args.join("");
@@ -78,7 +78,7 @@ exports.run = (bot, guild, message, args) => {
                                 message.channel.send(new Discord.MessageEmbed().setDescription('Sorry, you do not have manage server permissions.').setColor('#b50909'));
                             }
                             break;
-                        case 'remove': //Remove a pattern by id
+                        case 'remove': case 'r': //Remove a pattern by id
                             //Check if has perms
                             if (message.member.hasPermission('MANAGE_GUILD')) {
                                 var query = args.shift();
@@ -128,7 +128,7 @@ exports.run = (bot, guild, message, args) => {
                                 message.channel.send(new Discord.MessageEmbed().setDescription('Sorry, you do not have manage server permissions.').setColor('#b50909'));
                             }
                             break;
-                        case 'list': //List all patterns
+                        case 'list': case 'l': //List all patterns
                             //Look for existing patterns
                             const sql_cmd = `
                             SELECT * FROM translation_ignored_patterns
@@ -152,10 +152,10 @@ exports.run = (bot, guild, message, args) => {
                             break;
                     }
                     break;
-                case 'channel':
+                case 'channels': case 'channel': case 'chan':
                     var specifics = args.shift().toLowerCase();
                     switch (specifics) {
-                        case 'add': //Add a channel
+                        case 'add': case 'a': //Add a channel
                             //Check if has perms
                             if (message.member.hasPermission('MANAGE_GUILD')) {
                                 //Get mentions
@@ -220,7 +220,7 @@ exports.run = (bot, guild, message, args) => {
                                 message.channel.send(new Discord.MessageEmbed().setDescription('Sorry, you do not have manage server permissions.').setColor('#b50909'));
                             }
                             break;
-                        case 'remove': //Remove a channel by tag
+                        case 'remove': case 'r': //Remove a channel by tag
                             //Check if has perms
                             if (message.member.hasPermission('MANAGE_GUILD')) {
                                 //Get mentioned channels
@@ -287,7 +287,7 @@ exports.run = (bot, guild, message, args) => {
                                 message.channel.send(new Discord.MessageEmbed().setDescription('Sorry, you do not have manage server permissions.').setColor('#b50909'));
                             }
                             break;
-                        case 'list': //List all channels
+                        case 'list': case 'l': //List all channels
                             //Get list of channels
                             const sql_cmd = `
                             SELECT * FROM translation_ignored_channels
@@ -306,7 +306,7 @@ exports.run = (bot, guild, message, args) => {
                             break;
                     }
                     break;
-                case 'languages': case 'language':
+                case 'languages': case 'language': case 'lang':
                     new Promise((resolve, reject) => {
                         googleTranslate.getSupportedLanguages('en', function (err, languageCodes) {
                             if (!err) resolve(languageCodes);
@@ -363,6 +363,67 @@ exports.run = (bot, guild, message, args) => {
                         message.channel.send(new Discord.MessageEmbed().setDescription(`${err} `).setColor('#b50909'));
                     });
                     break;
+                case 'confidence': case 'conf':
+                    if (args.length > 0) {
+                        var command = args.shift().toLowerCase();
+
+                        //Check which option you want
+                        switch (command) {
+                            case 'change': //Change bot translation restriction
+                                //Check if user has perms
+                                if (message.member.hasPermission('MANAGE_GUILD')) {
+                                    var query = args.shift();
+
+                                    //Check if the query exists
+                                    if (query) {
+                                        //Check that your query is a number
+                                        if (/^\d*(.\d+)*$/.test(query)) {
+                                            //Get number
+                                            var number = parseFloat(query);
+
+                                            //If the number is above 1, then assume it's in percentage format
+                                            //If the number is bellow 1, then assume it's in decimal format
+                                            //If the number is above 100% then fail
+                                            if (number < 100) {
+                                                //Set the number to decimal format
+                                                number = (number > 1 ? number / 100 : number);
+                                                var previousConfidence = guild.Translation_Confidence;
+
+                                                //Update new confidence restriction
+                                                const update_cmd = `
+                                                UPDATE servers
+                                                SET Translation_Confidence = ${number}
+                                                WHERE ServerId = "${message.guild.id}"
+                                                `;
+                                                bot.con.query(update_cmd, (error, results, fields) => {
+                                                    if (error) return console.error(error); //Throw error and return
+                                                    //Message
+                                                    message.channel.send(new Discord.MessageEmbed().setDescription(`Changed Bot Translation Confidence Restriction from ${(previousConfidence * 100)}% to ${(number * 100)}%`).setColor('#09b50c'));
+                                                });
+                                            } else {
+                                                message.channel.send(new Discord.MessageEmbed().setDescription(`Sorry, ${query}%; if that\'s what you meant; is too high. The maximum confidence restriction is 100% certainty`).setColor('#b50909'));
+                                            }
+                                        } else {
+                                            message.channel.send(new Discord.MessageEmbed().setDescription(`Sorry, ${query} is not a number I understand.`).setColor('#b50909'));
+                                        }
+                                    } else {
+                                        message.channel.send(new Discord.MessageEmbed().setDescription('Sorry, I cannot change your translation confidence restriction to nothing!').setColor('#b50909'));
+                                    }
+                                } else {
+                                    message.channel.send(new Discord.MessageEmbed().setDescription('Sorry, you need to have server manager permissions to change the translation confidence restriction.').setColor('#b50909'));
+                                }
+                                break;
+                            case 'current': //List out current bot translation restriction
+                                message.channel.send(new Discord.MessageEmbed().setDescription(`Current Bot Translation Confidence Restriction is: ${(guild.Translation_Confidence * 100)}%`).setColor('#0099ff'));
+                                break;
+                            default:
+                                HelpMessage(bot, guild, message, args);
+                                break;
+                        }
+                    } else {
+                        message.channel.send(new Discord.MessageEmbed().setDescription(`Current Bot Translation Confidence Restriction is: ${(guild.Translation_Confidence) * 100}%`).setColor('#0099ff'));
+                    }
+                    break;
                 default:
                     HelpMessage(bot, guild, message, args);
                     break;
@@ -387,9 +448,11 @@ function HelpMessage(bot, guild, message, args) {
             { name: 'Required Permissions: ', value: 'Manage Server (for adding and removing. Everyone else can use the list commands).' },
             {
                 name: 'Command Patterns: ',
-                value: `${guild.Prefix} translate[pattern / channel][add / remove / list] {
-                            (pattern / tagged channel(s)) / number (Remove by index)}\n\n` +
-                    `${guild.Prefix}translate [languages/language]`
+                value: `${guild.Prefix}translate [pattern / channel / language / confidence]\n\n` +
+                    `${guild.Prefix}translate pattern [add / remove / list]\n\n` +
+                    `${guild.Prefix}translate channel [add / remove / list]\n\n` +
+                    `${guild.Prefix}translate language\n\n` +
+                    `${guild.Prefix}translate confidence [:?current / change]\n\n`
             },
             {
                 name: 'Examples: ',
@@ -399,7 +462,8 @@ function HelpMessage(bot, guild, message, args) {
                     `${guild.Prefix}translate channel add ${randomChannel.toString()} *You can tag multiple to add*\n\n` +
                     `${guild.Prefix}translate channel remove ${randomChannel.toString()}\n\n` +
                     `${guild.Prefix}translate channel list\n\n` +
-                    `${guild.Prefix}translate [languages/language]\n\n`
+                    `${guild.Prefix}translate [languages/language]\n\n` +
+                    `${guild.Prefix}translate confidence [:?current / change]`
             }
         )
         .setTimestamp()
