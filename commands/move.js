@@ -5,15 +5,15 @@ exports.run = (bot, guild, message, args) => {
     if (args.length != 0) {
         if (message.member.hasPermission('MOVE_MEMBERS')) {
             //If the length of the array is over 1, then it's a direct channel - channel
-            if (args.join(' ').split('-').length > 1) {
+            if (args.join(' ').split(/[-]|(to)/).length > 1) {
                 //Grab new array
-                args = args.join(' ').split('-').map(i => i.trim());
+                args = args.join(' ').split(/[-]|(to)/).map(i => i.trim());
                 var selector = args.shift();
 
                 //If complex selector
-                if (selector.split('>').length > 1) {
+                if (selector.split(/[>]|(from)/).length > 1) {
                     //Grab complex selector
-                    var complexSelector = selector.split('>').map(i => i.trim());
+                    var complexSelector = selector.split(/[>]|(from)/).map(i => i.trim());
                     var numberSelector = complexSelector[0];
                     complexSelector = complexSelector.splice(1);
 
@@ -84,7 +84,7 @@ exports.run = (bot, guild, message, args) => {
                 }//If simple selector
                 else {
                     //If selecting all or channel
-                    if (selector == '*') {
+                    if (selector == '*' || selector == 'all') {
                         //Grab every player
                         var playersFoundAll = message.guild.members.cache.filter(i => i.voice.channel);
 
@@ -173,15 +173,15 @@ exports.run = (bot, guild, message, args) => {
                     }
                 }
             } //If the length of the array is over 1, then it's a split channel = channel & channel
-            else if (args.join(' ').split('=').length > 1) {
+            else if (args.join(' ').split(/[=]|(split)/).length > 1) {
                 //Grab new array
-                args = args.join(' ').split('=').map(i => i.trim());
+                args = args.join(' ').split(/[=]|(split)/).map(i => i.trim());
                 var selector = args.shift();
 
                 //If complex selector
-                if (selector.split('>').length > 1) {
+                if (selector.split(/[>]|(from)/).length > 1) {
                     //Grab complex selector
-                    var complexSelector = selector.split('>').map(i => i.trim());
+                    var complexSelector = selector.split(/[>]|(from)/).map(i => i.trim());
                     var numberSelector = complexSelector[0];
                     complexSelector = complexSelector.splice(1);
 
@@ -202,7 +202,7 @@ exports.run = (bot, guild, message, args) => {
                                 if (playersFoundInVoice.length != 0) {
                                     //Check if there's channels to move to
                                     if (args.length != 0) {
-                                        var channelSelectors = args.shift().split('&').map(i => i.trim());
+                                        var channelSelectors = args.shift().split(/[&]|(and)/).map(i => i.trim());
                                         var selectorSize = channelSelectors.length;
                                         var playerSize = playersFoundInVoice.length;
 
@@ -261,13 +261,13 @@ exports.run = (bot, guild, message, args) => {
                 } //If simple selector
                 else {
                     //If seleting all or channel
-                    if (selector == '*') {
+                    if (selector == '*' || selector == 'and') {
                         //Grab every player
                         var playersFoundAll = message.guild.members.cache.filter(i => i.voice.channel);
                         if (playersFoundAll.size != 0) {
                             //Check there's channels to move to
                             if (args.length != 0) {
-                                var channelSelectors = args.shift().split('&').map(i => i.trim());
+                                var channelSelectors = args.shift().split(/[&]|(and)/).map(i => i.trim());
                                 var selectorSize = channelSelectors.length;
                                 var playerSize = playersFoundAll.size;
 
@@ -321,7 +321,7 @@ exports.run = (bot, guild, message, args) => {
                             if (playersFoundInVoice.size != 0) {
                                 //Check if there's channels to move to
                                 if (args.length != 0) {
-                                    var channelSelectors = args.shift().split('&').map(i => i.trim());
+                                    var channelSelectors = args.shift().split(/[&]|(and)/).map(i => i.trim());
                                     var selectorSize = channelSelectors.length;
                                     var playerSize = playersFoundInVoice.size;
 
@@ -399,19 +399,19 @@ function HelpMessage(bot, guild, message, args) {
             { name: 'Required Permissions: ', value: 'Move Members' },
             {
                 name: 'Command Patterns: ',
-                value: `${guild.Prefix}move [Selector] [Split/Direct command prefix] [Channel(s)]\n\n` +
-                    `${guild.Prefix}move [Selector] - [Channel]\n\n` +
-                    `${guild.Prefix}move [Selector] = [Channel] & [Channel] & [Channel]`
+                value: `${guild.Prefix}move [Selector] [Split/Direct -  command prefix | Split/Direct - word] [Channel(s)]\n\n` +
+                    `${guild.Prefix}move [Selector] (- | to) [Channel]\n\n` +
+                    `${guild.Prefix}move [Selector] (= | split) [Channel] (& | and) [Channel] (& | and) [Channel]`
             },
             {
                 name: 'Examples: ',
-                value: `${guild.Prefix}move ${randomChannel1} - ${randomChannel2} (Move everyone in one voice channel to another voice channel)\n\n` +
-                    `${guild.Prefix}move * - ${randomChannel1} (Move everyone currently in any voice channel to a specific voice channel)\n\n` +
-                    `${guild.Prefix}move 5 > ${randomChannel1} - ${randomChannel2} (Move 5 randomly picked players from one voice channel to another voice channel)\n\n` +
-                    `${guild.Prefix}move ${randomChannel1} = ${randomChannel2} & ${randomChannel3} (Equally split everyone in one voice channel into any number of voice channels seperated by &)\n\n` +
-                    `${guild.Prefix}move * = ${randomChannel1} & ${randomChannel2} (Split everyone currently in any voice channel into any number of voice channels seperated by &)\n\n` +
-                    `${guild.Prefix}move 5 > ${randomChannel1} = ${randomChannel2} & ${randomChannel3}` +
-                    ` (Equally split 5 randomly picked players from one voice channel into any number of voice channels seperated by &).`
+                value: `${guild.Prefix}move ${randomChannel1} (- *or***to**) ${randomChannel2} (Move everyone in one voice channel to another voice channel)\n\n` +
+                    `${guild.Prefix}move (* *or***all**) (- *or***to**) ${randomChannel1} (Move everyone currently in any voice channel to a specific voice channel)\n\n` +
+                    `${guild.Prefix}move 5 (> *or***from**) ${randomChannel1} (- *or***to**) ${randomChannel2} (Move 5 randomly picked players from one voice channel to another voice channel)\n\n` +
+                    `${guild.Prefix}move ${randomChannel1} (= *or***split**) ${randomChannel2} (& *or***and**) ${randomChannel3} (Equally split everyone in one voice channel into any number of voice channels seperated by & *or***and**)\n\n` +
+                    `${guild.Prefix}move (* *or***all**) (= *or***split**) ${randomChannel1} (& *or***and**) ${randomChannel2} (Split everyone currently in any voice channel into any number of voice channels seperated by & *or***and**)\n\n` +
+                    `${guild.Prefix}move 5 (> *or***from**) ${randomChannel1} (= *or***split**) ${randomChannel2} (& *or***and**) ${randomChannel3}` +
+                    ` (Equally split 5 randomly picked players from one voice channel into any number of voice channels seperated by & *or***and**).`
             }
         )
         .setTimestamp()
