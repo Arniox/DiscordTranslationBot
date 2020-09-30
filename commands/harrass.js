@@ -38,7 +38,8 @@ exports.run = (bot, guild, message, args) => {
                                                 //stop collector and then remove reactions and then edit message
                                                 collector.on('collect', r => { collector.stop(`Stopped spam moving ${person.first().toString()}`); });
                                                 collector.on('end', (c, reason) => {
-                                                    person.first().voice.setChannel(currentChannel);
+                                                    //Catch error if user is not in voice
+                                                    person.first().voice.setChannel(currentChannel).catch(() => { });
                                                     //Remove reactions and then edit message
                                                     sent.reactions.removeAll()
                                                         .then(() => {
@@ -145,12 +146,10 @@ function Sample(aarr) {
 function next(collector, person, channelsTo) {
     var intr = setInterval(async function () {
         //Await for person to be moved to slow down the while loop and then reverse channel array
-        if (person.first().voice.channel)
-            await person.first().voice.setChannel(channelsTo[0]).catch(() => {
+        await person.first().voice.setChannel(channelsTo[0])
+            .catch((e) => {
                 collector.stop(`${person.first().toString()} has disconnected so spam move was stopped.`);
             });
-        else
-            collector.stop(`${person.first().toString()} has disconnected so spam move was stopped.`);
         channelsTo.reverse();
         //Reset timer to go on infintely
         collector.resetTimer();
