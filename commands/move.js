@@ -14,8 +14,7 @@ exports.run = (bot, guild, message, args) => {
                 if (selector.split('>').length > 1) {
                     //Grab complex selector
                     var complexSelector = selector.split('>').map(i => i.trim());
-                    var numberSelector = complexSelector[0];
-                    complexSelector = complexSelector.splice(1);
+                    var numberSelector = complexSelector.shift();
 
                     //Check if numberSelector is actually a number
                     if (/^\d+$/.test(numberSelector)) {
@@ -23,8 +22,7 @@ exports.run = (bot, guild, message, args) => {
                         var numberOfPlayers = parseInt(numberSelector);
                         if (complexSelector.length != 0) {
                             //Grab channel selector
-                            var channelSelector = complexSelector[0];
-                            complexSelector = complexSelector.splice(1);
+                            var channelSelector = complexSelector.shift();
 
                             //Channel name, find the voice channel
                             var voiceChannelFROM = message.guild.channels.cache.find(i => i.name.toLowerCase() == channelSelector.toLowerCase() && i.type == 'voice');
@@ -35,36 +33,63 @@ exports.run = (bot, guild, message, args) => {
                                 if (playersFoundInVoice.length != 0) {
                                     //Check that there's a channel to move to
                                     if (args.length != 0) {
-                                        var channelToSelector = args[0];
-                                        args = args.splice(1);
+                                        var channelToSelector = args.shift();
 
-                                        //Get the voice channel to move to with the channel selector as name
-                                        var voiceChannelTO = message.guild.channels.cache.find(i => i.name.toLowerCase() == channelToSelector.toLowerCase() && i.type == 'voice');
-                                        if (voiceChannelTO) {
-                                            //send message promise
+                                        //Check if the channel exists or is an offline command
+                                        if (channelToSelector == '!') {
+                                            //Disconnect players found
+                                            //Send message promise
                                             message.channel
-                                                .send(new Discord.MessageEmbed().setDescription(`Moved 0 / ${playersFoundInVoice.length} ${(playersFoundInVoice.length != numberOfPlayers ? `(down from ${numberOfPlayers})` : '')} ` +
-                                                    `members from ${voiceChannelFROM.toString()} to ${voiceChannelTO.toString()}`).setColor('#FFCC00'))
+                                                .send(new Discord.MessageEmbed().setDescription(`Disconnected 0 / ${playersFoundInVoice.length} ${(playersFoundInVoice.length != numberOfPlayers) ? `(down from ${numberOfPlayers})` : ''} ` +
+                                                    `members from ${voiceChannelFROM.toString()}`).setColor('#FFCC00'))
                                                 .then((sent) => {
-                                                    var countOfMovedPlayers = 0;
+                                                    var countOfDisPlayers = 0;
 
-                                                    //Move players from voiceChannelFROM to voiceChannelTO
+                                                    //Disconnect players from voiceChannelFrom
                                                     playersFoundInVoice.forEach(e => {
                                                         countOfMovedPlayers++; //Count moved players
 
-                                                        e.voice.setChannel(voiceChannelTO);
+                                                        e.voice.kick(`Disconnected with $move > ${numberOfPlayers} ${voiceChannelFROM.name} - ! (${countOfDisPlayers.ordinal()}` +
+                                                            ` member to be kicked out of ${playersFoundInVoice.length} members)`);
                                                         //Edit message
-                                                        sent.edit(new Discord.MessageEmbed().setDescription(`Moved ${countOfMovedPlayers} / ${playersFoundInVoice.length} ` +
-                                                            `${(playersFoundInVoice.length != numberOfPlayers ? `(down from ${numberOfPlayers})` : '')} ` +
-                                                            `members from ${voiceChannelFROM.toString()} to ${voiceChannelTO.toString()}`).setColor('#FFCC00'));
+                                                        sent.edit(new Discord.MessageEmbed().setDescription(`Disconnected ${countOfDisPlayers} / ${playersFoundInVoice.length} ` +
+                                                            `${(playersFoundInVoice.length != numberOfPlayers) ? `(down from ${numberOfPlayers})` : ''} ` +
+                                                            `members from ${voiceChannelFROM.toString()}`).setColor('#FFCC00'));
                                                     });
                                                     //Update after loop
-                                                    sent.edit(new Discord.MessageEmbed().setDescription(`✅ Moved ${countOfMovedPlayers} / ${playersFoundInVoice.length} ` +
-                                                        `${(playersFoundInVoice.length != numberOfPlayers ? `(down from ${numberOfPlayers})` : '')} ` +
-                                                        `members from ${voiceChannelFROM.toString()} to ${voiceChannelTO.toString()}`).setColor('#09b50c'));
+                                                    sent.edit(new Discord.MessageEmbed().setDescription(`✅ Disconnected ${countOfDisPlayers} / ${playersFoundInVoice.length} ` +
+                                                        `${(playersFoundInVoice.length != numberOfPlayers) ? `(down from ${numberOfPlayers})` : ''} ` +
+                                                        `members from ${voiceChannelFROM.toString()}`).setColor('#09b50c'));
                                                 });
                                         } else {
-                                            message.channel.send(new Discord.MessageEmbed().setDescription(`Could not find a voice channel with the name ${channelToSelector}`).setColor('#b50909'));
+                                            //Get the voice channel to move to with the channel selector as name
+                                            var voiceChannelTO = message.guild.channels.cache.find(i => i.name.toLowerCase() == channelToSelector.toLowerCase() && i.type == 'voice');
+                                            if (voiceChannelTO) {
+                                                //send message promise
+                                                message.channel
+                                                    .send(new Discord.MessageEmbed().setDescription(`Moved 0 / ${playersFoundInVoice.length} ${(playersFoundInVoice.length != numberOfPlayers ? `(down from ${numberOfPlayers})` : '')} ` +
+                                                        `members from ${voiceChannelFROM.toString()} to ${voiceChannelTO.toString()}`).setColor('#FFCC00'))
+                                                    .then((sent) => {
+                                                        var countOfMovedPlayers = 0;
+
+                                                        //Move players from voiceChannelFROM to voiceChannelTO
+                                                        playersFoundInVoice.forEach(e => {
+                                                            countOfMovedPlayers++; //Count moved players
+
+                                                            e.voice.setChannel(voiceChannelTO);
+                                                            //Edit message
+                                                            sent.edit(new Discord.MessageEmbed().setDescription(`Moved ${countOfMovedPlayers} / ${playersFoundInVoice.length} ` +
+                                                                `${(playersFoundInVoice.length != numberOfPlayers ? `(down from ${numberOfPlayers})` : '')} ` +
+                                                                `members from ${voiceChannelFROM.toString()} to ${voiceChannelTO.toString()}`).setColor('#FFCC00'));
+                                                        });
+                                                        //Update after loop
+                                                        sent.edit(new Discord.MessageEmbed().setDescription(`✅ Moved ${countOfMovedPlayers} / ${playersFoundInVoice.length} ` +
+                                                            `${(playersFoundInVoice.length != numberOfPlayers ? `(down from ${numberOfPlayers})` : '')} ` +
+                                                            `members from ${voiceChannelFROM.toString()} to ${voiceChannelTO.toString()}`).setColor('#09b50c'));
+                                                    });
+                                            } else {
+                                                message.channel.send(new Discord.MessageEmbed().setDescription(`Could not find a voice channel with the name ${channelToSelector}`).setColor('#b50909'));
+                                            }
                                         }
                                     } else {
                                         message.channel.send(new Discord.MessageEmbed().setDescription(`You didn\'t select any voice channel to move ${playersFoundInVoice.length} players to.`).setColor('#b50909'));
@@ -93,30 +118,53 @@ exports.run = (bot, guild, message, args) => {
                             if (args.length != 0) {
                                 var channelSelector = args.shift();
 
-                                //Get voice channel to move to with the channel selector as name
-                                var voiceChannelTO = message.guild.channels.cache.find(i => i.name.toLowerCase() == channelSelector.toLowerCase() && i.type == 'voice');
-                                if (voiceChannelTO) {
-                                    //send message promise
+                                //Check if the channel exists or is an offline command
+                                if (channelSelector == '!') {
+                                    //Disconnect players found
+                                    //Send message promise
                                     message.channel
-                                        .send(new Discord.MessageEmbed().setDescription(`Moved 0 / ${playersFoundAll.size} members to ${voiceChannelTO.toString()}`).setColor('#FFCC00'))
+                                        .send(new Discord.MessageEmbed().setDescription(`Disconnected 0 / ${playersFoundAll.size} members`).setColor('#FFCC00'))
                                         .then((sent) => {
-                                            var countOfMovedPlayers = 0;
+                                            var countOfDisPlayers = 0;
 
-                                            //Move all the players found everywhere to voiceChannelTO
+                                            //Disconnect all the players found everywhere
                                             playersFoundAll.map((value, key) => {
-                                                countOfMovedPlayers++; //Count moved players
+                                                countOfDisPlayers++; //Count moved players
 
-                                                value.voice.setChannel(voiceChannelTO);
+                                                value.voice.kick(`Disconnected with $move * - ! (${countOfDisPlayers.ordinal()}` +
+                                                    ` member to be kicked, out of ${playersFoundAll.size} members)`);
                                                 //Edit message
-                                                sent.edit(new Discord.MessageEmbed().setDescription(`Moved ${countOfMovedPlayers} / ${playersFoundAll.size} members ` +
-                                                    `to ${voiceChannelTO.toString()}`).setColor('#FFCC00'));
+                                                sent.edit(new Discord.MessageEmbed().setDescription(`Disconnected ${countOfDisPlayers} / ${playersFoundAll.size} members`).setColor('#FFCC00'));
                                             });
                                             //Update after loop
-                                            sent.edit(new Discord.MessageEmbed().setDescription(`✅ Moved ${countOfMovedPlayers} / ${playersFoundAll.size} members ` +
-                                                `to ${voiceChannelTO.toString()}`).setColor('#09b50c'));
+                                            sent.edit(new Discord.MessageEmbed().setDescription(`✅ Disconnected ${countOfDisPlayers} / ${playersFoundAll.size} members`).setColor('#09b50c'));
                                         });
                                 } else {
-                                    message.channel.send(new Discord.MessageEmbed().setDescription(`Could not find a voice channel with the name ${channelSelector}`).setColor('#b50909'));
+                                    //Get voice channel to move to with the channel selector as name
+                                    var voiceChannelTO = message.guild.channels.cache.find(i => i.name.toLowerCase() == channelSelector.toLowerCase() && i.type == 'voice');
+                                    if (voiceChannelTO) {
+                                        //send message promise
+                                        message.channel
+                                            .send(new Discord.MessageEmbed().setDescription(`Moved 0 / ${playersFoundAll.size} members to ${voiceChannelTO.toString()}`).setColor('#FFCC00'))
+                                            .then((sent) => {
+                                                var countOfMovedPlayers = 0;
+
+                                                //Move all the players found everywhere to voiceChannelTO
+                                                playersFoundAll.map((value, key) => {
+                                                    countOfMovedPlayers++; //Count moved players
+
+                                                    value.voice.setChannel(voiceChannelTO);
+                                                    //Edit message
+                                                    sent.edit(new Discord.MessageEmbed().setDescription(`Moved ${countOfMovedPlayers} / ${playersFoundAll.size} members ` +
+                                                        `to ${voiceChannelTO.toString()}`).setColor('#FFCC00'));
+                                                });
+                                                //Update after loop
+                                                sent.edit(new Discord.MessageEmbed().setDescription(`✅ Moved ${countOfMovedPlayers} / ${playersFoundAll.size} members ` +
+                                                    `to ${voiceChannelTO.toString()}`).setColor('#09b50c'));
+                                            });
+                                    } else {
+                                        message.channel.send(new Discord.MessageEmbed().setDescription(`Could not find a voice channel with the name ${channelSelector}`).setColor('#b50909'));
+                                    }
                                 }
                             } else {
                                 message.channel.send(new Discord.MessageEmbed().setDescription(`You didn\'t select any voice channel to move ${playersFoundAll.size} players to.`).setColor('#b50909'));
@@ -135,31 +183,57 @@ exports.run = (bot, guild, message, args) => {
                                 if (args.length != 0) {
                                     var channelSelector = args.shift();
 
-                                    //Get the voice channel to move to with the channel selector as name
-                                    var voiceChannelTO = message.guild.channels.cache.find(i => i.name.toLowerCase() == channelSelector.toLowerCase() && i.type == 'voice');
-                                    if (voiceChannelTO) {
-                                        //send message promise
+                                    //Check if the channel exists or is an offline command
+                                    if (channelSelector == '!') {
+                                        //Disconnect players found
+                                        //Send message promise
                                         message.channel
-                                            .send(new Discord.MessageEmbed().setDescription(`Moved 0 / ${playersFoundInVoice.size} members from ` +
-                                                `${voiceChannelFROM.toString()} to ${voiceChannelTO.toString()}`).setColor('#FFCC00'))
+                                            .send(new Discord.MessageEmbed().setDescription(`Disconnected 0 / ${playersFoundInVoice.size} members from ` +
+                                                `${voiceChannelFROM.toString()}`).setColor('#FFCC00'))
                                             .then((sent) => {
-                                                var countOfMovedPlayers = 0;
+                                                var countOfDisPlayers = 0;
 
-                                                //Move players from voiceChannelFROM to voiceChannelTO
+                                                //Disconnect all the players found in this voice channel
                                                 playersFoundInVoice.map((value, key) => {
-                                                    countOfMovedPlayers++; //Count moved players
+                                                    countOfDisPlayers++;
 
-                                                    value.voice.setChannel(voiceChannelTO);
+                                                    value.voice.kick(`Disconnected with $move ${voiceChannelFROM.name} - ! (${countOfDisPlayers.ordinal()}` +
+                                                        ` member to be kicked, out of ${playersFoundInVoice.size} members)`);
                                                     //Edit message
-                                                    sent.edit(new Discord.MessageEmbed().setDescription(`Moved ${countOfMovedPlayers} / ${playersFoundInVoice.size} members from ` +
-                                                        `${voiceChannelFROM.toString()} to ${voiceChannelTO.toString()}`).setColor('#FFCC00'));
+                                                    sent.edit(new Discord.MessageEmbed().setDescription(`Disconnected ${countOfDisPlayers} / ${playersFoundInVoice.size} members from ` +
+                                                        `${voiceChannelFROM.toString()}`).setColor('#FFCC00'));
                                                 });
-                                                //Update ater loop
-                                                sent.edit(new Discord.MessageEmbed().setDescription(`✅ Moved ${countOfMovedPlayers} / ${playersFoundInVoice.size} members from ` +
-                                                    `${voiceChannelFROM.toString()} to ${voiceChannelTO.toString()}`).setColor('#09b50c'));
+                                                //Update after loop
+                                                sent.edit(new Discord.MessageEmbed().setDescription(`✅ Disconnected ${countOfDisPlayers} / ${playersFoundInVoice.size} members from ` +
+                                                    `${voiceChannelFROM.toString()}`).setColor('#09b50c'));
                                             });
                                     } else {
-                                        message.channel.send(new Discord.MessageEmbed().setDescription(`Could not find a voice channel with the name ${channelSelector}`).setColor('#b50909'));
+                                        //Get the voice channel to move to with the channel selector as name
+                                        var voiceChannelTO = message.guild.channels.cache.find(i => i.name.toLowerCase() == channelSelector.toLowerCase() && i.type == 'voice');
+                                        if (voiceChannelTO) {
+                                            //send message promise
+                                            message.channel
+                                                .send(new Discord.MessageEmbed().setDescription(`Moved 0 / ${playersFoundInVoice.size} members from ` +
+                                                    `${voiceChannelFROM.toString()} to ${voiceChannelTO.toString()}`).setColor('#FFCC00'))
+                                                .then((sent) => {
+                                                    var countOfMovedPlayers = 0;
+
+                                                    //Move players from voiceChannelFROM to voiceChannelTO
+                                                    playersFoundInVoice.map((value, key) => {
+                                                        countOfMovedPlayers++; //Count moved players
+
+                                                        value.voice.setChannel(voiceChannelTO);
+                                                        //Edit message
+                                                        sent.edit(new Discord.MessageEmbed().setDescription(`Moved ${countOfMovedPlayers} / ${playersFoundInVoice.size} members from ` +
+                                                            `${voiceChannelFROM.toString()} to ${voiceChannelTO.toString()}`).setColor('#FFCC00'));
+                                                    });
+                                                    //Update ater loop
+                                                    sent.edit(new Discord.MessageEmbed().setDescription(`✅ Moved ${countOfMovedPlayers} / ${playersFoundInVoice.size} members from ` +
+                                                        `${voiceChannelFROM.toString()} to ${voiceChannelTO.toString()}`).setColor('#09b50c'));
+                                                });
+                                        } else {
+                                            message.channel.send(new Discord.MessageEmbed().setDescription(`Could not find a voice channel with the name ${channelSelector}`).setColor('#b50909'));
+                                        }
                                     }
                                 } else {
                                     message.channel.send(new Discord.MessageEmbed().setDescription(`You didn\'t select any voice channel to move ${playersFoundInVoice.size} members to.`).setColor('#b50909'));
@@ -182,8 +256,7 @@ exports.run = (bot, guild, message, args) => {
                 if (selector.split('>').length > 1) {
                     //Grab complex selector
                     var complexSelector = selector.split('>').map(i => i.trim());
-                    var numberSelector = complexSelector[0];
-                    complexSelector = complexSelector.splice(1);
+                    var numberSelector = complexSelector.shift();
 
                     //Check if numberSelector is actually a number
                     if (/^\d+$/.test(numberSelector)) {
@@ -191,8 +264,7 @@ exports.run = (bot, guild, message, args) => {
                         var numberOfPlayers = parseInt(numberSelector);
                         if (complexSelector.length != 0) {
                             //Grab channel selector
-                            var channelSelector = complexSelector[0];
-                            complexSelector = complexSelector.splice(1);
+                            var channelSelector = complexSelector.shift();
 
                             //Channel name, find the voice channel
                             var voiceChannelFROM = message.guild.channels.cache.find(i => i.name.toLowerCase() == channelSelector.toLowerCase() && i.type == 'voice');
@@ -399,8 +471,8 @@ function HelpMessage(bot, guild, message, args) {
             { name: 'Required Permissions: ', value: 'Move Members' },
             {
                 name: 'Command Patterns: ',
-                value: `${guild.Prefix}move [Selector] [Split/Direct command prefix] [Channel(s)]\n\n` +
-                    `${guild.Prefix}move [Selector] - [Channel]\n\n` +
+                value: `${guild.Prefix}move [Selector] [Split | Direct] [Channel(s) | Disconnect Prefix]\n\n` +
+                    `${guild.Prefix}move [Selector] - [Channel | Disconnect Prefix]\n\n` +
                     `${guild.Prefix}move [Selector] = [Channel] & [Channel] & [Channel]`
             },
             {
@@ -408,6 +480,9 @@ function HelpMessage(bot, guild, message, args) {
                 value: `${guild.Prefix}move ${randomChannel1} - ${randomChannel2} (Move everyone in one voice channel to another voice channel)\n\n` +
                     `${guild.Prefix}move * - ${randomChannel1} (Move everyone currently in any voice channel to a specific voice channel)\n\n` +
                     `${guild.Prefix}move 5 > ${randomChannel1} - ${randomChannel2} (Move 5 randomly picked players from one voice channel to another voice channel)\n\n` +
+                    `${guild.Prefix}move ${randomChannel1} - ! (Disconnect everyone in one voice channel)\n\n` +
+                    `${guild.Prefix}move * - ! (Disconnect everyone currently in any voice channel)\n\n` +
+                    `${guild.Prefix}move 5 > ${randomChannel1} - ! (Disconnect 5 randomly picked players)\n\n` +
                     `${guild.Prefix}move ${randomChannel1} = ${randomChannel2} & ${randomChannel3} (Equally split everyone in one voice channel into any number of voice channels seperated by &)\n\n` +
                     `${guild.Prefix}move * = ${randomChannel1} & ${randomChannel2} (Split everyone currently in any voice channel into any number of voice channels seperated by &)\n\n` +
                     `${guild.Prefix}move 5 > ${randomChannel1} = ${randomChannel2} & ${randomChannel3}` +
