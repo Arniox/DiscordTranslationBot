@@ -36,13 +36,13 @@ exports.run = (bot, guild, message, args) => {
 
                                                 //Await reaction
                                                 //stop collector and then remove reactions and then edit message
-                                                collector.on('collect', r => { collector.stop(); });
-                                                collector.on('end', r => {
+                                                collector.on('collect', r => { collector.stop(`Stopped spam moving ${person.first().toString()}`); });
+                                                collector.on('end', (c, reason) => {
                                                     person.first().voice.setChannel(currentChannel);
                                                     //Remove reactions and then edit message
                                                     sent.reactions.removeAll()
                                                         .then(() => {
-                                                            sent.edit(new Discord.MessageEmbed().setDescription(`Stopped spam moving ${person.first().toString()}`).setColor('#09b50c'));
+                                                            sent.edit(new Discord.MessageEmbed().setDescription(`${reason}`).setColor('#09b50c'));
                                                         }).catch((error) => { console.error('Failed to clear reactions: ', error) });
                                                 });
 
@@ -145,7 +145,10 @@ function Sample(aarr) {
 function next(collector, person, channelsTo) {
     var intr = setInterval(async function () {
         //Await for person to be moved to slow down the while loop and then reverse channel array
-        await person.first().voice.setChannel(channelsTo[0]);
+        await person.first().voice.setChannel(channelsTo[0])
+            .catch((e) => {
+                collector.stop(`${person.first().toString()} has disconnected so spam move was stopped.`);
+            });
         channelsTo.reverse();
         //Clear interval if collector has ended
         if (collector.ended) clearInterval(intr);
