@@ -145,11 +145,15 @@ function Sample(aarr) {
 function next(collector, person, channelsTo) {
     var intr = setInterval(async function () {
         //Await for person to be moved to slow down the while loop and then reverse channel array
-        await person.first().voice.setChannel(channelsTo[0])
-            .catch((e) => {
+        if (person.first().voice.channel)
+            await person.first().voice.setChannel(channelsTo[0]).catch(() => {
                 collector.stop(`${person.first().toString()} has disconnected so spam move was stopped.`);
             });
+        else
+            collector.stop(`${person.first().toString()} has disconnected so spam move was stopped.`);
         channelsTo.reverse();
+        //Reset timer to go on infintely
+        collector.resetTimer();
         //Clear interval if collector has ended
         if (collector.ended) clearInterval(intr);
     }, 1050);
