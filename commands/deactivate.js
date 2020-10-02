@@ -18,7 +18,7 @@ exports.run = (bot, guild, message, args) => {
                 WHERE ServerId = "${query.trim()}"
                 `;
                 bot.con.query(update_cmd, (error, results, fields) => {
-                    if (error || !fields || !fields.length)
+                    if (error)
                         return message.channel.send(new Discord.MessageEmbed().setDescription(`Sorry, the server with the id of ${query} doesn\'t exist`).setColor('#b50909'));
                     //Message
                     message.channel.send(new Discord.MessageEmbed().setDescription(`Translation capababilities have been **deactivated** for the server with id of ${query}`).setColor('#09b50c'));
