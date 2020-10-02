@@ -15,10 +15,10 @@ exports.run = (bot, guild, message, args) => {
                 const update_cmd = `
                 UPDATE servers
                 SET Allowed_Translation = 1
-                WHERE ServerId = "${query}"
+                WHERE ServerId = "${query.trim()}"
                 `;
                 bot.con.query(update_cmd, (error, results, fields) => {
-                    if (error || !results || !results.length)
+                    if (error || !fields || !fields.length)
                         return message.channel.send(new Discord.MessageEmbed().setDescription(`Sorry, the server with the id of ${query} doesn\'t exist`).setColor('#b50909'));
                     //Message
                     message.channel.send(new Discord.MessageEmbed().setDescription(`Translation capababilities have been **activated** for the server with id of ${query}`).setColor('#09b50c'));
