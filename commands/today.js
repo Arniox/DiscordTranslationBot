@@ -81,7 +81,7 @@ exports.run = (bot, guild, message, args) => {
                     };
 
                     //Foreach
-                    strings.forEach(e => {
+                    for (e in strings) {
                         //Get ID
                         var identifier = e.match(/[+-]|[a-z]+|[^a-z]+/gi);
                         //Get the Mathematical Sign
@@ -112,7 +112,7 @@ exports.run = (bot, guild, message, args) => {
                         } else {
                             return message.channel.send(new Discord.MessageEmbed().setDescription(`Sorry, ${number} was not a number I understood.`).setColor('#b50909'));
                         }
-                    });
+                    }
 
                     //Print
                     message.channel.send(new Discord.MessageEmbed().setDescription(`Today **(${now.format('llll')})**\n` +
