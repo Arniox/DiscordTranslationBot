@@ -67,6 +67,19 @@ exports.run = (bot, guild, message, args) => {
                     //For each of the strings
                     var rightNow = moment().tz('Australia/Sydney');
 
+                    //Create key value list
+                    var usefulDigits = {
+                        'y': { 'name': 'year' },
+                        'Q': { 'name': 'quarter' },
+                        'M': { 'name': 'month' },
+                        'w': { 'name': 'week' },
+                        'd': { 'name': 'day' },
+                        'h': { 'name': 'hour' },
+                        'm': { 'name': 'minute' },
+                        's': { 'name': 'second' },
+                        'ms': { 'name': 'millisecond' }
+                    };
+
                     //Foreach
                     strings.forEach(e => {
                         //Get ID
@@ -78,19 +91,6 @@ exports.run = (bot, guild, message, args) => {
                         if (/^\d+$/.test(number)) {
                             //Get digit range
                             var digitRange = identifier.shift();
-
-                            //Create key value list
-                            var usefulDigits = {
-                                'y': { 'name': 'year' },
-                                'Q': { 'name': 'quarter' },
-                                'M': { 'name': 'month' },
-                                'w': { 'name': 'week' },
-                                'd': { 'name': 'day' },
-                                'h': { 'name': 'hour' },
-                                'm': { 'name': 'minute' },
-                                's': { 'name': 'second' },
-                                'ms': { 'name': 'millisecond' }
-                            };
 
                             //Check if exists
                             if (digitRange in usefulDigits) {
