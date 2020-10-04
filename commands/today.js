@@ -63,7 +63,7 @@ exports.run = (bot, guild, message, args) => {
                         message.channel.send(new Discord.MessageEmbed().setDescription(`The local date & time right now is: ${new Date().toTimeZone(guild.Time_Zone_Offset).toString()}`).setColor('#09b50c'));
                         break;
                     default:
-                        message.channel.send(new Discord.MessageEmbed().setDescription(`The local date & time right now is: ${new Date().toTimeZone(guild.Time_Zone_Offset).toLocaleString()}`).setColor('#09b50c'));
+                        message.channel.send(new Discord.MessageEmbed().setDescription(`The local date & time right now is: ${new Date().toTimeZone(guild.Time_Zone_Offset).toLocaleString('en-NZ')}`).setColor('#09b50c'));
                         break;
                 }
                 break;
