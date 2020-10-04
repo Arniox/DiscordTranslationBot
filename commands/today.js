@@ -80,6 +80,8 @@ exports.run = (bot, guild, message, args) => {
                         'ms': { 'name': 'millisecond' }
                     };
 
+                    console.log(string);
+
                     //Foreach
                     for (const e of strings) {
                         //Get ID
@@ -113,6 +115,8 @@ exports.run = (bot, guild, message, args) => {
                             return message.channel.send(new Discord.MessageEmbed().setDescription(`Sorry, ${number} was not a number I understood.`).setColor('#b50909'));
                         }
                     }
+
+                    console.log(string);
 
                     //Print
                     message.channel.send(new Discord.MessageEmbed().setDescription(`Today **(${now.format('llll')})**\n` +
