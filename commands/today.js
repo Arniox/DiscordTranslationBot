@@ -6,7 +6,7 @@ exports.run = (bot, guild, message, args) => {
     if (args.length != 0) {
         var command = args.shift().toLowerCase();
         //Get now
-        var now = moment().tz('Australia/Sydney');
+        var now = moment().tz(guild.Time_Zone_Offset);
 
         //Switch on today command
         switch (command) {
@@ -60,6 +60,10 @@ exports.run = (bot, guild, message, args) => {
                         break;
                 }
                 break;
+            case 'timezones': case 'timezone': case 'zone': case 'z':
+                message.channel.send(new Discord.MessageEmbed().setDescription(`Current Time Zone is: **${now.format('zz | ZZ')}**`).setColor('#09b50c'));
+                break;
+            //Calculate time
             case 'calculate': case 'calc': case 'c':
                 //Get the left over strings
                 var strings = args.join('').match(/[+-][\d]+[a-z]{1,2}/gi);
@@ -147,6 +151,7 @@ function HelpMessage(bot, guild, message, args) {
                 value: `${guild.Prefix}today [era/year/quarter/month/week/day/hour/minute/second/millisecond]\n` +
                     `${guild.Prefix}today [now n] :?[short/full]\n` +
                     `${guild.Prefix}today [time t]\n` +
+                    `${guild.Prefix}today [timezone]\n` +
                     `${guild.Prefix}today [calculate calc c] [[+, -]1y/1M/1d/1h/1m/1s/1ms]\n\n`,
                 inline: true
             },
