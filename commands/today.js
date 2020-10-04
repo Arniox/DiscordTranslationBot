@@ -82,6 +82,8 @@ exports.run = (bot, guild, message, args) => {
 
                     //Foreach
                     for (e in strings) {
+                        console.log(e);
+
                         //Get ID
                         var identifier = e.match(/[+-]|[a-z]+|[^a-z]+/gi);
                         //Get the Mathematical Sign
