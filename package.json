@@ -20,6 +20,8 @@
     "enmap": "^5.2.4",
     "google-translate": "^3.0.0",
     "merge-images": "^2.0.0",
+    "moment": "^2.29.0",
+    "moment-timezone": "^0.5.31",
     "promise-mysql": "^4.1.3"
   }
 }

@@ -1,8 +1,14 @@
+//Requirements
 const Discord = require('discord.js');
+const moment = require('moment');
+const moment_tz = require('moment-timezone');
 
 exports.run = (bot, guild, message, args) => {
     if (args.length != 0) {
         var command = args.shift().toLowerCase();
+        //Get now
+        var now = moment().tz('Australia/Sydney');
+        console.log(now.format());
 
         //Switch on today command
         switch (command) {
