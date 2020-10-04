@@ -81,7 +81,7 @@ exports.run = (bot, guild, message, args) => {
                     };
 
                     //Foreach
-                    for (const e in strings) {
+                    for (const e of strings) {
                         console.log(e);
 
                         //Get ID
