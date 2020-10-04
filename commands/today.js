@@ -143,11 +143,17 @@ function HelpMessage(bot, guild, message, args) {
             },
             {
                 name: 'Examples: ',
-                value: `${guild.Prefix}today get [year/month/date/day/hour/min/sec/milli/time/time zone offset]\n` +
-                    `${guild.Prefix}today now [short/full]\n` +
-                    `${guild.Prefix}today [UTC/ISO]\n` +
-                    `${guild.Prefix}today [+, -] [1y/1M/1d/1h/1m/1s/1ms]`,
+                value: `${guild.Prefix}today [eras era e\nyears year y\nquarters quarter q\nmonths month m\nweeks week w\ndays day d` +
+                    `\nhours hour h\nminutes minute min mm\nseconds second sec s\nmilliseconds millisecond milli mill mmm mi]\n` +
+                    `${guild.Prefix}today [now n] :?[short/full]\n` +
+                    `${guild.Prefix}today [time t]\n` +
+                    `${guild.Prefix}today [calculate calc c] [[+, -]1y/1M/1d/1h/1m/1s/1ms]\n\n`,
                 inline: true
+            },
+            {
+                name: 'Calculation Example: ',
+                value: `The *today calculation* command can stack multiple different time ranges and supports duplicate time ranges ` +
+                    `such as adding 5 years, and then also subtracting 6 years\n**${guild.Prefix}today calc +12y +80M +6d +100000ms -6y -60h +5h**`
             }
         )
         .setTimestamp()
