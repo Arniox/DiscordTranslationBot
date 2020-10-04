@@ -60,6 +60,7 @@ Date.prototype.toTimeZone = function (timeZone) {
     var offset = (this.getTimezoneOffset() + (timeZone * 60)) * 60 * 1000;
     //Update the timestamp to reflect
     this.setTime(this.getTime() + offset);
+    return this;
 }
 
 //Ordinal of number
