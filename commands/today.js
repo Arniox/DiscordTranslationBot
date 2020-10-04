@@ -117,8 +117,8 @@ exports.run = (bot, guild, message, args) => {
 
                     //Print
                     message.channel.send(new Discord.MessageEmbed().setDescription(`Today **(${now.format('llll')})**\n` +
-                        `${strings.map(i => `${i.match(/[+-]/gi)[0]} ${i.match(/[+-]+/gi)[0]} ${usefulDigits[i.match(/[a-z]+/gi)[0]]["name"]}`).join('\n')} is:\n` +
-                        `**${rightNow.format('llll')}**`).setColor('#b50909'));
+                        `${strings.map(i => `${i.match(/[+-]/gi)[0]} ${i.match(/[\d]+/gi)[0]} ${usefulDigits[i.match(/[a-z]+/gi)[0]]["name"]}(s)`).join('\n')} is:\n` +
+                        `**${rightNow.format('llll')}**`).setColor('#09b50c'));
                 } else {
                     message.channel.send(new Discord.MessageEmbed().setDescription(`Sorry, I did not understand the time range you wanted.`).setColor('#b50909'));
                 }
