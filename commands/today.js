@@ -103,15 +103,14 @@ exports.run = (bot, guild, message, args) => {
                                         rightNow.subtract(number, digitRange);
                                         break;
                                     default:
-                                        message.channel.send(new Discord.MessageEmbed().setDescription(`Sorry, ${sign} is not a supported math method right now.`).setColor('#b50909'));
-                                        break;
+                                        return message.channel.send(new Discord.MessageEmbed().setDescription(`Sorry, ${sign} is not a supported math method right now.`).setColor('#b50909'));
                                 }
                             } else {
-                                message.channel.send(new Discord.MessageEmbed().setDescription(`Sorry, ${digitRange} was not a date type I understood.\n` +
-                                    `You can apply years (y), months (M), days (d), hours (h), minutes (m), seconds (s), and milliseconds (ms)`).setColor('#b50909'));
+                                return message.channel.send(new Discord.MessageEmbed().setDescription(`Sorry, ${digitRange} was not a date type I understood.\n` +
+                                    `You can apply years (y), quarters (Q), months (M), days (d), hours (h), minutes (m), seconds (s), and milliseconds (ms)`).setColor('#b50909'));
                             }
                         } else {
-                            message.channel.send(new Discord.MessageEmbed().setDescription(`Sorry, ${number} was not a number I understood.`).setColor('#b50909'));
+                            return message.channel.send(new Discord.MessageEmbed().setDescription(`Sorry, ${number} was not a number I understood.`).setColor('#b50909'));
                         }
                     });
 
