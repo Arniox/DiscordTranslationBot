@@ -139,12 +139,12 @@ function HelpMessage(bot, guild, message, args) {
         .addFields(
             {
                 name: 'Command Patterns: ',
-                value: `${guild.Prefix}today [commands] [selection/time range]`
+                value: `${guild.Prefix}today [commands] [selection/time range]\n` +
+                    `*For the commands and selection/time range's you can use most of the obvious abbreviations (year = y and etc)*`
             },
             {
                 name: 'Examples: ',
-                value: `${guild.Prefix}today [eras era e\nyears year y\nquarters quarter q\nmonths month m\nweeks week w\ndays day d` +
-                    `\nhours hour h\nminutes minute min mm\nseconds second sec s\nmilliseconds millisecond milli mill mmm mi]\n` +
+                value: `${guild.Prefix}today [era/year/quarter/month/week/day/hour/minute/second/millisecond]\n` +
                     `${guild.Prefix}today [now n] :?[short/full]\n` +
                     `${guild.Prefix}today [time t]\n` +
                     `${guild.Prefix}today [calculate calc c] [[+, -]1y/1M/1d/1h/1m/1s/1ms]\n\n`,
