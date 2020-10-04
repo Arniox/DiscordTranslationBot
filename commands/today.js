@@ -60,73 +60,71 @@ exports.run = (bot, guild, message, args) => {
                         break;
                 }
                 break;
-            default:
-                //Check if the user wants to add time
-                if (args.length != 0) {
-                    //Get the left over strings
-                    var strings = args.shift().match(/[+-][\d]+[a-z]{1,2}/gi);
-                    if (strings.length > 0) {
-                        //For each of the strings
-                        var rightNow = moment().tz('Australia/Sydney');
+            case 'calculate': case 'calc': case 'c':
+                //Get the left over strings
+                var strings = args.shift().match(/[+-][\d]+[a-z]{1,2}/gi);
+                if (strings.length > 0) {
+                    //For each of the strings
+                    var rightNow = moment().tz('Australia/Sydney');
 
-                        //Foreach
-                        strings.forEach(e => {
-                            //Get ID
-                            var identifier = e.match(/[+-]|[a-z]+|[^a-z]+/gi);
-                            //Get the Mathematical Sign
-                            var sign = identifier.shift();
-                            //Get the number
-                            var number = identifier.shift();
-                            if (/^\d+$/.test(number)) {
-                                //Get digit range
-                                var digitRange = identifier.shift();
+                    //Foreach
+                    strings.forEach(e => {
+                        //Get ID
+                        var identifier = e.match(/[+-]|[a-z]+|[^a-z]+/gi);
+                        //Get the Mathematical Sign
+                        var sign = identifier.shift();
+                        //Get the number
+                        var number = identifier.shift();
+                        if (/^\d+$/.test(number)) {
+                            //Get digit range
+                            var digitRange = identifier.shift();
 
-                                //Create key value list
-                                var usefulDigits = {
-                                    'y': { 'name': 'year' },
-                                    'Q': { 'name': 'quarter' },
-                                    'M': { 'name': 'month' },
-                                    'w': { 'name': 'week' },
-                                    'd': { 'name': 'day' },
-                                    'h': { 'name': 'hour' },
-                                    'm': { 'name': 'minute' },
-                                    's': { 'name': 'second' },
-                                    'ms': { 'name': 'millisecond' }
-                                };
+                            //Create key value list
+                            var usefulDigits = {
+                                'y': { 'name': 'year' },
+                                'Q': { 'name': 'quarter' },
+                                'M': { 'name': 'month' },
+                                'w': { 'name': 'week' },
+                                'd': { 'name': 'day' },
+                                'h': { 'name': 'hour' },
+                                'm': { 'name': 'minute' },
+                                's': { 'name': 'second' },
+                                'ms': { 'name': 'millisecond' }
+                            };
 
-                                //Check if exists
-                                if (digitRange in usefulDigits) {
-                                    //Switch on mathematical method
-                                    switch (sign) {
-                                        case '+':
-                                            rightNow.add(number, digitRange);
-                                            break;
-                                        case '-':
-                                            rightNow.subtract(number, digitRange);
-                                            break;
-                                        default:
-                                            message.channel.send(new Discord.MessageEmbed().setDescription(`Sorry, ${sign} is not a supported math method right now.`).setColor('#b50909'));
-                                            break;
-                                    }
-                                } else {
-                                    message.channel.send(new Discord.MessageEmbed().setDescription(`Sorry, ${digitRange} was not a date type I understood.\n` +
-                                        `You can apply years (y), months (M), days (d), hours (h), minutes (m), seconds (s), and milliseconds (ms)`).setColor('#b50909'));
+                            //Check if exists
+                            if (digitRange in usefulDigits) {
+                                //Switch on mathematical method
+                                switch (sign) {
+                                    case '+':
+                                        rightNow.add(number, digitRange);
+                                        break;
+                                    case '-':
+                                        rightNow.subtract(number, digitRange);
+                                        break;
+                                    default:
+                                        message.channel.send(new Discord.MessageEmbed().setDescription(`Sorry, ${sign} is not a supported math method right now.`).setColor('#b50909'));
+                                        break;
                                 }
                             } else {
-                                message.channel.send(new Discord.MessageEmbed().setDescription(`Sorry, ${number} was not a number I understood.`).setColor('#b50909'));
+                                message.channel.send(new Discord.MessageEmbed().setDescription(`Sorry, ${digitRange} was not a date type I understood.\n` +
+                                    `You can apply years (y), months (M), days (d), hours (h), minutes (m), seconds (s), and milliseconds (ms)`).setColor('#b50909'));
                             }
-                        });
+                        } else {
+                            message.channel.send(new Discord.MessageEmbed().setDescription(`Sorry, ${number} was not a number I understood.`).setColor('#b50909'));
+                        }
+                    });
 
-                        //Print
-                        message.channel.send(new Discord.MessageEmbed().setDescription(`Today **(${now.format('llll')})**\n` +
-                            `${strings.map(i => `${i.match(/[+-]/gi)[0]} ${i.match(/[+-]+/gi)[0]} ${usefulDigits[i.match(/[a-z]+/gi)[0]]["name"]}`).join('\n')} is:\n` +
-                            `**${rightNow.format('llll')}**`).setColor('#b50909'));
-                    } else {
-                        message.channel.send(new Discord.MessageEmbed().setDescription(`Sorry, I did not understand the time range you wanted.`).setColor('#b50909'));
-                    }
+                    //Print
+                    message.channel.send(new Discord.MessageEmbed().setDescription(`Today **(${now.format('llll')})**\n` +
+                        `${strings.map(i => `${i.match(/[+-]/gi)[0]} ${i.match(/[+-]+/gi)[0]} ${usefulDigits[i.match(/[a-z]+/gi)[0]]["name"]}`).join('\n')} is:\n` +
+                        `**${rightNow.format('llll')}**`).setColor('#b50909'));
                 } else {
-                    message.channel.send(new Discord.MessageEmbed().setDescription(`Sorry, you need to select a time range to apply to today's date.`).setColor('#b50909'));
+                    message.channel.send(new Discord.MessageEmbed().setDescription(`Sorry, I did not understand the time range you wanted.`).setColor('#b50909'));
                 }
+                break;
+            default:
+                HelpMessage(bot, guild, message, args);
                 break;
         }
     } else {
