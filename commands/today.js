@@ -21,7 +21,7 @@ exports.run = (bot, guild, message, args) => {
                 message.channel.send(new Discord.MessageEmbed().setDescription(`Current Yearly Quarter: **${now.format('Qo')}**`).setColor('#09b50c'));
                 break;
             case 'months': case 'month': case 'm':
-                message.channel.send(new Discord.MessageEmbed().setDescription(`Current Month: **${now.format('MMMM')}**, the ${now.format('Mo')} Month of the Year`).setColor('#09b50c'));
+                message.channel.send(new Discord.MessageEmbed().setDescription(`Current Month: **${now.format('MMMM')}**, the **${now.format('Mo')}** Month of the Year`).setColor('#09b50c'));
                 break;
             case 'weeks': case 'week': case 'w':
                 message.channel.send(new Discord.MessageEmbed().setDescription(`Current Week of the Year: **${now.format('wo')}**`).setColor('#09b50c'));
