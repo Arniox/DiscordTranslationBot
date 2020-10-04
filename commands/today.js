@@ -80,7 +80,7 @@ exports.run = (bot, guild, message, args) => {
                         'ms': { 'name': 'millisecond' }
                     };
 
-                    console.log(string);
+                    console.log(strings);
 
                     //Foreach
                     for (const e of strings) {
@@ -116,7 +116,7 @@ exports.run = (bot, guild, message, args) => {
                         }
                     }
 
-                    console.log(string);
+                    console.log(strings);
 
                     //Print
                     message.channel.send(new Discord.MessageEmbed().setDescription(`Today **(${now.format('llll')})**\n` +
