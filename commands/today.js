@@ -62,7 +62,7 @@ exports.run = (bot, guild, message, args) => {
                 break;
             case 'calculate': case 'calc': case 'c':
                 //Get the left over strings
-                var strings = args.shift().match(/[+-][\d]+[a-z]{1,2}/gi);
+                var strings = args.join('').match(/[+-][\d]+[a-z]{1,2}/gi);
                 if (strings.length > 0) {
                     //For each of the strings
                     var rightNow = moment().tz('Australia/Sydney');
@@ -79,8 +79,6 @@ exports.run = (bot, guild, message, args) => {
                         's': { 'name': 'second' },
                         'ms': { 'name': 'millisecond' }
                     };
-
-                    console.log(strings);
 
                     //Foreach
                     for (const e of strings) {
@@ -115,8 +113,6 @@ exports.run = (bot, guild, message, args) => {
                             return message.channel.send(new Discord.MessageEmbed().setDescription(`Sorry, ${number} was not a number I understood.`).setColor('#b50909'));
                         }
                     }
-
-                    console.log(strings);
 
                     //Print
                     message.channel.send(new Discord.MessageEmbed().setDescription(`Today **(${now.format('llll')})**\n` +
