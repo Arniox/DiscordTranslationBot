@@ -12,37 +12,37 @@ exports.run = (bot, guild, message, args) => {
                     var range = args.map(i => i.toLowerCase()).join('');
                     switch (range) {
                         case 'y': case 'year': case 'years':
-                            message.channel.send(new Discord.MessageEmbed().setDescription(`Today's full year is: ${ToTimeZone('Australia/Sydney', new Date()).getFullYear()}.`).setColor('#09b50c'));
+                            message.channel.send(new Discord.MessageEmbed().setDescription(`Today's full year is: ${new Date().toTimeZone(11).getFullYear()}.`).setColor('#09b50c'));
                             break;
                         case 'month': case 'months':
-                            message.channel.send(new Discord.MessageEmbed().setDescription(`Today's month is the: ${(ToTimeZone('Australia/Sydney', new Date()).getMonth() + 1).ordinal()} month of the year.`).setColor('#09b50c'));
+                            message.channel.send(new Discord.MessageEmbed().setDescription(`Today's month is the: ${(new Date().toTimeZone(11).getMonth() + 1).ordinal()} month of the year.`).setColor('#09b50c'));
                             break;
                         case 'date':
-                            message.channel.send(new Discord.MessageEmbed().setDescription(`Today's date is the: ${(ToTimeZone('Australia/Sydney', new Date()).getDate()).ordinal()}.`).setColor('#09b50c'));
+                            message.channel.send(new Discord.MessageEmbed().setDescription(`Today's date is the: ${(new Date().toTimeZone(11).getDate()).ordinal()}.`).setColor('#09b50c'));
                             break;
                         case 'day': case 'days':
-                            message.channel.send(new Discord.MessageEmbed().setDescription(`Today is the : ${(ToTimeZone('Australia/Sydney', new Date()).getDay() + 1).ordinal()} day of the week.`).setColor('#09b50c'));
+                            message.channel.send(new Discord.MessageEmbed().setDescription(`Today is the : ${(new Date().toTimeZone(11).getDay() + 1).ordinal()} day of the week.`).setColor('#09b50c'));
                             break;
                         case 'h': case 'hour': case 'hours':
-                            message.channel.send(new Discord.MessageEmbed().setDescription(`It is ${ToTimeZone('Australia/Sydney', new Date()).getHours().toString().padEnd(3, '0').padStart(4, '0')} hours.`).setColor('#09b50c'));
+                            message.channel.send(new Discord.MessageEmbed().setDescription(`It is ${new Date().toTimeZone(11).getHours().toString().padEnd(3, '0').padStart(4, '0')} hours.`).setColor('#09b50c'));
                             break;
                         case 'm': case 'min': case 'mins': case 'minute': case 'minutes':
-                            message.channel.send(new Discord.MessageEmbed().setDescription(`It is ${ToTimeZone('Australia/Sydney', new Date()).getMinutes().toString().padStart(4, '0')} minutes.`).setColor('#09b50c'));
+                            message.channel.send(new Discord.MessageEmbed().setDescription(`It is ${new Date().toTimeZone(11).getMinutes().toString().padStart(4, '0')} minutes.`).setColor('#09b50c'));
                             break;
                         case 's': case 'sec': case 'secs': case 'second': case 'seconds':
-                            message.channel.send(new Discord.MessageEmbed().setDescription(`It is ${ToTimeZone('Australia/Sydney', new Date()).getSeconds()} seconds right now.`).setColor('#09b50c'));
+                            message.channel.send(new Discord.MessageEmbed().setDescription(`It is ${new Date().toTimeZone(11).getSeconds()} seconds right now.`).setColor('#09b50c'));
                             break;
                         case 'mill': case 'milli': case 'millisecond': case 'milliseconds':
-                            message.channel.send(new Discord.MessageEmbed().setDescription(`It is ${ToTimeZone('Australia/Sydney', new Date()).getMilliseconds()} milliseconds right now.`).setColor('#09b50c'));
+                            message.channel.send(new Discord.MessageEmbed().setDescription(`It is ${new Date().toTimeZone(11).getMilliseconds()} milliseconds right now.`).setColor('#09b50c'));
                             break;
                         case 'time':
                             message.channel.send(
                                 new Discord.MessageEmbed()
-                                    .setDescription(`The time in milliseconds is ${ToTimeZone('Australia/Sydney', new Date()).getTime()}.`)
+                                    .setDescription(`The time in milliseconds is ${new Date().toTimeZone(11).getTime()}.`)
                                     .addField('Fact: ', 'This value in programming is the number of milliseconds after the incredably specific date of Jan 1, 1970, 00:00:00.000 GMT').setColor('#09b50c'));
                             break;
                         case 'timezoneoffset': case 'timezoneoff': case 'timezone': case 'zone':
-                            message.channel.send(new Discord.MessageEmbed().setDescription(`Your timezone offset is ${ToTimeZone('Australia/Sydney', new Date()).getTimezoneOffset()} `).setColor('#09b50c'));
+                            message.channel.send(new Discord.MessageEmbed().setDescription(`Your timezone offset is ${new Date().toTimeZone(11).getTimezoneOffset()} `).setColor('#09b50c'));
                             break;
                         default:
                             message.channel.send(new Discord.MessageEmbed().setDescription(`Sorry, you need to select something to get from today's date.`).setColor('#b50909'));
@@ -57,21 +57,21 @@ exports.run = (bot, guild, message, args) => {
                 var range = args.map(i => i.toLowerCase()).join('');
                 switch (range) {
                     case 'short':
-                        message.channel.send(new Discord.MessageEmbed().setDescription(`The local date & time right now is: ${ToTimeZone('Australia/Sydney', new Date()).toDateString()}`).setColor('#09b50c'));
+                        message.channel.send(new Discord.MessageEmbed().setDescription(`The local date & time right now is: ${new Date().toTimeZone(11).toDateString()}`).setColor('#09b50c'));
                         break;
                     case 'long':
-                        message.channel.send(new Discord.MessageEmbed().setDescription(`The local date & time right now is: ${ToTimeZone('Australia/Sydney', new Date()).toString()}`).setColor('#09b50c'));
+                        message.channel.send(new Discord.MessageEmbed().setDescription(`The local date & time right now is: ${new Date().toTimeZone(11).toString()}`).setColor('#09b50c'));
                         break;
                     default:
-                        message.channel.send(new Discord.MessageEmbed().setDescription(`The local date & time right now is: ${ToTimeZone('Australia/Sydney', new Date()).toString()}`).setColor('#09b50c'));
+                        message.channel.send(new Discord.MessageEmbed().setDescription(`The local date & time right now is: ${new Date().toTimeZone(11).toString()}`).setColor('#09b50c'));
                         break;
                 }
                 break;
             case 'utc':
-                message.channel.send(new Discord.MessageEmbed().setDescription(`The date & time GMT 00 is: ${ToTimeZone('Australia/Sydney', new Date()).toUTCString()}`).setColor('#09b50c'));
+                message.channel.send(new Discord.MessageEmbed().setDescription(`The date & time GMT 00 is: ${new Date().toTimeZone(11).toUTCString()}`).setColor('#09b50c'));
                 break;
             case 'iso':
-                message.channel.send(new Discord.MessageEmbed().setDescription(`The ISO date & time is: ${ToTimeZone('Australia/Sydney', new Date()).toISOString()}`).setColor('#09b50c'));
+                message.channel.send(new Discord.MessageEmbed().setDescription(`The ISO date & time is: ${new Date().toTimeZone(11).toISOString()}`).setColor('#09b50c'));
                 break;
             default:
                 if (args.length != 0) {
@@ -96,7 +96,7 @@ exports.run = (bot, guild, message, args) => {
                             };
 
                             //Get today
-                            var now = new Date();
+                            var now = new Date().toTimeZone(11);
 
                             if (digitRange in usefulDigits) {
                                 //Switch on the mathematical method
@@ -163,29 +163,4 @@ function HelpMessage(bot, guild, message, args) {
 
     //Send embedded message
     message.channel.send(embeddedHelpMessage);
-}
-
-function ToTimeZone(timeZone, date) {
-    return DateWithTimeZone(
-        timeZone,
-        date.getFullYear(),
-        date.getMonth(),
-        date.getDate(),
-        date.getHours(),
-        date.getMinutes(),
-        date.getSeconds()
-    );
-}
-
-//Get time with timezone
-function DateWithTimeZone(timeZone, year, month, day, hour, minute, second) {
-    let date = new Date(Date.UTC(year, month, day, hour, minute, second));
-
-    let utcDate = new Date(date.toLocaleDateString('en-US', { timeZone: "UTC" }));
-    let tzDate = new Date(date.toLocaleDateString('en-US', { timeZone: timeZone }));
-    let offset = utcDate.getTime() - tzDate.getTime();
-
-    date.setTime(date.getTime() + offset);
-
-    return date;
 }
