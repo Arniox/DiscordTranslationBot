@@ -82,8 +82,6 @@ exports.run = (bot, guild, message, args) => {
 
                     //Foreach
                     for (const e of strings) {
-                        console.log(e);
-
                         //Get ID
                         var identifier = e.match(/[+-]|[a-z]+|[^a-z]+/gi);
                         //Get the Mathematical Sign
@@ -99,10 +97,10 @@ exports.run = (bot, guild, message, args) => {
                                 //Switch on mathematical method
                                 switch (sign) {
                                     case '+':
-                                        rightNow.add(number, digitRange);
+                                        rightNow.add(parseInt(number), digitRange);
                                         break;
                                     case '-':
-                                        rightNow.subtract(number, digitRange);
+                                        rightNow.subtract(parseInt(number), digitRange);
                                         break;
                                     default:
                                         return message.channel.send(new Discord.MessageEmbed().setDescription(`Sorry, ${sign} is not a supported math method right now.`).setColor('#b50909'));
