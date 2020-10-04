@@ -1,7 +1,6 @@
 //Requirements
 const Discord = require('discord.js');
-const moment = require('moment');
-const moment_tz = require('moment-timezone');
+const moment = require('moment-timezone');
 
 exports.run = (bot, guild, message, args) => {
     if (args.length != 0) {
