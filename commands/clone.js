@@ -89,7 +89,7 @@ async function cloneCountSequentially(thisChannel, toChannel, message, flags) {
         }
 
         //Await fetch messages and sum their total count
-        const messages = await channel.messages.fetch(options);
+        const messages = await thisChannel.messages.fetch(options);
 
         //For each message, clone them
         await messages.map(async function (v, k) {
