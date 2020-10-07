@@ -97,7 +97,7 @@ async function cloneCountSequentially(thisChannel, toChannel, message, flags) {
             await toChannel.send(new Discord.MessageEmbed()
                 .setAuthor(v.author.username, v.author.avatarURL())
                 .setDescription(v.content)
-                .setTimestamp()
+                .setTimestamp(v.createdAt)
             );
         });
 
