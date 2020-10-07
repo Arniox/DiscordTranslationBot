@@ -99,6 +99,7 @@ async function cloneCountSequentially(thisChannel, toChannel, message, flags) {
                 .setDescription(v.content)
                 .setTimestamp(v.createdAt)
             );
+            sum++;
         });
 
         //Bulk delete all 100 messages
@@ -106,7 +107,6 @@ async function cloneCountSequentially(thisChannel, toChannel, message, flags) {
             thisChannel.bulkDelete(messages);
 
         //Sum messages
-        sum += messages.size;
         last_id = messages.last().id;
 
         //Edit messagte with new number
