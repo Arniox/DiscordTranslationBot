@@ -30,9 +30,11 @@ exports.run = (bot, guild, message, args) => {
                 //Count and clone as the bot goes
                 //Send loading message
                 message.channel
-                    .send(new Discord.MessageEmbed().setDescription(`**Total Messages Copied from ${thisChannel.toString()} to ${toChannel.toString()}**\n\n***Loading....***`).setColor('#FFCC00'))
+                    .send(new Discord.MessageEmbed().setDescription(`**Total Messages Cloned Accross from ${thisChannel.toString()} to ${toChannel.toString()}**\n\n***Loading....***`).setColor('#FFCC00'))
                     .then(async function (sent) {
                         //Fetch all messages and sequentially count them and clone them
+                        var totalCount = await cloneCountSequentially(thisChannel, toChannel, sent, flags);
+                        sent.edit(new Discord.MessageEmbed().setDescription(`**Total Messages Cloned Accross from ${thisChannel.toString()} to ${toChannel.toString()}**\n\n${totalCount}`).setColor('#0099ff'));
                     });
             } else {
                 message.channel.send(new Discord.MessageEmbed().setDescription(`Sorry, the ${guild.Prefix}clone command only works with a this or #channelFrom tag and a #channelTo tag.`).setColor('#b50909'));
@@ -75,7 +77,7 @@ function HelpMessage(bot, guild, message, args) {
 }
 
 //Sum and clone all messages
-async function cloneCountSequentially(thisChannel, toChannel, message) {
+async function cloneCountSequentially(thisChannel, toChannel, message, flags) {
     var sum = 0;
     var last_id;
 
@@ -90,12 +92,28 @@ async function cloneCountSequentially(thisChannel, toChannel, message) {
         const messages = await channel.messages.fetch(options);
 
         //For each message, clone them
-        messages.forEach(e => {
-
+        await messages.map(async function (v, k) {
+            //Send message per message
+            await toChannel.send(new Discord.MessageEmbed()
+                .setAuthor(v.author.username, v.author.avatarURL())
+                .setDescription(v.content)
+                .setTimestamp()
+            );
         });
+
+        //Bulk delete all 100 messages
+        if (flags.includes('delete'))
+            thisChannel.bulkDelete(messages);
 
         //Sum messages
         sum += messages.size;
         last_id = messages.last().id;
+
+        //Edit messagte with new number
+        message.edit(new Discord.MessageEmbed().setDescription(`**Total Messages Cloned Accross from ${thisChannel.toString()} to ${toChannel.toString()}**\n\n***...${sum}...***`).setColor('#FFCC00'));
+
+        //Break when reach the end of messages
+        if (messages.size != 100) break;
     }
+    return sum;
 }
