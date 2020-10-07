@@ -1,0 +1,101 @@
+//Import
+const Discord = require('discord.js');
+
+exports.run = (bot, guild, message, args) => {
+    if (args.length != 0) {
+        //Get all channel mentions
+        var channelMentions = message.mentions.channels.map((v, k) => v);
+
+        //Check how many channel mentions there where
+        if (channelMentions.size > 0) {
+            if (channelMentions.size < 3) {
+                //Get command. If it is this, then get this channel, if not then grab channel mention number 1.
+                var command = args.shift().toLowerCase();
+                var thisChannel = null;
+                var toChannel = null;
+
+                //Grab thisChannel
+                if (command == 'this') {
+                    thisChannel = message.channel;
+                } else {
+                    thisChannel = channelMentions.shift();
+                }
+                //Grab toChannel
+                toChannel = channelMentions.shift();
+
+                //Shift away the toChannel
+                args.shift();
+                var flags = args.shift().toLowerCase();
+
+                //Count and clone as the bot goes
+                //Send loading message
+                message.channel
+                    .send(new Discord.MessageEmbed().setDescription(`**Total Messages Copied from ${thisChannel.toString()} to ${toChannel.toString()}**\n\n***Loading....***`).setColor('#FFCC00'))
+                    .then(async function (sent) {
+                        //Fetch all messages and sequentially count them and clone them
+                    });
+            } else {
+                message.channel.send(new Discord.MessageEmbed().setDescription(`Sorry, the ${guild.Prefix}clone command only works with a this or #channelFrom tag and a #channelTo tag.`).setColor('#b50909'));
+            }
+        } else {
+            message.channel.send(new Discord.MessageEmbed().setDescription('Sorry, you didn\'t select any channels to clone from or too.').setColor('#b50909'));
+        }
+    } else {
+        HelpMessage(bot, guild, message, args);
+    }
+}
+
+//Functions
+function HelpMessage(bot, guild, message, args) {
+    var randomChannel1 = message.guild.channels.cache.random();
+    var randomChannel2 = message.guild.channels.cache.random();
+
+    var embeddedHelpMessage = new Discord.MessageEmbed()
+        .setColor('#b50909')
+        .setAuthor(bot.user.username, bot.user.avatarURL())
+        .setDescription(`Clone command allows you to clone all messages from one channel to another for merging purposes.`)
+        .addFields(
+            { name: 'Required Permissions: ', value: 'Manage Server' },
+            {
+                name: 'Command Patterns: ',
+                value: `${guild.Prefix}clone [this channel/channel tag] [to channel] [:?delete flag]`
+            },
+            {
+                name: 'Examples: ',
+                value: `${guild.Prefix}clone this ${randomChannel2.toString()}\n\n` +
+                    `${guild.Prefix}clone ${randomChannel1.toString()} ${randomChannel2.toString()}\n\n` +
+                    `${guild.Prefix}clone this ${randomChannel2.toString()} delete`
+            }
+        )
+        .setTimestamp()
+        .setFooter('Thanks, and have a good day');
+
+    //Send embedded message
+    message.channel.send(embeddedHelpMessage);
+}
+
+//Sum and clone all messages
+async function cloneCountSequentially(thisChannel, toChannel, message) {
+    var sum = 0;
+    var last_id;
+
+    while (true) {
+        //Create options and update to next message id
+        const options = { limit: 100 };
+        if (last_id) {
+            options.before = last_id;
+        }
+
+        //Await fetch messages and sum their total count
+        const messages = await channel.messages.fetch(options);
+
+        //For each message, clone them
+        messages.forEach(e => {
+
+        });
+
+        //Sum messages
+        sum += messages.size;
+        last_id = messages.last().id;
+    }
+}
