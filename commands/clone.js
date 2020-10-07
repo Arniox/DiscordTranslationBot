@@ -7,8 +7,8 @@ exports.run = (bot, guild, message, args) => {
         var channelMentions = message.mentions.channels.map((v, k) => v);
 
         //Check how many channel mentions there where
-        if (channelMentions.size > 0) {
-            if (channelMentions.size < 3) {
+        if (channelMentions.length > 0) {
+            if (channelMentions.length < 3) {
                 //Get command. If it is this, then get this channel, if not then grab channel mention number 1.
                 var command = args.shift().toLowerCase();
                 var thisChannel = null;
