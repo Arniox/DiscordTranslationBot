@@ -93,7 +93,7 @@ async function cloneCountSequentially(thisChannel, toChannel, message, flags) {
 
         //For each message, clone them
         await messages.map(async function (v, k) {
-            if (!v.author.bot)
+            if (!v.author.bot && v.type === 'DEFAULT')
                 //Send message per message
                 await toChannel.send(new Discord.MessageEmbed()
                     .setAuthor(v.author.username, v.author.avatarURL())
