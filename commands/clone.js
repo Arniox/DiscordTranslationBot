@@ -104,7 +104,7 @@ async function cloneCountSequentially(thisChannel, toChannel, message, flags) {
 
             //Delete all 100 messages
             if (flags.includes('delete'))
-                await v.delete(); //Delete message
+                await v.delete({ timeout: 5000 }); //Delete message
         });
 
 
