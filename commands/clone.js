@@ -109,6 +109,7 @@ async function cloneCountSequentially(thisChannel, toChannel, message, flags) {
 
 
         //Sum messages
+        sum += messages.size;
         last_id = messages.last().id;
 
         //Edit messagte with new number
