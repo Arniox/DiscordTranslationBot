@@ -93,14 +93,33 @@ async function cloneCountSequentially(thisChannel, toChannel, message, flags) {
 
         //For each message, clone them
         await messages.map(async function (v, k) {
-            if (!v.author.bot && v.type === 'DEFAULT')
-                //Send message per message
-                await toChannel.send(new Discord.MessageEmbed()
-                    .setAuthor(v.author.username, v.author.avatarURL())
-                    .setDescription(v.content)
-                    .setTimestamp(v.createdAt)
-                );
-            sum++;
+            if (!v.author.bot && v.type === 'DEFAULT') {
+                //Send only content and no embeds
+                if (v.content && v.embeds.length == 0) {
+                    //Send message per message
+                    await toChannel.send(new Discord.MessageEmbed()
+                        .setAuthor(v.author.username, v.author.avatarURL())
+                        .setDescription(v.content)
+                        .setTimestamp(v.createdAt)
+                    );
+                } else if (v.content && v.embeds.length != 0) {
+                    //Send message per message
+                    await toChannel.send(new Discord.MessageEmbed()
+                        .setAuthor(v.author.username, v.author.avatarURL())
+                        .setDescription(v.content)
+                        .setTimestamp(v.createdAt)
+                    );
+                    //Send all embeds
+                    for (const hj of v.embeds)
+                        await toChannel.send(hj);
+                } else if (!v.content && v.embeds.length != 0) {
+                    //Send all embeds
+                    for (const hj of v.embeds)
+                        await toChannel.send(hj);
+                }
+                //Add sum
+                sum++;
+            }
 
             //Delete all 100 messages
             if (flags.includes('delete'))
