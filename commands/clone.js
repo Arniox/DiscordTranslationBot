@@ -101,7 +101,7 @@ async function cloneCountSequentially(thisChannel, toChannel, message, flags) {
                     .setDescription(v.content)
                     .setTimestamp(v.createdAt),
                     `${(links ? links : ['']).join('\n')}`
-                );
+                ).catch(() => { return; });
             }
             //Delete all 100 messages
             if (flags.includes('delete'))
