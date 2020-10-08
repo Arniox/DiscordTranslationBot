@@ -111,6 +111,8 @@ async function cloneCountSequentially(thisChannel, toChannel, message, flags) {
                         .catch(() => { clearInterval(interval); return; });
             }
 
+            //Sum messages
+            sum++;
             //Delete all 100 messages
             if (flags.includes('delete'))
                 v.delete(); //Delete message
@@ -119,16 +121,7 @@ async function cloneCountSequentially(thisChannel, toChannel, message, flags) {
             if (++index === messageArray.length) clearInterval(interval);
         }, 1050);
 
-
-
-        //For each message, clone them
-        messages.map((v, k) => v).forEach((v) => {
-
-        });
-
-
         //Sum messages
-        sum += messages.size;
         last_id = messages.last().id;
 
         //Edit messagte with new number
