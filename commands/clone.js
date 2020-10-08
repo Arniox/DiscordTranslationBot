@@ -25,7 +25,7 @@ exports.run = (bot, guild, message, args) => {
 
                 //Shift away the toChannel
                 args.shift();
-                var flags = (args.length != 0 ? args.shift().toLowerCase() : '');
+                var flags = (args.length != 0 ? args.join('-').toLowerCase() : '');
 
                 //Count and clone as the bot goes
                 //Send loading message
