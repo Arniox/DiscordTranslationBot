@@ -93,7 +93,7 @@ async function cloneCountSequentially(thisChannel, toChannel, message, flags) {
 
         //For each message, clone them
         await messages.map(async function (v, k) {
-            if (!v.author.bot && v.type === 'DEFAULT') {
+            if (!v.author.bot) {
                 //Send only content and no embeds
                 if (v.content && v.embeds.length == 0) {
                     //Send message per message
