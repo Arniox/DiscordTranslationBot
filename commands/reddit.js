@@ -8,7 +8,7 @@ const reddit = new RedditAPI({
     password: process.env.REDDIT_PASSWORD,
     app_id: process.env.REDDIT_APP_ID,
     api_secret: process.env.REDDIT_APP_SECRET,
-    user_agent: `PC:https://discordapp.com/api/oauth2/authorize?client_id=707436231222493214&permissions=133160&scope=bot v${HEROKU_RELEASE_VERSION} (by /u/-arniox-)`,
+    user_agent: `PC:https://discordapp.com/api/oauth2/authorize?client_id=707436231222493214&permissions=133160&scope=bot v${process.env.HEROKU_RELEASE_VERSION} (by /u/-arniox-)`,
     retry_on_wait: true,
     retry_on_server_error: 5,
     logs: true
