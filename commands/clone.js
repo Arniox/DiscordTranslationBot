@@ -1,5 +1,6 @@
 //Import
 const Discord = require('discord.js');
+const moment = require('moment-timezone');
 
 exports.run = (bot, guild, message, args) => {
     if (args.length != 0) {
@@ -94,14 +95,9 @@ async function cloneCountSequentially(thisChannel, toChannel, message, flags) {
         //For each message, clone them
         await messages.map(async function (v, k) {
             if (!v.author.bot && v.type === 'DEFAULT') {
-                var links = v.content.match(/(?:(?:https?|ftp|file):\/\/|www\.|ftp\.)(?:\([-A-Z0-9+&@#\/%=~_|$?!:,.]*\)|[-A-Z0-9+&@#\/%=~_|$?!:,.])*(?:\([-A-Z0-9+&@#\/%=~_|$?!:,.]*\)|[A-Z0-9+&@#\/%=~_|$])/igm);
                 //Send message per message
-                await toChannel.send(new Discord.MessageEmbed()
-                    .setAuthor(v.author.username, v.author.avatarURL())
-                    .setDescription(v.content)
-                    .setTimestamp(v.createdAt)
-                ).catch(() => { return; });
-                await toChannel.send(`${(links ? links : ['']).join('\n')}`).catch(() => { return; });
+                await toChannel.send(`Posted by ${v.author.username} | ${moment(v.createdAt).calendar()}\n\n${v.content}`)
+                    .catch(() => { return; });
             }
             //Delete all 100 messages
             if (flags.includes('delete'))
