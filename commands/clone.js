@@ -100,7 +100,7 @@ async function cloneCountSequentially(thisChannel, toChannel, message, flags) {
                     .setAuthor(v.author.username, v.author.avatarURL())
                     .setDescription(v.content)
                     .setTimestamp(v.createdAt),
-                    `${(links ? links : []).join('\n')}`
+                    `${(links ? links : ['']).join('\n')}`
                 );
             }
             //Delete all 100 messages
