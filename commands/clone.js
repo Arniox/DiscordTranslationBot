@@ -101,9 +101,8 @@ async function cloneCountSequentially(thisChannel, toChannel, message, flags) {
                     .setTimestamp(v.createdAt)
                 ).catch(() => { return; });
                 //Send links seperately with match link regex
-                for (var link of v.content.match(/(?:(?:https?|ftp|file):\/\/|www\.|ftp\.)(?:\([-A-Z0-9+&@#\/%=~_|$?!:,.]*\)|[-A-Z0-9+&@#\/%=~_|$?!:,.])*(?:\([-A-Z0-9+&@#\/%=~_|$?!:,.]*\)|[A-Z0-9+&@#\/%=~_|$])/igm)) {
-                    await toChannel.send(link);
-                }
+                var linkArray = v.content.match(/(?:(?:https?|ftp|file):\/\/|www\.|ftp\.)(?:\([-A-Z0-9+&@#\/%=~_|$?!:,.]*\)|[-A-Z0-9+&@#\/%=~_|$?!:,.])*(?:\([-A-Z0-9+&@#\/%=~_|$?!:,.]*\)|[A-Z0-9+&@#\/%=~_|$])/igm);
+                for (var i = 0; i < linkArray.length; i++) await toChannel.send(link);
             }
 
             //Delete all 100 messages
