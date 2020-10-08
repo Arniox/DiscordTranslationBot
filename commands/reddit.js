@@ -4,6 +4,8 @@ const RedditAPI = require('reddit-wrapper-v2');
 
 const reddit = new RedditAPI({
     //Options for Reddit Wrapper
+    username: process.env.REDDIT_USERNAME,
+    password: '',
     app_id: process.env.REDDIT_APP_ID,
     api_secret: process.env.REDDIT_APP_SECRET,
     user_agent: `PC:https://discordapp.com/api/oauth2/authorize?client_id=707436231222493214&permissions=133160&scope=bot` +
