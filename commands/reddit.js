@@ -1,6 +1,6 @@
 //Import
 const Discord = require('discord.js');
-const Reddit = require('js-reddit.js');
+const RedditJS = require('js-reddit.js');
 
 //Set up reddit options
 const opts = {
@@ -11,8 +11,12 @@ const opts = {
     userAgent: `PC:https://discordapp.com/api/oauth2/authorize?client_id=707436231222493214&permissions=133160&scope=bot` +
         ` v${process.env.HEROKU_RELEASE_VERSION} (by /u/-arniox-)`
 }
+const reddit = new RedditJS.Client(opts);
 
 exports.run = (bot, guild, message, args) => {
     //Test
+    reddit.fetchSelf().then(user => {
+        console.log(`This client is logged into ${user.name}`);
+    });
 
 }
