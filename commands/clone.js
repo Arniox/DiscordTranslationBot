@@ -92,24 +92,23 @@ async function cloneCountSequentially(thisChannel, toChannel, message, flags) {
         const messages = await thisChannel.messages.fetch(options);
 
         //For each message, clone them
-        await messages.map(async function (v, k) {
+        messages.map((v, k) => {
             if (!v.author.bot && v.type === 'DEFAULT') {
                 //Send message per message
-                await toChannel.send(new Discord.MessageEmbed()
+                toChannel.send(new Discord.MessageEmbed()
                     .setAuthor(v.author.username, v.author.avatarURL())
                     .setDescription(v.content)
-                    .setTimestamp(v.createdAt),
-                    //Send links
-                    v.content.match(/(?:(?:https?|ftp|file):\/\/|www\.|ftp\.)(?:\([-A-Z0-9+&@#\/%=~_|$?!:,.]*\)|[-A-Z0-9+&@#\/%=~_|$?!:,.])*(?:\([-A-Z0-9+&@#\/%=~_|$?!:,.]*\)|[A-Z0-9+&@#\/%=~_|$])/igm)
-                ).catch(() => { return; });
-                // //Send links seperately with match link regex
-                // var linkArray = v.content.match(/(?:(?:https?|ftp|file):\/\/|www\.|ftp\.)(?:\([-A-Z0-9+&@#\/%=~_|$?!:,.]*\)|[-A-Z0-9+&@#\/%=~_|$?!:,.])*(?:\([-A-Z0-9+&@#\/%=~_|$?!:,.]*\)|[A-Z0-9+&@#\/%=~_|$])/igm);
-                // for (var i = 0; i < (linkArray ? linkArray : []).length; i++) await toChannel.send(linkArray[i]);
+                    .setTimestamp(v.createdAt)
+                ).then(() => {
+                    //Send links seperately with match link regex
+                    var linkArray = v.content.match(/(?:(?:https?|ftp|file):\/\/|www\.|ftp\.)(?:\([-A-Z0-9+&@#\/%=~_|$?!:,.]*\)|[-A-Z0-9+&@#\/%=~_|$?!:,.])*(?:\([-A-Z0-9+&@#\/%=~_|$?!:,.]*\)|[A-Z0-9+&@#\/%=~_|$])/igm);
+                    for (var i = 0; i < (linkArray ? linkArray : []).length; i++) toChannel.send(linkArray[i]);
+                }).catch(() => { return; });
             }
 
             //Delete all 100 messages
             if (flags.includes('delete'))
-                await v.delete(); //Delete message
+                v.delete(); //Delete message
         });
 
 
