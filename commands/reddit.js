@@ -15,8 +15,11 @@ const reddit = new RedditJS.Client(opts);
 
 exports.run = (bot, guild, message, args) => {
     //Test
-    reddit.fetchSelf().then(user => {
-        console.log(`This client is logged into ${user.name}`);
-    });
+    reddit.fetchSelf()
+        .then(user => {
+            console.log(`This client is logged into ${user.name}`);
+        }).catch((err) => {
+            console.error(err);
+        });
 
 }
