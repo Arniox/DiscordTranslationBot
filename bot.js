@@ -36,9 +36,6 @@ bot.dbpool.then((p) => {
 }).then((connection) => {
 	console.log(`Connection to ${process.env.CLEARDB_DATABASE_URL} was successful!`);
 
-	//Attach settings to bot
-	bot.config = settings;
-
 	//Attaches all event files to event
 	fs.readdir('./events/', (err, files) => {
 		if (err) return console.error(err); //Throw if file breaks
