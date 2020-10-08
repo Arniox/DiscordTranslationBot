@@ -94,11 +94,12 @@ async function cloneCountSequentially(thisChannel, toChannel, message, flags) {
 
         //For each message, clone them
         await messages.map(async function (v, k) {
-            if (!v.author.bot && v.type === 'DEFAULT') {
+            if (!v.author.bot && v.type === 'DEFAULT')
                 //Send message per message
                 await toChannel.send(`\`\`\`Posted By ${v.author.username} | ${moment(v.createdAt).calendar()}\`\`\`${v.content}`)
                     .catch(() => { return; });
-            }
+            sum++;
+
             //Delete all 100 messages
             if (flags.includes('delete'))
                 await v.delete(); //Delete message
@@ -106,14 +107,13 @@ async function cloneCountSequentially(thisChannel, toChannel, message, flags) {
 
 
         //Sum messages
-        sum += messages.size;
-        last_id = (messages.size > 0 ? messages.last().id : '');
+        last_id = messages.last().id;
 
         //Edit messagte with new number
         message.edit(new Discord.MessageEmbed().setDescription(`**Total Messages Cloned Accross from ${thisChannel.toString()} to ${toChannel.toString()}**\n\n***...${sum}...***`).setColor('#FFCC00'));
 
         //Break when reach the end of messages
-        if (messages.size < 1) break;
+        if (messages.size != 100) break;
     }
     return sum;
 }
