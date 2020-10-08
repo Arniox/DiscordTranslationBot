@@ -14,3 +14,6 @@ Axios - Promise based HTTP client for the browser and node.js
 https://github.com/axios/axios
 
 https://github.com/AnIdiotsGuide/discordjs-bot-guide/blob/master/first-bot/a-basic-command-handler.md
+
+https://www.youtube.com/watch?v=6Pie-uoDYG4
+
