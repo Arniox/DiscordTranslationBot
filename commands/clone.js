@@ -93,16 +93,16 @@ async function cloneCountSequentially(thisChannel, toChannel, message, flags) {
         const messages = await thisChannel.messages.fetch(options);
 
         //For each message, clone them
-        await messages.map(async function (v, k) {
+        messages.map((v, k) => {
             if (!v.author.bot && v.type === 'DEFAULT')
                 //Send message per message
-                await toChannel.send(`\`\`\`Posted By ${v.author.username} | ${moment(v.createdAt).calendar()}\`\`\`${v.content}`)
+                toChannel.send(`\`\`\`Posted By ${v.author.username} | ${moment(v.createdAt).calendar()}\`\`\`${v.content}`)
                     .catch(() => { return; });
             sum++;
 
             //Delete all 100 messages
             if (flags.includes('delete'))
-                await v.delete(); //Delete message
+                v.delete(); //Delete message
         });
 
 
