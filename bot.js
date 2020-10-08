@@ -2,11 +2,9 @@
 const Enmap = require("enmap");
 const Discord = require('discord.js');
 const mysql = require('promise-mysql');
-var tools = require('./extra-functions');
-
-//WIP - to be removed
-var settings = require('./configure.json');
+const RedditJS = require('js-reddit.js/src');
 var fs = require('fs');
+var tools = require('./extra-functions');
 
 //Create mysql connection pool
 const pool = mysql.createPool({
@@ -15,10 +13,23 @@ const pool = mysql.createPool({
 	password: process.env.CLEARDB_DATABASE_URL.match(/(:)[a-zA-Z\d]+/)[0].replace(/(:)/, ''), //Get password
 	database: process.env.CLEARDB_DATABASE_URL.match(/([a-zA-Z]\/)[a-zA-Z\d_]+/)[0].replace(/([a-zA-Z]\/)/, '') //Get database
 });
+//Set up reddit options
+const opts = {
+	username: process.env.REDDIT_USERNAME,
+	password: process.env.REDDIT_PASSWORD,
+	appId: process.env.REDDIT_APP_ID,
+	appSecret: process.env.REDDIT_APP_SECRET,
+	userAgent: `PC:https://discordapp.com/api/oauth2/authorize?client_id=707436231222493214&permissions=133160&scope=bot` +
+		` v${process.env.HEROKU_RELEASE_VERSION} (by /u/-arniox-)`
+}
 
 //Initialize Discord bot 
 var bot = new Discord.Client();
+//Initialize Reddit client
+var reddit = new RedditJS.Client(opts);
+
 bot.dbpool = pool; //Attach pool to bot
+bot.reddit = reddit; //Attach reddit to bot
 
 bot.dbpool.then((p) => {
 	return p.getConnection();
