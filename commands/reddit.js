@@ -1,6 +1,6 @@
 //Import
 const Discord = require('discord.js');
-const RedditJS = require('js-reddit.js');
+const RedditJS = require('js-reddit.js/src');
 
 //Set up reddit options
 const opts = {
