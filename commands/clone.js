@@ -113,7 +113,7 @@ async function cloneCountSequentially(thisChannel, toChannel, message, flags) {
         message.edit(new Discord.MessageEmbed().setDescription(`**Total Messages Cloned Accross from ${thisChannel.toString()} to ${toChannel.toString()}**\n\n***...${sum}...***`).setColor('#FFCC00'));
 
         //Break when reach the end of messages
-        if (messages.size != 100) break;
+        if (messages.size < 0) break;
     }
     return sum;
 }
