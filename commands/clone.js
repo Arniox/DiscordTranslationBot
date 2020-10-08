@@ -95,16 +95,15 @@ async function cloneCountSequentially(thisChannel, toChannel, message, flags) {
         await messages.map(async function (v, k) {
             if (!v.author.bot && v.type === 'DEFAULT') {
                 //Send message per message
-                await toChannel
-                    .send(`${v.author.avatarURL()} | ${v.author.username}`)
-                    .catch(() => { return; });
-
-                //Send message per message
                 await toChannel.send(new Discord.MessageEmbed()
                     .setAuthor(v.author.username, v.author.avatarURL())
                     .setDescription(v.content)
                     .setTimestamp(v.createdAt)
                 ).catch(() => { return; });
+                //Send links seperately with match link regex
+                for (var link of v.content.match(/(?:(?:https?|ftp|file):\/\/|www\.|ftp\.)(?:\([-A-Z0-9+&@#\/%=~_|$?!:,.]*\)|[-A-Z0-9+&@#\/%=~_|$?!:,.])*(?:\([-A-Z0-9+&@#\/%=~_|$?!:,.]*\)|[A-Z0-9+&@#\/%=~_|$])/igm)) {
+                    await toChannel.send(link);
+                }
             }
 
             //Delete all 100 messages
