@@ -1,7 +1,5 @@
-//Import classes
-const googleApiKey = process.env.GOOGLE_API_KEY;
+//Import
 const Discord = require('discord.js');
-const googleTranslate = require('google-translate')(googleApiKey, { "concurrentLimit": 20 });
 
 exports.run = (bot, guild, message, args) => {
     if (args.length != 0) {
