@@ -99,7 +99,7 @@ async function cloneCountSequentially(thisChannel, toChannel, message, flags) {
                     .setAuthor(v.author.username, v.author.avatarURL())
                     .setDescription(v.content)
                     .setTimestamp(v.createdAt)
-                ).then(() => {
+                ).then(async function () {
                     //Send links seperately with match link regex
                     var linkArray = v.content.match(/(?:(?:https?|ftp|file):\/\/|www\.|ftp\.)(?:\([-A-Z0-9+&@#\/%=~_|$?!:,.]*\)|[-A-Z0-9+&@#\/%=~_|$?!:,.])*(?:\([-A-Z0-9+&@#\/%=~_|$?!:,.]*\)|[A-Z0-9+&@#\/%=~_|$])/igm);
                     for (var i = 0; i < (linkArray ? linkArray : []).length; i++) await toChannel.send(linkArray[i]);
