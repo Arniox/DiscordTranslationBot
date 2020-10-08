@@ -7,6 +7,8 @@ exports.run = (bot, guild, message, args) => {
         .then(user => {
             console.log(`This client is logged into ${user.name}`);
         }).catch((err) => {
+            console.log('THIS IS GAY');
+
             console.error(err);
         });
 
