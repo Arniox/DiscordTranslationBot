@@ -90,25 +90,40 @@ async function cloneCountSequentially(thisChannel, toChannel, message, flags) {
 
         //Await fetch messages and sum their total count
         const messages = await thisChannel.messages.fetch(options);
+        const messageArray = messages.map((v, k) => v);
+        var index = 0;
 
-        //For each message, clone them
-        messages.map((v, k) => {
+        //For each message with interval. Clone them
+        var interval = setInterval(function () {
+            const v = messageArray[index];
+
             if (!v.author.bot && v.type === 'DEFAULT') {
                 //Send message per message
                 toChannel.send(new Discord.MessageEmbed()
                     .setAuthor(v.author.username, v.author.avatarURL())
                     .setDescription(v.content)
                     .setTimestamp(v.createdAt)
-                ).then(() => {
-                    //Send links seperately with match link regex
-                    var linkArray = v.content.match(/(?:(?:https?|ftp|file):\/\/|www\.|ftp\.)(?:\([-A-Z0-9+&@#\/%=~_|$?!:,.]*\)|[-A-Z0-9+&@#\/%=~_|$?!:,.])*(?:\([-A-Z0-9+&@#\/%=~_|$?!:,.]*\)|[A-Z0-9+&@#\/%=~_|$])/igm);
-                    for (var i = 0; i < (linkArray ? linkArray : []).length; i++) toChannel.send(linkArray[i]);
-                }).catch(() => { return; });
+                ).catch(() => { clearInterval(interval); return; });
+                //Send links seperately with match link regex
+                var linkArray = v.content.match(/(?:(?:https?|ftp|file):\/\/|www\.|ftp\.)(?:\([-A-Z0-9+&@#\/%=~_|$?!:,.]*\)|[-A-Z0-9+&@#\/%=~_|$?!:,.])*(?:\([-A-Z0-9+&@#\/%=~_|$?!:,.]*\)|[A-Z0-9+&@#\/%=~_|$])/igm);
+                for (var i = 0; i < (linkArray ? linkArray : []).length; i++)
+                    toChannel.send(linkArray[i])
+                        .catch(() => { clearInterval(interval); return; });
             }
 
             //Delete all 100 messages
             if (flags.includes('delete'))
                 v.delete(); //Delete message
+
+            //Stop after all messages have been sent
+            if (++index === messageArray.length) clearInterval(interval);
+        }, 1050);
+
+
+
+        //For each message, clone them
+        messages.map((v, k) => v).forEach((v) => {
+
         });
 
 
