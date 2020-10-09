@@ -24,9 +24,9 @@ const opts = {
 }
 
 //Initialize Discord bot 
-var bot = new Discord.Client();
+const bot = new Discord.Client();
 //Initialize Reddit client
-var reddit = new RedditJS.Client(opts);
+const reddit = new RedditJS.Client(opts);
 
 bot.dbpool = pool; //Attach pool to bot
 bot.reddit = reddit; //Attach reddit to bot
