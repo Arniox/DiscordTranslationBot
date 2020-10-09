@@ -7,7 +7,7 @@ exports.run = (bot, guild, message, args) => {
 
         //Check which command you want help with
         switch (command) {
-            case 'ping':
+            case 'ping': case 'pin': case 'p':
                 var embeddedHelpMessage = new Discord.MessageEmbed()
                     .setColor('#0099ff')
                     .setAuthor(bot.user.username, bot.user.avatarURL())
@@ -18,7 +18,7 @@ exports.run = (bot, guild, message, args) => {
                 //Send embedded message
                 message.channel.send(embeddedHelpMessage);
                 break;
-            case 'prefix':
+            case 'prefix': case 'pref': case 'pre': case 'pr':
                 var embeddedHelpMessage = new Discord.MessageEmbed()
                     .setColor('#0099ff')
                     .setAuthor(bot.user.username, bot.user.avatarURL())
@@ -33,7 +33,7 @@ exports.run = (bot, guild, message, args) => {
                 //Send embedded message
                 message.channel.send(embeddedHelpMessage);
                 break;
-            case 'muterole':
+            case 'muterole': case 'muter': case 'mr':
                 var randomRole = message.guild.roles.cache.random().toString();
 
                 var embeddedHelpMessage = new Discord.MessageEmbed()
@@ -62,7 +62,7 @@ exports.run = (bot, guild, message, args) => {
                 //Send embedded message
                 message.channel.send(embeddedHelpMessage);
                 break;
-            case 'mute':
+            case 'mute': case 'mu': case 'm':
                 var randomChannel = message.guild.channels.cache.filter(i => i.type == 'voice').random().name;
 
                 var embeddedHelpMessage = new Discord.MessageEmbed()
@@ -82,7 +82,7 @@ exports.run = (bot, guild, message, args) => {
                 //Send embedded message
                 message.channel.send(embeddedHelpMessage);
                 break;
-            case 'unmute':
+            case 'unmute': case 'unmu': case 'um':
                 var randomChannel = message.guild.channels.cache.filter(i => i.type == 'voice').random().name;
 
                 var embeddedHelpMessage = new Discord.MessageEmbed()
@@ -102,7 +102,7 @@ exports.run = (bot, guild, message, args) => {
                 //Send embedded message
                 message.channel.send(embeddedHelpMessage);
                 break;
-            case 'listen':
+            case 'listen': case 'lis': case 'li':
                 var embeddedHelpMessage = new Discord.MessageEmbed()
                     .setColor('#0099ff')
                     .setAuthor(bot.user.username, bot.user.avatarURL())
@@ -121,7 +121,7 @@ exports.run = (bot, guild, message, args) => {
                 //Send embedded message
                 message.channel.send(embeddedHelpMessage);
                 break;
-            case 'leave':
+            case 'leave': case 'lea': case 'le': case 'l':
                 var embeddedHelpMessage = new Discord.MessageEmbed()
                     .setColor('#0099ff')
                     .setAuthor(bot.user.username, bot.user.avatarURL())
@@ -135,7 +135,7 @@ exports.run = (bot, guild, message, args) => {
                 //Send embedded message
                 message.channel.send(embeddedHelpMessage);
                 break;
-            case 'translate':
+            case 'translate': case 'trans': case 'tran': case 'tra': case 'tr': case 't':
                 var embeddedHelpMessage = new Discord.MessageEmbed()
                     .setColor('#0099ff')
                     .setAuthor(bot.user.username, bot.user.avatarURL())
@@ -159,7 +159,7 @@ exports.run = (bot, guild, message, args) => {
                 //Send embedded message
                 message.channel.send(embeddedHelpMessage);
                 break;
-            case 'nick':
+            case 'nick': case 'nic': case 'ni': case 'n':
                 var randomMember = message.guild.members.cache.random();
 
                 //Get all available language codes
@@ -208,7 +208,7 @@ exports.run = (bot, guild, message, args) => {
                 //Send embedded message
                 message.channel.send(embeddedHelpMessage);
                 break;
-            case 'move':
+            case 'move': case 'mov': case 'mo':
                 var randomChannel1 = message.guild.channels.cache.filter(i => i.type == 'voice').random().name;
                 var randomChannel2 = message.guild.channels.cache.filter(i => i.type == 'voice').random().name;
                 var randomChannel3 = message.guild.channels.cache.filter(i => i.type == 'voice').random().name;
@@ -242,22 +242,24 @@ exports.run = (bot, guild, message, args) => {
                 //Send embedded message
                 message.channel.send(embeddedHelpMessage);
                 break;
-            case 'softban':
-                var randomPerson1 = message.guild.members.cache.random();
-                var randomPerson2 = message.guild.members.cache.random();
+            case 'ban': case 'ba': case 'bn': case 'b':
+                //Get random member
+                var randomMember = message.guild.members.cache.random();
 
                 var embeddedHelpMessage = new Discord.MessageEmbed()
-                    .setColor('#0099ff')
+                    .setColor('#b50909')
                     .setAuthor(bot.user.username, bot.user.avatarURL())
-                    .setDescription('Selected members will get banned and then instantly unbanned and sent a reinvite to the server. If you have server settings set up to auto ' +
-                        'delete messages on a ban, this is a good way to clear a players messages.')
+                    .setDescription('Ban command. You can either softban someone which will ban and then unban a member and reinvite them. Or a hard ban which will just ban a member.')
                     .addFields(
-                        { name: 'Required Permissions: ', value: 'Administrator (banning multiple players at once needs max permissions).' },
-                        { name: 'Command Patterns: ', value: `${guild.Prefix}softban [mention]+` },
+                        { name: 'Required Permissions: ', value: 'Ban members' },
                         {
-                            name: 'Examples: ', value: `${guild.Prefix}softban ${message.guild.members.cache.random().toString()}\n\n` +
-                                `${guild.Prefix}softban ${randomPerson1.toString()}${randomPerson2.toString()}`
+                            name: 'Command Patterns: ',
+                            value: `${guild.Prefix}ban [soft/hard] [mention(s)], [:?reason]`
                         },
+                        {
+                            name: 'Examples: ', value: `${guild.Prefix}ban hard ${randomMember.toString()}, optional reason\n\n` +
+                                `${guild.Prefix}ban soft ${randomMember.toString()}, optional reason`
+                        }
                     )
                     .setTimestamp()
                     .setFooter('Thanks, and have a good day');
@@ -265,7 +267,7 @@ exports.run = (bot, guild, message, args) => {
                 //Send embedded message
                 message.channel.send(embeddedHelpMessage);
                 break;
-            case 'harrass':
+            case 'harrass': case 'harass': case 'harr': case 'har': case 'ha': case 'h':
                 var randomPerson = message.guild.members.cache.random();
 
                 var embeddedHelpMessage = new Discord.MessageEmbed()

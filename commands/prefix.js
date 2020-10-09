@@ -6,7 +6,8 @@ exports.run = (bot, guild, message, args) => {
         var command = args.shift().toLowerCase();
         //Check which option you want
         switch (command) {
-            case 'change': //Change bot prefix
+            //Change bot prefix
+            case 'change': case 'ch': case '=':
                 if (message.member.hasPermission('MANAGE_GUILD')) {
                     var query = args.shift();
 
@@ -32,7 +33,7 @@ exports.run = (bot, guild, message, args) => {
                     message.channel.send(new Discord.MessageEmbed().setDescription('Sorry, you need to be a server manager/admin to change the server prefix.').setColor('#b50909'));
                 }
                 break;
-            case 'current':
+            case 'current': case 'curr': case 'cur': case 'c':
                 message.channel.send(new Discord.MessageEmbed().setDescription(`Current Bot Prefix is: ${guild.Prefix}`).setColor('#0099ff'));
                 break;
             default: //Error on prefix command

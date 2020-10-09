@@ -10,16 +10,16 @@ exports.run = (bot, guild, message, args) => {
 
         //Switch on command
         switch (command) {
-            case 'servers': case 'server':
+            case 'servers': case 'server': case 'serv': case 'ser': case 's':
                 if (args.length != 0) {
                     //Get detail
                     var detail = args.shift().toLowerCase();
                     //Switch on detail
                     switch (detail) {
-                        case 'count':
+                        case 'counts': case 'count': case 'c':
                             message.channel.send(new Discord.MessageEmbed().setDescription(`**Total Server Count:**\n\n${bot.user.username} is part of ${bot.guilds.cache.size} discord servers.`).setColor('#0099ff'));
                             break;
-                        case 'names': case 'name':
+                        case 'names': case 'name': case 'n':
                             message.channel.send(new Discord.MessageEmbed().setDescription(`**List of All Servers:**\n\n${bot.guilds.cache.map((value, key) => value.name).join(', ')}`).setColor('#0099ff'));
                             break;
                         default:
@@ -29,7 +29,7 @@ exports.run = (bot, guild, message, args) => {
                     message.channel.send(new Discord.MessageEmbed().setDescription('Sorry, you did not supply the detail arugment.').setColor('#b50909'));
                 }
                 break;
-            case 'total':
+            case 'totals': case 'total': case 'tot': case 't':
                 if (args.length != 0) {
                     //Get detail
                     var detail = args.shift().toLowerCase();
@@ -67,7 +67,7 @@ exports.run = (bot, guild, message, args) => {
                     message.channel.send(new Discord.MessageEmbed().setDescription('Sorry, you did not supply the detail argument.').setColor('#b50909'));
                 }
                 break;
-            case 'countme':
+            case 'countme': case 'cntme': case 'cme': case 'cm':
                 if (args.length != 0) {
                     //Get detail
                     var detail = args.shift().toLowerCase();
@@ -105,7 +105,7 @@ exports.run = (bot, guild, message, args) => {
                     message.channel.send(new Discord.MessageEmbed().setDescription('Sorry, you did not supply the detail argument.').setColor('#b50909'));
                 }
                 break;
-            case 'list':
+            case 'list': case 'lis': case 'l':
                 if (args.length != 0) {
                     //Get detail
                     var detail = args.shift().toLowerCase();
@@ -148,7 +148,7 @@ exports.run = (bot, guild, message, args) => {
                     message.channel.send(new Discord.MessageEmbed().setDescription('Sorry, you did not supply the detail argument.').setColor('#b50909'));
                 }
                 break;
-            case 'count':
+            case 'counts': case 'count': case 'c':
                 if (args.length != 0) {
                     //Check that you mentioned a channel
                     if (channelMentions.size != 0) {
@@ -158,7 +158,7 @@ exports.run = (bot, guild, message, args) => {
                             var detail = args.shift().toLowerCase();
                             //Switch on detail
                             switch (detail) {
-                                case 'messages': case 'message':
+                                case 'messages': case 'message': case 'mess': case 'm':
                                     //Send loading message.
                                     message.channel
                                         .send(new Discord.MessageEmbed().setDescription(`**Total Messages in ${channelMentions.first().toString()}**\n\n***Loading....***`).setColor('#FFCC00'))

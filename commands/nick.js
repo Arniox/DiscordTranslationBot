@@ -12,7 +12,7 @@ exports.run = (bot, guild, message, args) => {
 
         //Switch on upper command
         switch (upperCommand) {
-            case 'translate':
+            case 'translate': case 'trans': case 'tran': case 't':
                 //If this guild is not allowed to use translation commands
                 if (guild.Allowed_Translation == 1) {
                     if (args.length != 0) {
@@ -20,7 +20,7 @@ exports.run = (bot, guild, message, args) => {
                         var command = args.shift().toLowerCase();
                         //Switch case on command
                         switch (command) {
-                            case 'all':
+                            case 'all': case 'a':
                                 //Check if correct perms
                                 if (IsManager(message)) {
                                     var query = args.shift();
@@ -92,7 +92,7 @@ exports.run = (bot, guild, message, args) => {
                                     message.channel.send(new Discord.MessageEmbed().setDescription('Sorry, you need management perms to run this command.').setColor('#b50909'));
                                 }
                                 break;
-                            case 'me':
+                            case 'me': case 'm':
                                 var query = args.shift();
                                 if (IsLowerRoles(message, message.member)) {
                                     //Check if query exists
@@ -128,7 +128,7 @@ exports.run = (bot, guild, message, args) => {
                                     message.channel.send(new Discord.MessageEmbed().setDescription(`I cannot translate your nickname ${message.member.toString()} due to Missing Permissions`).setColor('#b50909'));
                                 }
                                 break;
-                            case 'someone':
+                            case 'someone': case 'some': case 'one': case 's':
                                 //Check if correct perms
                                 if (IsNickNamer(message)) {
                                     if (mentions.size == 1) {
@@ -194,7 +194,7 @@ exports.run = (bot, guild, message, args) => {
                                     message.channel.send(new Discord.MessageEmbed().setDescription('Sorry, you need nick naming perms to run this command.').setColor('#b50909'));
                                 }
                                 break;
-                            case 'whisper':
+                            case 'whisper': case 'whis': case 'wis': case 'w':
                                 //Check if correct perms
                                 if (IsNickNamer(message)) {
                                     if (mentions.size == 1) {
@@ -336,13 +336,13 @@ exports.run = (bot, guild, message, args) => {
                     message.channel.send(new Discord.MessageEmbed().setDescription(`Sorry, your discord server is dissallowed to use translation commands. This is a premium service.`).setColor('#b50909'));
                 }
                 break;
-            case 'set':
+            case 'set': case 's':
                 if (args.length != 0) {
                     //Get command
                     var command = args.shift().toLowerCase();
                     //switch case on command
                     switch (command) {
-                        case 'all':
+                        case 'all': case 'a':
                             //Check if correct perms
                             if (IsManager(message)) {
                                 var query = args.join(" ");
@@ -396,7 +396,7 @@ exports.run = (bot, guild, message, args) => {
                                 message.channel.send(new Discord.MessageEmbed().setDescription('Sorry, you need management perms to run this command.').setColor('#b50909'));
                             }
                             break;
-                        case 'me':
+                        case 'me': case 'm':
                             var query = args.join(" ");
 
                             //Check if query exists
@@ -415,7 +415,7 @@ exports.run = (bot, guild, message, args) => {
                                 message.channel.send(new Discord.MessageEmbed().setDescription('Sorry, you cannot set your own name to nothing.').setColor('#b50909'));
                             }
                             break;
-                        case 'someone':
+                        case 'someone': case 'some': case 'one': case 's':
                             //Check if correct perms
                             if (IsNickNamer(message)) {
                                 if (mentions.size == 1) {
@@ -455,13 +455,13 @@ exports.run = (bot, guild, message, args) => {
                 } else {
                     HelpMessage(bot, guild, message, args);
                 }
-            case 'reset':
+            case 'reset': case 'rest': case 'res': case 'r':
                 if (args.length != 0) {
                     //Get command
                     var command = args.shift().toLowerCase();
                     //switch case on command
                     switch (command) {
-                        case 'all':
+                        case 'all': case 'a':
                             //Check if correct perms
                             if (IsManager(message)) {
                                 //Get all translated ignored players
@@ -509,7 +509,7 @@ exports.run = (bot, guild, message, args) => {
                                 message.channel.send(new Discord.MessageEmbed().setDescription('Sorry, you need management perms to run this command.').setColor('#b50909'));
                             }
                             break;
-                        case 'me':
+                        case 'me': case 'm':
                             if (IsLowerRoles(message, message.member)) {
                                 //Get current user nickname
                                 var currentUserNickName = NickName(message.member);
@@ -521,7 +521,7 @@ exports.run = (bot, guild, message, args) => {
                                 message.channel.send(new Discord.MessageEmbed().setDescription(`I cannot reset your nickname ${message.member.toString()} due to Missing Permissions`).setColor('#b50909'));
                             }
                             break;
-                        case 'someone':
+                        case 'someone': case 'some': case 'one': case 's':
                             //Check if correct perms
                             if (IsNickNamer(message)) {
                                 if (mentions.size == 1) {
@@ -554,7 +554,7 @@ exports.run = (bot, guild, message, args) => {
                 } else {
                     HelpMessage(bot, guild, message, args);
                 }
-            case 'ignore':
+            case 'ignore': case 'ign': case 'ig': case 'i':
                 var option = args.shift();
 
                 //Get a list of translation ignored players
@@ -569,7 +569,7 @@ exports.run = (bot, guild, message, args) => {
                     if (option) {
                         //Switch on option
                         switch (option) {
-                            case 'list':
+                            case 'list': case 'l':
                                 //List out members
                                 var membersList = message.guild.members.cache
                                     .filter((value, key) => results.map(v => v.PlayerId).includes(key))
@@ -599,10 +599,10 @@ exports.run = (bot, guild, message, args) => {
                         } else {
                             //Remove user from database
                             const removeme_cmd = `
-                                        DELETE FROM translation_ignored_players
-                                            WHERE PlayerId = "${message.member.id}"
-                                            AND ServerId = "${message.guild.id}"
-                                        `;
+                            DELETE FROM translation_ignored_players
+                                WHERE PlayerId = "${message.member.id}"
+                                AND ServerId = "${message.guild.id}"
+                            `;
                             bot.con.query(removeme_cmd, (error, results, fields) => {
                                 if (error) return console.error(error); //Throw error and return
 

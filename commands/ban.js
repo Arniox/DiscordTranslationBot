@@ -17,7 +17,7 @@ exports.run = (bot, guild, message, args) => {
             if (mentions.size != 0) {
                 //Switch case on command
                 switch (command) {
-                    case 'soft':
+                    case 'softs': case 'soft': case 'sf': case 's':
                         //Soft Ban members with message
                         message.channel
                             .send(new Discord.MessageEmbed().setDescription(`Soft banning 0 / ${mentions.size} members\n` +
@@ -62,7 +62,7 @@ exports.run = (bot, guild, message, args) => {
                                 });
                             })
                         break;
-                    case 'hard':
+                    case 'hards': case 'hard': case 'hd': case 'h':
                         //Hard Ban members with message
                         message.channel
                             .send(new Discord.MessageEmbed().setDescription(`Hard banning 0 / ${mentions.size} members\n` +

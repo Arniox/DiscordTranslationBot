@@ -8,7 +8,7 @@ exports.run = (bot, guild, message, args) => {
 
         //Check which direction you want the role to go
         switch (direction) {
-            case 'add':
+            case 'add': case 'a': case '+':
                 if (message.member.hasPermission('MUTE_MEMBERS')) {
                     if (roles.size != 0) {
                         if (roles.size < 2) {
@@ -46,7 +46,7 @@ exports.run = (bot, guild, message, args) => {
                     message.channel.send(new Discord.MessageEmbed().setDescription('Sorry, you cannot add or remove mute ignored roles. You need to be a server manager/admin to use these commands.').setColor('#b50909'));
                 }
                 break;
-            case 'remove':
+            case 'remove': case 'r': case '-':
                 if (message.member.hasPermission('MUTE_MEMBERS')) {
                     if (roles.size != 0) {
                         if (roles.size < 2) {
@@ -84,7 +84,7 @@ exports.run = (bot, guild, message, args) => {
 
                             //Check if the user wants to remove all roles
                             switch (isAll) {
-                                case 'all':
+                                case 'all': case 'a':
                                     //Remove all roles
                                     const delete_all_cmd = `
                                     DELETE FROM ignored_muteroles
@@ -108,7 +108,7 @@ exports.run = (bot, guild, message, args) => {
                     message.channel.send(new Discord.MessageEmbed().setDescription('Sorry, you cannot add or remove mute ignored roles. You need to be a server manager/admin to use these commands.').setColor('#b50909'));
                 }
                 break;
-            case 'list':
+            case 'lists': case 'list': case 'l':
                 var output = "";
                 //Get a list of all roles in this server
                 const sql_cmd = `

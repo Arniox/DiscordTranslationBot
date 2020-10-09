@@ -16,10 +16,13 @@ exports.run = (bot, guild, message, args) => {
                 var toChannel = null;
 
                 //Grab thisChannel
-                if (command == 'this') {
-                    thisChannel = message.channel;
-                } else {
-                    thisChannel = channelMentions.shift();
+                switch (command) {
+                    case 'this': case 'thi': case 'th': case 't':
+                        thisChannel = message.channel;
+                        break;
+                    default:
+                        thisChannel = channelMentions.shift();
+                        break;
                 }
                 //Grab toChannel
                 toChannel = channelMentions.shift();

@@ -12,11 +12,11 @@ exports.run = (bot, guild, message, args) => {
         if (guild.Allowed_Translation == 1) {
             //Check for either patterns or channels
             switch (command) {
-                case 'patterns': case 'pattern': case 'pat':
+                case 'patterns': case 'pattern': case 'pat': case 'p':
                     //Get the specific command you want to perform
                     var specifics = args.shift().toLowerCase();
                     switch (specifics) {
-                        case 'add': case 'a': //Add a pattern
+                        case 'add': case 'a': case '+': //Add a pattern
                             //Check if has perms
                             if (message.member.hasPermission('MANAGE_GUILD')) {
                                 var query = args.join("");
@@ -77,7 +77,7 @@ exports.run = (bot, guild, message, args) => {
                                 message.channel.send(new Discord.MessageEmbed().setDescription('Sorry, you do not have manage server permissions.').setColor('#b50909'));
                             }
                             break;
-                        case 'remove': case 'r': //Remove a pattern by id
+                        case 'remove': case 'r': case '-'://Remove a pattern by id
                             //Check if has perms
                             if (message.member.hasPermission('MANAGE_GUILD')) {
                                 var query = args.shift();
@@ -151,10 +151,10 @@ exports.run = (bot, guild, message, args) => {
                             break;
                     }
                     break;
-                case 'channels': case 'channel': case 'chan':
+                case 'channels': case 'channel': case 'chan': case 'ch': case 'c':
                     var specifics = args.shift().toLowerCase();
                     switch (specifics) {
-                        case 'add': case 'a': //Add a channel
+                        case 'add': case 'a': case '+': //Add a channel
                             //Check if has perms
                             if (message.member.hasPermission('MANAGE_GUILD')) {
                                 //Get mentions
@@ -219,7 +219,7 @@ exports.run = (bot, guild, message, args) => {
                                 message.channel.send(new Discord.MessageEmbed().setDescription('Sorry, you do not have manage server permissions.').setColor('#b50909'));
                             }
                             break;
-                        case 'remove': case 'r': //Remove a channel by tag
+                        case 'remove': case 'r': case '-': //Remove a channel by tag
                             //Check if has perms
                             if (message.member.hasPermission('MANAGE_GUILD')) {
                                 //Get mentioned channels
@@ -305,7 +305,7 @@ exports.run = (bot, guild, message, args) => {
                             break;
                     }
                     break;
-                case 'languages': case 'language': case 'lang':
+                case 'languages': case 'language': case 'lang': case 'l':
                     new Promise((resolve, reject) => {
                         googleTranslate.getSupportedLanguages('en', function (err, languageCodes) {
                             if (!err) resolve(languageCodes);
@@ -362,13 +362,13 @@ exports.run = (bot, guild, message, args) => {
                         message.channel.send(new Discord.MessageEmbed().setDescription(`${err} `).setColor('#b50909'));
                     });
                     break;
-                case 'confidence': case 'conf':
+                case 'confidence': case 'conf': case 'con':
                     if (args.length > 0) {
                         var command = args.shift().toLowerCase();
 
                         //Check which option you want
                         switch (command) {
-                            case 'change': //Change bot translation restriction
+                            case 'change': case 'ch': case '=': //Change bot translation restriction
                                 //Check if user has perms
                                 if (message.member.hasPermission('MANAGE_GUILD')) {
                                     var query = args.shift();
@@ -412,7 +412,7 @@ exports.run = (bot, guild, message, args) => {
                                     message.channel.send(new Discord.MessageEmbed().setDescription('Sorry, you need to have server manager permissions to change the translation confidence restriction.').setColor('#b50909'));
                                 }
                                 break;
-                            case 'current': //List out current bot translation restriction
+                            case 'current': case 'curr': case 'cur': case 'c': //List out current bot translation restriction
                                 message.channel.send(new Discord.MessageEmbed().setDescription(`Current Bot Translation Confidence Restriction is: ${(guild.Translation_Confidence * 100)}%`).setColor('#0099ff'));
                                 break;
                             default:
