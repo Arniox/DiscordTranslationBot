@@ -459,6 +459,7 @@ exports.run = (bot, guild, message, args) => {
 
 //Functions
 function HelpMessage(bot, guild, message, args) {
+    //Get random channels
     var randomChannel1 = message.guild.channels.cache.filter(i => i.type == 'voice').random().name;
     var randomChannel2 = message.guild.channels.cache.filter(i => i.type == 'voice').random().name;
     var randomChannel3 = message.guild.channels.cache.filter(i => i.type == 'voice').random().name;
