@@ -27,13 +27,55 @@ module.exports = (bot, message) => {
                 var args = message.content.substring(results[0].Prefix.length).split(' ');
                 var command = args.shift().toLowerCase();
 
-                //Get the command data from client.commands Enmap
-                const cmd = bot.commands.get(command);
-                //If command doesn't exist, exiot and do nothing
-                if (!cmd) return;
-                //Run the command
-                cmd.run(bot, results[0], message, args);
-                message.delete({ timeout: 100 }); //Delete message
+                //Switch case on command to allow for command synonyms
+                new Promise((resolve, reject) => {
+                    switch (command) {
+                        case 'activate':
+                            return resolve(bot.commands.get('activate'));
+                        case 'deactivate':
+                            return resolve(bot.commands.get('deactivate'));
+                        case 'help': case 'h':
+                            return resolve(bot.commands.get('help'));
+                        case 'info': case 'i':
+                            return resolve(bot.commands.get('info'));
+                        case 'ping': case 'pin': case 'p':
+                            return resolve(bot.commands.get('ping'));
+                        case 'prefix': case 'pref': case 'pre': case 'pr':
+                            return resolve(bot.commands.get('prefix'));
+                        case 'ban': case 'ba': case 'bn': case 'b':
+                            return resolve(bot.commands.get('ban'));
+                        case 'clone': case 'clo': case 'c':
+                            return resolve(bot.commands.get('clone'));
+                        case 'harrass': case 'harass': case 'harr': case 'har': case 'ha': case 'h':
+                            return resolve(bot.commands.get('harrass'));
+                        case 'listen': case 'lis': case 'li':
+                            return resolve(bot.commands.get('listen'));
+                        case 'leave': case 'lea': case 'le':
+                            return resolve(bot.commands.get('leave'));
+                        case 'move': case 'mov': case 'mo':
+                            return resolve(bot.commands.get('move'));
+                        case 'mute': case 'mu': case 'm':
+                            return resolve(bot.commands.get('mute'));
+                        case 'unmute': case 'unmu': case 'unm': case 'um':
+                            return resolve(bot.commands.get('unmute'));
+                        case 'muterole': case 'muter': case 'mr':
+                            return resolve(bot.commands.get('muterole'));
+                        case 'today': case 'tod': case 'to': case 't':
+                            return resolve(bot.commands.get('today'));
+                        case 'translate': case 'trans': case 'tran': case 'tra': case 'tr': case 't':
+                            return resolve(bot.commands.get('translate'));
+                        case 'nick': case 'nic': case 'ni': case 'n':
+                            return resolve(bot.commands.get('nick'));
+                        default:
+                            return reject();
+                    }
+                }).then((cmd) => {
+                    //If command doesn't exist, exiot and do nothing
+                    if (!cmd) return;
+                    //Run the command
+                    cmd.run(bot, results[0], message, args);
+                    message.delete({ timeout: 100 }); //Delete message
+                }).catch(() => { return; });
             } else {
                 //If message is empty
                 if (!message.content) return;

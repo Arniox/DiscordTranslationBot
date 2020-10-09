@@ -87,7 +87,7 @@ exports.run = (bot, guild, message, args) => {
                 //Send embedded message
                 message.channel.send(embeddedHelpMessage);
                 break;
-            case 'unmute': case 'unmu': case 'um':
+            case 'unmute': case 'unmu': case 'unm': case 'um':
                 var randomChannel = message.guild.channels.cache.filter(i => i.type == 'voice').random().name;
 
                 var embeddedHelpMessage = new Discord.MessageEmbed()
@@ -126,7 +126,7 @@ exports.run = (bot, guild, message, args) => {
                 //Send embedded message
                 message.channel.send(embeddedHelpMessage);
                 break;
-            case 'leave': case 'lea': case 'le': case 'l':
+            case 'leave': case 'lea': case 'le':
                 var embeddedHelpMessage = new Discord.MessageEmbed()
                     .setColor('#0099ff')
                     .setAuthor(bot.user.username, bot.user.avatarURL())
