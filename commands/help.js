@@ -153,8 +153,8 @@ exports.run = (bot, guild, message, args) => {
                         {
                             name: 'Command Patterns: ',
                             value: `${guild.Prefix}translate [patterns:pattern:pat:p / channels:channel:chan:ch:c / languages:language:lang:l / confidence:conf:con]\n` +
-                                `${guild.Prefix}translate pattern [add:a:+ / remove:r:- / list:l]\n` +
-                                `${guild.Prefix}translate channel [add:a:+ / remove:r:- / list:l]\n` +
+                                `${guild.Prefix}translate pattern [add:+:a / remove:r:- / list:l]\n` +
+                                `${guild.Prefix}translate channel [add:+:a / remove:r:- / list:l]\n` +
                                 `${guild.Prefix}translate languages\n` +
                                 `${guild.Prefix}translate confidence [:?current:curr:cur:c / change:ch:=]`
                         },
