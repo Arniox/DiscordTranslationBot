@@ -38,7 +38,7 @@ module.exports = (bot, message) => {
                             return resolve(bot.commands.get('help'));
                         case 'info': case 'i':
                             return resolve(bot.commands.get('info'));
-                        case 'ping': case 'pin': case 'p':
+                        case 'ping': case 'pin':
                             return resolve(bot.commands.get('ping'));
                         case 'prefix': case 'pref': case 'pre': case 'pr':
                             return resolve(bot.commands.get('prefix'));
@@ -66,6 +66,8 @@ module.exports = (bot, message) => {
                             return resolve(bot.commands.get('translate'));
                         case 'nick': case 'nic': case 'ni': case 'n':
                             return resolve(bot.commands.get('nick'));
+                        case 'reddit': case 'redd': case 'r':
+                            return resolve(bot.commands.get('reddit'));
                         default:
                             return reject();
                     }
