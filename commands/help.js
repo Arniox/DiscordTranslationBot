@@ -231,7 +231,7 @@ exports.run = (bot, guild, message, args) => {
                 var randomChannel3 = message.guild.channels.cache.filter(i => i.type == 'voice').random().name;
 
                 var embeddedHelpMessage = new Discord.MessageEmbed()
-                    .setColor('#b50909')
+                    .setColor('#0099ff')
                     .setAuthor(bot.user.username, bot.user.avatarURL())
                     .setDescription('Use selectors to move people in voice channels to other voice channels. This command has a lot of different options. It works fine with spaces in the name and is case insensitive.')
                     .addFields(
