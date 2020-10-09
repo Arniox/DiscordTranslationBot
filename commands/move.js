@@ -477,16 +477,16 @@ function HelpMessage(bot, guild, message, args) {
             },
             {
                 name: 'Examples: ',
-                value: `${guild.Prefix}move ${randomChannel1} - ${randomChannel2} (Move everyone in one voice channel to another voice channel)\n` +
-                    `${guild.Prefix}move * - ${randomChannel1} (Move everyone currently in any voice channel to a specific voice channel)\n` +
-                    `${guild.Prefix}move 5 > ${randomChannel1} - ${randomChannel2} (Move 5 randomly picked players from one voice channel to another voice channel)\n` +
-                    `${guild.Prefix}move ${randomChannel1} - ! (Disconnect everyone in one voice channel)\n` +
-                    `${guild.Prefix}move * - ! (Disconnect everyone currently in any voice channel)\n` +
-                    `${guild.Prefix}move 5 > ${randomChannel1} - ! (Disconnect 5 randomly picked players fromone channel)\n` +
-                    `${guild.Prefix}move ${randomChannel1} = ${randomChannel2} & ${randomChannel3} (Equally split everyone in one voice channel into any number of voice channels seperated by &)\n` +
-                    `${guild.Prefix}move * = ${randomChannel1} & ${randomChannel2} (Split everyone currently in any voice channel into any number of voice channels seperated by &)\n` +
+                value: `${guild.Prefix}move ${randomChannel1} - ${randomChannel2} *(Move everyone in one voice channel to another voice channel)*\n` +
+                    `${guild.Prefix}move * - ${randomChannel1} *(Move everyone currently in any voice channel to a specific voice channel)*\n` +
+                    `${guild.Prefix}move 5 > ${randomChannel1} - ${randomChannel2} *(Move 5 randomly picked players from one voice channel to another voice channel)*\n` +
+                    `${guild.Prefix}move ${randomChannel1} - ! *(Disconnect everyone in one voice channel)*\n` +
+                    `${guild.Prefix}move * - ! *(Disconnect everyone currently in any voice channel)*\n` +
+                    `${guild.Prefix}move 5 > ${randomChannel1} - ! *(Disconnect 5 randomly picked players fromone channel)*\n` +
+                    `${guild.Prefix}move ${randomChannel1} = ${randomChannel2} & ${randomChannel3} *(Equally split everyone in one voice channel into any number of voice channels seperated by &)*\n` +
+                    `${guild.Prefix}move * = ${randomChannel1} & ${randomChannel2} *(Split everyone currently in any voice channel into any number of voice channels seperated by &)*\n` +
                     `${guild.Prefix}move 5 > ${randomChannel1} = ${randomChannel2} & ${randomChannel3}` +
-                    ` (Equally split 5 randomly picked players from one voice channel into any number of voice channels seperated by &).`
+                    ` *(Equally split 5 randomly picked players from one voice channel into any number of voice channels seperated by &)*`
             }
         )
         .setTimestamp()
