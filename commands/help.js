@@ -180,7 +180,7 @@ exports.run = (bot, guild, message, args) => {
 
                 //Get all available language codes
                 var embeddedHelpMessage = new Discord.MessageEmbed()
-                    .setColor('#b50909')
+                    .setColor('#0099ff')
                     .setAuthor(bot.user.username, bot.user.avatarURL())
                     .setDescription('Nick allows you to translate (into any supported language), set, and reset either you\'re own nickname, someone specific granted you have nickname managemental permissions,' +
                         ' or everyone\'s granted you have management permissions.\n' +
