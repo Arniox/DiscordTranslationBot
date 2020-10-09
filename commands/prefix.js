@@ -55,8 +55,8 @@ function HelpMessage(bot, guild, message, args) {
         .addFields(
             { name: 'Required Permissions: ', value: 'Manage Server' },
             {
-                name: 'Example: ', value: `${guild.Prefix}prefix :?current\n\n` +
-                    `${guild.Prefix}prefix change =`
+                name: 'Example: ', value: `${guild.Prefix}prefix [:?current:curr:cur:c]\n` +
+                    `${guild.Prefix}prefix [change:ch:=] !`
             }
         )
         .setTimestamp()

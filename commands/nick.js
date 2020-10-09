@@ -649,6 +649,7 @@ function IsNickNamer(message) {
 
 //help message
 function HelpMessage(bot, guild, message, args) {
+    //Get random member
     var randomMember = message.guild.members.cache.random();
 
     //Get all available language codes
@@ -665,10 +666,11 @@ function HelpMessage(bot, guild, message, args) {
             },
             {
                 name: 'Command Patterns: ',
-                value: `${guild.Prefix}nick [translate/set/reset] [all/me/someone/{translate:ignore/whisper}] [newname/{translate: languagecode (optional)}]\n\n` +
-                    `${guild.Prefix}nick translate [all/me/someone/ignore/whisper] {translate:languagecode (optional)}\n\n` +
-                    `${guild.Prefix}nick set [all/me/someone] newname\n\n` +
-                    `${guild.Prefix}nick reset [all/me/someone]\n\n` +
+                value: `${guild.Prefix}nick [translate:trans:tran:t / set:s / reset:rest:res:r / ignore:ign:ig:i] [selector] [setting]\n` +
+                    `${guild.Prefix}nick translate [all:a / me:m / someone:some:one:s / whisper:whis:wis:w ] [:?languagecode]\n` +
+                    `${guild.Prefix}nick set [all:a / me:m / someone:some:one:s] newname\n` +
+                    `${guild.Prefix}nick reset [all:a / me:m / someone:some:one:s]\n` +
+                    `${guild.Prefix}nick ignore [:?list:l]\n\n` +
                     `Any ${guild.Prefix}nick [translate] command without a language specified will pick a random language.`
             },
             {
@@ -682,7 +684,7 @@ function HelpMessage(bot, guild, message, args) {
                     `${guild.Prefix}nick translate ignore - ` +
                     `(will add/remove you from the database of translation ignored members. This still allows you personally to use ***${guild.Prefix}nick translate me*** still)\n` +
                     `${guild.Prefix}nick translate whisper ${randomMember.toString()} EN - ` +
-                    `(will play Chinese whispers with a members name through every single language and finish with EN. No language specificed remember will end on a random language)\n` +
+                    `(will play Chinese whispers with a members name through every single language and finish with EN. No end language code specificed will end on a random language)\n` +
                     `${guild.Prefix}nick set all StuffAndThings\n` +
                     `${guild.Prefix}nick set me StuffAndThings\n` +
                     `${guild.Prefix}nick set someone ${randomMember.toString()} StuffAndThings\n` +

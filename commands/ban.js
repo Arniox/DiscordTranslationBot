@@ -125,10 +125,10 @@ function HelpMessage(bot, guild, message, args) {
             { name: 'Required Permissions: ', value: 'Ban members' },
             {
                 name: 'Command Patterns: ',
-                value: `${guild.Prefix}ban [soft/hard] [mention(s)], [:?reason]`
+                value: `${guild.Prefix}ban [softs:soft:sf:s / hards:hard:hd:h] [mention(s)], [:?reason]`
             },
             {
-                name: 'Examples: ', value: `${guild.Prefix}ban hard ${randomMember.toString()}, optional reason\n\n` +
+                name: 'Examples: ', value: `${guild.Prefix}ban hard ${randomMember.toString()}, optional reason\n` +
                     `${guild.Prefix}ban soft ${randomMember.toString()}, optional reason`
             }
         )

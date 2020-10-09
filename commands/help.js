@@ -19,13 +19,17 @@ exports.run = (bot, guild, message, args) => {
                 message.channel.send(embeddedHelpMessage);
                 break;
             case 'prefix': case 'pref': case 'pre': case 'pr':
+                //Reply with help message
                 var embeddedHelpMessage = new Discord.MessageEmbed()
                     .setColor('#0099ff')
                     .setAuthor(bot.user.username, bot.user.avatarURL())
                     .setDescription(`You can use prefix by running *${guild.Prefix}prefix current* to list the current prefix, or *${guild.Prefix}prefix change [new prefix]* to change the prefix.`)
                     .addFields(
                         { name: 'Required Permissions: ', value: 'Manage Server' },
-                        { name: 'Example: ', value: `${guild.Prefix}prefix current\n\n${guild.Prefix}prefix change =` }
+                        {
+                            name: 'Example: ', value: `${guild.Prefix}prefix [:?current:curr:cur:c]\n` +
+                                `${guild.Prefix}prefix [change:ch:=] !`
+                        }
                     )
                     .setTimestamp()
                     .setFooter('Thanks, and have a good day');
@@ -37,7 +41,7 @@ exports.run = (bot, guild, message, args) => {
                 var randomRole = message.guild.roles.cache.random().toString();
 
                 var embeddedHelpMessage = new Discord.MessageEmbed()
-                    .setColor('#b50909')
+                    .setColor('#0099ff')
                     .setAuthor(bot.user.username, bot.user.avatarURL())
                     .setDescription('The muterole command allows you to add, list, or remove mute ignored roles to the server database.')
                     .addFields(
@@ -136,21 +140,31 @@ exports.run = (bot, guild, message, args) => {
                 message.channel.send(embeddedHelpMessage);
                 break;
             case 'translate': case 'trans': case 'tran': case 'tra': case 'tr': case 't':
+                //Get random channel
+                var randomChannel = message.guild.channels.cache.random();
+
                 var embeddedHelpMessage = new Discord.MessageEmbed()
                     .setColor('#0099ff')
                     .setAuthor(bot.user.username, bot.user.avatarURL())
-                    .setDescription('[WIP] Currently the command works, but the Regex patterns don\'t do anything. This command allows you to list, add, and remove Regex patterns for the translation to ignore.')
+                    .setDescription('This command allows you to list, add and remove translation ignored channels and translation ignored RegEx patterns. Also allows you to list out the languages supported.')
                     .addFields(
-                        { name: 'Required Permissions: ', value: 'Manage Server (for adding and removing. Everyone else can use list the current patterns).' },
+                        { name: 'Required Permissions: ', value: 'Manage Server (for adding and removing. Everyone else can use the list commands).' },
                         {
                             name: 'Command Patterns: ',
-                            value: `${guild.Prefix}translate [add/remove] [pattern / (Remove by index)]\n\n${guild.Prefix}translate patterns`
+                            value: `${guild.Prefix}translate [patterns:pattern:pat:p / channels:channel:chan:ch:c / languages:language:lang:l / confidence:conf:con]\n` +
+                                `${guild.Prefix}translate pattern [add:a:+ / remove:r:- / list:l]\n` +
+                                `${guild.Prefix}translate channel [add:a:+ / remove:r:- / list:l]\n` +
+                                `${guild.Prefix}translate languages\n` +
+                                `${guild.Prefix}translate confidence [:?current:curr:cur:c / change:ch:=]`
                         },
                         {
                             name: 'Examples: ',
-                            value: `${guild.Prefix}translate add /(<:[A-Za-z]+:\d+>)/gi\n\n` +
-                                `${guild.Prefix}translate remove 1\n\n` +
-                                `${guild.Prefix}translate patterns`
+                            value: `${guild.Prefix}translate pattern add /(<:[A-Za-z]+:\d+>)/gi\n` +
+                                `${guild.Prefix}translate pattern remove 1\n` +
+                                `${guild.Prefix}translate pattern list\n` +
+                                `${guild.Prefix}translate channel add ${randomChannel.toString()} *You can tag multiple to add*\n` +
+                                `${guild.Prefix}translate channel remove ${randomChannel.toString()}\n` +
+                                `${guild.Prefix}translate channel list\n`
                         }
                     )
                     .setTimestamp()
@@ -160,6 +174,7 @@ exports.run = (bot, guild, message, args) => {
                 message.channel.send(embeddedHelpMessage);
                 break;
             case 'nick': case 'nic': case 'ni': case 'n':
+                //Get random member
                 var randomMember = message.guild.members.cache.random();
 
                 //Get all available language codes
@@ -176,10 +191,11 @@ exports.run = (bot, guild, message, args) => {
                         },
                         {
                             name: 'Command Patterns: ',
-                            value: `${guild.Prefix}nick [translate/set/reset] [all/me/someone/{translate:ignore/whisper}] [newname/{translate: languagecode (optional)}]\n\n` +
-                                `${guild.Prefix}nick translate [all/me/someone/ignore/whisper] {translate:languagecode (optional)}\n\n` +
-                                `${guild.Prefix}nick set [all/me/someone] newname\n\n` +
-                                `${guild.Prefix}nick reset [all/me/someone]\n\n` +
+                            value: `${guild.Prefix}nick [translate:trans:tran:t / set:s / reset:rest:res:r / ignore:ign:ig:i] [selector] [setting]\n` +
+                                `${guild.Prefix}nick translate [all:a / me:m / someone:some:one:s / whisper:whis:wis:w ] [:?languagecode]\n` +
+                                `${guild.Prefix}nick set [all:a / me:m / someone:some:one:s] newname\n` +
+                                `${guild.Prefix}nick reset [all:a / me:m / someone:some:one:s]\n` +
+                                `${guild.Prefix}nick ignore [:?list:l]\n\n` +
                                 `Any ${guild.Prefix}nick [translate] command without a language specified will pick a random language.`
                         },
                         {
@@ -193,7 +209,7 @@ exports.run = (bot, guild, message, args) => {
                                 `${guild.Prefix}nick translate ignore - ` +
                                 `(will add/remove you from the database of translation ignored members. This still allows you personally to use ***${guild.Prefix}nick translate me*** still)\n` +
                                 `${guild.Prefix}nick translate whisper ${randomMember.toString()} EN - ` +
-                                `(will play Chinese whispers with a members name through every single language and finish with EN. No language specificed remember will end on a random language)\n` +
+                                `(will play Chinese whispers with a members name through every single language and finish with EN. No end language code specificed will end on a random language)\n` +
                                 `${guild.Prefix}nick set all StuffAndThings\n` +
                                 `${guild.Prefix}nick set me StuffAndThings\n` +
                                 `${guild.Prefix}nick set someone ${randomMember.toString()} StuffAndThings\n` +
@@ -247,14 +263,14 @@ exports.run = (bot, guild, message, args) => {
                 var randomMember = message.guild.members.cache.random();
 
                 var embeddedHelpMessage = new Discord.MessageEmbed()
-                    .setColor('#b50909')
+                    .setColor('#0099ff')
                     .setAuthor(bot.user.username, bot.user.avatarURL())
                     .setDescription('Ban command. You can either softban someone which will ban and then unban a member and reinvite them. Or a hard ban which will just ban a member.')
                     .addFields(
                         { name: 'Required Permissions: ', value: 'Ban members' },
                         {
                             name: 'Command Patterns: ',
-                            value: `${guild.Prefix}ban [soft/hard] [mention(s)], [:?reason]`
+                            value: `${guild.Prefix}ban [softs:soft:sf:s / hards:hard:hd:h] [mention(s)], [:?reason]`
                         },
                         {
                             name: 'Examples: ', value: `${guild.Prefix}ban hard ${randomMember.toString()}, optional reason\n\n` +
@@ -268,21 +284,24 @@ exports.run = (bot, guild, message, args) => {
                 message.channel.send(embeddedHelpMessage);
                 break;
             case 'harrass': case 'harass': case 'harr': case 'har': case 'ha': case 'h':
+                //Get random person
                 var randomPerson = message.guild.members.cache.random();
 
                 var embeddedHelpMessage = new Discord.MessageEmbed()
                     .setColor('#0099ff')
                     .setAuthor(bot.user.username, bot.user.avatarURL())
-                    .setDescription(`Use this command to spam a mentioned member with any number of messages. Useful to get them to listen to you. Only available to administrators.`)
+                    .setDescription(`Use this command to harrass a specific person. You can either spam them with messages or spam move them between two channels. Useful to get them to listen to you. Only available to high permissions.`)
                     .addFields(
-                        { name: 'Required Permissions: ', value: 'Administrator' },
+                        { name: 'Required Permissions: ', value: 'Server Manager, Administrator' },
                         {
                             name: 'Command Patterns: ',
-                            value: `${guild.Prefix}harrass [number] [member mention] [message]`
+                            value: `${guild.Prefix}harrass [member mention] [number] [message]\n` +
+                                `${guild.Prefix}harrass [member mention] [move:mov:mo:mv:m]`
                         },
                         {
                             name: 'Examples: ',
-                            value: `${guild.Prefix}harrass 10 ${randomPerson.toString()} Hello, wake up. It's wakey wakey time!`
+                            value: `${guild.Prefix}harrass ${randomPerson.toString()} 10 Hello, wake up. It's wakey wakey time!\n` +
+                                `${guild.Prefix}harrass ${randomPerson.toString()} move`
                         }
                     )
                     .setTimestamp()
@@ -291,8 +310,123 @@ exports.run = (bot, guild, message, args) => {
                 //Set embedded message
                 message.channel.send(embeddedHelpMessage);
                 break;
+            case 'clone': case 'clo': case 'c':
+                //Get random channels
+                var randomChannel1 = message.guild.channels.cache.random();
+                var randomChannel2 = message.guild.channels.cache.random();
+
+                var embeddedHelpMessage = new Discord.MessageEmbed()
+                    .setColor('#0099ff')
+                    .setAuthor(bot.user.username, bot.user.avatarURL())
+                    .setDescription(`Clone command allows you to clone all messages from one channel to another for merging purposes.`)
+                    .addFields(
+                        { name: 'Required Permissions: ', value: 'Manage Server' },
+                        {
+                            name: 'Command Patterns: ',
+                            value: `${guild.Prefix}clone [this:thi:th:t / channel tag] [to channel] [:?delete:del:d flags]`
+                        },
+                        {
+                            name: 'Examples: ',
+                            value: `${guild.Prefix}clone this ${randomChannel2.toString()}\n\n` +
+                                `${guild.Prefix}clone ${randomChannel1.toString()} ${randomChannel2.toString()}\n\n` +
+                                `${guild.Prefix}clone this ${randomChannel2.toString()} delete`
+                        }
+                    )
+                    .setTimestamp()
+                    .setFooter('Thanks, and have a good day');
+
+                //Set embedded message
+                message.channel.send(embeddedHelpMessage);
+                break;
+            case 'info': case 'i':
+                //Get random channel
+                var randomChannel = message.guild.channels.cache.random();
+
+                var embeddedHelpMessage = new Discord.MessageEmbed()
+                    .setColor('#0099ff')
+                    .setAuthor(bot.user.username, bot.user.avatarURL())
+                    .setDescription(`Info command allows you to get many different informatics on the bot and it's servers.`)
+                    .addFields(
+                        {
+                            name: 'Command Patterns: ',
+                            value: `${guild.Prefix}info [command] [detail] [:?optional excess text]\n\n` +
+                                `${guild.Prefix}info [servers:server:serv:ser:s] [detail] *gets details on the servers that ${bot.user.username} is in*\n` +
+                                `${guild.Prefix}info [totals:total:tot:t] [detail] *gets the total counts of [details] for all servers that ${bot.user.username} is in*\n` +
+                                `${guild.Prefix}info [countme:cntme:cme:cm] [detail] *gets the total counts of [details] for ${message.guild.toString()}*\n` +
+                                `${guild.Prefix}info [list:lis:l] [detail] *gets a list of all the [details] for ${message.guild.toString()}*\n` +
+                                `${guild.Prefix}info [counts:count:c] [detail] [channel tag] *counts the total [detail] in [tagged channel]*\n`
+                        },
+                        {
+                            name: 'Examples: ',
+                            value: `${guild.Prefix}info servers [counts:count:c]\n` +
+                                `${guild.Prefix}info servers [names:name:n]\n` +
+                                `${guild.Prefix}info total [members:member:m]\n` +
+                                `${guild.Prefix}info total [emojis:emoji:e]\n` +
+                                `${guild.Prefix}info total [channels:channel:c]\n` +
+                                `${guild.Prefix}info total [voices:voice:v]\n` +
+                                `${guild.Prefix}info total [texts:text:t]\n` +
+                                `${guild.Prefix}info total [categories:category:cat]\n` +
+                                `${guild.Prefix}info total [news:n]\n` +
+                                `${guild.Prefix}info total [stores:store:s]\n` +
+                                `${guild.Prefix}info countme [members:member:m]\n` +
+                                `${guild.Prefix}info countme [emojis:emoji:e]\n` +
+                                `${guild.Prefix}info countme [channels:channel:c]\n` +
+                                `${guild.Prefix}info countme [voices:voice:v]\n` +
+                                `${guild.Prefix}info countme [texts:text:t]\n` +
+                                `${guild.Prefix}info countme [categories:category:cat]\n` +
+                                `${guild.Prefix}info countme [news:n]\n` +
+                                `${guild.Prefix}info countme [stores:store:s]\n` +
+                                `${guild.Prefix}info list [members:member:m]\n` +
+                                `${guild.Prefix}info list [emojis:emoji:e]\n` +
+                                `${guild.Prefix}info list [channels:channel:c]\n` +
+                                `${guild.Prefix}info list [voices:voice:v]\n` +
+                                `${guild.Prefix}info list [texts:text:t]\n` +
+                                `${guild.Prefix}info list [categories:category:cat]\n` +
+                                `${guild.Prefix}info list [news:n]\n` +
+                                `${guild.Prefix}info list [stores:store:s]\n` +
+                                `${guild.Prefix}info count [messages:message:mess:m] ${randomChannel.toString()}\n`
+                        }
+                    )
+                    .setTimestamp()
+                    .setFooter('Thanks, and have a good day');
+
+                //set embedded message
+                message.channel.send(embeddedHelpMessage);
+                break;
+            case 'today': case 'tod': case 'to':
+                var embeddedHelpMessage = new Discord.MessageEmbed()
+                    .setColor('#0099ff')
+                    .setAuthor(bot.user.username, bot.user.avatarURL())
+                    .setDescription('Use this command to calculate days and print out different formats for time.')
+                    .addFields(
+                        {
+                            name: 'Command Patterns: ',
+                            value: `${guild.Prefix}today [commands] [selection/time range]\n` +
+                                `*For the commands and selection/time range's you can use most of the obvious abbreviations (year = y and etc)*`
+                        },
+                        {
+                            name: 'Examples: ',
+                            value: `${guild.Prefix}today [era/year/quarter/month/week/day/hour/minute/second/millisecond]\n` +
+                                `${guild.Prefix}today [now:n] :?[short/full]\n` +
+                                `${guild.Prefix}today [time:t]\n` +
+                                `${guild.Prefix}today [timezones:timezone:zone:z]\n` +
+                                `${guild.Prefix}today [calculate:calc:c] [[+, -]1y/1M/1d/1h/1m/1s/1ms]\n\n`,
+                            inline: true
+                        },
+                        {
+                            name: 'Calculation Example: ',
+                            value: `The *today calculation* command can stack multiple different time ranges and supports duplicate time ranges ` +
+                                `such as adding 5 years, and then also subtracting 6 years\n**${guild.Prefix}today calc +12y +80M +6d +100000ms -6y -60h +5h**`
+                        }
+                    )
+                    .setTimestamp()
+                    .setFooter('Thanks, and have a good day');
+
+                //Send embedded message
+                message.channel.send(embeddedHelpMessage);
+                break;
             default:
-                message.channel.send(new Discord.MessageEmbed().setDescription(`Sorry, ${command} is not a command I can help you with.`).setColor('#b50909'));
+                message.channel.send(new Discord.MessageEmbed().setDescription(`Sorry, ${command} is not a command I can help you with.`).setColor('#0099ff'));
                 break;
         }
     } else {
@@ -339,6 +473,15 @@ exports.run = (bot, guild, message, args) => {
             }, {
                 name: `${guild.Prefix}harrass`,
                 value: 'You can spam people with messages or spam move someone back and forth in a channel.'
+            }, {
+                name: `${guild.Prefix}clone`,
+                value: 'Clone all messages from channel to another.'
+            }, {
+                name: `${guild.Prefix}info`,
+                value: 'Gets info for a variety of different things.'
+            }, {
+                name: `${guild.Prefix}today`,
+                value: 'Alot of time info about today. Current default timezone is Australia/Sydney.'
             }, {
                 name: 'Other Features',
                 value: `If you have premium, ${bot.user.username} will automatically read all messages sent in any chat and detect message languages.` +

@@ -149,10 +149,10 @@ function HelpMessage(bot, guild, message, args) {
             {
                 name: 'Examples: ',
                 value: `${guild.Prefix}today [era/year/quarter/month/week/day/hour/minute/second/millisecond]\n` +
-                    `${guild.Prefix}today [now n] :?[short/full]\n` +
-                    `${guild.Prefix}today [time t]\n` +
-                    `${guild.Prefix}today [timezone]\n` +
-                    `${guild.Prefix}today [calculate calc c] [[+, -]1y/1M/1d/1h/1m/1s/1ms]\n\n`,
+                    `${guild.Prefix}today [now:n] :?[short/full]\n` +
+                    `${guild.Prefix}today [time:t]\n` +
+                    `${guild.Prefix}today [timezones:timezone:zone:z]\n` +
+                    `${guild.Prefix}today [calculate:calc:c] [[+, -]1y/1M/1d/1h/1m/1s/1ms]\n\n`,
                 inline: true
             },
             {

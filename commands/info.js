@@ -193,6 +193,7 @@ exports.run = (bot, guild, message, args) => {
 
 //Functions
 function HelpMessage(bot, guild, message, args) {
+    //Get random channel
     var randomChannel = message.guild.channels.cache.random();
 
     var embeddedHelpMessage = new Discord.MessageEmbed()
@@ -202,43 +203,42 @@ function HelpMessage(bot, guild, message, args) {
         .addFields(
             {
                 name: 'Command Patterns: ',
-                value: `**:? stands for optional in all command patterns proceeding.**\n\n` +
-                    `${guild.Prefix}info [command] [detail] [:?optional excess text]\n\n` +
-                    `${guild.Prefix}info servers [detail] *gets details on the servers that ${bot.user.username} is in*\n\n` +
-                    `${guild.Prefix}info total [detail] *gets the total counts of [details] for all servers that ${bot.user.username} is in*\n\n` +
-                    `${guild.Prefix}info countme [detail] *gets the total counts of [details] for ${message.guild.toString()}*\n\n` +
-                    `${guild.Prefix}info list [detail] *gets a list of all the [details] for ${message.guild.toString()}*\n\n` +
-                    `${guild.Prefix}info count [detail] [channel tag] *counts the total [detail] in [tagged channel]*\n\n`
+                value: `${guild.Prefix}info [command] [detail] [:?optional excess text]\n\n` +
+                    `${guild.Prefix}info [servers:server:serv:ser:s] [detail] *gets details on the servers that ${bot.user.username} is in*\n` +
+                    `${guild.Prefix}info [totals:total:tot:t] [detail] *gets the total counts of [details] for all servers that ${bot.user.username} is in*\n` +
+                    `${guild.Prefix}info [countme:cntme:cme:cm] [detail] *gets the total counts of [details] for ${message.guild.toString()}*\n` +
+                    `${guild.Prefix}info [list:lis:l] [detail] *gets a list of all the [details] for ${message.guild.toString()}*\n` +
+                    `${guild.Prefix}info [counts:count:c] [detail] [channel tag] *counts the total [detail] in [tagged channel]*\n`
             },
             {
                 name: 'Examples: ',
-                value: `${guild.Prefix}info servers count\n\n` +
-                    `${guild.Prefix}info servers names\n\n` +
-                    `${guild.Prefix}info total members\n\n` +
-                    `${guild.Prefix}info total emojis\n\n` +
-                    `${guild.Prefix}info total channels\n\n` +
-                    `${guild.Prefix}info total voice :?channels\n\n` +
-                    `${guild.Prefix}info total text :?channels\n\n` +
-                    `${guild.Prefix}info total categories\n\n` +
-                    `${guild.Prefix}info total news :?channels\n\n` +
-                    `${guild.Prefix}info total store :?channels\n\n` +
-                    `${guild.Prefix}info countme members\n\n` +
-                    `${guild.Prefix}info countme emojis\n\n` +
-                    `${guild.Prefix}info countme channels\n\n` +
-                    `${guild.Prefix}info countme voice :?channels\n\n` +
-                    `${guild.Prefix}info countme text :?channels\n\n` +
-                    `${guild.Prefix}info countme categories\n\n` +
-                    `${guild.Prefix}info countme news :?channels\n\n` +
-                    `${guild.Prefix}info countme store :?channels\n\n` +
-                    `${guild.Prefix}info list members\n\n` +
-                    `${guild.Prefix}info list emojis\n\n` +
-                    `${guild.Prefix}info list channels\n\n` +
-                    `${guild.Prefix}info list voice :?channels\n\n` +
-                    `${guild.Prefix}info list text :?channels\n\n` +
-                    `${guild.Prefix}info list categories\n\n` +
-                    `${guild.Prefix}info list news :?channels\n\n` +
-                    `${guild.Prefix}info list store :?channels\n\n` +
-                    `${guild.Prefix}info count messages ${randomChannel.toString()}\n\n`
+                value: `${guild.Prefix}info servers [counts:count:c]\n` +
+                    `${guild.Prefix}info servers [names:name:n]\n` +
+                    `${guild.Prefix}info total [members:member:m]\n` +
+                    `${guild.Prefix}info total [emojis:emoji:e]\n` +
+                    `${guild.Prefix}info total [channels:channel:c]\n` +
+                    `${guild.Prefix}info total [voices:voice:v]\n` +
+                    `${guild.Prefix}info total [texts:text:t]\n` +
+                    `${guild.Prefix}info total [categories:category:cat]\n` +
+                    `${guild.Prefix}info total [news:n]\n` +
+                    `${guild.Prefix}info total [stores:store:s]\n` +
+                    `${guild.Prefix}info countme [members:member:m]\n` +
+                    `${guild.Prefix}info countme [emojis:emoji:e]\n` +
+                    `${guild.Prefix}info countme [channels:channel:c]\n` +
+                    `${guild.Prefix}info countme [voices:voice:v]\n` +
+                    `${guild.Prefix}info countme [texts:text:t]\n` +
+                    `${guild.Prefix}info countme [categories:category:cat]\n` +
+                    `${guild.Prefix}info countme [news:n]\n` +
+                    `${guild.Prefix}info countme [stores:store:s]\n` +
+                    `${guild.Prefix}info list [members:member:m]\n` +
+                    `${guild.Prefix}info list [emojis:emoji:e]\n` +
+                    `${guild.Prefix}info list [channels:channel:c]\n` +
+                    `${guild.Prefix}info list [voices:voice:v]\n` +
+                    `${guild.Prefix}info list [texts:text:t]\n` +
+                    `${guild.Prefix}info list [categories:category:cat]\n` +
+                    `${guild.Prefix}info list [news:n]\n` +
+                    `${guild.Prefix}info list [stores:store:s]\n` +
+                    `${guild.Prefix}info count [messages:message:mess:m] ${randomChannel.toString()}\n`
             }
         )
         .setTimestamp()

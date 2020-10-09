@@ -437,6 +437,7 @@ exports.run = (bot, guild, message, args) => {
 
 //Functions
 function HelpMessage(bot, guild, message, args) {
+    //Get random channel
     var randomChannel = message.guild.channels.cache.random();
 
     var embeddedHelpMessage = new Discord.MessageEmbed()
@@ -447,22 +448,20 @@ function HelpMessage(bot, guild, message, args) {
             { name: 'Required Permissions: ', value: 'Manage Server (for adding and removing. Everyone else can use the list commands).' },
             {
                 name: 'Command Patterns: ',
-                value: `${guild.Prefix}translate [pattern / channel / language / confidence]\n\n` +
-                    `${guild.Prefix}translate pattern [add / remove / list]\n\n` +
-                    `${guild.Prefix}translate channel [add / remove / list]\n\n` +
-                    `${guild.Prefix}translate language\n\n` +
-                    `${guild.Prefix}translate confidence [:?current / change]\n\n`
+                value: `${guild.Prefix}translate [patterns:pattern:pat:p / channels:channel:chan:ch:c / languages:language:lang:l / confidence:conf:con]\n` +
+                    `${guild.Prefix}translate pattern [add:a:+ / remove:r:- / list:l]\n` +
+                    `${guild.Prefix}translate channel [add:a:+ / remove:r:- / list:l]\n` +
+                    `${guild.Prefix}translate languages\n` +
+                    `${guild.Prefix}translate confidence [:?current:curr:cur:c / change:ch:=]`
             },
             {
                 name: 'Examples: ',
-                value: `${guild.Prefix}translate pattern add /(<:[A-Za-z]+:\d+>)/gi\n\n` +
-                    `${guild.Prefix}translate pattern remove 1\n\n` +
-                    `${guild.Prefix}translate pattern list\n\n` +
-                    `${guild.Prefix}translate channel add ${randomChannel.toString()} *You can tag multiple to add*\n\n` +
-                    `${guild.Prefix}translate channel remove ${randomChannel.toString()}\n\n` +
-                    `${guild.Prefix}translate channel list\n\n` +
-                    `${guild.Prefix}translate [languages/language]\n\n` +
-                    `${guild.Prefix}translate confidence [:?current / change]`
+                value: `${guild.Prefix}translate pattern add /(<:[A-Za-z]+:\d+>)/gi\n` +
+                    `${guild.Prefix}translate pattern remove 1\n` +
+                    `${guild.Prefix}translate pattern list\n` +
+                    `${guild.Prefix}translate channel add ${randomChannel.toString()} *You can tag multiple to add*\n` +
+                    `${guild.Prefix}translate channel remove ${randomChannel.toString()}\n` +
+                    `${guild.Prefix}translate channel list\n`
             }
         )
         .setTimestamp()

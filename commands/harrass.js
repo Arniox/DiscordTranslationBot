@@ -68,7 +68,7 @@ exports.run = (bot, guild, message, args) => {
 
                                         if (args.length != 0) {
                                             //Get message
-                                            var messageToSpam = args.join(" ");
+                                            var messageToSpam = args.join(' ');
 
                                             message.channel
                                                 .send(new Discord.MessageEmbed().setDescription(`Harrassing ${person.first().toString()} with 0 / ${numberOfSpam} messages.\n\n` +
@@ -116,6 +116,7 @@ exports.run = (bot, guild, message, args) => {
 
 //Functions
 function Helpmessage(bot, guild, message, args) {
+    //Get random person
     var randomPerson = message.guild.members.cache.random();
 
     var embeddedHelpMessage = new Discord.MessageEmbed()
@@ -126,12 +127,12 @@ function Helpmessage(bot, guild, message, args) {
             { name: 'Required Permissions: ', value: 'Server Manager, Administrator' },
             {
                 name: 'Command Patterns: ',
-                value: `${guild.Prefix}harrass [member mention] [number] [message]\n\n` +
-                    `${guild.Prefix}harrass [member mention] move`
+                value: `${guild.Prefix}harrass [member mention] [number] [message]\n` +
+                    `${guild.Prefix}harrass [member mention] [move:mov:mo:mv:m]`
             },
             {
                 name: 'Examples: ',
-                value: `${guild.Prefix}harrass ${randomPerson.toString()} 10 Hello, wake up. It's wakey wakey time!\n\n` +
+                value: `${guild.Prefix}harrass ${randomPerson.toString()} 10 Hello, wake up. It's wakey wakey time!\n` +
                     `${guild.Prefix}harrass ${randomPerson.toString()} move`
             }
         )

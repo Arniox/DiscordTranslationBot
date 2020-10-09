@@ -145,15 +145,15 @@ function HelpMessage(bot, guild, message, args) {
             { name: 'Required Permissions: ', value: 'Mute Members' },
             {
                 name: 'Command Patterns: ',
-                value: `${guild.Prefix}muterole [add/remove] [@role]\n\n` +
-                    `${guild.Prefix}muterole remove {optional: all}\n\n` +
+                value: `${guild.Prefix}muterole [add:a:+ / remove:r:-] [@role]\n` +
+                    `${guild.Prefix}muterole remove [:?all:a / @role]\n` +
                     `${guild.Prefix}muterole list`
             },
             {
                 name: 'Examples: ',
-                value: `${guild.Prefix}muterole add ${randomRole}\n\n` +
-                    `${guild.Prefix}muterole remove ${randomRole}\n\n` +
-                    `${guild.Prefix}muterole remove all\n\n` +
+                value: `${guild.Prefix}muterole add ${randomRole}\n` +
+                    `${guild.Prefix}muterole remove ${randomRole}\n` +
+                    `${guild.Prefix}muterole remove all\n` +
                     `${guild.Prefix}muterole list`
             }
         )

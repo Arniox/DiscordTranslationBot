@@ -53,6 +53,7 @@ exports.run = (bot, guild, message, args) => {
 
 //Functions
 function HelpMessage(bot, guild, message, args) {
+    //Get random channels
     var randomChannel1 = message.guild.channels.cache.random();
     var randomChannel2 = message.guild.channels.cache.random();
 
@@ -64,12 +65,12 @@ function HelpMessage(bot, guild, message, args) {
             { name: 'Required Permissions: ', value: 'Manage Server' },
             {
                 name: 'Command Patterns: ',
-                value: `${guild.Prefix}clone [this channel/channel tag] [to channel] [:?delete flag]`
+                value: `${guild.Prefix}clone [this:thi:th:t / channel tag] [to channel] [:?delete:del:d flags]`
             },
             {
                 name: 'Examples: ',
-                value: `${guild.Prefix}clone this ${randomChannel2.toString()}\n\n` +
-                    `${guild.Prefix}clone ${randomChannel1.toString()} ${randomChannel2.toString()}\n\n` +
+                value: `${guild.Prefix}clone this ${randomChannel2.toString()}\n` +
+                    `${guild.Prefix}clone ${randomChannel1.toString()} ${randomChannel2.toString()}\n` +
                     `${guild.Prefix}clone this ${randomChannel2.toString()} delete`
             }
         )
@@ -106,7 +107,7 @@ async function cloneCountSequentially(thisChannel, toChannel, message, flags) {
                 );
 
             //Delete all 100 messages
-            if (flags.includes('delete'))
+            if (flags.includes('delete') || flags.includes('del') || flags.includes('d'))
                 await v.delete({ timeout: 5000 }); //Delete message
         });
 
