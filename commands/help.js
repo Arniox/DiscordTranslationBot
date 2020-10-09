@@ -38,6 +38,7 @@ exports.run = (bot, guild, message, args) => {
                 message.channel.send(embeddedHelpMessage);
                 break;
             case 'muterole': case 'muter': case 'mr':
+                //Get random role
                 var randomRole = message.guild.roles.cache.random().toString();
 
                 var embeddedHelpMessage = new Discord.MessageEmbed()
@@ -45,18 +46,18 @@ exports.run = (bot, guild, message, args) => {
                     .setAuthor(bot.user.username, bot.user.avatarURL())
                     .setDescription('The muterole command allows you to add, list, or remove mute ignored roles to the server database.')
                     .addFields(
-                        { name: 'Required Permissions: ', value: 'Manage Server' },
+                        { name: 'Required Permissions: ', value: 'Mute Members' },
                         {
                             name: 'Command Patterns: ',
-                            value: `${guild.Prefix}muterole [add/remove] [@role]\n\n` +
-                                `${guild.Prefix}muterole remove {optional: all}\n\n` +
+                            value: `${guild.Prefix}muterole [add:+:a / remove:-:r] [@role]\n` +
+                                `${guild.Prefix}muterole remove [:?all:a / @role]\n` +
                                 `${guild.Prefix}muterole list`
                         },
                         {
                             name: 'Examples: ',
-                            value: `${guild.Prefix}muterole add ${randomRole}\n\n` +
-                                `${guild.Prefix}muterole remove ${randomRole}\n\n` +
-                                `${guild.Prefix}muterole remove all\n\n` +
+                            value: `${guild.Prefix}muterole add ${randomRole}\n` +
+                                `${guild.Prefix}muterole remove ${randomRole}\n` +
+                                `${guild.Prefix}muterole remove all\n` +
                                 `${guild.Prefix}muterole list`
                         }
                     )

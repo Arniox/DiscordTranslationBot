@@ -135,6 +135,7 @@ exports.run = (bot, guild, message, args) => {
 };
 
 function HelpMessage(bot, guild, message, args) {
+    //Get random role
     var randomRole = message.guild.roles.cache.random().toString();
 
     var embeddedHelpMessage = new Discord.MessageEmbed()
@@ -145,7 +146,7 @@ function HelpMessage(bot, guild, message, args) {
             { name: 'Required Permissions: ', value: 'Mute Members' },
             {
                 name: 'Command Patterns: ',
-                value: `${guild.Prefix}muterole [add:a:+ / remove:r:-] [@role]\n` +
+                value: `${guild.Prefix}muterole [add:+:a / remove:-:r] [@role]\n` +
                     `${guild.Prefix}muterole remove [:?all:a / @role]\n` +
                     `${guild.Prefix}muterole list`
             },
