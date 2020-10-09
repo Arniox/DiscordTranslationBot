@@ -180,7 +180,7 @@ exports.run = (bot, guild, message, args) => {
 
                 //Get all available language codes
                 var embeddedHelpMessage = new Discord.MessageEmbed()
-                    .setColor('#0099ff')
+                    .setColor('#b50909')
                     .setAuthor(bot.user.username, bot.user.avatarURL())
                     .setDescription('Nick allows you to translate (into any supported language), set, and reset either you\'re own nickname, someone specific granted you have nickname managemental permissions,' +
                         ' or everyone\'s granted you have management permissions.\n' +
@@ -193,9 +193,9 @@ exports.run = (bot, guild, message, args) => {
                         {
                             name: 'Command Patterns: ',
                             value: `${guild.Prefix}nick [translate:trans:tran:t / set:s / reset:rest:res:r / ignore:ign:ig:i] [selector] [setting]\n` +
-                                `${guild.Prefix}nick translate [all:a / me:m / someone:some:one:s / whisper:whis:wis:w ] [:?languagecode]\n` +
-                                `${guild.Prefix}nick set [all:a / me:m / someone:some:one:s] newname\n` +
-                                `${guild.Prefix}nick reset [all:a / me:m / someone:some:one:s]\n` +
+                                `${guild.Prefix}nick translate [all:a / me:m / someone:some:s:one / whisper:whis:wis:w ] [:?languagecode]\n` +
+                                `${guild.Prefix}nick set [all:a / me:m / someone:some:s:one] newname\n` +
+                                `${guild.Prefix}nick reset [all:a / me:m / someone:some:s:one]\n` +
                                 `${guild.Prefix}nick ignore [:?list:l]\n\n` +
                                 `Any ${guild.Prefix}nick [translate] command without a language specified will pick a random language.`
                         },
@@ -207,16 +207,16 @@ exports.run = (bot, guild, message, args) => {
                                 `${guild.Prefix}nick translate me\n` +
                                 `${guild.Prefix}nick translate someone ${randomMember.toString()} RU\n` +
                                 `${guild.Prefix}nick translate someone ${randomMember.toString()}\n` +
-                                `${guild.Prefix}nick translate ignore - ` +
-                                `(will add/remove you from the database of translation ignored members. This still allows you personally to use ***${guild.Prefix}nick translate me*** still)\n` +
-                                `${guild.Prefix}nick translate whisper ${randomMember.toString()} EN - ` +
-                                `(will play Chinese whispers with a members name through every single language and finish with EN. No end language code specificed will end on a random language)\n` +
+                                `${guild.Prefix}nick translate whisper ${randomMember.toString()} EN ` +
+                                `*(will play Chinese whispers with a members name through every single language and finish with EN. No end language code specificed will end on a random language)*\n\n` +
                                 `${guild.Prefix}nick set all StuffAndThings\n` +
                                 `${guild.Prefix}nick set me StuffAndThings\n` +
                                 `${guild.Prefix}nick set someone ${randomMember.toString()} StuffAndThings\n` +
                                 `${guild.Prefix}nick reset all\n` +
                                 `${guild.Prefix}nick reset me\n` +
-                                `${guild.Prefix}nick reset someone ${randomMember.toString()}`
+                                `${guild.Prefix}nick reset someone ${randomMember.toString()}\n` +
+                                `${guild.Prefix}nick ignore *(will add/remove you from the database of translation ignored members*\n` +
+                                `${guild.Prefix}nick ignore list`
                         }
                     )
                     .setTimestamp()
