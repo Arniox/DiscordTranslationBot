@@ -21,14 +21,6 @@ const reddit = new RedditJS.Client({
 	appSecret: process.env.REDDIT_APP_SECRET
 });
 
-console.log({
-	username: process.env.REDDIT_USERNAME,
-	password: process.env.REDDIT_PASSWORD,
-	appId: process.env.REDDIT_APP_ID,
-	appSecret: process.env.REDDIT_APP_SECRET
-});
-console.log(reddit);
-
 //Initialize Discord bot 
 const bot = new Discord.Client();
 
