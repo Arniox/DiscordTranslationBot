@@ -54,6 +54,22 @@ module.exports = {
     }
 }
 
+//List of all emojis
+const emojis = [
+    '⚫', '🔵', '🟤', '🟢', '🟠', '🟣', '🔴', '⚪', '🟡',
+    '🟦', '🟫', '🟩', '🟧', '🟪', '🟥', '⬜', '🟨',
+    '🖤', '💙', '🤎', '💚', '🧡', '💜', '🤍', '💛',
+    '🇦', '🇧', '🇨', '🇩', '🇪', '🇫', '🇬', '🇭', '🇮', '🇯', '🇰', '🇱', '🇲', '🇳', '🇴', '🇵', '🇶', '🇷', '🇸', '🇹', '🇺', '🇻', '🇼', '🇽', '🇾', '🇿'
+];
+
+//Get random emojis
+function emojiRandom(count) {
+    //Shuffle
+    var list = emojis;
+    list.shuffle();
+    return (count > emojis.length ? list : list.splice(0, count));
+}
+
 //UTC to timezone date
 Date.prototype.toTimeZone = function (timeZone) {
     //Get offset in milliseconds
@@ -125,6 +141,14 @@ String.prototype.toHHMMSS = function (en = false) {
     }
 }
 
+//Array shuffle
+Array.prototype.shuffle = function () {
+    for (let i = this.length - 1; i > 0; i--) {
+        let j = Math.floor(Math.random() * (i + 1));
+        [this[i], this[j]] = [this[j], this[i]];
+    }
+}
+
 //Find last element in array
 Array.prototype.last = function () {
     return this[this.length - 1];
@@ -164,7 +188,6 @@ Array.prototype.removeElement = function (elementToRemove) {
             this.splice(i, 1);
         }
     }
-
     return this;
 }
 
