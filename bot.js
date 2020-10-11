@@ -35,7 +35,7 @@ bot.dbpool.then((p) => {
 	//Reddit works
 	bot.reddit.fetchSelf()
 		.then(user => {
-			console.log(`This client is logged into ${user.name}`);
+			console.log(`Reddit client is logged into ${user.name}`);
 		}).catch((err) => {
 			console.error(err);
 		});
