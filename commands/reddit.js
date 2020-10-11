@@ -1,5 +1,6 @@
 //Import
 const Discord = require('discord.js');
+const moment = require('moment-timezone');
 
 exports.run = (bot, guild, message, args) => {
     //Check that args exist
@@ -23,19 +24,35 @@ exports.run = (bot, guild, message, args) => {
                             exact: true,
                             include_over_18: true,
                             include_unadvertisable: true
-                        }).then((res) => {
+                        }).then((sub) => {
                             //Found sub reddit
                             //Get all flairs for this sub reddit
-                            bot.reddit.get(`/r/${res.names[0]}/about`).then((res) => {
-                                //Found all flairs
-                                console.log(res);
+                            bot.reddit.get(`/r/${sub.names[0]}/about`).then((details) => {
+                                //Get full name
+                                var subTitle = details.data.title;
+                                var subDescription = details.data.public_description;
+                                var subIcon = details.data.icon_img;
+                                var subSubscribers = details.data.subscribers;
+                                var subCreated = moment(details.data.created * 1000);
 
-                                //Create new entry. Send message
-                                // message.channel
-                                //     .send(new Discord.MessageEmbed().setDescription(`What flair filter do you want to add for ${res.names[0]}`).setColor('#FFCC00'))
-                                //     .then((sent) => {
+                                //Get flairs
+                                bot.reddit.get(`/r/${sub.names[0]}/api/flairlist`, {
+                                    after: '',
+                                    count: 1000,
+                                    limit: 1000,
+                                    show: 'all'
+                                }).then((flairs) => {
+                                    console.log(flairs);
 
-                                //     });
+                                    //Create new entry. Send message
+                                    // message.channel
+                                    //     .send(new Discord.MessageEmbed().setDescription(`What flair filter do you want to add for ${res.names[0]}`).setColor('#FFCC00'))
+                                    //     .then((sent) => {
+
+                                    //     });
+                                }).catch((err) => {
+                                    return console.error(err);
+                                })
                             }).catch((err) => {
                                 return console.error(err);
                             });
