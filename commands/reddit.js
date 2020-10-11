@@ -140,10 +140,10 @@ exports.run = (bot, guild, message, args) => {
                                                         });
                                                     }
                                                 }).catch((err) => {
-                                                    message.channel.send(new Discord.MessageEmbed().setDescription(`Sorry, I could not find a subreddit with the name of: ${redditName}`).setColor('#b50909'));
+                                                    loadingSent.edit(new Discord.MessageEmbed().setDescription(`Sorry, I could not find a subreddit with the name of: ${redditName}`).setColor('#b50909'));
                                                 });
                                             }).catch((err) => {
-                                                message.channel.send(new Discord.MessageEmbed().setDescription(`Sorry, I could not find a subreddit with the name of: ${redditName}`).setColor('#b50909'));
+                                                loadingSent.edit(new Discord.MessageEmbed().setDescription(`Sorry, I could not find a subreddit with the name of: ${redditName}`).setColor('#b50909'));
                                             });
                                         });
                                 } else {
