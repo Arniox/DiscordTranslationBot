@@ -61,15 +61,15 @@ exports.run = (bot, guild, message, args) => {
                                                         //Create new entry. Edit message
                                                         loadingSent.edit(new Discord.MessageEmbed().setDescription(`What flair filter do you want to add for ${sub.names[0]}\n\n` +
                                                             `${subFlairs.map((i, index) => `${emojis[index]} - **${i.text}**`).join('\n')}\n❌ - No Filter`).setColor('#FFCC00'))
-                                                            .then(async () => {
+                                                            .then(async (sent) => {
                                                                 //Auto react
-                                                                for (emoji of emojis) await loadingSent.react(emoji);
+                                                                for (emoji of emojis) await sent.react(emoji);
                                                                 //Set up emoji reaction filter
                                                                 const filter = (reaction, user) => {
                                                                     return emojis.includes(reaction.emoji.name) && user.id === message.author.id;
                                                                 }
                                                                 //Create reaction collector
-                                                                const collector = loadingSent.createReaction.Collector(filter, { max: 1, time: 20000 });
+                                                                const collector = sent.createReactionCollector(filter, { max: 1, time: 20000 });
 
                                                                 //Await reaction collector on collect
                                                                 collector.on('collect', (reaction, user) => {
@@ -97,10 +97,10 @@ exports.run = (bot, guild, message, args) => {
                                                                         if (error) return console.error(error); //Return error console log
 
                                                                         //Remove all reactions
-                                                                        loadingSent.reactions.removeAll()
+                                                                        sent.reactions.removeAll()
                                                                             .then(() => {
                                                                                 //Edit message
-                                                                                loadingSent.edit(new Discord.MessageEmbed()
+                                                                                sent.edit(new Discord.MessageEmbed()
                                                                                     .setColor('#09b50c')
                                                                                     .setAuthor(sub.names[0], subIcon)
                                                                                     .setDescription(`Successfully subscribed **${sub.names[0]}** to ${channelMention.first().toString()} ` +
@@ -226,5 +226,6 @@ const emojis = [
 function emojiRandom(count) {
     //Shuffle
     var list = emojis;
+    list.shuffle();
     return (count > emojis.length ? list : list.splice(0, count));
 }
