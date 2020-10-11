@@ -64,12 +64,38 @@ exports.run = (bot, guild, message, args) => {
                                                             .then((sent) => {
                                                                 reactLoop(sent, emojis, 0)
                                                                     .then(() => {
+                                                                        console.log('test');
+                                                                        console.log('test');
+                                                                        console.log('test');
+                                                                        console.log('test');
+                                                                        console.log('test');
+                                                                        console.log('test');
+                                                                        console.log('test');
+                                                                        console.log('test');
+                                                                        console.log('test');
+                                                                        console.log('test');
+                                                                        console.log('test');
+                                                                        console.log('test');
+                                                                        console.log('test');
+                                                                        console.log('test');
+                                                                        console.log('test');
+                                                                        console.log('test');
+                                                                        console.log('test');
+                                                                        console.log('test');
+                                                                        console.log('test');
+                                                                        console.log('test');
+                                                                        console.log('test');
+                                                                        console.log('test');
+                                                                        console.log('test');
+
                                                                         //Set up emoji reaction filter
                                                                         const filter = (reaction, user) => {
                                                                             return emojis.includes(reaction.emoji.name) && user.id === message.author.id;
                                                                         }
                                                                         //Create reaction collector
                                                                         const collector = sent.createReactionCollector(filter, { max: 1, time: 20000 });
+
+                                                                        console.log(collector);
 
                                                                         //Await reaction collector on collect
                                                                         collector.on('collect', (reaction, user) => {
@@ -80,13 +106,21 @@ exports.run = (bot, guild, message, args) => {
                                                                             else //Otherwise get index of reaction for subFlair index (X should never be a problem here)
                                                                                 flairName = subFlairs.map(i => i.text)[emojis.indexOf(reaction.emoji.name)];
 
+                                                                            console.log('I have collected: ' + flairName);
+
                                                                             //Stop collector and return flairname as reason
                                                                             collector.stop(flairName);
                                                                         });
                                                                         //Await reaction collector on stop
                                                                         collector.on('stop', (c, reason) => {
+                                                                            console.log('I have stopped: ');
+                                                                            console.log('c: ', c);
+                                                                            console.log('reason: ', reason);
+
                                                                             //If not reacted or reason is empty, then no flair given
                                                                             var flairName = (c.size != 0 ? (reason ? reason : '') : '');
+
+                                                                            console.log('flairname: ' + flairName);
 
                                                                             //Add subbed sub reddit
                                                                             const create_sql = `
