@@ -79,9 +79,6 @@ exports.run = (bot, guild, message, args) => {
                                                                                 flairName = '';
                                                                             else //Otherwise get index of reaction for subFlair index (X should never be a problem here)
                                                                                 flairName = subFlairs.map(i => i.text)[emojis.indexOf(reaction.emoji.name)];
-
-                                                                            console.log('I have collected: ' + flairName);
-
                                                                             //Stop collector and return flairname as reason
                                                                             collector.stop(flairName);
                                                                         });
