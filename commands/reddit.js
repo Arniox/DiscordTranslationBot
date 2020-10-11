@@ -62,7 +62,7 @@ exports.run = (bot, guild, message, args) => {
                                                         loadingSent.edit(new Discord.MessageEmbed().setDescription(`What flair filter do you want to add for ${sub.names[0]}\n\n` +
                                                             `${subFlairs.map((i, index) => `${emojis[index]} - **${i.text}**`).join('\n')}\n❌ - No Filter`).setColor('#FFCC00'))
                                                             .then((sent) => {
-                                                                new Promise((resolve, reject) => {
+                                                                new Promise(async (resolve, reject) => {
                                                                     //Auto react
                                                                     for (emoji of emojis) await sent.react(emoji);
                                                                     resolve();
@@ -93,9 +93,9 @@ exports.run = (bot, guild, message, args) => {
 
                                                                         //Add subbed sub reddit
                                                                         const create_sql = `
-                                                                    INSERT INTO server_subbed_reddits (SubName, SubImage, ChannelId, ServerId, Flair_Filter)
-                                                                        VALUES ("${sub.names[0]}", "${subIcon}", "${channelMention.first().id}", "${message.guild.id}", "${flairName}")
-                                                                    `;
+                                                                        INSERT INTO server_subbed_reddits (SubName, SubImage, ChannelId, ServerId, Flair_Filter)
+                                                                            VALUES ("${sub.names[0]}", "${subIcon}", "${channelMention.first().id}", "${message.guild.id}", "${flairName}")
+                                                                        `;
                                                                         bot.con.query(create_sql, (error, results, fields) => {
                                                                             if (error) return console.error(error); //Return error console log
 
