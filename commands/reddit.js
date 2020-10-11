@@ -124,7 +124,7 @@ exports.run = (bot, guild, message, args) => {
                                                     if (error) return console.error(error); //Return error console log
 
                                                     //Send message
-                                                    message.channel.sent(new Discord.MessageEmbed()
+                                                    message.channel.send(new Discord.MessageEmbed()
                                                         .setColor('#09b50c')
                                                         .setAuthor(sub.names[0], subIcon)
                                                         .setDescription(`Successfully subscribed **${sub.names[0]}** to ${channelMention.first().toString()}\n` +
