@@ -62,66 +62,71 @@ exports.run = (bot, guild, message, args) => {
                                                         loadingSent.edit(new Discord.MessageEmbed().setDescription(`What flair filter do you want to add for ${sub.names[0]}\n\n` +
                                                             `${subFlairs.map((i, index) => `${emojis[index]} - **${i.text}**`).join('\n')}\n❌ - No Filter`).setColor('#FFCC00'))
                                                             .then((sent) => {
-                                                                new Promise(async (resolve, reject) => {
-                                                                    //Auto react
-                                                                    for (emoji of emojis) await sent.react(emoji);
-                                                                    resolve(sent);
-                                                                }).then((sent) => {
-                                                                    //Set up emoji reaction filter
-                                                                    const filter = (reaction, user) => {
-                                                                        return emojis.includes(reaction.emoji.name) && user.id === message.author.id;
-                                                                    }
-                                                                    //Create reaction collector
-                                                                    const collector = sent.createReactionCollector(filter, { max: 1, time: 20000 });
-
-                                                                    //Await reaction collector on collect
-                                                                    collector.on('collect', (reaction, user) => {
-                                                                        //Get sub flair
-                                                                        var flairName;
-                                                                        if (reaction === '❌') //If the reaction is X (should be the final index, at i > subFlairs.length)
-                                                                            flairName = '';
-                                                                        else //Otherwise get index of reaction for subFlair index (X should never be a problem here)
-                                                                            flairName = subFlairs.map(i => i.text)[emojis.indexOf(reaction.emoji.name)];
-
-                                                                        //Stop collector and return flairname as reason
-                                                                        collector.stop(flairName);
+                                                                reactLoop(sent, emojis, 0)
+                                                                    .then(() => {
+                                                                        console.log('test');
                                                                     });
-                                                                    //Await reaction collector on stop
-                                                                    collector.on('stop', (c, reason) => {
-                                                                        //If not reacted or reason is empty, then no flair given
-                                                                        var flairName = (c.size != 0 ? (reason ? reason : '') : '');
 
-                                                                        //Add subbed sub reddit
-                                                                        const create_sql = `
-                                                                        INSERT INTO server_subbed_reddits (SubName, SubImage, ChannelId, ServerId, Flair_Filter)
-                                                                            VALUES ("${sub.names[0]}", "${subIcon}", "${channelMention.first().id}", "${message.guild.id}", "${flairName}")
-                                                                        `;
-                                                                        bot.con.query(create_sql, (error, results, fields) => {
-                                                                            if (error) return console.error(error); //Return error console log
+                                                                // new Promise(async (resolve, reject) => {
+                                                                //     //Auto react
+                                                                //     for (emoji of emojis) await sent.react(emoji);
+                                                                //     resolve(sent);
+                                                                // }).then((sent) => {
+                                                                //     //Set up emoji reaction filter
+                                                                //     const filter = (reaction, user) => {
+                                                                //         return emojis.includes(reaction.emoji.name) && user.id === message.author.id;
+                                                                //     }
+                                                                //     //Create reaction collector
+                                                                //     const collector = sent.createReactionCollector(filter, { max: 1, time: 20000 });
 
-                                                                            //Remove all reactions
-                                                                            sent.reactions.removeAll()
-                                                                                .then(() => {
-                                                                                    //Edit message
-                                                                                    sent.edit(new Discord.MessageEmbed()
-                                                                                        .setColor('#09b50c')
-                                                                                        .setAuthor(sub.names[0], subIcon)
-                                                                                        .setDescription(`Successfully subscribed **${sub.names[0]}** to ${channelMention.first().toString()} ` +
-                                                                                            `${flairName ? `with a flair filter of ${flairName}` : ''}`)
-                                                                                        .setImage(`${subHeader}`)
-                                                                                        .addFields(
-                                                                                            { name: 'Subreddit: ', value: `*${subTitle}*` },
-                                                                                            { name: 'Description: ', value: `*${subDescription}*` },
-                                                                                            { name: 'Subscriber Count: ', value: `*${subSubscribers}*` },
-                                                                                            { name: 'Created On: ', value: `*${subCreated.format('lll')}*` }
-                                                                                        ));
-                                                                                }).catch(error => { return; });
-                                                                            collector.stop();
-                                                                        });
-                                                                    });
-                                                                }).catch(error => {
-                                                                    sent.edit(new Discord.MessageEmbed().setDescription('There was an error of some sort...').setColor('#b50909'));
-                                                                });
+                                                                //     //Await reaction collector on collect
+                                                                //     collector.on('collect', (reaction, user) => {
+                                                                //         //Get sub flair
+                                                                //         var flairName;
+                                                                //         if (reaction === '❌') //If the reaction is X (should be the final index, at i > subFlairs.length)
+                                                                //             flairName = '';
+                                                                //         else //Otherwise get index of reaction for subFlair index (X should never be a problem here)
+                                                                //             flairName = subFlairs.map(i => i.text)[emojis.indexOf(reaction.emoji.name)];
+
+                                                                //         //Stop collector and return flairname as reason
+                                                                //         collector.stop(flairName);
+                                                                //     });
+                                                                //     //Await reaction collector on stop
+                                                                //     collector.on('stop', (c, reason) => {
+                                                                //         //If not reacted or reason is empty, then no flair given
+                                                                //         var flairName = (c.size != 0 ? (reason ? reason : '') : '');
+
+                                                                //         //Add subbed sub reddit
+                                                                //         const create_sql = `
+                                                                //         INSERT INTO server_subbed_reddits (SubName, SubImage, ChannelId, ServerId, Flair_Filter)
+                                                                //             VALUES ("${sub.names[0]}", "${subIcon}", "${channelMention.first().id}", "${message.guild.id}", "${flairName}")
+                                                                //         `;
+                                                                //         bot.con.query(create_sql, (error, results, fields) => {
+                                                                //             if (error) return console.error(error); //Return error console log
+
+                                                                //             //Remove all reactions
+                                                                //             sent.reactions.removeAll()
+                                                                //                 .then(() => {
+                                                                //                     //Edit message
+                                                                //                     sent.edit(new Discord.MessageEmbed()
+                                                                //                         .setColor('#09b50c')
+                                                                //                         .setAuthor(sub.names[0], subIcon)
+                                                                //                         .setDescription(`Successfully subscribed **${sub.names[0]}** to ${channelMention.first().toString()} ` +
+                                                                //                             `${flairName ? `with a flair filter of ${flairName}` : ''}`)
+                                                                //                         .setImage(`${subHeader}`)
+                                                                //                         .addFields(
+                                                                //                             { name: 'Subreddit: ', value: `*${subTitle}*` },
+                                                                //                             { name: 'Description: ', value: `*${subDescription}*` },
+                                                                //                             { name: 'Subscriber Count: ', value: `*${subSubscribers}*` },
+                                                                //                             { name: 'Created On: ', value: `*${subCreated.format('lll')}*` }
+                                                                //                         ));
+                                                                //                 }).catch(error => { return; });
+                                                                //             collector.stop();
+                                                                //         });
+                                                                //     });
+                                                                // }).catch(error => {
+                                                                //     sent.edit(new Discord.MessageEmbed().setDescription('There was an error of some sort...').setColor('#b50909'));
+                                                                // });
                                                             });
                                                     } else {
                                                         //Create new entry. Send message
@@ -183,6 +188,13 @@ exports.run = (bot, guild, message, args) => {
     } else {
         Helpmessage(bot, guild, message, args);
     }
+}
+
+//Loop with reaction sending
+function reactLoop(message, emojis, i) {
+    if (i < emojis.length)
+        return message.react(emojis[i])
+            .then(() => reactLoop(message, emojis, i + 1));
 }
 
 //Functions
