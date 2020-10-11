@@ -16,7 +16,7 @@ exports.run = (bot, guild, message, args) => {
                 if (message.member.hasPermission('MANAGE_GUILD')) {
                     //Get reddit name
                     if (args.length != 0) {
-                        var redditName = args.shift().toLowerCase();
+                        var redditName = args.shift();
 
                         //Check that there is a name
                         if (redditName) {
