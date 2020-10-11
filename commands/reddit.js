@@ -1,6 +1,7 @@
 //Import
 const Discord = require('discord.js');
 const moment = require('moment-timezone');
+const emojis = require('random-emoji');
 
 exports.run = (bot, guild, message, args) => {
     //Check that args exist
@@ -44,22 +45,28 @@ exports.run = (bot, guild, message, args) => {
                                 //If sub flairs are enabled
                                 if (subFlairs && subFlairs.length > 0) {
                                     //Get emojis in loop to add to the number of flairs
-                                    var emojis = [];
-                                    for (var i = 0; i < subFlairs.length; i++)
-                                        fetch('https://ranmoji.herokuapp.com/emojis/api/v.1.0/')
-                                            .then(response => {
-                                                response.json().then(data => {
-                                                    emojis.push(data.emoji);
-                                                });
-                                            });
+                                    var emojis = emojis.random({ count: subFlairs.length }).map(i, index => { return { "emoji": i.character, "flairIndex": index }; });
 
                                     console.log(emojis);
-
 
                                     //Create new entry. Send message
                                     // message.channel
                                     //     .send(new Discord.MessageEmbed().setDescription(`What flair filter do you want to add for ${res.names[0]}`).setColor('#FFCC00'))
-                                    //     .then((sent) => {
+                                    //     .then(async (sent) => {
+                                    //         //Auto react
+                                    //         for (emoji of emojis)
+                                    //             await sent.react(emoji);
+                                    //         //Set up emoji reaction filter
+                                    //         const filter = (reaction, user) => {
+                                    //             return emojis.includes(reaction.emoji.name) && user.id === message.author.id;
+                                    //         }
+                                    //         //Create reaction collector
+                                    //         const collector = sent.createReaction.Collector(filter, { max: 1, time: 20000 });
+
+                                    //         //Await reaction
+                                    //         collector.on('collect', (reaction, user) => {
+
+                                    //         });
 
                                     //     });
                                 } else {
