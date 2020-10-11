@@ -103,10 +103,10 @@ exports.run = (bot, guild, message, args) => {
                                                                             .setDescription(`Successfully subscribed **${sub.names[0]}** to ${channelMention.first().toString()} ` +
                                                                                 `${flairName ? `with a flair filter of ${flairName}` : ''}`)
                                                                             .addFields(
-                                                                                { name: 'Subreddit: ', value: `**${subTitle}**` },
-                                                                                { name: 'Description: ', value: `**${subDescription}**` },
-                                                                                { name: 'Subscriber Count: ', value: `**${subSubscribers}**` },
-                                                                                { name: 'Created On: ', value: `**${subCreated.format('lll')}**` }
+                                                                                { name: 'Subreddit: ', value: `*${subTitle}*` },
+                                                                                { name: 'Description: ', value: `*${subDescription}*` },
+                                                                                { name: 'Subscriber Count: ', value: `*${subSubscribers}*` },
+                                                                                { name: 'Created On: ', value: `*${subCreated.format('lll')}*` }
                                                                             ));
                                                                     }).catch(error => { return; });
                                                                 collector.stop();
@@ -130,10 +130,10 @@ exports.run = (bot, guild, message, args) => {
                                                         .setDescription(`Successfully subscribed **${sub.names[0]}** to ${channelMention.first().toString()}\n` +
                                                             `**${sub.names[0]}** does not have flair customisation enabled and I am not a mod for this subreddit. Flair filter is not possible unfortunately.`)
                                                         .addFields(
-                                                            { name: 'Subreddit: ', value: `**${subTitle}**` },
-                                                            { name: 'Description: ', value: `**${subDescription}**` },
-                                                            { name: 'Subscriber Count: ', value: `**${subSubscribers}**` },
-                                                            { name: 'Created On: ', value: `**${subCreated.format('lll')}**` }
+                                                            { name: 'Subreddit: ', value: `*${subTitle}*` },
+                                                            { name: 'Description: ', value: `*${subDescription}*` },
+                                                            { name: 'Subscriber Count: ', value: `*${subSubscribers}*` },
+                                                            { name: 'Created On: ', value: `*${subCreated.format('lll')}*` }
                                                         ));
                                                 });
                                             }
