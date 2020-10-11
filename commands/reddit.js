@@ -26,123 +26,126 @@ exports.run = (bot, guild, message, args) => {
                             //Check that you have mentioned only 1 channel
                             if (channelMention.size != 0) {
                                 if (channelMention.size < 2) {
-                                    //Check if there exists a reddit at all of this name
-                                    bot.reddit.get('/api/search_reddit_names', {
-                                        query: `${redditName}`,
-                                        exact: true,
-                                        include_over_18: true,
-                                        include_unadvertisable: true
-                                    }).then((sub) => {
-                                        //Found sub reddit
-                                        //Get all flairs for this sub reddit
-                                        bot.reddit.get(`/r/${sub.names[0]}/about`).then(async (details) => {
-                                            //Get full name
-                                            var subTitle = details.data.title;
-                                            var subDescription = details.data.public_description;
-                                            var subIcon = details.data.icon_img;
-                                            var subSubscribers = details.data.subscribers;
-                                            var subCreated = moment(details.data.created * 1000);
+                                    //Post loading message
+                                    message.channel.send(new Discord.MessageEmbed().setDescription(`Loading... Please wait...`).setColor('#FFCC00'))
+                                        .then((loadingSent) => {
+                                            //Check if there exists a reddit at all of this name
+                                            bot.reddit.get('/api/search_reddit_names', {
+                                                query: `${redditName}`,
+                                                exact: true,
+                                                include_over_18: true,
+                                                include_unadvertisable: true
+                                            }).then((sub) => {
+                                                //Found sub reddit
+                                                //Get all flairs for this sub reddit
+                                                bot.reddit.get(`/r/${sub.names[0]}/about`).then(async (details) => {
+                                                    //Get full name
+                                                    var subTitle = details.data.title;
+                                                    var subDescription = details.data.public_description;
+                                                    var subIcon = details.data.icon_img;
+                                                    var subSubscribers = details.data.subscribers;
+                                                    var subCreated = moment(details.data.created * 1000);
 
-                                            //Get flairs
-                                            var subFlairs;
-                                            try {
-                                                subFlairs = await bot.reddit.get(`/r/${sub.names[0]}/api/link_flair_v2`);
-                                            } catch { }
+                                                    //Get flairs
+                                                    var subFlairs;
+                                                    try {
+                                                        subFlairs = await bot.reddit.get(`/r/${sub.names[0]}/api/link_flair_v2`);
+                                                    } catch { }
 
-                                            //If sub flairs are enabled
-                                            if (subFlairs && subFlairs.length > 0) {
-                                                //Get emojis in loop to add to the number of flairs
-                                                var emojis = randomEmoji.random({ count: subFlairs.length }).map(i => i.character).push('❌');
+                                                    //If sub flairs are enabled
+                                                    if (subFlairs && subFlairs.length > 0) {
+                                                        //Get emojis in loop to add to the number of flairs
+                                                        var emojis = randomEmoji.random({ count: subFlairs.length }).map(i => i.character).push('❌');
 
-                                                //Create new entry. Send message
-                                                message.channel
-                                                    .send(new Discord.MessageEmbed().setDescription(`What flair filter do you want to add for ${res.names[0]}\n\n` +
-                                                        `${subFlairs.map((i, index) => `${emojis[index]} - **${i.text}**`).join('\n')}\n❌ - No Filter`).setColor('#FFCC00'))
-                                                    .then(async (sent) => {
-                                                        //Auto react
-                                                        for (emoji of emojis) await sent.react(emoji);
-                                                        //Set up emoji reaction filter
-                                                        const filter = (reaction, user) => {
-                                                            return emojis.includes(reaction.emoji.name) && user.id === message.author.id;
-                                                        }
-                                                        //Create reaction collector
-                                                        const collector = sent.createReaction.Collector(filter, { max: 1, time: 20000 });
+                                                        //Create new entry. Edit message
+                                                        loadingSent.edit(new Discord.MessageEmbed().setDescription(`What flair filter do you want to add for ${res.names[0]}\n\n` +
+                                                            `${subFlairs.map((i, index) => `${emojis[index]} - **${i.text}**`).join('\n')}\n❌ - No Filter`).setColor('#FFCC00'))
+                                                            .then(async (sent) => {
+                                                                //Auto react
+                                                                for (emoji of emojis) await sent.react(emoji);
+                                                                //Set up emoji reaction filter
+                                                                const filter = (reaction, user) => {
+                                                                    return emojis.includes(reaction.emoji.name) && user.id === message.author.id;
+                                                                }
+                                                                //Create reaction collector
+                                                                const collector = sent.createReaction.Collector(filter, { max: 1, time: 20000 });
 
-                                                        //Await reaction collector on collect
-                                                        collector.on('collect', (reaction, user) => {
-                                                            //Get sub flair
-                                                            var flairName;
-                                                            if (reaction === '❌') //If the reaction is X (should be the final index, at i > subFlairs.length)
-                                                                flairName = '';
-                                                            else //Otherwise get index of reaction for subFlair index (X should never be a problem here)
-                                                                flairName = subFlairs.map(i => i.text)[emojis.indexOf(reaction.emoji.name)];
+                                                                //Await reaction collector on collect
+                                                                collector.on('collect', (reaction, user) => {
+                                                                    //Get sub flair
+                                                                    var flairName;
+                                                                    if (reaction === '❌') //If the reaction is X (should be the final index, at i > subFlairs.length)
+                                                                        flairName = '';
+                                                                    else //Otherwise get index of reaction for subFlair index (X should never be a problem here)
+                                                                        flairName = subFlairs.map(i => i.text)[emojis.indexOf(reaction.emoji.name)];
 
-                                                            //Stop collector and return flairname as reason
-                                                            collector.stop(flairName);
-                                                        });
-                                                        //Await reaction collector on stop
-                                                        collector.on('stop', (c, reason) => {
-                                                            //If not reacted or reason is empty, then no flair given
-                                                            var flairName = (c.size != 0 ? (reason ? reason : '') : '');
+                                                                    //Stop collector and return flairname as reason
+                                                                    collector.stop(flairName);
+                                                                });
+                                                                //Await reaction collector on stop
+                                                                collector.on('stop', (c, reason) => {
+                                                                    //If not reacted or reason is empty, then no flair given
+                                                                    var flairName = (c.size != 0 ? (reason ? reason : '') : '');
 
-                                                            //Add subbed sub reddit
-                                                            const create_sql = `
-                                                            INSERT INTO server_subbed_reddits (SubName, ChannelId, ServerId, Flair_Filter)
-                                                                VALUES ("${sub.names[0]}", "${channelMention.first().id}", "${message.guild.id}", "${flairName}")
-                                                            `;
-                                                            bot.con.query(create_sql, (error, results, fields) => {
-                                                                if (error) return console.error(error); //Return error console log
+                                                                    //Add subbed sub reddit
+                                                                    const create_sql = `
+                                                                    INSERT INTO server_subbed_reddits (SubName, ChannelId, ServerId, Flair_Filter)
+                                                                        VALUES ("${sub.names[0]}", "${channelMention.first().id}", "${message.guild.id}", "${flairName}")
+                                                                    `;
+                                                                    bot.con.query(create_sql, (error, results, fields) => {
+                                                                        if (error) return console.error(error); //Return error console log
 
-                                                                //Remove all reactions
-                                                                sent.reactions.removeAll()
-                                                                    .then(() => {
-                                                                        //Edit message
-                                                                        sent.edit(new Discord.MessageEmbed()
-                                                                            .setColor('#09b50c')
-                                                                            .setAuthor(sub.names[0], subIcon)
-                                                                            .setDescription(`Successfully subscribed **${sub.names[0]}** to ${channelMention.first().toString()} ` +
-                                                                                `${flairName ? `with a flair filter of ${flairName}` : ''}`)
-                                                                            .addFields(
-                                                                                { name: 'Subreddit: ', value: `*${subTitle}*` },
-                                                                                { name: 'Description: ', value: `*${subDescription}*` },
-                                                                                { name: 'Subscriber Count: ', value: `*${subSubscribers}*` },
-                                                                                { name: 'Created On: ', value: `*${subCreated.format('lll')}*` }
-                                                                            ));
-                                                                    }).catch(error => { return; });
-                                                                collector.stop();
+                                                                        //Remove all reactions
+                                                                        sent.reactions.removeAll()
+                                                                            .then(() => {
+                                                                                //Edit message
+                                                                                sent.edit(new Discord.MessageEmbed()
+                                                                                    .setColor('#09b50c')
+                                                                                    .setAuthor(sub.names[0], subIcon)
+                                                                                    .setDescription(`Successfully subscribed **${sub.names[0]}** to ${channelMention.first().toString()} ` +
+                                                                                        `${flairName ? `with a flair filter of ${flairName}` : ''}`)
+                                                                                    .addFields(
+                                                                                        { name: 'Subreddit: ', value: `*${subTitle}*` },
+                                                                                        { name: 'Description: ', value: `*${subDescription}*` },
+                                                                                        { name: 'Subscriber Count: ', value: `*${subSubscribers}*` },
+                                                                                        { name: 'Created On: ', value: `*${subCreated.format('lll')}*` }
+                                                                                    ));
+                                                                            }).catch(error => { return; });
+                                                                        collector.stop();
+                                                                    });
+                                                                });
                                                             });
-                                                        });
-                                                    });
-                                            } else {
-                                                //Create new entry. Send message
-                                                //Add subbed sub reddit
-                                                const create_sql = `
-                                                INSERT INTO server_subbed_reddits (SubName, ChannelId, ServerId)
-                                                    VALUES ("${sub.names[0]}", "${channelMention.first().id}", "${message.guild.id}")
-                                                `;
-                                                bot.con.query(create_sql, (error, results, fields) => {
-                                                    if (error) return console.error(error); //Return error console log
+                                                    } else {
+                                                        //Create new entry. Send message
+                                                        //Add subbed sub reddit
+                                                        const create_sql = `
+                                                        INSERT INTO server_subbed_reddits (SubName, ChannelId, ServerId)
+                                                            VALUES ("${sub.names[0]}", "${channelMention.first().id}", "${message.guild.id}")
+                                                        `;
+                                                        bot.con.query(create_sql, (error, results, fields) => {
+                                                            if (error) return console.error(error); //Return error console log
 
-                                                    //Send message
-                                                    message.channel.send(new Discord.MessageEmbed()
-                                                        .setColor('#09b50c')
-                                                        .setAuthor(sub.names[0], subIcon)
-                                                        .setDescription(`Successfully subscribed **${sub.names[0]}** to ${channelMention.first().toString()}\n` +
-                                                            `**${sub.names[0]}** does not have flair customisation enabled and I am not a mod for this subreddit. Flair filter is not possible unfortunately.`)
-                                                        .addFields(
-                                                            { name: 'Subreddit: ', value: `*${subTitle}*` },
-                                                            { name: 'Description: ', value: `*${subDescription}*` },
-                                                            { name: 'Subscriber Count: ', value: `*${subSubscribers}*` },
-                                                            { name: 'Created On: ', value: `*${subCreated.format('lll')}*` }
-                                                        ));
+                                                            //Send message
+                                                            loadingSent.edit(new Discord.MessageEmbed()
+                                                                .setColor('#09b50c')
+                                                                .setAuthor(sub.names[0], subIcon)
+                                                                .setDescription(`Successfully subscribed **${sub.names[0]}** to ${channelMention.first().toString()}\n` +
+                                                                    `**${sub.names[0]}** does not have flair customisation enabled and I am not a mod for this subreddit. Flair filter is not possible unfortunately.`)
+                                                                .addFields(
+                                                                    { name: 'Subreddit: ', value: `*${subTitle}*` },
+                                                                    { name: 'Description: ', value: `*${subDescription}*` },
+                                                                    { name: 'Subscriber Count: ', value: `*${subSubscribers}*` },
+                                                                    { name: 'Created On: ', value: `*${subCreated.format('lll')}*` }
+                                                                ));
+                                                        });
+                                                    }
+                                                }).catch((err) => {
+                                                    message.channel.send(new Discord.MessageEmbed().setDescription(`Sorry, I could not find a subreddit with the name of: ${redditName}`).setColor('#b50909'));
                                                 });
-                                            }
-                                        }).catch((err) => {
-                                            message.channel.send(new Discord.MessageEmbed().setDescription(`Sorry, I could not find a subreddit with the name of: ${redditName}`).setColor('#b50909'));
+                                            }).catch((err) => {
+                                                message.channel.send(new Discord.MessageEmbed().setDescription(`Sorry, I could not find a subreddit with the name of: ${redditName}`).setColor('#b50909'));
+                                            });
                                         });
-                                    }).catch((err) => {
-                                        message.channel.send(new Discord.MessageEmbed().setDescription(`Sorry, I could not find a subreddit with the name of: ${redditName}`).setColor('#b50909'));
-                                    });
                                 } else {
                                     message.channel.send(new Discord.MessageEmbed().setDescription(`Sorry, you cannot output one sub reddit to multiple channels.`).setColor('#b50909'));
                                 }
