@@ -86,7 +86,7 @@ exports.run = (bot, guild, message, args) => {
                                                                             collector.stop(flairName);
                                                                         });
                                                                         //Await reaction collector on stop
-                                                                        collector.on('stop', (c, reason) => {
+                                                                        collector.on('end', (c, reason) => {
                                                                             console.log(c);
                                                                             console.log(reason);
                                                                             console.log('I have stopped');
