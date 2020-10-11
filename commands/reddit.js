@@ -61,12 +61,12 @@ exports.run = (bot, guild, message, args) => {
                                                         //Create new entry. Edit message
                                                         loadingSent.edit(new Discord.MessageEmbed().setDescription(`What flair filter do you want to add for ${sub.names[0]}\n\n` +
                                                             `${subFlairs.map((i, index) => `${emojis[index]} - **${i.text}**`).join('\n')}\n❌ - No Filter`).setColor('#FFCC00'))
-                                                            .then((sent) => {
-                                                                new Promise(async (resolve, reject) => {
+                                                            .then(async (sent) => {
+                                                                new Promise((resolve, reject) => {
                                                                     //Auto react
                                                                     for (emoji of emojis) await sent.react(emoji);
-                                                                    resolve();
-                                                                }).then(() => {
+                                                                    resolve(sent);
+                                                                }).then((sent) => {
                                                                     //Set up emoji reaction filter
                                                                     const filter = (reaction, user) => {
                                                                         return emojis.includes(reaction.emoji.name) && user.id === message.author.id;
@@ -120,7 +120,7 @@ exports.run = (bot, guild, message, args) => {
                                                                         });
                                                                     });
                                                                 }).catch(error => {
-                                                                    sent.edit(new Discord.MessageEmbed().setDescription(`Error for some reason...`).setColor('#b50909'));
+                                                                    sent.edit(new Discord.MessageEmbed().setDescription('There was an error of some sort...').setColor('#b50909'));
                                                                 });
                                                             });
                                                     } else {
