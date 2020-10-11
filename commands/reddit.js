@@ -63,13 +63,15 @@ exports.run = (bot, guild, message, args) => {
                                                             `${subFlairs.map((i, index) => `${emojis[index]} - **${i.text}**`).join('\n')}\n❌ - No Filter`).setColor('#FFCC00'))
                                                             .then(async (sent) => {
                                                                 //Auto react
-                                                                for (emoji of emojis) await loadingSent.react(emoji);
+                                                                for (emoji of emojis) await sent.react(emoji);
                                                                 //Set up emoji reaction filter
                                                                 const filter = (reaction, user) => {
-                                                                    return emojis.includes(reaction.emoji.name) && user.id === message.author.id;
+                                                                    return emojis.includes(reaction.emoji.name);
                                                                 }
                                                                 //Create reaction collector
-                                                                const collector = loadingSent.createReactionCollector(filter, { max: 1, time: 20000 });
+                                                                const collector = sent.createReactionCollector(filter, { max: 1, time: 20000 });
+
+                                                                console.log(collector);
 
                                                                 //Await reaction collector on collect
                                                                 collector.on('collect', (reaction, user) => {
@@ -79,6 +81,8 @@ exports.run = (bot, guild, message, args) => {
                                                                         flairName = '';
                                                                     else //Otherwise get index of reaction for subFlair index (X should never be a problem here)
                                                                         flairName = subFlairs.map(i => i.text)[emojis.indexOf(reaction.emoji.name)];
+
+                                                                    console.log(flairName);
 
                                                                     //Stop collector and return flairname as reason
                                                                     collector.stop(flairName);
@@ -97,10 +101,10 @@ exports.run = (bot, guild, message, args) => {
                                                                         if (error) return console.error(error); //Return error console log
 
                                                                         //Remove all reactions
-                                                                        loadingSent.reactions.removeAll()
+                                                                        sent.reactions.removeAll()
                                                                             .then(() => {
                                                                                 //Edit message
-                                                                                loadingSent.edit(new Discord.MessageEmbed()
+                                                                                sent.edit(new Discord.MessageEmbed()
                                                                                     .setColor('#09b50c')
                                                                                     .setAuthor(sub.names[0], subIcon)
                                                                                     .setDescription(`Successfully subscribed **${sub.names[0]}** to ${channelMention.first().toString()} ` +
