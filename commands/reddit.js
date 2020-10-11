@@ -77,7 +77,7 @@ exports.run = (bot, guild, message, args) => {
 
                                                                             //Get sub flair
                                                                             var flairName;
-                                                                            if (reaction === '❌') //If the reaction is X (should be the final index, at i > subFlairs.length)
+                                                                            if (reaction.emoji.name === '❌') //If the reaction is X (should be the final index, at i > subFlairs.length)
                                                                                 flairName = '';
                                                                             else //Otherwise get index of reaction for subFlair index (X should never be a problem here)
                                                                                 flairName = subFlairs.map(i => i.text)[emojis.indexOf(reaction.emoji.name)];
