@@ -89,8 +89,8 @@ exports.run = (bot, guild, message, args) => {
 
                                                                     //Add subbed sub reddit
                                                                     const create_sql = `
-                                                                    INSERT INTO server_subbed_reddits (SubName, ChannelId, ServerId, Flair_Filter)
-                                                                        VALUES ("${sub.names[0]}", "${channelMention.first().id}", "${message.guild.id}", "${flairName}")
+                                                                    INSERT INTO server_subbed_reddits (SubName, SubImage, ChannelId, ServerId, Flair_Filter)
+                                                                        VALUES ("${sub.names[0]}", "${subIcon}", "${channelMention.first().id}", "${message.guild.id}", "${flairName}")
                                                                     `;
                                                                     bot.con.query(create_sql, (error, results, fields) => {
                                                                         if (error) return console.error(error); //Return error console log
@@ -119,8 +119,8 @@ exports.run = (bot, guild, message, args) => {
                                                         //Create new entry. Send message
                                                         //Add subbed sub reddit
                                                         const create_sql = `
-                                                        INSERT INTO server_subbed_reddits (SubName, ChannelId, ServerId)
-                                                            VALUES ("${sub.names[0]}", "${channelMention.first().id}", "${message.guild.id}")
+                                                        INSERT INTO server_subbed_reddits (SubName, SubImage, ChannelId, ServerId)
+                                                            VALUES ("${sub.names[0]}", "${subIcon}", "${channelMention.first().id}", "${message.guild.id}")
                                                         `;
                                                         bot.con.query(create_sql, (error, results, fields) => {
                                                             if (error) return console.error(error); //Return error console log
