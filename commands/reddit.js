@@ -154,7 +154,8 @@ exports.run = (bot, guild, message, args) => {
                                             });
                                         });
                                 } else {
-                                    message.channel.send(new Discord.MessageEmbed().setDescription(`Sorry, you cannot output one sub reddit to multiple channels.`).setColor('#b50909'));
+                                    message.channel.send(new Discord.MessageEmbed().setDescription(`Sorry, you cannot output one sub reddit to multiple channels.\n` +
+                                        `If you want to do this for different flair filters for example; simply run the command again and select a different channel. Or even the same channel.`).setColor('#b50909'));
                                 }
                             } else {
                                 message.channel.send(new Discord.MessageEmbed().setDescription(`Sorry, you didn't select any channel to post reddit posts to.`).setColor('#b50909'));
