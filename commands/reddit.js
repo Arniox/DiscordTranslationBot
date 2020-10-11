@@ -32,11 +32,10 @@ exports.run = (bot, guild, message, args) => {
                                             //Check if there exists a reddit at all of this name
                                             bot.reddit.get('/api/search_reddit_names', {
                                                 query: `${redditName}`,
+                                                exact: true,
                                                 include_over_18: true,
                                                 include_unadvertisable: true
                                             }).then((sub) => {
-                                                console.log(sub);
-
                                                 //Found sub reddit
                                                 //Get all flairs for this sub reddit
                                                 bot.reddit.get(`/r/${sub.names[0]}/about`).then(async (details) => {
@@ -60,7 +59,7 @@ exports.run = (bot, guild, message, args) => {
                                                         var emojis = randomEmoji.random({ count: subFlairs.length }).map(i => i.character).push('❌');
 
                                                         //Create new entry. Edit message
-                                                        loadingSent.edit(new Discord.MessageEmbed().setDescription(`What flair filter do you want to add for ${res.names[0]}\n\n` +
+                                                        loadingSent.edit(new Discord.MessageEmbed().setDescription(`What flair filter do you want to add for ${sub.names[0]}\n\n` +
                                                             `${subFlairs.map((i, index) => `${emojis[index]} - **${i.text}**`).join('\n')}\n❌ - No Filter`).setColor('#FFCC00'))
                                                             .then(async (sent) => {
                                                                 //Auto react
@@ -144,6 +143,7 @@ exports.run = (bot, guild, message, args) => {
                                                         });
                                                     }
                                                 }).catch((err) => {
+                                                    console.error(err);
                                                     loadingSent.edit(new Discord.MessageEmbed().setDescription(`Sorry, I could not find a subreddit with the name of: ${redditName}`).setColor('#b50909'));
                                                 });
                                             }).catch((err) => {
