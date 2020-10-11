@@ -26,7 +26,7 @@ exports.run = (bot, guild, message, args) => {
                         }).then((res) => {
                             //Found sub reddit
                             //Get all flairs for this sub reddit
-                            bot.reddit.get(`${res.names[0]}/api/flairlist`, {
+                            bot.reddit.get(`/r/${res.names[0]}/api/flairlist`, {
                                 show: 'all'
                             }).then((res) => {
                                 //Found all flairs
