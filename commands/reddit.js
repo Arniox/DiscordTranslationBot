@@ -61,8 +61,8 @@ exports.run = (bot, guild, message, args) => {
                                                         //Create new entry. Edit message
                                                         loadingSent.edit(new Discord.MessageEmbed().setDescription(`What flair filter do you want to add for ${sub.names[0]}\n\n` +
                                                             `${subFlairs.map((i, index) => `${emojis[index]} - **${i.text}**`).join('\n')}\n❌ - No Filter`).setColor('#FFCC00'))
-                                                            .then(async (sent) => {
-                                                                new Promise((resolve, reject) => {
+                                                            .then((sent) => {
+                                                                new Promise(async (resolve, reject) => {
                                                                     //Auto react
                                                                     for (emoji of emojis) await sent.react(emoji);
                                                                     resolve(sent);
