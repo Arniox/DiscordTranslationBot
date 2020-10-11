@@ -24,10 +24,10 @@ exports.run = (bot, guild, message, args) => {
                             exact: true,
                             include_over_18: true,
                             include_unadvertisable: true
-                        }).then(async (sub) => {
+                        }).then((sub) => {
                             //Found sub reddit
                             //Get all flairs for this sub reddit
-                            bot.reddit.get(`/r/${sub.names[0]}/about`).then((details) => {
+                            bot.reddit.get(`/r/${sub.names[0]}/about`).then(async (details) => {
                                 //Get full name
                                 var subTitle = details.data.title;
                                 var subDescription = details.data.public_description;
