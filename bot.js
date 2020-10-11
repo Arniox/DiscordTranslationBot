@@ -30,7 +30,15 @@ bot.reddit = reddit; //Attach reddit to bot
 bot.dbpool.then((p) => {
 	return p.getConnection();
 }).then((connection) => {
+	//Data base works
 	console.log(`Connection to ${process.env.CLEARDB_DATABASE_URL} was successful!`);
+	//Reddit works
+	bot.reddit.fetchSelf()
+		.then(user => {
+			console.log(`This client is logged into ${user.name}`);
+		}).catch((err) => {
+			console.error(err);
+		});
 
 	//Attaches all event files to event
 	fs.readdir('./events/', (err, files) => {
