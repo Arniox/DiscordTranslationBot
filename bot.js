@@ -26,7 +26,6 @@ const bot = new Discord.Client();
 
 bot.dbpool = pool; //Attach pool to bot
 bot.reddit = reddit; //Attach reddit to bot
-bot.tools = tools; //Attach tools to bot
 
 bot.dbpool.then((p) => {
 	return p.getConnection();

@@ -55,7 +55,7 @@ exports.run = (bot, guild, message, args) => {
                                                     //If sub flairs are enabled
                                                     if (subFlairs && subFlairs.length > 0) {
                                                         //Get emojis in loop to add to the number of flairs
-                                                        var emojis = bot.tools.emojiRandom(subFlairs.length).push('❌');
+                                                        var emojis = emojiRandom(subFlairs.length).push('❌');
 
                                                         //Create new entry. Edit message
                                                         loadingSent.edit(new Discord.MessageEmbed().setDescription(`What flair filter do you want to add for ${sub.names[0]}\n\n` +
@@ -211,4 +211,20 @@ function Helpmessage(bot, guild, message, args) {
 
     //Send embedded message
     message.channel.send(embeddedHelpMessage);
+}
+
+//List of all emojis
+const emojis = [
+    '⚫', '🔵', '🟤', '🟢', '🟠', '🟣', '🔴', '⚪', '🟡',
+    '🟦', '🟫', '🟩', '🟧', '🟪', '🟥', '⬜', '🟨',
+    '🖤', '💙', '🤎', '💚', '🧡', '💜', '🤍', '💛',
+    '🇦', '🇧', '🇨', '🇩', '🇪', '🇫', '🇬', '🇭', '🇮', '🇯', '🇰', '🇱', '🇲', '🇳', '🇴', '🇵', '🇶', '🇷', '🇸', '🇹', '🇺', '🇻', '🇼', '🇽', '🇾', '🇿'
+];
+
+//Get random emojis
+function emojiRandom(count) {
+    //Shuffle
+    var list = emojis;
+    list.shuffle();
+    return (count > emojis.length ? list : list.splice(0, count));
 }

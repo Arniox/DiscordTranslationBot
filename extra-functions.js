@@ -54,22 +54,6 @@ module.exports = {
     }
 }
 
-//List of all emojis
-const emojis = [
-    '⚫', '🔵', '🟤', '🟢', '🟠', '🟣', '🔴', '⚪', '🟡',
-    '🟦', '🟫', '🟩', '🟧', '🟪', '🟥', '⬜', '🟨',
-    '🖤', '💙', '🤎', '💚', '🧡', '💜', '🤍', '💛',
-    '🇦', '🇧', '🇨', '🇩', '🇪', '🇫', '🇬', '🇭', '🇮', '🇯', '🇰', '🇱', '🇲', '🇳', '🇴', '🇵', '🇶', '🇷', '🇸', '🇹', '🇺', '🇻', '🇼', '🇽', '🇾', '🇿'
-];
-
-//Get random emojis
-function emojiRandom(count) {
-    //Shuffle
-    var list = emojis;
-    list.shuffle();
-    return (count > emojis.length ? list : list.splice(0, count));
-}
-
 //UTC to timezone date
 Date.prototype.toTimeZone = function (timeZone) {
     //Get offset in milliseconds
