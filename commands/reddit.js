@@ -36,7 +36,7 @@ exports.run = (bot, guild, message, args) => {
                                 var subCreated = moment(details.data.created * 1000);
 
                                 //Get flairs
-                                bot.reddit.get(`/r/${sub.names[0]}/api/user_flair_v2`).then((flairs) => {
+                                bot.reddit.get(`/r/${sub.names[0]}/api/link_flair_v2`).then((flairs) => {
                                     console.log(flairs);
 
                                     //Create new entry. Send message
