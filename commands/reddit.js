@@ -27,19 +27,20 @@ exports.run = (bot, guild, message, args) => {
                         }).then((sub) => {
                             //Found sub reddit
                             //Get all flairs for this sub reddit
-                            bot.reddit.get(`/r/${sub.names[0]}/about`).then((details) => {
+                            bot.reddit.get(`/r/${sub.names[0]}/about`).then(async (details) => {
                                 //Get full name
                                 var subTitle = details.data.title;
                                 var subDescription = details.data.public_description;
                                 var subIcon = details.data.icon_img;
                                 var subSubscribers = details.data.subscribers;
                                 var subCreated = moment(details.data.created * 1000);
-                                var subFlairs;
 
                                 //Get flairs
-                                bot.reddit.get(`/r/${sub.names[0]}/api/link_flair_v2`).then((flairs) => {
-                                    subFlairs = flairs;
-                                }).catch((err) => { return; });
+                                var subFlairs;
+                                try {
+                                    subFlairs = await bot.reddit.get(`/r/${sub.names[0]}/api/link_flair_v2`);
+                                } catch { }
+
 
                                 console.log(subFlairs);
                                 //Create new entry. Send message
