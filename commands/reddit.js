@@ -13,7 +13,7 @@ exports.run = (bot, guild, message, args) => {
                 //Check if has perms
                 if (message.member.hasPermission('MANAGE_GUILD')) {
                     //Get reddit name
-                    var redditName = args.shift();
+                    var redditName = args.shift().toLowerCase();
 
                     //Check that there is a name
                     if (redditName) {
@@ -24,9 +24,25 @@ exports.run = (bot, guild, message, args) => {
                             include_over_18: true,
                             include_unadvertisable: true
                         }).then((res) => {
-                            console.log(res);
+                            //Found sub reddit
+                            //Get all flairs for this sub reddit
+                            bot.reddit.get(`${res.names[0]}/api/flairlist`, {
+                                show: 'all'
+                            }).then((res) => {
+                                //Found all flairs
+                                console.log(res);
+
+                                //Create new entry. Send message
+                                // message.channel
+                                //     .send(new Discord.MessageEmbed().setDescription(`What flair filter do you want to add for ${res.names[0]}`).setColor('#FFCC00'))
+                                //     .then((sent) => {
+
+                                //     });
+                            }).catch((err) => {
+                                return console.error(err);
+                            });
                         }).catch((err) => {
-                            return console.error(err);
+                            message.channel.send(new Discord.MessageEmbed().setDescription(`Sorry, I could not find a subreddit with the name of: ${redditName}`).setColor('#b50909'));
                         });
 
                     } else {
