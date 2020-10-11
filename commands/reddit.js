@@ -40,6 +40,7 @@ exports.run = (bot, guild, message, args) => {
                                     after: '',
                                     count: 1000,
                                     limit: 1000,
+                                    name: 'Aqaphor',
                                     show: 'all'
                                 }).then((flairs) => {
                                     console.log(flairs);
