@@ -96,11 +96,16 @@ exports.run = (bot, guild, message, args) => {
                                                                             //If not reacted or reason is empty, then no flair given
                                                                             var flairName = (c.size != 0 ? (reason ? reason : '') : '');
 
+                                                                            console.log('flairname: ' + flairName);
+
                                                                             //Add subbed sub reddit
                                                                             const create_sql = `
                                                                             INSERT INTO server_subbed_reddits (SubName, SubImage, ChannelId, ServerId, Flair_Filter)
                                                                                 VALUES ("${sub.names[0]}", "${subIcon}", "${channelMention.first().id}", "${message.guild.id}", "${flairName}")
                                                                             `;
+
+                                                                            console.log(create_sql);
+
                                                                             bot.con.query(create_sql, (error, results, fields) => {
                                                                                 if (error) return console.error(error); //Return error console log
 
