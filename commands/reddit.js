@@ -58,6 +58,8 @@ exports.run = (bot, guild, message, args) => {
                                                         //Get emojis in loop to add to the number of flairs
                                                         var emojis = randomEmoji.random({ count: subFlairs.length }).map(i => i.character).push('❌');
 
+                                                        console.log(emojis);
+
                                                         //Create new entry. Edit message
                                                         loadingSent.edit(new Discord.MessageEmbed().setDescription(`What flair filter do you want to add for ${sub.names[0]}\n\n` +
                                                             `${subFlairs.map((i, index) => `${emojis[index]} - **${i.text}**`).join('\n')}\n❌ - No Filter`).setColor('#FFCC00'))
