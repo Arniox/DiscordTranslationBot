@@ -41,14 +41,30 @@ exports.run = (bot, guild, message, args) => {
                                     subFlairs = await bot.reddit.get(`/r/${sub.names[0]}/api/link_flair_v2`);
                                 } catch { }
 
+                                //If sub flairs are enabled
+                                if (subFlairs && subFlairs.length > 0) {
+                                    //Get emojis in loop to add to the number of flairs
+                                    var emojis = [];
+                                    for (var i = 0; i < subFlairs.length; i++)
+                                        fetch('https://ranmoji.herokuapp.com/emojis/api/v.1.0/')
+                                            .then(response => {
+                                                response.json().then(data => {
+                                                    emojis.push(data.emoji);
+                                                });
+                                            });
 
-                                console.log(subFlairs);
-                                //Create new entry. Send message
-                                // message.channel
-                                //     .send(new Discord.MessageEmbed().setDescription(`What flair filter do you want to add for ${res.names[0]}`).setColor('#FFCC00'))
-                                //     .then((sent) => {
+                                    console.log(emojis);
 
-                                //     });
+
+                                    //Create new entry. Send message
+                                    // message.channel
+                                    //     .send(new Discord.MessageEmbed().setDescription(`What flair filter do you want to add for ${res.names[0]}`).setColor('#FFCC00'))
+                                    //     .then((sent) => {
+
+                                    //     });
+                                } else {
+
+                                }
                             }).catch((err) => {
                                 return console.error(err);
                             });
