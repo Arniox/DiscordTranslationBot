@@ -61,64 +61,66 @@ exports.run = (bot, guild, message, args) => {
                                                         //Create new entry. Edit message
                                                         loadingSent.edit(new Discord.MessageEmbed().setDescription(`What flair filter do you want to add for ${sub.names[0]}\n\n` +
                                                             `${subFlairs.map((i, index) => `${emojis[index]} - **${i.text}**`).join('\n')}\n❌ - No Filter`).setColor('#FFCC00'))
-                                                            .then(async (sent) => {
-                                                                //Auto react
-                                                                for (emoji of emojis) await sent.react(emoji);
-                                                                //Set up emoji reaction filter
-                                                                const filter = (reaction, user) => {
-                                                                    return emojis.includes(reaction.emoji.name);
-                                                                }
-                                                                //Create reaction collector
-                                                                const collector = sent.createReactionCollector(filter, { max: 1, time: 20000 });
+                                                            .then((sent) => {
+                                                                new Promise((resolve, reject) => {
+                                                                    //Auto react
+                                                                    for (emoji of emojis) await sent.react(emoji);
+                                                                    resolve();
+                                                                }).then(() => {
+                                                                    //Set up emoji reaction filter
+                                                                    const filter = (reaction, user) => {
+                                                                        return emojis.includes(reaction.emoji.name) && user.id === message.author.id;
+                                                                    }
+                                                                    //Create reaction collector
+                                                                    const collector = sent.createReactionCollector(filter, { max: 1, time: 20000 });
 
-                                                                console.log(collector);
+                                                                    //Await reaction collector on collect
+                                                                    collector.on('collect', (reaction, user) => {
+                                                                        //Get sub flair
+                                                                        var flairName;
+                                                                        if (reaction === '❌') //If the reaction is X (should be the final index, at i > subFlairs.length)
+                                                                            flairName = '';
+                                                                        else //Otherwise get index of reaction for subFlair index (X should never be a problem here)
+                                                                            flairName = subFlairs.map(i => i.text)[emojis.indexOf(reaction.emoji.name)];
 
-                                                                //Await reaction collector on collect
-                                                                collector.on('collect', (reaction, user) => {
-                                                                    //Get sub flair
-                                                                    var flairName;
-                                                                    if (reaction === '❌') //If the reaction is X (should be the final index, at i > subFlairs.length)
-                                                                        flairName = '';
-                                                                    else //Otherwise get index of reaction for subFlair index (X should never be a problem here)
-                                                                        flairName = subFlairs.map(i => i.text)[emojis.indexOf(reaction.emoji.name)];
+                                                                        //Stop collector and return flairname as reason
+                                                                        collector.stop(flairName);
+                                                                    });
+                                                                    //Await reaction collector on stop
+                                                                    collector.on('stop', (c, reason) => {
+                                                                        //If not reacted or reason is empty, then no flair given
+                                                                        var flairName = (c.size != 0 ? (reason ? reason : '') : '');
 
-                                                                    console.log(flairName);
-
-                                                                    //Stop collector and return flairname as reason
-                                                                    collector.stop(flairName);
-                                                                });
-                                                                //Await reaction collector on stop
-                                                                collector.on('stop', (c, reason) => {
-                                                                    //If not reacted or reason is empty, then no flair given
-                                                                    var flairName = (c.size != 0 ? (reason ? reason : '') : '');
-
-                                                                    //Add subbed sub reddit
-                                                                    const create_sql = `
+                                                                        //Add subbed sub reddit
+                                                                        const create_sql = `
                                                                     INSERT INTO server_subbed_reddits (SubName, SubImage, ChannelId, ServerId, Flair_Filter)
                                                                         VALUES ("${sub.names[0]}", "${subIcon}", "${channelMention.first().id}", "${message.guild.id}", "${flairName}")
                                                                     `;
-                                                                    bot.con.query(create_sql, (error, results, fields) => {
-                                                                        if (error) return console.error(error); //Return error console log
+                                                                        bot.con.query(create_sql, (error, results, fields) => {
+                                                                            if (error) return console.error(error); //Return error console log
 
-                                                                        //Remove all reactions
-                                                                        sent.reactions.removeAll()
-                                                                            .then(() => {
-                                                                                //Edit message
-                                                                                sent.edit(new Discord.MessageEmbed()
-                                                                                    .setColor('#09b50c')
-                                                                                    .setAuthor(sub.names[0], subIcon)
-                                                                                    .setDescription(`Successfully subscribed **${sub.names[0]}** to ${channelMention.first().toString()} ` +
-                                                                                        `${flairName ? `with a flair filter of ${flairName}` : ''}`)
-                                                                                    .setImage(`${subHeader}`)
-                                                                                    .addFields(
-                                                                                        { name: 'Subreddit: ', value: `*${subTitle}*` },
-                                                                                        { name: 'Description: ', value: `*${subDescription}*` },
-                                                                                        { name: 'Subscriber Count: ', value: `*${subSubscribers}*` },
-                                                                                        { name: 'Created On: ', value: `*${subCreated.format('lll')}*` }
-                                                                                    ));
-                                                                            }).catch(error => { return; });
-                                                                        collector.stop();
+                                                                            //Remove all reactions
+                                                                            sent.reactions.removeAll()
+                                                                                .then(() => {
+                                                                                    //Edit message
+                                                                                    sent.edit(new Discord.MessageEmbed()
+                                                                                        .setColor('#09b50c')
+                                                                                        .setAuthor(sub.names[0], subIcon)
+                                                                                        .setDescription(`Successfully subscribed **${sub.names[0]}** to ${channelMention.first().toString()} ` +
+                                                                                            `${flairName ? `with a flair filter of ${flairName}` : ''}`)
+                                                                                        .setImage(`${subHeader}`)
+                                                                                        .addFields(
+                                                                                            { name: 'Subreddit: ', value: `*${subTitle}*` },
+                                                                                            { name: 'Description: ', value: `*${subDescription}*` },
+                                                                                            { name: 'Subscriber Count: ', value: `*${subSubscribers}*` },
+                                                                                            { name: 'Created On: ', value: `*${subCreated.format('lll')}*` }
+                                                                                        ));
+                                                                                }).catch(error => { return; });
+                                                                            collector.stop();
+                                                                        });
                                                                     });
+                                                                }).catch(error => {
+                                                                    sent.edit(new Discord.MessageEmbed().setDescription(`Error for some reason...`).setColor('#b50909'));
                                                                 });
                                                             });
                                                     } else {
