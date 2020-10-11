@@ -111,13 +111,13 @@ exports.run = (bot, guild, message, args) => {
                                                                                                 { name: 'Description: ', value: `*${subDescription}*` },
                                                                                                 { name: 'Subscriber Count: ', value: `*${subSubscribers}*` },
                                                                                                 { name: 'Created On: ', value: `*${subCreated.format('lll')}*` }
-                                                                                            )).catch(() => { return; });
+                                                                                            ));
                                                                                     }).catch(error => { return; });
                                                                                 collector.stop();
                                                                             });
                                                                         });
                                                                     }).catch(() => { return; }); //Most likely the channel was deleted mid react, or the message was deleted
-                                                            }).catch(() => { return; });
+                                                            });
                                                     } else {
                                                         //Create new entry. Send message
                                                         //Add subbed sub reddit
@@ -140,7 +140,7 @@ exports.run = (bot, guild, message, args) => {
                                                                     { name: 'Description: ', value: `*${subDescription}*` },
                                                                     { name: 'Subscriber Count: ', value: `*${subSubscribers}*` },
                                                                     { name: 'Created On: ', value: `*${subCreated.format('lll')}*` }
-                                                                )).catch(() => { return; });
+                                                                ));
                                                         });
                                                     }
                                                 }).catch((err) => {
