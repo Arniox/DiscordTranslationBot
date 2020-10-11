@@ -73,8 +73,6 @@ exports.run = (bot, guild, message, args) => {
 
                                                                         //Await reaction collector on collect
                                                                         collector.on('collect', (reaction, user) => {
-                                                                            console.log(reaction);
-
                                                                             //Get sub flair
                                                                             var flairName;
                                                                             if (reaction.emoji.name === '❌') //If the reaction is X (should be the final index, at i > subFlairs.length)
