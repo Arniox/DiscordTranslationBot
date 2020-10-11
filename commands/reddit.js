@@ -1,7 +1,7 @@
 //Import
 const Discord = require('discord.js');
 const moment = require('moment-timezone');
-const emojis = require('random-emoji');
+const randomEmoji = require('random-emoji');
 
 exports.run = (bot, guild, message, args) => {
     //Check that args exist
@@ -45,7 +45,7 @@ exports.run = (bot, guild, message, args) => {
                                 //If sub flairs are enabled
                                 if (subFlairs && subFlairs.length > 0) {
                                     //Get emojis in loop to add to the number of flairs
-                                    var emojis = emojis.random({ count: subFlairs.length }).map(i, index => { return { "emoji": i.character, "flairIndex": index }; });
+                                    var emojis = randomEmoji.random({ count: subFlairs.length }).map(i, index => { return { "emoji": i.character, "flairIndex": index }; });
 
                                     console.log(emojis);
 
