@@ -16,7 +16,7 @@ exports.run = (bot, guild, message, args) => {
                 if (message.member.hasPermission('MANAGE_GUILD')) {
                     //Get reddit name
                     if (args.length != 0) {
-                        var redditName = args.shift();
+                        var redditName = args.shift().toLowerCase();
 
                         //Check that there is a name
                         if (redditName) {
@@ -32,10 +32,11 @@ exports.run = (bot, guild, message, args) => {
                                             //Check if there exists a reddit at all of this name
                                             bot.reddit.get('/api/search_reddit_names', {
                                                 query: `${redditName}`,
-                                                exact: true,
                                                 include_over_18: true,
                                                 include_unadvertisable: true
                                             }).then((sub) => {
+                                                console.log(sub);
+
                                                 //Found sub reddit
                                                 //Get all flairs for this sub reddit
                                                 bot.reddit.get(`/r/${sub.names[0]}/about`).then(async (details) => {
