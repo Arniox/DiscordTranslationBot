@@ -59,7 +59,8 @@ exports.run = (bot, guild, message, args) => {
                                                         emojis.push('❌');
 
                                                         //Create new entry. Edit message
-                                                        loadingSent.edit(new Discord.MessageEmbed().setDescription(`What flair filter do you want to add for ${sub.names[0]}\n\n` +
+                                                        loadingSent.edit(new Discord.MessageEmbed().setDescription(`What flair filter do you want to add for ${sub.names[0]}?\n` +
+                                                            `Unfortunately I am limited with what flairs I can filter by since I may not be a moderator of this subreddit.\n\n` +
                                                             `${subFlairs.map((i, index) => `${emojis[index]} - **${i.text}**`).join('\n')}\n❌ - No Filter`).setColor('#FFCC00'))
                                                             .then((sent) => {
                                                                 reactLoop(sent, emojis, 0)
@@ -132,7 +133,7 @@ exports.run = (bot, guild, message, args) => {
                                                                 .setColor('#09b50c')
                                                                 .setAuthor(sub.names[0], subIcon)
                                                                 .setDescription(`Successfully subscribed **${sub.names[0]}** to ${channelMention.first().toString()}\n` +
-                                                                    `**${sub.names[0]}** does not have flair customisation enabled and I am not a mod for this subreddit. Flair filter is not possible unfortunately.`)
+                                                                    `**${sub.names[0]}** does not have flair customisation enabled or I am not a moderator for this subreddit. Flair filter is not possible unfortunately.`)
                                                                 .setImage(`${subHeader}`)
                                                                 .addFields(
                                                                     { name: 'Subreddit: ', value: `*${subTitle}*` },
