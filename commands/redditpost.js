@@ -66,11 +66,13 @@ exports.run = (bot) => {
 function redditPost(channel, subImage, posts, i) {
     if (posts.length != 0 && i < posts.length) {
         //Get post variables
-        var subReddit = posts[i].data.subreddit_name_prefixed; //Sub reddit name (not null)
-        var postTitle = posts[i].data.title; //Post title (not null)
-        var postAuthor = posts[i].data.author; //Post author (not null)
+        //Sub reddit name + Post author
+        var messageAuthor = `${posts[i].data.subreddit_name_prefixed} - ${posts[i].data.author}`;
+        //Post Flair + Post title
+        var messageTitle = `${(posts[i].data.link_flair_text ?
+            `(${posts[i].data.link_flair_text}) - ` : '')}${posts[i].data.title}`.trimString(255);
+
         var postContent = posts[i].data.selftext; //Post content (not null)
-        var postFlair = posts[i].data.link_flair_text; //Post flair (not null)
         var postMedia = (posts[i].data.media ?
             (posts[i].data.media.reddit_video ?
                 posts[i].data.media.reddit_video.fallback_url : '') : ''); //Post media (video. Media can be null)
@@ -85,8 +87,8 @@ function redditPost(channel, subImage, posts, i) {
 
         return channel.send(new Discord.MessageEmbed()
             .setColor('#FF5700')
-            .setAuthor((`${subReddit} - ${postAuthor}`), subImage)
-            .setTitle(`${(postFlair ? `(${postFlair}) - ` : '')}${postTitle}`)
+            .setAuthor(messageAuthor, subImage)
+            .setTitle(messageTitle)
             .setThumbnail(postThumb)
             .setDescription(postContent)
             .setImage(postPreview)
