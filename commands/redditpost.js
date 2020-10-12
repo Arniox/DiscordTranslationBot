@@ -9,6 +9,7 @@ exports.run = (bot) => {
         if (error) return console.error(error); //Return error console log and continu8e
 
         console.log(results);
+        console.log('-----------------------------------------');
 
         //For each server
         bot.guilds.cache.map((value, key) => {
