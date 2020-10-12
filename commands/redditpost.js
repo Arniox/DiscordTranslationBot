@@ -67,13 +67,12 @@ exports.run = (bot) => {
 
 //Function post
 function redditPost(channel, subImage, posts, i) {
-    if (posts.length != 0) {
-        console.log(posts[i]);
-
+    if (posts.length != 0 && i < posts.length) {
         //Get post variables
         var subReddit = posts[i].data.subreddit_name_prefixed; //Sub reddit name (not null)
         var postTitle = posts[i].data.title; //Post title (not null)
         var postAuthor = posts[i].data.author; //Post author (not null)
+        var postContent = posts[i].data.selftext; //Post content (not null)
         var postFlair = posts[i].data.link_flair_text; //Post flair (not null)
         var postMedia = (posts[i].data.media ?
             (posts[i].data.media.reddit_video ?
@@ -84,42 +83,34 @@ function redditPost(channel, subImage, posts, i) {
         var postUps = posts[i].data.ups; //Post upvotes (not null)
         var postRewards = posts[i].data.total_awards_received; //Post rewards received (not null)
         var postViewCount = posts[i].data.view_count; //Post view count (can be null)
-        var postArchived = posts[i].data.archived; //Post archived bool (not null)
-        var postPinned = posts[i].data.pinned; //Post pinned bool (not null)
         var postPreview = (posts[i].data.preview ?
             (posts[i].data.preview.images[0] ?
                 posts[i].data.preview.images[0].source : '') : ''); //Post preview images (can be null)
         var postURL = 'https://www.reddit.com' + posts[i].data.permalink; //Post url (not null)
 
-        console.log(subReddit);
-        console.log(postTitle);
-        console.log(postAuthor);
-        console.log(postFlair);
-        console.log(postMedia);
-        console.log(postThumb);
-        console.log(postCreated);
-        console.log(postUps);
-        console.log(postRewards);
-        console.log(postViewCount);
-        console.log(postArchived);
-        console.log(postPinned);
+        console.log(posts[i].data.media);
         console.log(posts[i].data.preview);
-        console.log(postURL);
 
-        if (i < posts.length)
-            return channel.send(new Discord.MessageEmbed()
-                .setColor('#FF5700')
-                .setAuthor(postAuthor, subImage)
-                .setTitle(postTitle)
-                .setURL(postURL)
-                .setThumbnail(postThumb)
-                .setDescription(``)
-                .addFields(
-                    { name: 'Post URL: ', value: `${postURL}` }
-                )
-                .setTimestamp(postCreated.toDate())
-            ).then(() => redditPost(channel, subImage, posts, i + 1))
-                .catch((err) => { throw err; }); //Most likely the channel was deleted mid post
+        return channel.send(new Discord.MessageEmbed()
+            .setColor('#FF5700')
+            .setAuthor((`${subReddit} - ${postAuthor}`), subImage)
+            .setTitle(`${(postFlair ? `(${postFlair}) - ` : '')}${postTitle}`)
+            .setThumbnail(postThumb)
+            .setDescription(postContent)
+            .addFields(
+                { name: 'Upvotes: ', value: `${postUps} ⬆️` },
+                { name: 'Awards: ', value: `${postRewards} 🏅` },
+                { name: 'Views: ', value: `${(postViewCount ? postViewCount : 0)} 👁️` },
+                { name: 'Post URL: ', value: `[Reddit Perma Link](${postURL})` }
+            )
+            .setTimestamp(postCreated.toDate())
+        ).then(() => {
+            //If media exists then send it after
+            (postMedia ? channel.send(`${postMedia}`) : new Promise((resolve, reject) => { return resolve('') }))
+                .then(() => {
+                    redditPost(channel, subImage, posts, i + 1);
+                });
+        }).catch((err) => { throw err; }); //Most likely the channel was deleted mid post
     } else
         return new Promise((resolve, reject) => { return resolve('') });
 }
