@@ -43,7 +43,8 @@ exports.run = (bot, guild, message, args) => {
                                                     //Get full name
                                                     var subTitle = details.data.title;
                                                     var subDescription = details.data.public_description;
-                                                    var subIcon = details.data.icon_img;
+                                                    var subIcon = (details.data.icon_img ?
+                                                        details.data.icon_img : details.data.community_icon.match(/(http(s?):)([/|.|\w|\s|-])*\.(?:jpg|gif|png)/g)[0]);
                                                     var subHeader = details.data.header_img;
                                                     var subSubscribers = details.data.subscribers;
                                                     var subCreated = moment(details.data.created * 1000);
