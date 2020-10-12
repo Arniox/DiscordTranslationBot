@@ -46,7 +46,7 @@ module.exports = (bot, message) => {
                             return resolve(bot.commands.get('ban'));
                         case 'clone': case 'clo': case 'c':
                             return resolve(bot.commands.get('clone'));
-                        case 'harrass': case 'harass': case 'harr': case 'har': case 'ha': case 'h':
+                        case 'harrass': case 'harass': case 'harr': case 'har': case 'ha':
                             return resolve(bot.commands.get('harrass'));
                         case 'listen': case 'lis': case 'li':
                             return resolve(bot.commands.get('listen'));
@@ -62,7 +62,7 @@ module.exports = (bot, message) => {
                             return resolve(bot.commands.get('muterole'));
                         case 'today': case 'tod': case 'to': case 't':
                             return resolve(bot.commands.get('today'));
-                        case 'translate': case 'trans': case 'tran': case 'tra': case 'tr': case 't':
+                        case 'translate': case 'trans': case 'tran': case 'tra': case 'tr':
                             return resolve(bot.commands.get('translate'));
                         case 'nick': case 'nic': case 'ni': case 'n':
                             return resolve(bot.commands.get('nick'));
