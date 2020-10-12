@@ -22,15 +22,12 @@ exports.run = (bot) => {
 
                 //For each subscription
                 thisServer.forEach((sub) => {
-                    (sub.Last_After ?
-                        bot.reddit.get(`/r/${sub.SubName}/new`, {
-                            after: sub.Last_After
-                        }) : bot.reddit.get(`/r/${sub.SubName}/new`))
+                    bot.reddit.get(`/r/${sub.SubName}/new`)
                         .then((res) => {
                             //Last after save
                             const save_cmd = `
                             UPDATE server_subbed_reddits
-                            SET Last_After = "${res.data.after}"
+                            SET Last_After = "${moment().format('YYYY-MM-DD HH:mm:ss')}"
                             WHERE ServerId = "${sub.ServerId}"
                             AND Id = "${sub.Id}"
                             `;
@@ -43,7 +40,8 @@ exports.run = (bot) => {
                             var channelToPostTo = bot.guilds.cache.get(sub.ServerId).channels.cache.get(sub.ChannelId);
                             var flairFilter = sub.Flair_Filter;
                             //Filter the posts
-                            var filteredRes = (flairFilter ? res.data.children.filter(i => i.data.link_flair_text == flairFilter) : res.data.children);
+                            var filteredbyTime = res.data.children.filter(i => moment(i.data.created_utc * 1000).isAfter(moment(sub.Last_After)));
+                            var filteredRes = (flairFilter ? filteredbyTime.filter(i => i.data.link_flair_text == flairFilter) : filteredbyTime);
 
                             //Post sequentially with promise loop
                             redditPost(channelToPostTo, sub.SubImage, filteredRes, 0)
@@ -72,7 +70,7 @@ function redditPost(channel, subImage, posts, i) {
         var messageTitle = `${(posts[i].data.link_flair_text ?
             `(${posts[i].data.link_flair_text}) - ` : '')}${posts[i].data.title}`.trimString(255);
 
-        var postContent = posts[i].data.selftext; //Post content (not null)
+        var postContent = posts[i].data.selftext.trimString(2047); //Post content (not null)
         var postMedia = (posts[i].data.media ?
             (posts[i].data.media.reddit_video ?
                 posts[i].data.media.reddit_video.fallback_url : '') : ''); //Post media (video. Media can be null)
