@@ -45,6 +45,8 @@ exports.run = (bot) => {
                             //Filter the posts
                             var filteredRes = (flairFilter ? res.data.children.filter(i => i.data.link_flair_text == flairFilter) : res.data.children);
 
+                            console.log(filteredRes.length);
+
                             redditPost(channelToPostTo, sub.SubImage, filteredRes, 0)
                                 .then(() => {
                                     console.log('done');
