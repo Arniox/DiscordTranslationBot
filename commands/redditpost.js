@@ -43,7 +43,9 @@ exports.run = (bot) => {
                             var channelToPostTo = bot.guilds.cache.get(sub.ServerId).channels.cache.get(sub.ChannelId);
                             var flairFilter = sub.Flair_Filter;
                             //Filter the posts
-                            redditPost(channelToPostTo, sub.SubImage, res.data.children.filter(i => i.data.link_flair_text == flairFilter), 0)
+                            var filteredRes = (flairFilter ? res.data.children.filter(i => i.data.link_flair_text == flairFilter) : res.data.children);
+
+                            redditPost(channelToPostTo, sub.SubImage, filteredRes, 0)
                                 .then(() => {
                                     console.log('done');
                                 });
