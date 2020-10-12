@@ -22,12 +22,27 @@ exports.run = (bot) => {
 
                 //For each subscription
                 thisServer.forEach((sub) => {
-                    bot.reddit.get(`/r/${sub.SubName}/new`).then((res) => {
-                        //Found posts from this sub reddit
-                        console.log(res);
-                    }).catch((err) => {
-                        throw err; //Throw error
-                    });
+                    (sub.Last_After ?
+                        bot.reddit.get(`/r/${sub.SubName}/new`, {
+                            after: sub.Last_After
+                        }) : bot.reddit.get(`/r/${sub.SubName}/new`))
+                        .then((res) => {
+                            //Last after save
+                            const save_cmd = `
+                            UPDATE server_subbed_reddits
+                            SET Last_After = "${res.data.after}"
+                            WHERE ServerId = "${sub.ServerId}"
+                            AND Id = "${sub.Id}"
+                            `;
+                            bot.con.query(save_cmd, (error, results, fields) => {
+                                if (error) return console.error(error); //Throw error and return
+                            });
+
+                            //Found posts from this sub reddit
+                            console.log(res.data.children[0]);
+                        }).catch((err) => {
+                            throw err; //Throw error
+                        });
                 });
             });
         });
