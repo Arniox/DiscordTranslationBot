@@ -24,7 +24,7 @@ exports.run = (bot) => {
                 thisServer.forEach((sub) => {
                     (sub.Last_After ?
                         bot.reddit.get(`/r/${sub.SubName}/new`, {
-                            before: sub.Last_After
+                            after: sub.Last_After
                         }) : bot.reddit.get(`/r/${sub.SubName}/new`))
                         .then((res) => {
                             //Last after save
@@ -45,8 +45,7 @@ exports.run = (bot) => {
                             //Filter the posts
                             var filteredRes = (flairFilter ? res.data.children.filter(i => i.data.link_flair_text == flairFilter) : res.data.children);
 
-                            console.log('POSTS LENGTH: ' + filteredRes.length + '\n\n------------------------------------\n\n');
-
+                            //Post sequentially with promise loop
                             redditPost(channelToPostTo, sub.SubImage, filteredRes, 0)
                                 .then(() => {
                                     console.log('done');
