@@ -151,7 +151,7 @@ exports.run = (bot, guild, message, args) => {
                                                                 .setAuthor(sub.names[0], subIcon)
                                                                 .setDescription(`Successfully subscribed **${sub.names[0]}** to ${channelMention.first().toString()}\n` +
                                                                     `**${sub.names[0]}** either: *does not allow self post flairs*, or *I am not a moderator for this subreddit*, ` +
-                                                                    `or *there are ***over*** ${emojiRandomArray.length} post flairs in this subreddit*. Flair filter is not possible unfortunately.`)
+                                                                    `or *there are* **over** *${emojiRandomArray.length} post flairs in this subreddit*. Flair filter is not possible unfortunately.`)
                                                                 .setImage(subHeader)
                                                                 .addFields(
                                                                     { name: 'Subreddit: ', value: `*${subTitle}*` },
