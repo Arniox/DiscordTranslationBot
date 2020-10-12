@@ -49,7 +49,7 @@ module.exports = (bot) => {
         //If command doesn't exist, exit and do nothing
         if (redditcmd) {
             //Function variables / Globals
-            const minutes = 20, interval = minutes * 60 * 1000;
+            const minutes = 1, interval = minutes * 60 * 1000;
             setInterval(function () {
                 //Post
                 redditcmd.run(bot);
