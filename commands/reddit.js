@@ -38,8 +38,6 @@ exports.run = (bot, guild, message, args) => {
                                                 //Found sub reddit
                                                 //Get all flairs for this sub reddit
                                                 bot.reddit.get(`/r/${sub.names[0]}/about`).then(async (details) => {
-                                                    console.log(details);
-
                                                     //Get full name
                                                     var subTitle = details.data.title;
                                                     var subDescription = details.data.public_description;
