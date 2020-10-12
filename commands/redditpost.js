@@ -39,7 +39,14 @@ exports.run = (bot) => {
                             });
 
                             //Found posts from this sub reddit
-                            console.log(res.data.children[0]);
+                            //Get variables to use
+                            var channelToPostTo = bot.guilds.cache.get(sub.ServerId).channels.cache.get(sub.ChannelId);
+                            var flairFilter = sub.Flair_Filter;
+                            //Filter the posts
+                            redditPost(channelToPostTo, sub.SubImage, res.data.children.filter(i => i.data.link_flair_text == flairFilter), 0)
+                                .then(() => {
+                                    console.log('done');
+                                });
                         }).catch((err) => {
                             throw err; //Throw error
                         });
@@ -52,4 +59,55 @@ exports.run = (bot) => {
     }).catch((err) => {
         console.log(err, `Connection failed on redditpost`);
     });
+}
+
+//Function post
+function redditPost(channel, subImage, posts, i) {
+    //Get post variables
+    var kind = posts[i].kind;
+    var subReddit = posts[i].data.subreddit_name_prefixed;
+    var postTitle = posts[i].data.title;
+    var postAuthor = posts[i].data.author;
+    var postFlair = posts[i].data.link_flair_richtext;
+    var postMedia = posts[i].data.media;
+    var postThumb = posts[i].data.thumbnail;
+    var postCreated = moment(posts[i].data.created * 1000);
+    var postUps = posts[i].data.ups;
+    var postRewards = posts[i].data.total_awards_received;
+    var postViewCount = posts[i].data.view_count;
+    var postArchived = posts[i].data.archived;
+    var postPinned = posts[i].data.pinned;
+    var postPreview = posts[i].data.preview;
+    var postURL = posts[i].data.url;
+
+    console.log(kind);
+    console.log(subReddit);
+    console.log(postTitle);
+    console.log(postAuthor);
+    console.log(postFlair);
+    console.log(postMedia);
+    console.log(postThumb);
+    console.log(postCreated);
+    console.log(postUps);
+    console.log(postRewards);
+    console.log(postViewCount);
+    console.log(postArchived);
+    console.log(postPinned);
+    console.log(postPreview);
+    console.log(postURL);
+
+    if (i < posts.length)
+        return channel.send(new Discord.MessageEmbed()
+            .setColor('#FF5700')
+            .setAuthor(postAuthor, subImage)
+            .setTitle(postTitle)
+            .setURL(postURL)
+            .setThumbnail(postThumb)
+            .setDescription(``)
+            .addFields(
+                { name: 'Post URL: ', value: `${postURL}` }
+            )
+            .setTimestamp(postCreated.toDate())
+        ).then(() => redditPost(channel, posts, i + 1))
+            .catch((err) => { throw err; }); //Most likely the channel was deleted mid post
 }
