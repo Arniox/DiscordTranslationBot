@@ -3,7 +3,7 @@ const Discord = require('discord.js');
 const moment = require('moment-timezone');
 
 //List of all emojis
-const emojis = [
+const emojiRandomArray = [
     '⚫', '🔵', '🟤', '🟢', '🟠', '🟣', '🔴', '⚪', '🟡',
     '🟦', '🟫', '🟩', '🟧', '🟪', '🟥', '⬜', '🟨',
     '🖤', '💙', '🤎', '💚', '🧡', '💜', '🤍', '💛',
@@ -69,7 +69,7 @@ exports.run = (bot, guild, message, args) => {
                                                         return loadingSent.edit(new Discord.MessageEmbed().setDescription(`There was a fatal error somewhere in the bot's internal systems. Apologies`).setColor('#FFCC00'));
 
                                                     //If sub flairs are enabled
-                                                    if (subFlairs && subFlairs.length > 0 && subFlairs.length <= emojis.length) {
+                                                    if (subFlairs && subFlairs.length > 0 && subFlairs.length <= emojiRandomArray.length) {
                                                         //Get emojis in loop to add to the number of flairs
                                                         var emojis = emojiRandom(subFlairs.length);
                                                         emojis.push('❌');
@@ -151,7 +151,7 @@ exports.run = (bot, guild, message, args) => {
                                                                 .setAuthor(sub.names[0], subIcon)
                                                                 .setDescription(`Successfully subscribed **${sub.names[0]}** to ${channelMention.first().toString()}\n` +
                                                                     `**${sub.names[0]}** either: *does not allow self post flairs*, or *I am not a moderator for this subreddit*, ` +
-                                                                    `or *there are ***over*** ${emojis.length} post flairs in this subreddit*. Flair filter is not possible unfortunately.`)
+                                                                    `or *there are ***over*** ${emojiRandomArray.length} post flairs in this subreddit*. Flair filter is not possible unfortunately.`)
                                                                 .setImage(subHeader)
                                                                 .addFields(
                                                                     { name: 'Subreddit: ', value: `*${subTitle}*` },
@@ -319,6 +319,6 @@ function Helpmessage(bot, guild, message, args) {
 //Get random emojis
 function emojiRandom(count) {
     //Shuffle
-    var list = emojis;
+    var list = emojiRandomArray;
     return (count > emojis.length ? list : list.splice(0, count));
 }
