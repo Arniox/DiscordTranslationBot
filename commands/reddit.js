@@ -52,6 +52,12 @@ exports.run = (bot, guild, message, args) => {
                                                         subFlairs = await bot.reddit.get(`/r/${sub.names[0]}/api/link_flair_v2`);
                                                     } catch { }
 
+                                                    //Get redditpost command
+                                                    const redditcmd = bot.commands.get("redditpost");
+                                                    //If command doesn't exist, exit and do nothing
+                                                    if (!redditcmd)
+                                                        return loadingSent.edit(new Discord.MessageEmbed().setDescription(`There was a fatal error somewhere in the bot's internal systems. Apologies`).setColor('#FFCC00'));
+
                                                     //If sub flairs are enabled
                                                     if (subFlairs && subFlairs.length > 0) {
                                                         //Get emojis in loop to add to the number of flairs
@@ -112,8 +118,9 @@ exports.run = (bot, guild, message, args) => {
                                                                                                 { name: 'Subscriber Count: ', value: `*${subSubscribers}*` },
                                                                                                 { name: 'Created On: ', value: `*${subCreated.format('lll')}*` }
                                                                                             ));
+                                                                                        //Run redditpost command once
+                                                                                        redditcmd.run(bot);
                                                                                     }).catch(error => { return; });
-                                                                                collector.stop();
                                                                             });
                                                                         });
                                                                     }).catch(() => { return; }); //Most likely the channel was deleted mid react, or the message was deleted
@@ -140,7 +147,10 @@ exports.run = (bot, guild, message, args) => {
                                                                     { name: 'Description: ', value: `*${subDescription}*` },
                                                                     { name: 'Subscriber Count: ', value: `*${subSubscribers}*` },
                                                                     { name: 'Created On: ', value: `*${subCreated.format('lll')}*` }
-                                                                ));
+                                                                )).then(() => {
+                                                                    //Run redditpost command once
+                                                                    redditcmd.run(bot);
+                                                                });
                                                         });
                                                     }
                                                 }).catch((err) => {
