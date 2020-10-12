@@ -66,6 +66,10 @@ exports.run = (bot, guild, message, args) => {
                                                         var emojis = emojiRandom(subFlairs.length);
                                                         emojis.push('❌');
 
+                                                        console.log(`What flair filter do you want to add for ${sub.names[0]}?\n` +
+                                                            `Unfortunately I am limited with what flairs I can filter by since I may not be a moderator of this subreddit.\n\n` +
+                                                            `${subFlairs.map((i, index) => `${emojis[index]} - **${i.text}**`).join('\n')}\n❌ - No Filter`);
+
                                                         //Create new entry. Edit message
                                                         loadingSent.edit(new Discord.MessageEmbed().setDescription(`What flair filter do you want to add for ${sub.names[0]}?\n` +
                                                             `Unfortunately I am limited with what flairs I can filter by since I may not be a moderator of this subreddit.\n\n` +
