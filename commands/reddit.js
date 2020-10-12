@@ -169,8 +169,79 @@ exports.run = (bot, guild, message, args) => {
                 }
                 break;
             case 'unsubscribe': case 'unsub': case 'uns': case 'us':
+                //Check if member has perms
+                if (message.member.hasPermission('MANAGE_GUILD')) {
+                    var query = args.shift();
+
+                    //Check if query exists
+                    if (query) {
+                        //Check if query is actually a number
+                        if (/^\d+$/.test(query)) {
+                            var numberSelector = parseInt(query);
+
+                            //Look for existing patterns
+                            const sql_cmd = `
+                            SELECT * FROM server_subbed_reddits
+                                WHERE ServerId = "${message.guild.id}"
+                            `;
+                            bot.con.query(sql_cmd, (error, results, fields) => {
+                                if (error) return console.error(error); //Return error console log
+
+                                //Find existing
+                                if (results.map(v => v.Id).includes(numberSelector)) {
+                                    //Save for message
+                                    var existingSubReddit = results.find(i => i.Id == numberSelector);
+
+                                    //Delete existing subreddit
+                                    const delete_cmd = `
+                                    DELETE FROM server_subbed_reddits
+                                        WHERE Id = "${numberSelector}"
+                                        AND ServerId = "${message.guild.id}"
+                                    `;
+                                    bot.con.query(delete_cmd, (error, results, fields) => {
+                                        if (error) return console.error(error); //Return error console log
+
+                                        //Message
+                                        message.channel.send(new Discord.MessageEmbed()
+                                            .setColor('#09b50c')
+                                            .setAuthor(existingSubReddit.SubName, existingSubReddit.SubImage)
+                                            .setDescription(`Successfully unsubscribed **${existingSubReddit.SubName}** ` +
+                                                `${existingSubReddit.Flair_Filter ? `with flair filter of **${existingSubReddit.Flair_Filter}** ` : 'with no flair filter '}` +
+                                                `from ${message.guild.channels.cache.get(existingSubReddit.ChannelId).toString()}\n`));
+                                    });
+                                } else {
+                                    message.channel.send(new Discord.MessageEmbed().setDescription(`I couldn\'t find the subscribed subreddit with the Id of **${numberSelector}**`).setColor('#b50909'));
+                                }
+                            });
+                        } else {
+                            message.channel.send(new Discord.MessageEmbed().setDescription(`${query} is not a number I can get an index of.`).setColor('#b50909'));
+                        }
+                    } else {
+                        message.channel.send(new Discord.MessageEmbed().setDescription(`I did not see any subscription to remove sorry.`).setColor('#b50909'));
+                    }
+                } else {
+                    message.channel.send(new Discord.MessageEmbed().setDescription(`Sorry, you must have Server Management perms to unsubscribe from a subreddit.`).setColor('#b50909'));
+                }
                 break;
             case 'list': case 'li': case 'l':
+                //Look for existing subreddits
+                const sql_cmd = `
+                SELECT * FROM server_subbed_reddits
+                    WHERE ServerId = "${message.guild.id}"
+                `;
+                bot.con.query(sql_cmd, (error, results, fields) => {
+                    if (error) return console.error(error); //Return error console log
+
+                    //For loop them into an output
+                    var output = "";
+                    for (var i = 0; i < results.length; i++) {
+                        //Create output per sub reddit
+                        output += `Id: *${results[i].Id}*, Subreddit Name: *${results[i].SubName}*${results[i].Flair_Filter ? ` - with flair filter of - ${results[i].Flair_Filter}` : ''}` +
+                            ` - ${message.guild.channels.cache.get(results[i].ChannelId).toString()}`;
+                    }
+                    //Send message
+                    message.channel.send(new Discord.MessageEmbed().setDescription(`${results.length} Subscribed Subreddits.\n${output}`).setColor('#0099ff'));
+                });
                 break;
             default:
                 Helpmessage(bot, guild, message, args);
@@ -208,7 +279,7 @@ function Helpmessage(bot, guild, message, args) {
                 name: 'Command Patterns: ',
                 value: `${guild.Prefix}reddit [subscribe:sub:s / unsubscribe:unsub:uns:us / list:li:l] [sub reddit name] [channel tag]\n` +
                     `${guild.Prefix}reddit subscribe [sub reddit name] [channel tag]\n` +
-                    `${guild.Prefix}reddit unsubscribe [sub reddit name]\n` +
+                    `${guild.Prefix}reddit unsubscribe [subscription Id *(can be found with ${guild.Prefix}reddit list)*]\n` +
                     `${guild.Prefix}reddit list`
             },
             {
