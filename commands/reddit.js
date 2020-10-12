@@ -38,6 +38,8 @@ exports.run = (bot, guild, message, args) => {
                                                 //Found sub reddit
                                                 //Get all flairs for this sub reddit
                                                 bot.reddit.get(`/r/${sub.names[0]}/about`).then(async (details) => {
+                                                    console.log(details);
+
                                                     //Get full name
                                                     var subTitle = details.data.title;
                                                     var subDescription = details.data.public_description;
@@ -247,7 +249,7 @@ exports.run = (bot, guild, message, args) => {
                     for (var i = 0; i < results.length; i++) {
                         //Create output per sub reddit
                         output += `Id: **${results[i].Id}**, Subreddit: **${results[i].SubName}**${results[i].Flair_Filter ? `, with flair filter of: **${results[i].Flair_Filter}**` : ''}` +
-                            ` - ${message.guild.channels.cache.get(results[i].ChannelId).toString()}`;
+                            ` - ${message.guild.channels.cache.get(results[i].ChannelId).toString()}\n`;
                     }
                     //Send message
                     message.channel.send(new Discord.MessageEmbed().setDescription(`${results.length} Subscribed Subreddits.\n${output}`).setColor('#0099ff'));
