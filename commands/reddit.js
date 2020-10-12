@@ -113,7 +113,7 @@ exports.run = (bot, guild, message, args) => {
                                                                                             .setAuthor(sub.names[0], subIcon)
                                                                                             .setDescription(`Successfully subscribed **${sub.names[0]}** to ${channelMention.first().toString()} ` +
                                                                                                 `${flairName ? `with a flair filter of ${flairName}` : ''}`)
-                                                                                            .setImage(`${subHeader}`)
+                                                                                            .setImage(subHeader)
                                                                                             .addFields(
                                                                                                 { name: 'Subreddit: ', value: `*${subTitle}*` },
                                                                                                 { name: 'Description: ', value: `*${subDescription}*` },
@@ -143,7 +143,7 @@ exports.run = (bot, guild, message, args) => {
                                                                 .setAuthor(sub.names[0], subIcon)
                                                                 .setDescription(`Successfully subscribed **${sub.names[0]}** to ${channelMention.first().toString()}\n` +
                                                                     `**${sub.names[0]}** does not have flair customisation enabled or I am not a moderator for this subreddit. Flair filter is not possible unfortunately.`)
-                                                                .setImage(`${subHeader}`)
+                                                                .setImage(subHeader)
                                                                 .addFields(
                                                                     { name: 'Subreddit: ', value: `*${subTitle}*` },
                                                                     { name: 'Description: ', value: `*${subDescription}*` },
