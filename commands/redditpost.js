@@ -20,11 +20,7 @@ exports.run = (bot) => {
 
             //For each subscription
             thisServer.forEach((sub) => {
-                bot.reddit.get(`${sub.SubName}/new`, {
-                    after: null,
-                    count: 1,
-                    limit: 10
-                }).then((res) => {
+                bot.reddit.get(`${sub.SubName}/new`).then((res) => {
                     //Found posts from this sub reddit
                     console.log(res);
                 }).catch((err) => {
