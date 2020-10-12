@@ -61,14 +61,10 @@ exports.run = (bot, guild, message, args) => {
                                                         return loadingSent.edit(new Discord.MessageEmbed().setDescription(`There was a fatal error somewhere in the bot's internal systems. Apologies`).setColor('#FFCC00'));
 
                                                     //If sub flairs are enabled
-                                                    if (subFlairs && subFlairs.length > 0) {
+                                                    if (subFlairs && subFlairs.length > 0 && subFlairs.length <= emojis.length) {
                                                         //Get emojis in loop to add to the number of flairs
                                                         var emojis = emojiRandom(subFlairs.length);
                                                         emojis.push('❌');
-
-                                                        console.log(`What flair filter do you want to add for ${sub.names[0]}?\n` +
-                                                            `Unfortunately I am limited with what flairs I can filter by since I may not be a moderator of this subreddit.\n\n` +
-                                                            `${subFlairs.map((i, index) => `${emojis[index]} - **${i.text}**`).join('\n')}\n❌ - No Filter`);
 
                                                         //Create new entry. Edit message
                                                         loadingSent.edit(new Discord.MessageEmbed().setDescription(`What flair filter do you want to add for ${sub.names[0]}?\n` +
@@ -146,7 +142,8 @@ exports.run = (bot, guild, message, args) => {
                                                                 .setColor(subColour)
                                                                 .setAuthor(sub.names[0], subIcon)
                                                                 .setDescription(`Successfully subscribed **${sub.names[0]}** to ${channelMention.first().toString()}\n` +
-                                                                    `**${sub.names[0]}** does not have flair customisation enabled or I am not a moderator for this subreddit. Flair filter is not possible unfortunately.`)
+                                                                    `**${sub.names[0]}** either: *does not allow self post flairs*, or *I am not a moderator for this subreddit*, ` +
+                                                                    `or *there are ***over*** ${emojis.length} post flairs in this subreddit*. Flair filter is not possible unfortunately.`)
                                                                 .setImage(subHeader)
                                                                 .addFields(
                                                                     { name: 'Subreddit: ', value: `*${subTitle}*` },
@@ -316,10 +313,7 @@ const emojis = [
     '⚫', '🔵', '🟤', '🟢', '🟠', '🟣', '🔴', '⚪', '🟡',
     '🟦', '🟫', '🟩', '🟧', '🟪', '🟥', '⬜', '🟨',
     '🖤', '💙', '🤎', '💚', '🧡', '💜', '🤍', '💛',
-    '🇦', '🇧', '🇨', '🇩', '🇪', '🇫', '🇬', '🇭', '🇮', '🇯', '🇰', '🇱', '🇲', '🇳', '🇴', '🇵', '🇶', '🇷', '🇸', '🇹', '🇺', '🇻', '🇼', '🇽', '🇾', '🇿',
-    ':one:', ':two:', ':three:', ':four:', ':five:', ':six:', ' :seven:', ':eight:', ':nine:', '🔟',
-    '⏏️', '▶️', '⏸️', '⏯️', '⏹️', '⏺️', '⏭️', '⏮️', '⏩', '⏪', '⏫', '⏬', '◀️', '🔼', '🔽',
-    '➡️', '⬅️', '⬆️', '⬇️', '↗️', '↘️', '↙️', '↖️', '↕️', '↔️', '↪️', '↩️', '⤴️', '⤵️', '🔀', '🔁', '🔄', '♾️'
+    '🇦', '🇧', '🇨', '🇩', '🇪', '🇫', '🇬', '🇭', '🇮', '🇯', '🇰', '🇱', '🇲', '🇳', '🇴', '🇵', '🇶', '🇷', '🇸', '🇹', '🇺', '🇻', '🇼', '🇽', '🇾', '🇿'
 ];
 
 //Get random emojis
