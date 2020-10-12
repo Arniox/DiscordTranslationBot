@@ -24,7 +24,7 @@ exports.run = (bot) => {
                 thisServer.forEach((sub) => {
                     (sub.Last_After ?
                         bot.reddit.get(`/r/${sub.SubName}/new`, {
-                            after: sub.Last_After
+                            before: sub.Last_After
                         }) : bot.reddit.get(`/r/${sub.SubName}/new`))
                         .then((res) => {
                             //Last after save
@@ -44,6 +44,8 @@ exports.run = (bot) => {
                             var flairFilter = sub.Flair_Filter;
                             //Filter the posts
                             var filteredRes = (flairFilter ? res.data.children.filter(i => i.data.link_flair_text == flairFilter) : res.data.children);
+
+                            console.log('posts length: ' + filteredRes.length + '\n\n------------------------------------\n\n');
 
                             redditPost(channelToPostTo, sub.SubImage, filteredRes, 0)
                                 .then(() => {
@@ -87,7 +89,7 @@ function redditPost(channel, subImage, posts, i) {
         var postPreview = (posts[i].data.preview ?
             (posts[i].data.preview.images[0] ?
                 posts[i].data.preview.images[0].source : '') : ''); //Post preview images (can be null)
-        var postURL = posts[i].data.url_overridden_by_dest; //Post url (not null)
+        var postURL = 'https://www.reddit.com' + posts[i].data.permalink; //Post url (not null)
 
         console.log(subReddit);
         console.log(postTitle);
@@ -101,10 +103,10 @@ function redditPost(channel, subImage, posts, i) {
         console.log(postViewCount);
         console.log(postArchived);
         console.log(postPinned);
-        console.log(postPreview);
+        console.log(posts[i].data.preview);
         console.log(postURL);
 
-        if (i < posts.length)
+        if (i < posts.length - 1)
             return channel.send(new Discord.MessageEmbed()
                 .setColor('#FF5700')
                 .setAuthor(postAuthor, subImage)
