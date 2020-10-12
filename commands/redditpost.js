@@ -112,5 +112,5 @@ function redditPost(channel, subImage, posts, i) {
             ).then(() => redditPost(channel, posts, i + 1))
                 .catch((err) => { throw err; }); //Most likely the channel was deleted mid post
     } else
-        new Promise((resolve, reject) => { return resolve('') });
+        return new Promise((resolve, reject) => { return resolve('') });
 }
