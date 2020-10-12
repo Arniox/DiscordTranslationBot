@@ -31,42 +31,42 @@ module.exports = (bot) => {
             });
         });
 
+        //log
+        console.log('Bot Connected!');
+        console.log(`Logged in as ${bot.user.username} - (${bot.user.id})`);
+        console.log(`Ready to serve in ${bot.channels.cache.size} channels on ${bot.guilds.cache.size} servers, for a total of ${bot.users.cache.size} users.`);
+        //Generate invite link
+        bot.generateInvite(['ADMINISTRATOR', 'SEND_MESSAGES', 'MANAGE_GUILD', 'MENTION_EVERYONE'])
+            .then((link) => {
+                console.log(`Generated bot invite link: ${link}`);
+            });
+
+        //Set global bot activity
+        bot.user.setActivity(`the $ prefix`, { type: 'WATCHING' });
+
+        //Get print schedules command
+        const cmd = bot.commands.get("printschedules");
+        //If command doesn't exist, exit and do nothing
+
+        if (cmd) {
+            //Function variables / Globals
+            const hours = 24, interval = hours * 60 * 60 * 1000;
+            setInterval(function () {
+                //check if sunday
+                var now = new Date();
+                if (now.getDay() == 6) {
+                    //Run command
+                    cmd.run(bot);
+                } else {
+                    //Log
+                    console.log(`Another day, another dollar. Today is ${now.toString()}`);
+                }
+            }, interval);
+        }
+
         //Release connection when done
         bot.con.release();
     }).catch((err) => {
         console.log(err, `Connection failed on ready`);
     });
-
-    //log
-    console.log('Bot Connected!');
-    console.log(`Logged in as ${bot.user.username} - (${bot.user.id})`);
-    console.log(`Ready to serve in ${bot.channels.cache.size} channels on ${bot.guilds.cache.size} servers, for a total of ${bot.users.cache.size} users.`);
-    //Generate invite link
-    bot.generateInvite(['ADMINISTRATOR', 'SEND_MESSAGES', 'MANAGE_GUILD', 'MENTION_EVERYONE'])
-        .then((link) => {
-            console.log(`Generated bot invite link: ${link}`);
-        });
-
-    //Set global bot activity
-    bot.user.setActivity(`the $ prefix`, { type: 'WATCHING' });
-
-    //Get print schedules command
-    const cmd = bot.commands.get("printschedules");
-    //If command doesn't exist, exit and do nothing
-
-    if (cmd) {
-        //Function variables / Globals
-        const hours = 24, interval = hours * 60 * 60 * 1000;
-        setInterval(function () {
-            //check if sunday
-            var now = new Date();
-            if (now.getDay() == 6) {
-                //Run command
-                cmd.run(bot);
-            } else {
-                //Log
-                console.log(`Another day, another dollar. Today is ${now.toString()}`);
-            }
-        }, interval);
-    }
 };
