@@ -44,11 +44,22 @@ module.exports = (bot) => {
         //Set global bot activity
         bot.user.setActivity(`the $ prefix`, { type: 'WATCHING' });
 
-        //Get print schedules command
-        const cmd = bot.commands.get("printschedules");
+        //Get redditpost command
+        const redditcmd = bot.commands.get("redditpost");
         //If command doesn't exist, exit and do nothing
+        if (redditcmd) {
+            //Function variables / Globals
+            const minutes = 20, interval = minutes * 60 * 1000;
+            setInterval(function () {
+                //Post
+                redditcmd.run(bot);
+            }, interval);
+        }
 
-        if (cmd) {
+        //Get print schedules command
+        const printcmd = bot.commands.get("printschedules");
+        //If command doesn't exist, exit and do nothing
+        if (printcmd) {
             //Function variables / Globals
             const hours = 24, interval = hours * 60 * 60 * 1000;
             setInterval(function () {
@@ -56,7 +67,7 @@ module.exports = (bot) => {
                 var now = new Date();
                 if (now.getDay() == 6) {
                     //Run command
-                    cmd.run(bot);
+                    printcmd.run(bot);
                 } else {
                     //Log
                     console.log(`Another day, another dollar. Today is ${now.toString()}`);
