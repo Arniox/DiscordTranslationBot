@@ -9,26 +9,24 @@ module.exports = (bot, channel) => {
         //Attach connection to bot
         bot.con = connection;
 
-        //Delete from database
-        const sql_cmd = `
-        SELECT * FROM translation_ignored_channels
-            WHERE ServerId = "${channel.guild.id}"
+        //Delete from database for translation_ignored_channels
+        const remove_trans_cmd = `
+        DELETE FROM translation_ignored_channels
+            WHERE ChannelId = "${channel.id}"
+            AND ServerId = "${channel.guild.id}"
         `;
-        bot.con.query(sql_cmd, (error, results, fields) => {
+        bot.con.query(remove_trans_cmd, (error, results, fields) => {
             if (error) return console.error(error); //Return error console log
+        });
 
-            //Check if exists in the database
-            if (results.map(v => v.ChannelId).includes(channel.id)) {
-                //Remove
-                const remove_sql = `
-                DELETE FROM translation_ignored_channels
-                    WHERE ChannelId = "${channel.id}"
-                    AND ServerId = "${channel.guild.id}"
-                `;
-                bot.con.query(remove_sql, (error, results, fields) => {
-                    if (error) return console.error(error); //Return error console log
-                });
-            }
+        //Delete from database for server_subbed_reddits
+        const remove_subbed_cmd = `
+        DELETE FROM translation_ignored_channels
+            WHERE ChannelId = "${channel.id}"
+            AND ServerId = "${channel.guild.id}"
+        `;
+        bot.con.query(remove_subbed_cmd, (error, results, fields) => {
+            if (error) return console.error(error); //Return error console log
         });
 
         //Release connection when done
