@@ -46,7 +46,6 @@ exports.run = (bot) => {
                             var filteredRes = (flairFilter ? res.data.children.filter(i => i.data.link_flair_text == flairFilter) : res.data.children);
 
                             console.log('POSTS LENGTH: ' + filteredRes.length + '\n\n------------------------------------\n\n');
-                            console.log('POSTS: ' + filteredRes + '\n\n------------------------------------\n\n');
 
                             redditPost(channelToPostTo, sub.SubImage, filteredRes, 0)
                                 .then(() => {
