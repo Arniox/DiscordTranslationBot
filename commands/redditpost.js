@@ -71,17 +71,17 @@ function redditPost(channel, subImage, posts, i) {
         var subReddit = posts[i].data.subreddit_name_prefixed;
         var postTitle = posts[i].data.title;
         var postAuthor = posts[i].data.author;
-        var postFlair = posts[i].data.link_flair_richtext;
+        var postFlair = posts[i].data.link_flair_text;
         var postMedia = posts[i].data.media;
         var postThumb = posts[i].data.thumbnail;
-        var postCreated = moment(posts[i].data.created * 1000);
+        var postCreated = moment(posts[i].data.created_utc * 1000);
         var postUps = posts[i].data.ups;
         var postRewards = posts[i].data.total_awards_received;
         var postViewCount = posts[i].data.view_count;
         var postArchived = posts[i].data.archived;
         var postPinned = posts[i].data.pinned;
         var postPreview = posts[i].data.preview;
-        var postURL = posts[i].data.url;
+        var postURL = posts[i].data.url_overridden_by_dest;
 
         console.log(kind);
         console.log(subReddit);
@@ -96,7 +96,7 @@ function redditPost(channel, subImage, posts, i) {
         console.log(postViewCount);
         console.log(postArchived);
         console.log(postPinned);
-        console.log(postPreview);
+        console.log(postPreview.images[0].source);
         console.log(postURL);
 
         if (i < posts.length)
