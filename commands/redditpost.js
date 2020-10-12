@@ -45,7 +45,8 @@ exports.run = (bot) => {
                             //Filter the posts
                             var filteredRes = (flairFilter ? res.data.children.filter(i => i.data.link_flair_text == flairFilter) : res.data.children);
 
-                            console.log('posts length: ' + filteredRes.length + '\n\n------------------------------------\n\n');
+                            console.log('POSTS LENGTH: ' + filteredRes.length + '\n\n------------------------------------\n\n');
+                            console.log('POSTS: ' + filteredRes + '\n\n------------------------------------\n\n');
 
                             redditPost(channelToPostTo, sub.SubImage, filteredRes, 0)
                                 .then(() => {
@@ -106,7 +107,7 @@ function redditPost(channel, subImage, posts, i) {
         console.log(posts[i].data.preview);
         console.log(postURL);
 
-        if (i < posts.length - 1)
+        if (i < posts.length)
             return channel.send(new Discord.MessageEmbed()
                 .setColor('#FF5700')
                 .setAuthor(postAuthor, subImage)
@@ -118,7 +119,7 @@ function redditPost(channel, subImage, posts, i) {
                     { name: 'Post URL: ', value: `${postURL}` }
                 )
                 .setTimestamp(postCreated.toDate())
-            ).then(() => redditPost(channel, posts, i + 1))
+            ).then(() => redditPost(channel, subImage, posts, i + 1))
                 .catch((err) => { throw err; }); //Most likely the channel was deleted mid post
     } else
         return new Promise((resolve, reject) => { return resolve('') });
