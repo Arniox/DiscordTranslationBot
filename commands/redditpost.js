@@ -16,7 +16,7 @@ exports.run = (bot) => {
             //Grab all the subscribed subreddits for this server
             var thisServer = results.filter(i => i.ServerId == key);
 
-            console.log(thisServer);
+            console.log(thisServer[0]);
 
             //For each subscription
             thisServer.forEach((sub) => {
