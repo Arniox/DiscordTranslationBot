@@ -66,6 +66,8 @@ exports.run = (bot) => {
 //Function post
 function redditPost(channel, subImage, posts, i) {
     if (posts.length != 0) {
+        console.log(posts[i]);
+
         //Get post variables
         var subReddit = posts[i].data.subreddit_name_prefixed; //Sub reddit name (not null)
         var postTitle = posts[i].data.title; //Post title (not null)
@@ -79,8 +81,7 @@ function redditPost(channel, subImage, posts, i) {
         var postCreated = moment(posts[i].data.created_utc * 1000); //Post creation date
         var postUps = posts[i].data.ups; //Post upvotes (not null)
         var postRewards = posts[i].data.total_awards_received; //Post rewards received (not null)
-        var postViewCount = (posts[i].data.view_count ?
-            posts[i].data.view_count : 0); //Post view count (can be null)
+        var postViewCount = posts[i].data.view_count; //Post view count (can be null)
         var postArchived = posts[i].data.archived; //Post archived bool (not null)
         var postPinned = posts[i].data.pinned; //Post pinned bool (not null)
         var postPreview = (posts[i].data.preview ?
