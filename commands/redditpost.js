@@ -83,9 +83,7 @@ function redditPost(channel, subImage, posts, i) {
         var postUps = posts[i].data.ups; //Post upvotes (not null)
         var postRewards = posts[i].data.total_awards_received; //Post rewards received (not null)
         var postViewCount = posts[i].data.view_count; //Post view count (can be null)
-        var postPreview = (posts[i].data.preview ?
-            (posts[i].data.preview.images[0] ?
-                posts[i].data.preview.images[0].source : '') : ''); //Post preview images (can be null)
+        var postPreview = (/(http(s?):)([/|.|\w|\s|-])*\.(?:jpg|gif|png)/g.test(posts[i].data.url) ? posts[i].data.url : ''); //Post preview images (can be null)
         var postURL = 'https://www.reddit.com' + posts[i].data.permalink; //Post url (not null)
 
         return channel.send(new Discord.MessageEmbed()
