@@ -47,9 +47,7 @@ exports.run = (bot) => {
 
                             //Post sequentially with promise loop
                             redditPost(channelToPostTo, sub.SubImage, filteredRes, 0)
-                                .then(() => {
-                                    console.log('done');
-                                });
+                                .then(() => { });
                         }).catch((err) => {
                             throw err; //Throw error
                         });
