@@ -320,5 +320,5 @@ function Helpmessage(bot, guild, message, args) {
 function emojiRandom(count) {
     //Shuffle
     var list = emojiRandomArray;
-    return (count > emojis.length ? list : list.splice(0, count));
+    return (count > emojiRandomArray.length ? list : list.splice(0, count));
 }
