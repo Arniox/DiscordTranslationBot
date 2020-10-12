@@ -45,8 +45,6 @@ exports.run = (bot) => {
                             //Filter the posts
                             var filteredRes = (flairFilter ? res.data.children.filter(i => i.data.link_flair_text == flairFilter) : res.data.children);
 
-                            console.log(filteredRes.length);
-
                             redditPost(channelToPostTo, sub.SubImage, filteredRes, 0)
                                 .then(() => {
                                     console.log('done');
@@ -69,23 +67,27 @@ exports.run = (bot) => {
 function redditPost(channel, subImage, posts, i) {
     if (posts.length != 0) {
         //Get post variables
-        var kind = posts[i].kind;
-        var subReddit = posts[i].data.subreddit_name_prefixed;
-        var postTitle = posts[i].data.title;
-        var postAuthor = posts[i].data.author;
-        var postFlair = posts[i].data.link_flair_text;
-        var postMedia = posts[i].data.media;
-        var postThumb = posts[i].data.thumbnail;
-        var postCreated = moment(posts[i].data.created_utc * 1000);
-        var postUps = posts[i].data.ups;
-        var postRewards = posts[i].data.total_awards_received;
-        var postViewCount = posts[i].data.view_count;
-        var postArchived = posts[i].data.archived;
-        var postPinned = posts[i].data.pinned;
-        var postPreview = posts[i].data.preview;
-        var postURL = posts[i].data.url_overridden_by_dest;
+        var subReddit = posts[i].data.subreddit_name_prefixed; //Sub reddit name (not null)
+        var postTitle = posts[i].data.title; //Post title (not null)
+        var postAuthor = posts[i].data.author; //Post author (not null)
+        var postFlair = posts[i].data.link_flair_text; //Post flair (not null)
+        var postMedia = (posts[i].data.media ?
+            (posts[i].data.media.reddit_video ?
+                posts[i].data.media.reddit_video.fallback_url : '') : ''); //Post media (video. Media can be null)
+        var postThumb = (posts[i].data.thumbnail == 'self' ?
+            '' : posts[i].data.thumbnail); //Post thumbnail (can be non existant)
+        var postCreated = moment(posts[i].data.created_utc * 1000); //Post creation date
+        var postUps = posts[i].data.ups; //Post upvotes (not null)
+        var postRewards = posts[i].data.total_awards_received; //Post rewards received (not null)
+        var postViewCount = (posts[i].data.view_count ?
+            posts[i].data.view_count : 0); //Post view count (can be null)
+        var postArchived = posts[i].data.archived; //Post archived bool (not null)
+        var postPinned = posts[i].data.pinned; //Post pinned bool (not null)
+        var postPreview = (posts[i].data.preview ?
+            (posts[i].data.preview.images[0] ?
+                posts[i].data.preview.images[0].source : '') : ''); //Post preview images (can be null)
+        var postURL = posts[i].data.url_overridden_by_dest; //Post url (not null)
 
-        console.log(kind);
         console.log(subReddit);
         console.log(postTitle);
         console.log(postAuthor);
@@ -98,7 +100,7 @@ function redditPost(channel, subImage, posts, i) {
         console.log(postViewCount);
         console.log(postArchived);
         console.log(postPinned);
-        console.log(postPreview.images[0].source);
+        console.log(postPreview);
         console.log(postURL);
 
         if (i < posts.length)
