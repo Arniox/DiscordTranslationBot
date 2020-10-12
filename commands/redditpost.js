@@ -22,7 +22,7 @@ exports.run = (bot) => {
 
                 //For each subscription
                 thisServer.forEach((sub) => {
-                    bot.reddit.get(`/r/${sub.SubName}/new`)
+                    bot.reddit.get(`/r/${sub.SubName}/new`, { limit: 100 })
                         .then((res) => {
                             //Last after save
                             const save_cmd = `
