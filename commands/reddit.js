@@ -236,7 +236,7 @@ exports.run = (bot, guild, message, args) => {
                     var output = "";
                     for (var i = 0; i < results.length; i++) {
                         //Create output per sub reddit
-                        output += `Id: *${results[i].Id}*, Subreddit Name: *${results[i].SubName}*${results[i].Flair_Filter ? ` - with flair filter of - ${results[i].Flair_Filter}` : ''}` +
+                        output += `Id: **${results[i].Id}**, Subreddit: **${results[i].SubName}**${results[i].Flair_Filter ? `, with flair filter of: **${results[i].Flair_Filter}**` : ''}` +
                             ` - ${message.guild.channels.cache.get(results[i].ChannelId).toString()}`;
                     }
                     //Send message
