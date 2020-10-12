@@ -88,19 +88,15 @@ function redditPost(channel, subImage, posts, i) {
                 posts[i].data.preview.images[0].source : '') : ''); //Post preview images (can be null)
         var postURL = 'https://www.reddit.com' + posts[i].data.permalink; //Post url (not null)
 
-        console.log(posts[i].data.media);
-        console.log(posts[i].data.preview);
-
         return channel.send(new Discord.MessageEmbed()
             .setColor('#FF5700')
             .setAuthor((`${subReddit} - ${postAuthor}`), subImage)
             .setTitle(`${(postFlair ? `(${postFlair}) - ` : '')}${postTitle}`)
             .setThumbnail(postThumb)
             .setDescription(postContent)
+            .setImage(postPreview)
             .addFields(
-                { name: 'Upvotes: ', value: `${postUps} ⬆️` },
-                { name: 'Awards: ', value: `${postRewards} 🏅` },
-                { name: 'Views: ', value: `${(postViewCount ? postViewCount : 0)} 👁️` },
+                { name: 'Stats: ', value: `${postUps} ⬆️ | ${postRewards} 🏅 | ${(postViewCount ? postViewCount : 0)} 👁️` },
                 { name: 'Post URL: ', value: `[Reddit Perma Link](${postURL})` }
             )
             .setTimestamp(postCreated.toDate())
