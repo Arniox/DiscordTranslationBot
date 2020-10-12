@@ -13,7 +13,7 @@ exports.run = (bot) => {
         //For each server
         bot.guilds.cache.map((value, key) => {
             //Grab all the subscribed subreddits for this server
-            var thisServer = results.filter(i => i.ServerId);
+            var thisServer = results.filter(i => i.ServerId == key);
 
             console.log(thisServer);
 
