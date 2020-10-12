@@ -54,11 +54,11 @@ module.exports = (bot) => {
     const redditcmd = bot.commands.get("redditpost");
     //If command doesn't exist, exit and do nothing
     if (redditcmd) {
+        redditcmd.run(bot);
         //Function variables / Globals
         const minutes = 1, interval = minutes * 60 * 1000;
         setInterval(function () {
             //Post
-            redditcmd.run(bot);
         }, interval);
     }
 
