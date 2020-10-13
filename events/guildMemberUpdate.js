@@ -15,7 +15,7 @@ module.exports = (bot, oldMember, newMember) => {
         const sql_cmd = `
         SELECT * FROM player_frozen_names
             WHERE ServerId = "${newMember.guild.id}"
-            AND MemberId = "${newMember}"
+            AND MemberId = "${newMember.id}"
         `;
 
         console.log(sql_cmd);
