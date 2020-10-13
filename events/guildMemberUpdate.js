@@ -23,7 +23,7 @@ module.exports = (bot, oldMember, newMember) => {
                 var frozenByMember = newMember.guild.members.cache.get(thisFrozenPlayer.FrozenById);
 
                 //Check if the nicknames have been changed
-                if (NickName(oldMember) != NickName(newMember)) {
+                if (NickName(oldMember) != NickName(newMember) && NickName(newMember) != thisFrozenPlayer.FrozenName) {
 
                     //Set nickname back to frozen one
                     newMember.setNickname(thisFrozenPlayer.FrozenName, `${newMember.user.username} tried to change his nickname but their nickname is frozen as ${thisFrozenPlayer.FrozenName}`)
@@ -42,11 +42,9 @@ module.exports = (bot, oldMember, newMember) => {
                         });
 
                     //Send message to frozen member
-                    return newMember.send(`Sorry ***${newMember.user.username}***, your nickname has been frozen by ***${frozenByMember.user.username}*** and cannot be changed until unfrozen.`)
-                        .then(() => {
-                            //Send message to freezer
-                            return frozenByMember.send(`***${newMember.user.username}***; who you nickname froze as ***${thisFrozenPlayer.FrozenName}***; tried to change his nickname but his actions where reversed.`);
-                        });
+                    newMember.send(`Sorry ***${newMember.user.username}***, your nickname has been frozen by ***${frozenByMember.user.username}*** and cannot be changed until unfrozen.`)
+                    //Send message to freezer
+                    frozenByMember.send(`***${newMember.user.username}***; who you nickname froze as ***${thisFrozenPlayer.FrozenName}***; tried to change his nickname but his actions where reversed.`);
                 } else return; //Just do nothing if username was not changed 
             } else return; //Just do nothing if member is not frozen
         });
