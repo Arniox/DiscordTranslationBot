@@ -566,7 +566,7 @@ exports.run = (bot, guild, message, args) => {
                     if (option) {
                         //Switch on option
                         switch (option) {
-                            case 'list': case 'l':
+                            case 'lists': case 'list': case 'lis': case 'li': case 'l':
                                 //List out members
                                 var membersList = message.guild.members.cache
                                     .filter((value, key) => results.map(v => v.PlayerId).includes(key))
@@ -656,7 +656,6 @@ exports.run = (bot, guild, message, args) => {
                     //Switch on command
                     switch (command) {
                         case 'lists': case 'list': case 'lis': case 'li': case 'l':
-
                             //Look for existing subreddits
                             const sql_cmd = `
                             SELECT * FROM player_frozen_names
@@ -798,11 +797,14 @@ function HelpMessage(bot, guild, message, args) {
             },
             {
                 name: 'Command Patterns: ',
-                value: `${guild.Prefix}nick [translate:trans:tran:t / set:s / reset:rest:res:r / ignore:ign:ig:i] [selector] [setting]\n` +
-                    `${guild.Prefix}nick translate [all:a / me:m / someone:some:s:one / whisper:whis:wis:w ] [:?languagecode]\n` +
-                    `${guild.Prefix}nick set [all:a / me:m / someone:some:s:one] newname\n` +
-                    `${guild.Prefix}nick reset [all:a / me:m / someone:some:s:one]\n` +
-                    `${guild.Prefix}nick ignore [:?list:l]\n\n` +
+                value: `${guild.Prefix}nick [translate:trans:tran:t / set:s / reset:rest:res:r / ignore:ign:ig:i / ` +
+                    `frozen:freeze:freez:free:fr:f / unfrozen:unfreeze:unfreez:unfree:unfr:unf:uf] [selector] [setting]\n` +
+                    `${guild.Prefix}nick translate [all:a / me:m / someone:some:s:one / whisper:whis:wis:w ] [:?member tag] [:?languagecode]\n` +
+                    `${guild.Prefix}nick set [all:a / me:m / someone:some:s:one] [:?member tag] [newname]\n` +
+                    `${guild.Prefix}nick reset [all:a / me:m / someone:some:s:one] [:?member tag]\n` +
+                    `${guild.Prefix}nick freeze [member tag / lists:list:lis:li:l] [:?newname]\n` +
+                    `${guild.Prefix}nick unfreeze [member tag]\n` +
+                    `${guild.Prefix}nick ignore [:?lists:list:lis:li:l]\n\n` +
                     `Any ${guild.Prefix}nick [translate] command without a language specified will pick a random language.`
             },
             {
@@ -821,7 +823,10 @@ function HelpMessage(bot, guild, message, args) {
                     `${guild.Prefix}nick reset all\n` +
                     `${guild.Prefix}nick reset me\n` +
                     `${guild.Prefix}nick reset someone ${randomMember.toString()}\n` +
-                    `${guild.Prefix}nick ignore *(will add/remove you from the database of translation ignored members*\n` +
+                    `${guild.Prefix}nick freeze ${randomMember.toString()} StuffAndThings\n` +
+                    `${guild.Prefix}nick freeze list\n` +
+                    `${guild.Prefix}nick unfreeze ${randomMember.toString()}\n` +
+                    `${guild.Prefix}nick ignore *(will toggle you from the database of translation ignored members*\n` +
                     `${guild.Prefix}nick ignore list`
             }
         )
