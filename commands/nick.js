@@ -826,7 +826,8 @@ function HelpMessage(bot, guild, message, args) {
                     `${guild.Prefix}nick freeze ${randomMember.toString()} StuffAndThings\n` +
                     `${guild.Prefix}nick freeze list\n` +
                     `${guild.Prefix}nick unfreeze ${randomMember.toString()}\n` +
-                    `${guild.Prefix}nick ignore *(will toggle you from the database of translation ignored members*\n` +
+                    `${guild.Prefix}nick ignore *(will toggle you from the database of ` +
+                    `multi-user command ignored members such as* **${guild.Prefix}nick set all StuffAndThings**)\n` +
                     `${guild.Prefix}nick ignore list`
             }
         )
