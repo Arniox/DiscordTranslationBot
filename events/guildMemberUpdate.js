@@ -9,17 +9,12 @@ module.exports = (bot, oldMember, newMember) => {
         //Attach connection to bot
         bot.con = connection;
 
-        console.log(`Member Updated: ${NickName(oldMember)} -> ${NickName(newMember)}`);
-
         //Check if guild member is nickname frozen
         const sql_cmd = `
         SELECT * FROM player_frozen_names
             WHERE ServerId = "${newMember.guild.id}"
             AND MemberId = "${newMember.id}"
         `;
-
-        console.log(sql_cmd);
-
         bot.con.query(sql_cmd, (error, results, fields) => {
             if (error) throw error; //Return error and return
             else if (results && results.length) {
