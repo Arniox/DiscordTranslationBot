@@ -29,11 +29,13 @@ module.exports = (bot, oldMember, newMember) => {
                     newMember.setNickname(thisFrozenPlayer.FrozenName, `${newMember.toString()} tried to change his nickname but their nickname is frozen as ${thisFrozenPlayer.FrozenName}`);
 
                     //Send message to frozen member
-                    newMember.send(`Sorry ${newMember.user.username}, your nickname has been frozen by ${frozenByMember.toString()} and cannot be changed until unfrozen.`);
-                    //Send message to freezer
-                    frozenByMember.send(`${newMember.user.username}; who you nickname froze as ${thisFrozenPlayer.FrozenName}; tried to change his nickname but his actions where reversed.`);
-                } //Just do nothing if username was not changed 
-            } //Just do nothing if member is not frozen
+                    return newMember.send(`Sorry ***${newMember.user.username}***, your nickname has been frozen by ***${frozenByMember.user.username}*** and cannot be changed until unfrozen.`)
+                        .then(() => {
+                            //Send message to freezer
+                            return frozenByMember.send(`***${newMember.user.username}***; who you nickname froze as ***${thisFrozenPlayer.FrozenName}***; tried to change his nickname but his actions where reversed.`);
+                        });
+                } else return; //Just do nothing if username was not changed 
+            } else return; //Just do nothing if member is not frozen
         });
 
         //Release connection when done
