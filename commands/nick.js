@@ -610,12 +610,12 @@ exports.run = (bot, guild, message, args) => {
                     }
                 });
                 break;
-            case 'freeze': case 'free': case 'fr': case 'f':
-                //Check if correct perms
-                if (IsNickNamer(message)) {
-                    //Check that you've only mentioned one single person
-                    if (mentions.size != 0) {
-                        if (mentions.size < 2) {
+            case 'frozen': case 'freeze': case 'free': case 'fr': case 'f':
+                //Check that you've only mentioned one single person
+                if (mentions.size != 0) {
+                    if (mentions.size < 2) {
+                        //Check if correct perms
+                        if (IsNickNamer(message)) {
                             //Check that the bot can actually freeze the nickname of this member
                             if (IsLowerRoles(message, mentions.first())) {
                                 //Get query
@@ -645,16 +645,43 @@ exports.run = (bot, guild, message, args) => {
                                     ` nickname due to Missing Permissions.`).setColor('#b50909'));
                             }
                         } else {
-                            message.channel.send(new Discord.MessageEmbed().setDescription(`Sorry, you can only freeze one members nickname at once.`).setColor('#b50909'));
+                            message.channel.send(new Discord.MessageEmbed().setDescription(`Sorry, you need nick naming perms to run this command.`).setColor('#b50909'));
                         }
                     } else {
-                        message.channel.send(new Discord.MessageEmbed().setDescription(`Sorry, you didn\'t select anyone to freeze the nickname of.`).setColor('#b50909'));
+                        message.channel.send(new Discord.MessageEmbed().setDescription(`Sorry, you can only freeze one members nickname at once.`).setColor('#b50909'));
                     }
                 } else {
-                    message.channel.send(new Discord.MessageEmbed().setDescription(`Sorry, you need nick naming perms to run this command.`).setColor('#b50909'));
+                    //Check if you mean a list of frozen members
+                    var command = args.shift();
+                    //Switch on command
+                    switch (command) {
+                        case 'lists': case 'list': case 'lis': case 'li': case 'l':
+
+                            //Look for existing subreddits
+                            const sql_cmd = `
+                            SELECT * FROM player_frozen_names
+                                WHERE ServerId = "${message.guild.id}"
+                            `;
+                            bot.con.query(sql_cmd, (error, results, fields) => {
+                                if (error) return console.error(error);
+
+                                //For loop them into an output
+                                var output = "";
+                                for (var i = 0; i < results.length; i++) {
+                                    //Create output per frozen membere
+                                    output += `**${results[i].Id}** - ${message.guild.members.cache.get(results[i].MemberId).toString()} frozen as **${results[i].FrozenName}**\n`;
+                                }
+                                //Send message
+                                message.channel.send(new Discord.MessageEmbed().setDescription(`${results.length} Frozen Members.\n${output}`).setColor('#0099ff'));
+                            });
+                            break;
+                        default:
+                            message.channel.send(new Discord.MessageEmbed().setDescription(`Sorry, you didn\'t select anyone to freeze the nickname of.`).setColor('#b50909'));
+                            break;
+                    }
                 }
                 break;
-            case 'unfreeze': case 'unfreez': case 'unfree': case 'unfr': case 'unf': case 'uf':
+            case 'unfrozen': case 'unfreeze': case 'unfreez': case 'unfree': case 'unfr': case 'unf': case 'uf':
                 //Check if correct perms
                 if (IsNickNamer(message)) {
                     //Check that you've only mentioned one single person
