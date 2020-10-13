@@ -624,18 +624,54 @@ exports.run = (bot, guild, message, args) => {
 
                                 //Check if query exists
                                 if (query) {
-                                    //Save frozen members nickname
-                                    const save_sql = `
-                                    INSERT INTO player_frozen_names (MemberId, ServerId, FrozenName, FrozenById)
-                                        VALUES ("${mentions.first().id}", "${message.guild.id}", "${query.substring(0, 32)}", "${message.author.id}")
+                                    //Check if person already exists in database as frozen
+                                    const check_sql = `
+                                    SELECT * FROM player_frozen_names
+                                        WHERE ServerId = "${message.guild.id}"
+                                        AND MemberId = "${mentions.first().id}"
                                     `;
-                                    bot.con.query(save_sql, (error, results, fields) => {
+                                    bot.con.query(check_sql, (error, results, fields) => {
                                         if (error) return console.error(error); //Return console error
+                                        else if (!results || !results.length) {
+                                            //Player doesn't exist as frozen member. So create
+                                            //Save frozen members nickname
+                                            const save_sql = `
+                                            INSERT INTO player_frozen_names (MemberId, ServerId, FrozenName, FrozenById)
+                                                VALUES ("${mentions.first().id}", "${message.guild.id}", "${query.substring(0, 32)}", "${message.author.id}")
+                                            `;
+                                            bot.con.query(save_sql, (error, results, fields) => {
+                                                if (error) return console.error(error); //Return console error
 
-                                        //Change nickname
-                                        mentions.first().setNickname(query.substring(0, 32), `Frozen ${mentions.first().user.username}\'s nickname as ${query}`);
-                                        //Send message
-                                        message.channel.send(new Discord.MessageEmbed().setDescription(`I have frozen ${mentions.first().toString()}\'s nickname as ${query}`).setColor('#09b50c'));
+                                                //Change nickname
+                                                mentions.first().setNickname(query.substring(0, 32), `Frozen ${mentions.first().user.username}\'s nickname as ${query}`);
+                                                //Send message
+                                                message.channel.send(new Discord.MessageEmbed().setDescription(`I have frozen ${mentions.first().toString()}\'s nickname as ${query}`).setColor('#09b50c'));
+                                            });
+                                        } else {
+                                            //Player already exists as frozen member. So update with new name
+                                            var thisFrozenPlayer = results.find(i => i.MemberId == mentions.first().id);
+
+                                            //First check that freezer admin is the same as last time
+                                            if (thisFrozenPlayer.FrozenById == message.author.id) {
+                                                const update_sql = `
+                                                UPDATE player_frozen_names
+                                                SET FrozenName = "${query.substring(0, 32)}"
+                                                WHERE ServerId = "${message.guild.id}"
+                                                AND MemberId = "${mentions.first().id}"
+                                                `;
+                                                bot.con.query(update_sql, (error, results, fields) => {
+                                                    if (error) return console.error(error); //Return console error
+
+                                                    //Change nickname
+                                                    mentions.first().setNickname(query.substring(0, 32), `Updated frozen nickname of ${mentions.first().user.username} to ${query}`);
+                                                    //Send message
+                                                    message.channel.send(new Discord.MessageEmbed().setDescription(`I have updated the frozen nickname of ${mentions.first().toString()} to ${query}`).setColor('#09b50c'));
+                                                });
+                                            } else {
+                                                message.channel.send(new Discord.MessageEmbed().setDescription(`Sorry, ${message.guild.members.cache.get(thisFrozenPlayer.FrozenById)}` +
+                                                    ` nickname froze ${mentions.first().toString()} and only they can update the frozen nickname of ${mentions.first().user.username}`).setColor('#b50909'));
+                                            }
+                                        }
                                     });
                                 } else {
                                     message.channel.send(new Discord.MessageEmbed().setDescription(`Sorry, I cannot freeze ${mentions.first().toString()}\'s nickname as nothing.`).setColor('#b50909'));
@@ -702,7 +738,7 @@ exports.run = (bot, guild, message, args) => {
                                         var thisFrozenPlayer = results.find(i => i.MemberId == mentions.first().id);
 
                                         //Check that the member trying to unfreeze this person is the same person who froze this member
-                                        if (thisFrozenPlayer.FrozenById = message.author.id) {
+                                        if (thisFrozenPlayer.FrozenById == message.author.id) {
 
                                             //Unfreeze this member
                                             const unsave_sql = `
@@ -723,7 +759,7 @@ exports.run = (bot, guild, message, args) => {
                                                 message.channel.send(new Discord.MessageEmbed().setDescription(`I have unfrozen ${mentions.first().toString()}\'s nickname and reset it to it\'s default.`).setColor('#09b50c'));
                                             });
                                         } else {
-                                            message.channel.send(new Discord.MessageEmbed().setDescription(`Sorry, ${message.guild.members.cache.get(results[0].FrozenById)}` +
+                                            message.channel.send(new Discord.MessageEmbed().setDescription(`Sorry, ${message.guild.members.cache.get(thisFrozenPlayer.FrozenById)}` +
                                                 ` nickname froze ${mentions.first().toString()} and only they can unfreeze the nickname of ${mentions.first().user.username}`).setColor('#b50909'));
                                         }
                                     } else {
