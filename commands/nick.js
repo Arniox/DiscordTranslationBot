@@ -419,26 +419,23 @@ exports.run = (bot, guild, message, args) => {
                             //Check if correct perms
                             if (IsNickNamer(message)) {
                                 if (mentions.size == 1) {
-                                    mentions.map((value, key) => {
-                                        if (IsLowerRoles(message, value)) {
-                                            //Get query
-                                            args.shift() //Remove mention
-                                            var query = args.join(" ");
+                                    if (IsLowerRoles(message, mentions.first())) {
+                                        //Get query
+                                        args.shift() //Remove mention
+                                        var query = args.join(" ");
 
-                                            //Check if query exists
-                                            if (query) {
-                                                //Change nickname
-                                                value.setNickname(query.substring(0, 32), `Set ${value.user.username}\'s nickname to ${query}.`);
-                                                //send message
-                                                message.channel.send(new Discord.MessageEmbed().setDescription(`I have changed ${value.toString()}\'s nickname to ${query}`).setColor('#09b50c'));
-                                            } else {
-                                                message.channel.send(new Discord.MessageEmbed().setDescription(`Sorry, I cannot set ${value.toString()}\'s nickname to nothing.`).setColor('#b50909'));
-                                            }
+                                        //Check if query exists
+                                        if (query) {
+                                            //Change nickname
+                                            mentions.first().setNickname(query.substring(0, 32), `Set ${mentions.first().user.username}\'s nickname to ${query}.`);
+                                            //send message
+                                            message.channel.send(new Discord.MessageEmbed().setDescription(`I have changed ${mentions.first().toString()}\'s nickname to ${query}`).setColor('#09b50c'));
                                         } else {
-                                            message.channel.send(new Discord.MessageEmbed().setDescription(`${value.toString()} has chosen to ignore his nickname from translation.` +
-                                                ` You cannot change his nickname unfortunately. Sorry.`).setColor('#b50909'));
+                                            message.channel.send(new Discord.MessageEmbed().setDescription(`Sorry, I cannot set ${mentions.first().toString()}\'s nickname to nothing.`).setColor('#b50909'));
                                         }
-                                    });
+                                    } else {
+                                        message.channel.send(new Discord.MessageEmbed().setDescription(`I had a problem setting ${mentions.first().toString()}\'s nickname due to Missing Permissions.`).setColor('#b50909'));
+                                    }
                                 } else {
                                     message.channel.send(new Discord.MessageEmbed().setDescription('Sorry, you either didn\'t select anyone or you selected too many people to run this command on.' +
                                         'I can only set one person at a time.').setColor('#b50909'));
@@ -613,6 +610,114 @@ exports.run = (bot, guild, message, args) => {
                     }
                 });
                 break;
+            case 'freeze': case 'free': case 'fr': case 'f':
+                //Check if correct perms
+                if (IsNickNamer(message)) {
+                    //Check that you've only mentioned one single person
+                    if (mentions.size != 0) {
+                        if (mentions.size < 2) {
+                            //Check that the bot can actually freeze the nickname of this member
+                            if (IsLowerRoles(message, mentions.first())) {
+                                //Get query
+                                args.shift(); //Remove mention
+                                var query = args.join(" ");
+
+                                //Check if query exists
+                                if (query) {
+                                    //Save frozen members nickname
+                                    const save_sql = `
+                                    INSERT INTO player_frozen_names (MemberId, ServerId, FrozenName, FrozenById)
+                                        VALUES ("${mentions.first().id}", "${message.guild.id}", "${query.substring(0, 32)}", "${message.author.id}")
+                                    `;
+                                    bot.con.query(save_sql, (error, results, fields) => {
+                                        if (error) return console.error(error); //Return console error
+
+                                        //Change nickname
+                                        mentions.first().setNickname(query.substring(0, 32), `Frozen ${mentions.first().user.username}\'s nickname as ${query}`);
+                                        //Send message
+                                        message.channel.send(new Discord.MessageEmbed().setDescription(`I have frozen ${mentions.first().toString()}\'s nickname as ${query}`).setColor('#09b50c'));
+                                    });
+                                } else {
+                                    message.channel.send(new Discord.MessageEmbed().setDescription(`Sorry, I cannot freeze ${mentions.first().toString()}\'s nickname as nothing.`).setColor('#b50909'));
+                                }
+                            } else {
+                                message.channel.send(new Discord.MessageEmbed().setDescription(`I had a problem freezing ${mentions.first().toString()}\'s` +
+                                    ` nickname due to Missing Permissions.`).setColor('#b50909'));
+                            }
+                        } else {
+                            message.channel.send(new Discord.MessageEmbed().setDescription(`Sorry, you can only freeze one members nickname at once.`).setColor('#b50909'));
+                        }
+                    } else {
+                        message.channel.send(new Discord.MessageEmbed().setDescription(`Sorry, you didn\'t select anyone to freeze the nickname of.`).setColor('#b50909'));
+                    }
+                } else {
+                    message.channel.send(new Discord.MessageEmbed().setDescription(`Sorry, you need nick naming perms to run this command.`).setColor('#b50909'));
+                }
+                break;
+            case 'unfreeze': case 'unfreez': case 'unfree': case 'unfr': case 'unf': case 'uf':
+                //Check if correct perms
+                if (IsNickNamer(message)) {
+                    //Check that you've only mentioned one single person
+                    if (mentions.size != 0) {
+                        if (mentions.size < 2) {
+                            //Check that the bot can actually unfreeze the nickname of this member
+                            if (IsLowerRoles(message, mentions.first())) {
+
+                                //Get the frozen members details to see if even exists
+                                const find_sql = `
+                                SELECT * FROM player_frozen_names
+                                    WHERE ServerId = "${message.guild.id}"
+                                `;
+                                bot.con.query(find_sql, (error, results, fields) => {
+                                    if (error) return console.error(error); //Return console error
+
+                                    //Check if that member is actually frozen
+                                    if (results.map(v => v.MemberId).includes(mentions.first().id)) {
+                                        var thisFrozenPlayer = results.find(i => i.MemberId == mentions.first().id);
+
+                                        //Check that the member trying to unfreeze this person is the same person who froze this member
+                                        if (thisFrozenPlayer.FrozenById = message.author.id) {
+
+                                            //Unfreeze this member
+                                            const unsave_sql = `
+                                            DELETE FROM player_frozen_names
+                                                WHERE Id = "${thisFrozenPlayer.Id}"
+                                                AND ServerId = "${thisFrozenPlayer.ServerId}"
+                                            `;
+                                            bot.con.query(unsave_sql, (error, results, fields) => {
+                                                if (error) return console.error(error); //Return console error
+
+                                                //Get current user nickname
+                                                var currentUserNickName = NickName(mentions.first());
+                                                //Reset nickname
+                                                mentions.first().setNickname(mentions.first().user.username, `Unfrozen ${currentUserNickName}\'s` +
+                                                    ` nickname and reset it back to default username (${mentions.first().user.username})`);
+
+                                                //Send message
+                                                message.channel.send(new Discord.MessageEmbed().setDescription(`I have unfrozen ${mentions.first().toString()}\'s nickname and reset it to it\'s default.`).setColor('#09b50c'));
+                                            });
+                                        } else {
+                                            message.channel.send(new Discord.MessageEmbed().setDescription(`Sorry, ${message.guild.members.cache.get(results[0].FrozenById)}` +
+                                                ` nickname froze ${mentions.first().toString()} and only they can unfreeze the nickname of ${mentions.first().user.username}`).setColor('#b50909'));
+                                        }
+                                    } else {
+                                        message.channel.send(new Discord.MessageEmbed().setDescription(`${mentions.first().toString()} does not have a frozen nickname sorry.`).setColor('#b50909'));
+                                    }
+                                });
+                            } else {
+                                message.channel.send(new Discord.MessageEmbed().setDescription(`I had a problem unfreezing ${mentions.first().toString()}\'s` +
+                                    ` nickname due to Missing Permissions.`).setColor('#b50909'));
+                            }
+                        } else {
+                            message.channel.send(new Discord.MessageEmbed().setDescription(`Sorry, you can only unfreeze one members nickname at once.`).setColor('#b50909'));
+                        }
+                    } else {
+                        message.channel.send(new Discord.MessageEmbed().setDescription(`Sorry, you didn\'t select anyone to unfreeze the nickname of.`).setColor('#b50909'));
+                    }
+                } else {
+                    message.channel.send(new Discord.MessageEmbed().setDescription(`Sorry, you need nick naming perms to run this command.`).setColor('#b50909'));
+                }
+                break;
             default:
                 HelpMessage(bot, guild, message, args);
                 break;
@@ -634,7 +739,7 @@ function IsOwner(message, member) {
 
 //Get nickname / name of member
 function NickName(member) {
-    return (member.nickname != null && typeof (member.nickname) !== undefined && member.nickname !== '' ? member.nickname : member.user.username);
+    return (member.nickname ? member.nickname : member.user.username);
 }
 
 //Check if user has the correct permissions

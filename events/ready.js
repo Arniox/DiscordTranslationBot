@@ -1,3 +1,6 @@
+//Include
+const mysql = require('promise-mysql');
+
 module.exports = (bot) => {
     //Get connection
     bot.dbpool.then((p) => {
