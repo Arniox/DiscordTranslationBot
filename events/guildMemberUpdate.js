@@ -26,7 +26,20 @@ module.exports = (bot, oldMember, newMember) => {
                 if (NickName(oldMember) != NickName(newMember)) {
 
                     //Set nickname back to frozen one
-                    newMember.setNickname(thisFrozenPlayer.FrozenName, `${newMember.toString()} tried to change his nickname but their nickname is frozen as ${thisFrozenPlayer.FrozenName}`);
+                    newMember.setNickname(thisFrozenPlayer.FrozenName, `${newMember.toString()} tried to change his nickname but their nickname is frozen as ${thisFrozenPlayer.FrozenName}`)
+                        .catch(() => {
+                            //Remove from database and return an error. 
+                            //This is probably a frozen member that became a mod
+                            const unsave_sql = `
+                            DELETE FROM player_frozen_names
+                                WHERE Id = "${thisFrozenPlayer.Id}"
+                                AND ServerId = "${thisFrozenPlayer.ServerId}"
+                            `;
+                            bot.con.query(unsave_sql, (error, results, fields) => {
+                                if (error) throw error; //Return error and return
+                            });
+                            return;
+                        });
 
                     //Send message to frozen member
                     return newMember.send(`Sorry ***${newMember.user.username}***, your nickname has been frozen by ***${frozenByMember.user.username}*** and cannot be changed until unfrozen.`)
