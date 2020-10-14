@@ -7,7 +7,7 @@ module.exports = (bot, guild) => {
     //Get connection
     bot.dbpool.then((p) => {
         return p.getConnection();
-    }).then((conection) => {
+    }).then((connection) => {
         //Attach connection to bot
         bot.con = connection;
 
