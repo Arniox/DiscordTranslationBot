@@ -40,6 +40,8 @@ module.exports = (bot, message) => {
                             return resolve(bot.commands.get('info'));
                         case 'ping': case 'pin':
                             return resolve(bot.commands.get('ping'));
+                        case 'inviteme': case 'invite': case 'inv': case 'in': case 'iv':
+                            return resolve(bot.commands.get('invite'));
                         case 'prefix': case 'pref': case 'pre': case 'pr':
                             return resolve(bot.commands.get('prefix'));
                         case 'ban': case 'ba': case 'bn': case 'b':

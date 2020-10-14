@@ -28,7 +28,7 @@ module.exports = (bot, oldMember, newMember) => {
                     //Set nickname back to frozen one
                     newMember.setNickname(thisFrozenPlayer.FrozenName, `${newMember.user.username} tried to change his nickname but their nickname is frozen as ${thisFrozenPlayer.FrozenName}`)
                         .catch(() => {
-                            //Remove from database and return an error. 
+                            //Remove from database and return an error.
                             //This is probably a frozen member that became a mod
                             const unsave_sql = `
                             DELETE FROM player_frozen_names
