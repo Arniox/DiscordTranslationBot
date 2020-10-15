@@ -28,10 +28,10 @@ exports.run = (bot, guild, message, args) => {
 
                 //Cut out translationn ignored patterns
                 //Cut out default ignored patterns
-                var messy = message.content;
-                messy = messy.replace(/<:[a-zA-Z]+:\d+>/g, ''); //Get rid of emojis
-                messy = messy.replace(/<[@]?[!]?d+>/g, ''); //Get rid of tagging members
-                messy = messy.replace(/<[#]?[!]?d+>/g, ''); //Get rid of tagging channels
+                var messy = message.content
+                    .replace(/<:[a-zA-Z]+:\d+>/g, '') //Get rid of emojis
+                    .replace(/<[@]?[!]?d+>/g, '') //Get rid of tagging members
+                    .replace(/<[#]?[!]?d+>/g, ''); //Get rid of tagging channels
                 results.map(v => v.Pattern).forEach((e) => {
                     //Replace the text
                     messy = messy.replace(new RegExp(e, 'g'), '');
