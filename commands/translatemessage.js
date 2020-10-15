@@ -50,9 +50,6 @@ exports.run = (bot, guild, message, args) => {
                                     if (guild.Auto_Delete_Translation == 1) message.delete({ timeout: 100 }); //Delete message
                                     //Get country
                                     googleTranslate.getSupportedLanguages('en', function (err, languageCodes) {
-
-                                        console.log(translation);
-
                                         //Check if server has embedded translation on
                                         if (guild.Embedded_Translations == 1) {
                                             //Create embedded message
@@ -72,10 +69,12 @@ exports.run = (bot, guild, message, args) => {
                                                 .setTimestamp()
                                                 .setFooter('Powered by Google Translate');
                                             //Send
-                                            message.channel.send(embeddedTranslation);
+                                            message.channel.send(embeddedTranslation).then(() => {
+                                                console.log(translation);
+                                            });
                                         } else {
                                             //Send normal message
-                                            message.channel.send(`${translation.translatedText} | **${languageCodes.find(i => i.language == detection.language).name}** | *${message.author.username}*`);
+                                            message.channel.send(`*${message.author.username}:* ${translation.translatedText} | **${languageCodes.find(i => i.language == detection.language).name}**`);
                                         }
                                     });
                                 }
