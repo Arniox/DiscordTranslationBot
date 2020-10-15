@@ -47,7 +47,7 @@ exports.run = (bot, guild, message, args) => {
                             googleTranslate.translate(message.content, detection.language, 'en', function (err, translation) {
                                 if (translation.translatedText !== message.content) {
                                     //Auto delete messages if turned on
-                                    if (guild.Auto_Delete_Translation == 1) message.delete({ timeout: 300 }); //Delete message
+                                    if (guild.Auto_Delete_Translation == 1) message.delete({ timeout: 100 }); //Delete message
                                     //Get country
                                     googleTranslate.getSupportedLanguages('en', function (err, languageCodes) {
                                         //Check if server has embedded translation on
@@ -72,7 +72,7 @@ exports.run = (bot, guild, message, args) => {
                                             message.channel.send(embeddedTranslation);
                                         } else {
                                             //Send normal message
-                                            message.channel.send(`${translation.translatedText} | **${languageCodes.find(i => i.language == detection.language).name}** | ${message.author.username}`);
+                                            message.channel.send(`${translation.translatedText} | **${languageCodes.find(i => i.language == detection.language).name}** | *${message.author.username}*`);
                                         }
                                     });
                                 }

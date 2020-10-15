@@ -80,7 +80,7 @@ module.exports = (bot, message) => {
                         if (!cmd) return;
                         //Run the command
                         cmd.run(bot, results[0], message, args);
-                        message.delete({ timeout: 300 }); //Delete message
+                        message.delete({ timeout: 200 }); //Delete message
                     }).catch(() => { return; });
                 } else {
                     //If message is empty
