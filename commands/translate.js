@@ -12,6 +12,30 @@ exports.run = (bot, guild, message, args) => {
         if (guild.Allowed_Translation == 1) {
             //Check for either patterns or channels
             switch (command) {
+                case 'settings': case 'setting': case 'sett': case 'set': case 'se': case 's':
+                    //Send message of all the server's translation settings
+                    message.channel.send(new Discord.MessageEmbed()
+                        .setDescription(`Current Server Translation Settings: `)
+                        .addFields(
+                            { name: 'Translation Confidence Restriction: ', value: `${(guild.Translation_Confidence * 100)}% Confidence is needed to translate a message` },
+                            { name: 'Auto Delete Translated Messages: ', value: `${(guild.Auto_Delete_Translation == 1 ? 'Turned **On**' : 'Turned **Off**')}` },
+                            { name: 'Embedded Translated Messages: ', value: `${(guild.Embedded_Translations == 1 ? 'Turned **On**' : 'Turned **Off**')}` },
+                            {
+                                name: 'Ignored Patterns: ',
+                                value: `By default, I will not translate *Emojis*, *Tagged Members*, or *Tagged Channels*.` +
+                                    ` You can use **${guild.Prefix}translate patterns list** to view your custom set ignored patterns.`
+                            },
+                            {
+                                name: 'Ignored Channels: ',
+                                value: `You can use **${guild.Prefix}translate channels list** to view your custom set ignored channels.`
+                            },
+                            {
+                                name: 'Supported Languages: ',
+                                value: `You can use **${guild.Prefix}translate languages** to view a list of all supported languages.`
+                            }
+                        )
+                        .setColor('#09b50c'));
+                    break;
                 case 'patterns': case 'pattern': case 'pat': case 'p':
                     //Get the specific command you want to perform
                     var specifics = args.shift().toLowerCase();
@@ -384,23 +408,27 @@ exports.run = (bot, guild, message, args) => {
                                             //If the number is bellow 1, then assume it's in decimal format
                                             //If the number is above 100% then fail
                                             if (number < 100) {
-                                                //Set the number to decimal format
-                                                number = (number > 1 ? number / 100 : number);
-                                                var previousConfidence = guild.Translation_Confidence;
+                                                if (number > 0) {
+                                                    //Set the number to decimal format
+                                                    number = (number > 1 ? number / 100 : number);
+                                                    var previousConfidence = guild.Translation_Confidence;
 
-                                                //Update new confidence restriction
-                                                const update_cmd = `
-                                                UPDATE servers
-                                                SET Translation_Confidence = ${number}
-                                                WHERE ServerId = "${message.guild.id}"
-                                                `;
-                                                bot.con.query(update_cmd, (error, results, fields) => {
-                                                    if (error) return console.error(error); //Throw error and return
-                                                    //Message
-                                                    message.channel.send(new Discord.MessageEmbed().setDescription(`Changed Bot Translation Confidence Restriction from ${(previousConfidence * 100)}% to ${(number * 100)}%`).setColor('#09b50c'));
-                                                });
+                                                    //Update new confidence restriction
+                                                    const update_cmd = `
+                                                    UPDATE servers
+                                                    SET Translation_Confidence = ${number}
+                                                    WHERE ServerId = "${message.guild.id}"
+                                                    `;
+                                                    bot.con.query(update_cmd, (error, results, fields) => {
+                                                        if (error) return console.error(error); //Throw error and return
+                                                        //Message
+                                                        message.channel.send(new Discord.MessageEmbed().setDescription(`Changed Bot Translation Confidence Restriction from ${(previousConfidence * 100)}% to ${(number * 100)}%`).setColor('#09b50c'));
+                                                    });
+                                                } else {
+                                                    message.channel.send(new Discord.MessageEmbed().setDescription(`Sorry, ${query} is lower than the minimum of 0% certainty`).setColor('#b50909'));
+                                                }
                                             } else {
-                                                message.channel.send(new Discord.MessageEmbed().setDescription(`Sorry, ${query}%; if that\'s what you meant; is too high. The maximum confidence restriction is 100% certainty`).setColor('#b50909'));
+                                                message.channel.send(new Discord.MessageEmbed().setDescription(`Sorry, ${query} is higher than the maximum of 100% certainty.`).setColor('#b50909'));
                                             }
                                         } else {
                                             message.channel.send(new Discord.MessageEmbed().setDescription(`Sorry, ${query} is not a number I understand.`).setColor('#b50909'));
@@ -421,6 +449,48 @@ exports.run = (bot, guild, message, args) => {
                         }
                     } else {
                         message.channel.send(new Discord.MessageEmbed().setDescription(`Current Bot Translation Confidence Restriction is: ${(guild.Translation_Confidence) * 100}%`).setColor('#0099ff'));
+                    }
+                    break;
+                case 'autodelete': case 'auto': case 'delete': case 'autodel': case 'atodel': case 'adel': case 'ad': case 'a': case 'd':
+                    //For auto deletion of translated messages
+                    if (args.length > 0) {
+                        var command = args.shift().toLowerCase();
+
+                        //Check which option you want
+                        switch (command) {
+                            case 'change': case 'ch': case '=': case 'toggle': case 'togg': case 'tog': case 'to': case 't':
+                            case 'switch': case 'swit': case 'swi': case 'sw': case 's': //Change bot auto delete translation
+                                //Check if user has perms
+                                if (message.member.hasPermission('MANAGE_GUILD')) {
+                                    //Toggle on/off
+
+                                    //Update new setting
+                                    const update_cmd = `
+                                    UPDATE servers
+                                    SET Auto_Delete_Translation = 1 - Auto_Delete_Translation
+                                    WHERE ServerId = "${message.guild.id}"
+                                    `;
+                                    bot.con.query(update_cmd, (error, results, fields) => {
+                                        if (error) return console.error(error); //Throw error and return
+                                        //Message
+                                        message.channel.send(new Discord.MessageEmbed().setDescription(`Successfull Turned ` +
+                                            `**${(guild.Auto_Delete_Translation == 1 ? 'Off' : 'On')}** Translation Messages Auto Deletion.`).setColor('#09b50c'));
+                                    });
+                                } else {
+                                    message.channel.send(new Discord.MessageEmbed().setDescription('Sorry, you need to have server manager permissions to change the translation confidence restriction.').setColor('#b50909'));
+                                }
+                                break;
+                            case 'current': case 'curr': case 'cur': case 'c': //List out auto deletion setting for the user
+                                message.channel.send(new Discord.MessageEmbed().setDescription(`Current I ` +
+                                    `**${(guild.Auto_Delete_Translation == 1 ? 'Will' : 'Will Not')}** Auto Delete your message when I translate it.`).setColor('#0099ff'));
+                                break;
+                            default:
+                                HelpMessage(bot, guild, message, args);
+                                break;
+                        }
+                    } else {
+                        message.channel.send(new Discord.MessageEmbed().setDescription(`Current I ` +
+                            `**${(guild.Auto_Delete_Translation == 1 ? 'Will' : 'Will Not')}** Auto Delete your message when I translate it.`).setColor('#0099ff'));
                     }
                     break;
                 default:
@@ -448,20 +518,27 @@ function HelpMessage(bot, guild, message, args) {
             { name: 'Required Permissions: ', value: 'Manage Server (for adding and removing. Everyone else can use the list commands).' },
             {
                 name: 'Command Patterns: ',
-                value: `${guild.Prefix}translate [patterns:pattern:pat:p / channels:channel:chan:ch:c / languages:language:lang:l / confidence:conf:con]\n` +
-                    `${guild.Prefix}translate pattern [add:+:a / remove:-:r / list:l]\n` +
-                    `${guild.Prefix}translate channel [add:+:a / remove:-:r / list:l]\n` +
-                    `${guild.Prefix}translate languages\n` +
-                    `${guild.Prefix}translate confidence [:?current:curr:cur:c / change:ch:=]`
+                value: `${guild.Prefix}translate [settings:setting:sett:set:se:s]` +
+                    `${guild.Prefix}translate [patterns:pattern:pat:p] [add:+:a / remove:-:r / list:l]\n` +
+                    `${guild.Prefix}translate [channels:channel:chan:ch:c] [add:+:a / remove:-:r / list:l]\n` +
+                    `${guild.Prefix}translate [languages:language:lang:l]\n` +
+                    `${guild.Prefix}translate [confidence:conf:con] [:?current:curr:cur:c / change:ch:=]\n` +
+                    `${guild.Prefix}translate [autodelete:auto:delete:autodel:atodel:adel:ad:a:d] ` +
+                    `[:?current:curr:cur:c / =:change:ch:toggle:togg:tog:to:t:switch:swit:swi:sw:s]`
             },
             {
                 name: 'Examples: ',
-                value: `${guild.Prefix}translate pattern add /(<:[A-Za-z]+:\d+>)/gi\n` +
+                value: `${guild.Prefix}translate settings` +
+                    `${guild.Prefix}translate pattern add /(<:[A-Za-z]+:\d+>)/gi\n` +
                     `${guild.Prefix}translate pattern remove 1\n` +
                     `${guild.Prefix}translate pattern list\n` +
                     `${guild.Prefix}translate channel add ${randomChannel.toString()} *You can tag multiple to add*\n` +
                     `${guild.Prefix}translate channel remove ${randomChannel.toString()}\n` +
-                    `${guild.Prefix}translate channel list\n`
+                    `${guild.Prefix}translate channel list\n` +
+                    `${guild.Prefix}translate confidence change 56 *or* 0.56\n` +
+                    `${guild.Prefix}translate confidence\n` +
+                    `${guild.Prefix}translate autodelete toggle\n` +
+                    `${guild.Prefix}translate autodelete`
             }
         )
         .setTimestamp()
