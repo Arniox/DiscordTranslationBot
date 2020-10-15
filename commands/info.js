@@ -164,7 +164,7 @@ exports.run = (bot, guild, message, args) => {
                                         .send(new Discord.MessageEmbed().setDescription(`Total **Messages** in ${channelMentions.first().toString()}\n\n***Loading....***`).setColor('#FFCC00'))
                                         .then(async function (sent) {
                                             //Fetch all messages and sequentially count them
-                                            var totalCount = await sumSequentially(channelMentions.first(), sent, 'messages');
+                                            var totalCount = await sumSequentially(channelMentions.first(), sent, 'Messages');
                                             sent.edit(new Discord.MessageEmbed().setDescription(`Total **Messages** in ${channelMentions.first().toString()}:\n\n${totalCount}`).setColor('#0099ff'));
                                         }).catch((err) => { console.log(err, 'There was a fatal error'); });
                                     break;
@@ -174,7 +174,7 @@ exports.run = (bot, guild, message, args) => {
                                         .send(new Discord.MessageEmbed().setDescription(`Total **Words** in ${channelMentions.first().toString()}\n\n***Loading....***`).setColor('#FFCC00'))
                                         .then(async function (sent) {
                                             //Fetch all messages and sequentially count the words.
-                                            var totalCount = await sumSequentially(channelMentions.first(), sent, 'words');
+                                            var totalCount = await sumSequentially(channelMentions.first(), sent, 'Words');
                                             sent.edit(new Discord.MessageEmbed().setDescription(`Total **Words** in ${channelMentions.first().toString()}:\n\n${totalCount}`).setColor('#0099ff'));
                                         }).catch((err) => { console.log(err, 'There was a fatal error'); });
                                     break;
@@ -184,7 +184,7 @@ exports.run = (bot, guild, message, args) => {
                                         .send(new Discord.MessageEmbed().setDescription(`Total **Characters** in ${channelMentions.first().toString()}\n\n***Loading....***`).setColor('#FFCC00'))
                                         .then(async function (sent) {
                                             //Fetch all messages and sequentially count the words.
-                                            var totalCount = await sumSequentially(channelMentions.first(), sent, 'characters');
+                                            var totalCount = await sumSequentially(channelMentions.first(), sent, 'Characters');
                                             sent.edit(new Discord.MessageEmbed().setDescription(`Total **Characters** in ${channelMentions.first().toString()}:\n\n${totalCount}`).setColor('#FFCC00'));
                                         }).catch((err) => { console.log(err, 'There was a fatal error'); });
                                     break;
@@ -299,13 +299,13 @@ async function sumSequentially(channel, message, whatToCount) {
 
         //Switch on what to count
         switch (whatToCount) {
-            case 'messages':
+            case 'Messages':
                 sum += messages.size;
                 break;
-            case 'words':
+            case 'Words':
                 sum += messages.map((v, k) => v.content.split(' ').length).reduce((a, b) => a + b, 0);
                 break;
-            case 'characters':
+            case 'Characters':
                 sum += messages.map((v, k) => v.content.length).reduce((a, b) => a + b, 0);
                 break;
             default:
@@ -314,7 +314,7 @@ async function sumSequentially(channel, message, whatToCount) {
         last_id = messages.last().id;
 
         //Edit message with new number
-        message.edit(new Discord.MessageEmbed().setDescription(`**Total Messages in ${channel.toString()}**\n\n*...${sum}...*`).setColor('#FFCC00'));
+        message.edit(new Discord.MessageEmbed().setDescription(`**Total ${whatToCount} in ${channel.toString()}**\n\n*...${sum}...*`).setColor('#FFCC00'));
 
         //Break when reach the end of messages
         if (messages.size != 100) break;
