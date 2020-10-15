@@ -61,7 +61,7 @@ exports.run = (bot, guild, message, args) => {
                                                     { name: 'Original text', value: `${message.content}` },
                                                     {
                                                         name: 'Detected Language',
-                                                        value: `${languageCodes.find(i => i.language == detection.language).name} - ` +
+                                                        value: `${languageCodes.find(i => i.language == detection.language).name} -> **English** with ` +
                                                             `${(detection.confidence * 100).floor().toString()}% confidence.`,
                                                         inline: true
                                                     }
@@ -69,12 +69,11 @@ exports.run = (bot, guild, message, args) => {
                                                 .setTimestamp()
                                                 .setFooter('Powered by Google Translate');
                                             //Send
-                                            message.channel.send(embeddedTranslation).then(() => {
-                                                console.log(translation);
-                                            });
+                                            message.channel.send(embeddedTranslation);
                                         } else {
                                             //Send normal message
-                                            message.channel.send(`*${message.author.username}:* ${translation.translatedText} | **${languageCodes.find(i => i.language == detection.language).name}**`);
+                                            message.channel.send(`*${message.author.username}:* ${translation.translatedText} | ` +
+                                                `**${languageCodes.find(i => i.language == detection.language).name}** -> **English**`);
                                         }
                                     });
                                 }
