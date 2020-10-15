@@ -636,8 +636,8 @@ exports.run = (bot, guild, message, args) => {
                                             //Player doesn't exist as frozen member. So create
                                             //Save frozen members nickname
                                             const save_sql = `
-                                            INSERT INTO player_frozen_names (MemberId, ServerId, FrozenName, FrozenById)
-                                                VALUES ("${mentions.first().id}", "${message.guild.id}", "${query.substring(0, 32)}", "${message.author.id}")
+                                            INSERT INTO player_frozen_names (MemberId, ServerId, FrozenName, OriginalNickName, FrozenById)
+                                                VALUES ("${mentions.first().id}", "${message.guild.id}", "${query.substring(0, 32)}", "${NickName(mentions.first())}", "${message.author.id}")
                                             `;
                                             bot.con.query(save_sql, (error, results, fields) => {
                                                 if (error) return console.error(error); //Return console error
@@ -752,11 +752,12 @@ exports.run = (bot, guild, message, args) => {
                                                 //Get current user nickname
                                                 var currentUserNickName = NickName(mentions.first());
                                                 //Reset nickname
-                                                mentions.first().setNickname(mentions.first().user.username, `Unfrozen ${currentUserNickName}\'s` +
+                                                mentions.first().setNickname(thisFrozenPlayer.OriginalNickName, `Unfrozen ${currentUserNickName}\'s` +
                                                     ` nickname and reset it back to default username (${mentions.first().user.username})`);
 
                                                 //Send message
-                                                message.channel.send(new Discord.MessageEmbed().setDescription(`I have unfrozen ${mentions.first().toString()}\'s nickname and reset it to it\'s default.`).setColor('#09b50c'));
+                                                message.channel.send(new Discord.MessageEmbed().setDescription(`I have unfrozen ` +
+                                                    `${mentions.first().toString()}\'s nickname and reset it back to ${thisFrozenPlayer.OriginalNickName}.`).setColor('#09b50c'));
                                             });
                                         } else {
                                             message.channel.send(new Discord.MessageEmbed().setDescription(`Sorry, ${message.guild.members.cache.get(thisFrozenPlayer.FrozenById)}` +
