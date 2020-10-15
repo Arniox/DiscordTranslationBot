@@ -61,7 +61,7 @@ exports.run = (bot, guild, message, args) => {
                                                     { name: 'Original text', value: `${message.content}` },
                                                     {
                                                         name: 'Detected Language',
-                                                        value: `${languageCodes.find(i => i.language == detection.language).name} -> **English** with ` +
+                                                        value: `**${languageCodes.find(i => i.language == detection.language).name}** -> **English** with ` +
                                                             `${(detection.confidence * 100).floor().toString()}% confidence.`,
                                                         inline: true
                                                     }
