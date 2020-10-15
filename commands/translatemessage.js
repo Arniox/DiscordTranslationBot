@@ -28,7 +28,8 @@ exports.run = (bot, guild, message, args) => {
 
                 //Cut out translationn ignored patterns
                 //Cut out default ignored patterns
-                var messy = message.content
+                var messy = message.content;
+                messy = messy
                     .replace(/'<:[a-zA-Z]+:\d+>'/g, '') //Get rid of emojis
                     .replace(/'<[@]?[!]?d+>'/g, '') //Get rid of tagging members
                     .replace(/'<[#]?[!]?d+>'/g, ''); //Get rid of tagging channels
