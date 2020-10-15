@@ -174,7 +174,7 @@ exports.run = (bot, guild, message, args) => {
                                         .send(new Discord.MessageEmbed().setDescription(`Total **Words** in ${channelMentions.first().toString()}\n\n***Loading....***`).setColor('#FFCC00'))
                                         .then(async function (sent) {
                                             //Fetch all messages and sequentially count the words.
-                                            var totalCount = await sumSequentially(channelMentions.first(), send, 'words');
+                                            var totalCount = await sumSequentially(channelMentions.first(), sent, 'words');
                                             sent.edit(new Discord.MessageEmbed().setDescription(`Total **Words** in ${channelMentions.first().toString()}:\n\n${totalCount}`).setColor('#0099ff'));
                                         }).catch((err) => { console.log(err, 'There was a fatal error'); });
                                     break;
@@ -184,7 +184,7 @@ exports.run = (bot, guild, message, args) => {
                                         .send(new Discord.MessageEmbed().setDescription(`Total **Characters** in ${channelMentions.first().toString()}\n\n***Loading....***`).setColor('#FFCC00'))
                                         .then(async function (sent) {
                                             //Fetch all messages and sequentially count the words.
-                                            var totalCount = await sumSequentially(channelMentions.first(), send, 'characters');
+                                            var totalCount = await sumSequentially(channelMentions.first(), sent, 'characters');
                                             sent.edit(new Discord.MessageEmbed().setDescription(`Total **Characters** in ${channelMentions.first().toString()}:\n\n${totalCount}`).setColor('#FFCC00'));
                                         }).catch((err) => { console.log(err, 'There was a fatal error'); });
                                     break;
