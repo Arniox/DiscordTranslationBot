@@ -46,6 +46,8 @@ exports.run = (bot, guild, message, args) => {
                             //Translate
                             googleTranslate.translate(message.content, detection.language, 'en', function (err, translation) {
                                 if (translation.translatedText !== message.content) {
+                                    console.log(translation);
+
                                     //Auto delete messages if turned on
                                     if (guild.Auto_Delete_Translation == 1) message.delete({ timeout: 100 }); //Delete message
                                     //Get country
