@@ -473,7 +473,7 @@ exports.run = (bot, guild, message, args) => {
                                     bot.con.query(update_cmd, (error, results, fields) => {
                                         if (error) return console.error(error); //Throw error and return
                                         //Message
-                                        message.channel.send(new Discord.MessageEmbed().setDescription(`Successfull Turned ` +
+                                        message.channel.send(new Discord.MessageEmbed().setDescription(`Successfully Turned ` +
                                             `**${(guild.Auto_Delete_Translation == 1 ? 'Off' : 'On')}** Translation Messages Auto Deletion.`).setColor('#09b50c'));
                                     });
                                 } else {
@@ -481,7 +481,7 @@ exports.run = (bot, guild, message, args) => {
                                 }
                                 break;
                             case 'current': case 'curr': case 'cur': case 'c': //List out auto deletion setting for the user
-                                message.channel.send(new Discord.MessageEmbed().setDescription(`Current I ` +
+                                message.channel.send(new Discord.MessageEmbed().setDescription(`Currently I ` +
                                     `**${(guild.Auto_Delete_Translation == 1 ? 'Will' : 'Will Not')}** Auto Delete your message when I translate it.`).setColor('#0099ff'));
                                 break;
                             default:
@@ -489,8 +489,50 @@ exports.run = (bot, guild, message, args) => {
                                 break;
                         }
                     } else {
-                        message.channel.send(new Discord.MessageEmbed().setDescription(`Current I ` +
+                        message.channel.send(new Discord.MessageEmbed().setDescription(`Currently I ` +
                             `**${(guild.Auto_Delete_Translation == 1 ? 'Will' : 'Will Not')}** Auto Delete your message when I translate it.`).setColor('#0099ff'));
+                    }
+                    break;
+                case 'embedded': case 'embeds': case 'embed': case 'embe': case 'emb': case 'em': case 'e':
+                    //For embedded translation or normal translations
+                    if (args.length > 0) {
+                        var command = args.shift().toLowerCase();
+
+                        //Check which option you want
+                        switch (command) {
+                            case 'change': case 'ch': case '=': case 'toggle': case 'togg': case 'tog': case 'to': case 't':
+                            case 'switch': case 'swit': case 'swi': case 'sw': case 's': //Change bot embedded translation or not
+                                //Check if user has perms
+                                if (message.member.hasPermission('MANAGE_GUILD')) {
+                                    //Toggle on/off
+
+                                    //Update new setting
+                                    const update_cmd = `
+                                    UPDATE servers
+                                    SET Embedded_Translations = 1 - Embedded_Translations
+                                    WHERE ServerId = "${message.guild.id}"
+                                    `;
+                                    bot.con.query(update_cmd, (error, results, fields) => {
+                                        if (error) return console.error(error); //Throw error and return
+                                        //Message
+                                        message.channel.send(new Discord.MessageEmbed().setDescription(`Successfully Turned ` +
+                                            `**${(guild.Embedded_Translations == 1 ? 'Off' : 'On')}** Embedded Translation Message Outputs.`).setColor('#09b50c'));
+                                    });
+                                } else {
+                                    message.channel.send(new Discord.MessageEmbed().setDescription('Sorry, you need to have server manager permissions to change the translation confidence restriction.').setColor('#b50909'));
+                                }
+                                break;
+                            case 'current': case 'curr': case 'cur': case 'c': //List out embedded setting for the user
+                                message.channel.send(new Discord.MessageEmbed().setDescription(`Currently I ` +
+                                    `**${(guild.Embedded_Translations == 1 ? 'Will' : 'Will Not')}** Use Embedded Translation messages as the output.`).setColor('#0099ff'));
+                                break;
+                            default:
+                                HelpMessage(bot, guild, message, args);
+                                break;
+                        }
+                    } else {
+                        message.channel.send(new Discord.MessageEmbed().setDescription(`Currently I ` +
+                            `**${(guild.Embedded_Translations == 1 ? 'Will' : 'Will Not')}** Use Embedded Translation messages as the output.`).setColor('#0099ff'));
                     }
                     break;
                 default:
@@ -523,7 +565,9 @@ function HelpMessage(bot, guild, message, args) {
                     `${guild.Prefix}translate [channels:channel:chan:ch:c] [add:+:a / remove:-:r / list:l]\n` +
                     `${guild.Prefix}translate [languages:language:lang:l]\n` +
                     `${guild.Prefix}translate [confidence:conf:con] [:?current:curr:cur:c / change:ch:=]\n` +
-                    `${guild.Prefix}translate [autodelete:auto:delete:autodel:atodel:adel:ad:a:d] ` +
+                    `${guild.Prefix}translate [autodelete:auto:delete:autodel:atodel:adel:ad:d:a] ` +
+                    `[:?current:curr:cur:c / =:change:ch:toggle:togg:tog:to:t:switch:swit:swi:sw:s]\n\n` +
+                    `${guild.Prefix}translate [embedded:embeds:embed:embe:emb:em:e:] ` +
                     `[:?current:curr:cur:c / =:change:ch:toggle:togg:tog:to:t:switch:swit:swi:sw:s]`
             },
             {
@@ -538,7 +582,9 @@ function HelpMessage(bot, guild, message, args) {
                     `${guild.Prefix}translate confidence change 56 *or* 0.56\n` +
                     `${guild.Prefix}translate confidence\n` +
                     `${guild.Prefix}translate autodelete toggle\n` +
-                    `${guild.Prefix}translate autodelete`
+                    `${guild.Prefix}translate autodelete\n` +
+                    `${guild.Prefix}translate embeds\n` +
+                    `${guild.Prefix}translate embeds toggle`
             }
         )
         .setTimestamp()
