@@ -185,7 +185,17 @@ exports.run = (bot, guild, message, args) => {
                                         .then(async function (sent) {
                                             //Fetch all messages and sequentially count the words.
                                             var totalCount = await sumSequentially(channelMentions.first(), sent, 'Characters');
-                                            sent.edit(new Discord.MessageEmbed().setDescription(`Total **Characters** in ${channelMentions.first().toString()}:\n\n${totalCount}`).setColor('#FFCC00'));
+                                            sent.edit(new Discord.MessageEmbed().setDescription(`Total **Characters** in ${channelMentions.first().toString()}:\n\n${totalCount}`).setColor('#0099ff'));
+                                        }).catch((err) => { console.log(err, 'There was a fatal error'); });
+                                    break;
+                                case 'emojis': case 'emoji': case 'emoj': case 'emo': case 'em': case 'e':
+                                    //Send loading message.
+                                    message.channel
+                                        .send(new Discord.MessageEmbed().setDescription(`Total **Emojis** in ${channelMentions.first().toString()}\n\n***Loading....***`).setColor('#FFCC00'))
+                                        .then(async function (sent) {
+                                            //Fetch all messages and sequentially count the words.
+                                            var totalCount = await sumSequentially(channelMentions.first(), sent, 'Emojis');
+                                            sent.edit(new Discord.MessageEmbed().setDescription(`Total **Emojis** in ${channelMentions.first().toString()}:\n\n${totalCount}`).setColor('#0099ff'));
                                         }).catch((err) => { console.log(err, 'There was a fatal error'); });
                                     break;
                                 default:
@@ -307,6 +317,9 @@ async function sumSequentially(channel, message, whatToCount) {
                 break;
             case 'Characters':
                 sum += messages.map((v, k) => v.content.length).reduce((a, b) => a + b, 0);
+                break;
+            case 'Emojis':
+                sum += messages.map((v, k) => v.content.match(/<:[a-zA-Z]+:\d+>/g).length).reduce((a, b) => a + b, 0);
                 break;
             default:
                 throw 'The whatToCount variable was somehow broken!';
