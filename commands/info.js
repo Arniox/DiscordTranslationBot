@@ -313,13 +313,13 @@ async function sumSequentially(channel, message, whatToCount) {
                 sum += messages.size;
                 break;
             case 'Words':
-                sum += messages.map((v, k) => v.content.split(' ').length).reduce((a, b) => a + b, 0);
+                sum += messages.map((v, k) => (v.content.split(' ') || []).length).reduce((a, b) => a + b, 0);
                 break;
             case 'Characters':
-                sum += messages.map((v, k) => v.content.length).reduce((a, b) => a + b, 0);
+                sum += messages.map((v, k) => (v.content || []).length).reduce((a, b) => a + b, 0);
                 break;
             case 'Emojis':
-                sum += messages.map((v, k) => v.content.match(/<:[a-zA-Z]+:\d+>/g).length).reduce((a, b) => a + b, 0);
+                sum += messages.map((v, k) => (v.content.match(/<:[a-zA-Z]+:\d+>/g) || []).length).reduce((a, b) => a + b, 0);
                 break;
             default:
                 throw 'The whatToCount variable was somehow broken!';
