@@ -31,8 +31,6 @@ module.exports = (bot, message) => {
                 //Remove links:
                 var withOutLinks = message.content.replace(/(?:(?:https?|ftp|file):\/\/|www\.|ftp\.)(?:\([-A-Z0-9+&@#\/%=~_|$?!:,.]*\)|[-A-Z0-9+&@#\/%=~_|$?!:,.])*(?:\([-A-Z0-9+&@#\/%=~_|$?!:,.]*\)|[A-Z0-9+&@#\/%=~_|$])/igm, '');
 
-                console.log(withOutLinks);
-
                 //if else on message that starts with prefix
                 if (message.content.startsWith(results[0].Prefix)) {
                     //Argument/command name definition.
@@ -92,8 +90,8 @@ module.exports = (bot, message) => {
                         cmd.run(bot, results[0], message, args);
                         message.delete({ timeout: 200 }); //Delete message
                     }).catch(() => { return; });
-                } else if (evaluate(withOutLinks)) {
-                    message.channel.send(new Discord.MessageEmbed().setDescription(`> ${message.content}\n = ${evaluate(withOutLinks).trimString(2048)}`).setColor('#0099ff'));
+                } else if (evaluate(withOutLinks.replace(/ /g, ''))) {
+                    message.channel.send(new Discord.MessageEmbed().setDescription(`> ${message.content}\n = ${evaluate(withOutLinks.replace(/ /g, '')).trimString(2048)}`).setColor('#0099ff'));
                 } else {
                     //If message is empty
                     if (!message.content) return;
