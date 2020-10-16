@@ -31,6 +31,8 @@ module.exports = (bot, message) => {
                 //Remove links:
                 var withOutLinks = message.content.replace(/(?:(?:https?|ftp|file):\/\/|www\.|ftp\.)(?:\([-A-Z0-9+&@#\/%=~_|$?!:,.]*\)|[-A-Z0-9+&@#\/%=~_|$?!:,.])*(?:\([-A-Z0-9+&@#\/%=~_|$?!:,.]*\)|[A-Z0-9+&@#\/%=~_|$])/igm, '');
 
+                console.log(withOutLinks);
+
                 //if else on message that starts with prefix
                 if (message.content.startsWith(results[0].Prefix)) {
                     //Argument/command name definition.
