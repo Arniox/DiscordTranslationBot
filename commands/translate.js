@@ -378,7 +378,7 @@ exports.run = (bot, guild, message, args) => {
                                             sent.reactions.removeAll()
                                                 .then(() => {
                                                     sent.edit(new Discord.MessageEmbed().setDescription(`${value.map(i => i.language).join(', ')} \n\n` +
-                                                        `You can view the list of supported languages again with: ***${guild.Prefix} translate languages*** `).setColor('#09b50c'));
+                                                        `You can view the list of supported languages again with: ***${guild.Prefix}translate languages*** `).setColor('#09b50c'));
                                                 }).catch((error) => { return; });
                                         });
                                     });
@@ -633,6 +633,9 @@ exports.run = (bot, guild, message, args) => {
                                     //Send message
                                     message.channel.send(new Discord.MessageEmbed().setDescription(`The Current Server Base Language is ` +
                                         `**${baseLanguage}**. Anything not in ${baseLanguage} will be translated to ${baseLanguage}`).setColor('#0099ff'));
+                                    break;
+                                default:
+                                    HelpMessage(bot, guild, message, args);
                                     break;
                             }
                         } else {
