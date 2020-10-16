@@ -1,7 +1,11 @@
 //Include
 const mysql = require('promise-mysql');
-const maths = require('mathjs');
 const Discord = require('discord.js');
+const maths = require('mathjs');
+maths.config({
+    number: 'BigNumber',
+    precision: 64
+});
 
 module.exports = (bot, message) => {
     //Ignore all bots
