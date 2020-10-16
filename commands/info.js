@@ -268,7 +268,9 @@ function HelpMessage(bot, guild, message, args) {
                     `${guild.Prefix}info list [categories:category:cat]\n` +
                     `${guild.Prefix}info list [news:n]\n` +
                     `${guild.Prefix}info list [stores:store:s]\n` +
-                    `${guild.Prefix}info count [messages:message:mess:m] ${randomChannel.toString()}\n`
+                    `${guild.Prefix}info count [messages:message:mess:m / ` +
+                    `characters:character:charact:chara:chars:char:cha:ch:c / ` +
+                    `emojis:emoji:emoj:emo:em:e] ${randomChannel.toString()}\n`
             }
         )
         .setTimestamp()

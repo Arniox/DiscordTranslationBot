@@ -145,27 +145,42 @@ exports.run = (bot, guild, message, args) => {
                 var randomChannel = message.guild.channels.cache.random();
 
                 var embeddedHelpMessage = new Discord.MessageEmbed()
-                    .setColor('#0099ff')
+                    .setColor('#b50909')
                     .setAuthor(bot.user.username, bot.user.avatarURL())
                     .setDescription('This command allows you to list, add and remove translation ignored channels and translation ignored RegEx patterns. Also allows you to list out the languages supported.')
                     .addFields(
                         { name: 'Required Permissions: ', value: 'Manage Server (for adding and removing. Everyone else can use the list commands).' },
                         {
                             name: 'Command Patterns: ',
-                            value: `${guild.Prefix}translate [patterns:pattern:pat:p / channels:channel:chan:ch:c / languages:language:lang:l / confidence:conf:con]\n` +
-                                `${guild.Prefix}translate pattern [add:+:a / remove:r:- / list:l]\n` +
-                                `${guild.Prefix}translate channel [add:+:a / remove:r:- / list:l]\n` +
-                                `${guild.Prefix}translate languages\n` +
-                                `${guild.Prefix}translate confidence [:?current:curr:cur:c / change:ch:=]`
+                            value: `${guild.Prefix}translate [settings:setting:sett:set:se:s]` +
+                                `${guild.Prefix}translate [patterns:pattern:pat:p] [add:+:a / remove:-:r / list:l]\n` +
+                                `${guild.Prefix}translate [channels:channel:chan:ch:c] [add:+:a / remove:-:r / list:l]\n` +
+                                `${guild.Prefix}translate [languages:language:lang:l]\n` +
+                                `${guild.Prefix}translate [confidence:conf:con] [:?current:curr:cur:c / change:ch:=]\n` +
+                                `${guild.Prefix}translate [autodelete:auto:delete:autodel:atodel:adel:ad:d:a] ` +
+                                `[:?current:curr:cur:c / =:change:ch:toggle:togg:tog:to:t:switch:swit:swi:sw:s]\n` +
+                                `${guild.Prefix}translate [embedded:embeds:embed:embe:emb:em:e:] ` +
+                                `[:?current:curr:cur:c / =:change:ch:toggle:togg:tog:to:t:switch:swit:swi:sw:s]\n` +
+                                `${guild.Prefix}translate [baselanguage:globallanguage:baselang:globallang:` +
+                                `baselan:globallan:basel:globall:base:global:bl:gl:g:b] [:?current:curr:cur:c / change:ch:=]`
                         },
                         {
                             name: 'Examples: ',
-                            value: `${guild.Prefix}translate pattern add /(<:[A-Za-z]+:\d+>)/gi\n` +
+                            value: `${guild.Prefix}translate settings` +
+                                `${guild.Prefix}translate pattern add /(<:[A-Za-z]+:\d+>)/gi\n` +
                                 `${guild.Prefix}translate pattern remove 1\n` +
                                 `${guild.Prefix}translate pattern list\n` +
                                 `${guild.Prefix}translate channel add ${randomChannel.toString()} *You can tag multiple to add*\n` +
                                 `${guild.Prefix}translate channel remove ${randomChannel.toString()}\n` +
-                                `${guild.Prefix}translate channel list\n`
+                                `${guild.Prefix}translate channel list\n` +
+                                `${guild.Prefix}translate confidence change 56 *or* 0.56\n` +
+                                `${guild.Prefix}translate confidence\n` +
+                                `${guild.Prefix}translate autodelete toggle\n` +
+                                `${guild.Prefix}translate autodelete\n` +
+                                `${guild.Prefix}translate embeds\n` +
+                                `${guild.Prefix}translate embeds toggle\n` +
+                                `${guild.Prefix}translate baselanguage\n` +
+                                `${guild.Prefix}translate baselanguage change English *or* En`
                         }
                     )
                     .setTimestamp()
@@ -180,7 +195,7 @@ exports.run = (bot, guild, message, args) => {
 
                 //Get all available language codes
                 var embeddedHelpMessage = new Discord.MessageEmbed()
-                    .setColor('#0099ff')
+                    .setColor('#b50909')
                     .setAuthor(bot.user.username, bot.user.avatarURL())
                     .setDescription('Nick allows you to translate (into any supported language), set, and reset either you\'re own nickname, someone specific granted you have nickname managemental permissions,' +
                         ' or everyone\'s granted you have management permissions.\n' +
@@ -192,11 +207,14 @@ exports.run = (bot, guild, message, args) => {
                         },
                         {
                             name: 'Command Patterns: ',
-                            value: `${guild.Prefix}nick [translate:trans:tran:t / set:s / reset:rest:res:r / ignore:ign:ig:i] [selector] [setting]\n` +
-                                `${guild.Prefix}nick translate [all:a / me:m / someone:some:s:one / whisper:whis:wis:w ] [:?languagecode]\n` +
-                                `${guild.Prefix}nick set [all:a / me:m / someone:some:s:one] newname\n` +
-                                `${guild.Prefix}nick reset [all:a / me:m / someone:some:s:one]\n` +
-                                `${guild.Prefix}nick ignore [:?list:l]\n\n` +
+                            value: `${guild.Prefix}nick [translate:trans:tran:t / set:s / reset:rest:res:r / ignore:ign:ig:i / ` +
+                                `frozen:freeze:freez:free:fr:f / unfrozen:unfreeze:unfreez:unfree:unfr:unf:uf] [selector] [setting]\n` +
+                                `${guild.Prefix}nick translate [all:a / me:m / someone:some:s:one / whisper:whis:wis:w ] [:?member tag] [:?languagecode]\n` +
+                                `${guild.Prefix}nick set [all:a / me:m / someone:some:s:one] [:?member tag] [newname]\n` +
+                                `${guild.Prefix}nick reset [all:a / me:m / someone:some:s:one] [:?member tag]\n` +
+                                `${guild.Prefix}nick freeze [member tag / lists:list:lis:li:l] [:?newname]\n` +
+                                `${guild.Prefix}nick unfreeze [member tag]\n` +
+                                `${guild.Prefix}nick ignore [:?lists:list:lis:li:l]\n\n` +
                                 `Any ${guild.Prefix}nick [translate] command without a language specified will pick a random language.`
                         },
                         {
@@ -215,7 +233,11 @@ exports.run = (bot, guild, message, args) => {
                                 `${guild.Prefix}nick reset all\n` +
                                 `${guild.Prefix}nick reset me\n` +
                                 `${guild.Prefix}nick reset someone ${randomMember.toString()}\n` +
-                                `${guild.Prefix}nick ignore *(will add/remove you from the database of translation ignored members*\n` +
+                                `${guild.Prefix}nick freeze ${randomMember.toString()} StuffAndThings\n` +
+                                `${guild.Prefix}nick freeze list\n` +
+                                `${guild.Prefix}nick unfreeze ${randomMember.toString()}\n` +
+                                `${guild.Prefix}nick ignore *(will toggle you from the database of ` +
+                                `multi-user command ignored members such as* **${guild.Prefix}nick set all StuffAndThings**)\n` +
                                 `${guild.Prefix}nick ignore list`
                         }
                     )
@@ -348,7 +370,7 @@ exports.run = (bot, guild, message, args) => {
                 var randomChannel = message.guild.channels.cache.random();
 
                 var embeddedHelpMessage = new Discord.MessageEmbed()
-                    .setColor('#0099ff')
+                    .setColor('#b50909')
                     .setAuthor(bot.user.username, bot.user.avatarURL())
                     .setDescription(`Info command allows you to get many different informatics on the bot and it's servers.`)
                     .addFields(
@@ -389,7 +411,9 @@ exports.run = (bot, guild, message, args) => {
                                 `${guild.Prefix}info list [categories:category:cat]\n` +
                                 `${guild.Prefix}info list [news:n]\n` +
                                 `${guild.Prefix}info list [stores:store:s]\n` +
-                                `${guild.Prefix}info count [messages:message:mess:m] ${randomChannel.toString()}\n`
+                                `${guild.Prefix}info count [messages:message:mess:m / ` +
+                                `characters:character:charact:chara:chars:char:cha:ch:c / ` +
+                                `emojis:emoji:emoj:emo:em:e] ${randomChannel.toString()}\n`
                         }
                     )
                     .setTimestamp()
