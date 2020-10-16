@@ -588,7 +588,7 @@ exports.run = (bot, guild, message, args) => {
                                                                         collector.stop(languageFound);
                                                                     });
                                                                     //Await reaction collector on stop
-                                                                    collector.on('end', (c, reason) => {
+                                                                    collector.on('end', (m, reason) => {
                                                                         //Delete the message
                                                                         sent.delete({ timeout: 100 });
 
