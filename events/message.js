@@ -85,7 +85,11 @@ module.exports = (bot, message) => {
                         message.delete({ timeout: 200 }); //Delete message
                     }).catch(() => { return; });
                 } else if (isValidMathExpression(message.content)) {
-                    message.channel.send(new Discord.MessageEmbed().setDescription(`> ${message.content}\n = ${maths.evaluate(message.content)}`).setColor('#0099ff'));
+                    //Get value
+                    var value = evaluate(message.content);
+                    if (value) {
+                        message.channel.send(new Discord.MessageEmbed().setDescription(`> ${message.content}\n = ${value}`).setColor('#0099ff'));
+                    }
                 } else {
                     //If message is empty
                     if (!message.content) return;
@@ -108,12 +112,11 @@ module.exports = (bot, message) => {
     });
 }
 
-//Function check if string is maths equation
-function isValidMathExpression(expr) {
+//Function evaluate the calculation
+function evaluate(expr) {
     try {
-        maths.parse(expr);
-        return true;
+        return maths.evaluate(expr);
     } catch (err) {
-        return false;
+        return;
     }
 }
