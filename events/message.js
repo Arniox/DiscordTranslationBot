@@ -114,9 +114,10 @@ module.exports = (bot, message) => {
 //Function check if string is maths equation
 function isValidMathExpression(expr) {
     try {
-        maths.parse(`${expr}`);
+        maths.parse(expr);
         return true;
     } catch (err) {
+        console.log(err);
         return false;
     }
 }
