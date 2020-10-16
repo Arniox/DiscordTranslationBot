@@ -115,8 +115,13 @@ module.exports = (bot, message) => {
 //Function evaluate the calculation
 function evaluate(expr) {
     try {
-        return maths.format(maths.evaluate(expr), { notation: 'fixed' });
+        return numberWithCommas(`${maths.format(maths.evaluate(expr), { notation: 'fixed' })}`);
     } catch (err) {
         return;
     }
+}
+
+//Add commas
+function numberWithCommas(x) {
+    return x.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
 }
