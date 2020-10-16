@@ -7,9 +7,6 @@ module.exports = (bot, message) => {
     //Ignore all bots
     if (message.author.bot) return;
 
-    console.log(message.content);
-    console.log(isValidMathExpression(message.content));
-
     //Get connection
     bot.dbpool.then((p) => {
         return p.getConnection();
@@ -117,7 +114,6 @@ function isValidMathExpression(expr) {
         maths.parse(expr);
         return true;
     } catch (err) {
-        console.log(err);
         return false;
     }
 }
