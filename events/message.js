@@ -3,8 +3,7 @@ const mysql = require('promise-mysql');
 const Discord = require('discord.js');
 const { create, all } = require('mathjs');
 const maths = create(all, {
-    number: 'BigNumber',
-    precision: 64
+    number: 'BigNumber'
 });
 
 module.exports = (bot, message) => {
