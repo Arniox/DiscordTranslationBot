@@ -84,12 +84,8 @@ module.exports = (bot, message) => {
                         cmd.run(bot, results[0], message, args);
                         message.delete({ timeout: 200 }); //Delete message
                     }).catch(() => { return; });
-                } else if (isValidMathExpression(message.content)) {
-                    //Get value
-                    var value = evaluate(message.content);
-                    if (value) {
-                        message.channel.send(new Discord.MessageEmbed().setDescription(`> ${message.content}\n = ${value}`).setColor('#0099ff'));
-                    }
+                } else if (evaluate(message.content)) {
+                    message.channel.send(new Discord.MessageEmbed().setDescription(`> ${message.content}\n = ${evaluate(message.content)}`).setColor('#0099ff'));
                 } else {
                     //If message is empty
                     if (!message.content) return;
