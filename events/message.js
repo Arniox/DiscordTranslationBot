@@ -1,6 +1,6 @@
 //Include
 const mysql = require('promise-mysql');
-const maths = require('math.js');
+const maths = require('mathjs');
 const Discord = require('discord.js');
 
 module.exports = (bot, message) => {
