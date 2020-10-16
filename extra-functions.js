@@ -128,7 +128,7 @@ String.prototype.toHHMMSS = function (en = false) {
 //Cut string shorter
 String.prototype.trimString = function (length, eclipse = '...') {
     return this.length > length ?
-        this.substring(0, length - 3) + eclipse :
+        this.substring(0, length - (eclipse.length + 1)) + eclipse :
         this;
 }
 
