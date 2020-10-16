@@ -88,7 +88,7 @@ module.exports = (bot, message) => {
                         message.delete({ timeout: 200 }); //Delete message
                     }).catch(() => { return; });
                 } else if (evaluate(message.content)) {
-                    message.channel.send(new Discord.MessageEmbed().setDescription(`> ${message.content}\n = ${evaluate(message.content)}`).setColor('#0099ff'));
+                    message.channel.send(new Discord.MessageEmbed().setDescription(`> ${message.content}\n = ${clean(evaluate(message.content))}`).setColor('#0099ff'));
                 } else {
                     //If message is empty
                     if (!message.content) return;
@@ -114,8 +114,13 @@ module.exports = (bot, message) => {
 //Function evaluate the calculation
 function evaluate(expr) {
     try {
-        return `${maths.format(maths.evaluate(expr), { notation: 'fixed' })}`.substring(0, 5997) + '...';
+        return `${maths.format(maths.evaluate(expr), { notation: 'fixed' })}`;
     } catch (err) {
         return;
     }
+}
+
+//Clean the number
+function clean(stringE) {
+    return stringE.trimString(2048);
 }
