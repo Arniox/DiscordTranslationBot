@@ -1,5 +1,6 @@
 //Import classes
 const Discord = require('discord.js');
+const { lang } = require('moment');
 const googleApiKey = process.env.GOOGLE_API_KEY;
 const googleTranslate = require('google-translate')(googleApiKey, { "concurrentLimit": 20 });
 
@@ -42,14 +43,18 @@ exports.run = (bot, guild, message, args) => {
                     //Detect
                     googleTranslate.detectLanguage(messy, function (err, detection) {
                         //Translate if not english or link
-                        if (detection.language != 'en' && detection.language != 'und' && detection.confidence > guild.Translation_Confidence) {
+                        if (detection.language != guild.Default_Language_Code && detection.language != 'und' && detection.confidence > guild.Translation_Confidence) {
                             //Translate
-                            googleTranslate.translate(message.content, detection.language, 'en', function (err, translation) {
+                            googleTranslate.translate(message.content, detection.language, guild.Default_Language_Code, function (err, translation) {
                                 if (translation.translatedText !== message.content) {
                                     //Auto delete messages if turned on
                                     if (guild.Auto_Delete_Translation == 1) message.delete({ timeout: 100 }); //Delete message
                                     //Get country
+                                    //Always get all the supported languages in english for readability
                                     googleTranslate.getSupportedLanguages('en', function (err, languageCodes) {
+                                        var currentBaseLang = languageCodes.find(i => i.language == guild.Default_Language_Code);
+                                        var detectedLang = languageCodes.find(i => i.language == detection.language);
+
                                         //Check if server has embedded translation on
                                         if (guild.Embedded_Translations == 1) {
                                             //Create embedded message
@@ -61,7 +66,7 @@ exports.run = (bot, guild, message, args) => {
                                                     { name: 'Original text', value: `${message.content}` },
                                                     {
                                                         name: 'Detected Language',
-                                                        value: `**${languageCodes.find(i => i.language == detection.language).name}** -> **English** with ` +
+                                                        value: `**${detectedLang.name}** -> **${currentBaseLang.name}** with ` +
                                                             `${(detection.confidence * 100).floor().toString()}% confidence.`,
                                                         inline: true
                                                     }
@@ -73,7 +78,7 @@ exports.run = (bot, guild, message, args) => {
                                         } else {
                                             //Send normal message
                                             message.channel.send(`*${message.author.username}:* ${translation.translatedText} | ` +
-                                                `**${languageCodes.find(i => i.language == detection.language).name}** -> **English**`);
+                                                `**${detectedLang.name}** -> **${currentBaseLang.name}**`);
                                         }
                                     });
                                 }
