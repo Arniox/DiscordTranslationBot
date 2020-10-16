@@ -632,9 +632,11 @@ function HelpMessage(bot, guild, message, args) {
                     `${guild.Prefix}translate [languages:language:lang:l]\n` +
                     `${guild.Prefix}translate [confidence:conf:con] [:?current:curr:cur:c / change:ch:=]\n` +
                     `${guild.Prefix}translate [autodelete:auto:delete:autodel:atodel:adel:ad:d:a] ` +
-                    `[:?current:curr:cur:c / =:change:ch:toggle:togg:tog:to:t:switch:swit:swi:sw:s]\n\n` +
+                    `[:?current:curr:cur:c / =:change:ch:toggle:togg:tog:to:t:switch:swit:swi:sw:s]\n` +
                     `${guild.Prefix}translate [embedded:embeds:embed:embe:emb:em:e:] ` +
-                    `[:?current:curr:cur:c / =:change:ch:toggle:togg:tog:to:t:switch:swit:swi:sw:s]`
+                    `[:?current:curr:cur:c / =:change:ch:toggle:togg:tog:to:t:switch:swit:swi:sw:s]\n` +
+                    `${guild.Prefix}translate [baselanguage:globallanguage:baselang:globallang:` +
+                    `baselan:globallan:basel:globall:base:global:bl:gl:b:g] [:?current:curr:cur:c / change:ch:=]`
             },
             {
                 name: 'Examples: ',
@@ -650,7 +652,9 @@ function HelpMessage(bot, guild, message, args) {
                     `${guild.Prefix}translate autodelete toggle\n` +
                     `${guild.Prefix}translate autodelete\n` +
                     `${guild.Prefix}translate embeds\n` +
-                    `${guild.Prefix}translate embeds toggle`
+                    `${guild.Prefix}translate embeds toggle\n` +
+                    `${guild.Prefix}translate baselanguage\n` +
+                    `${guild.Prefix}translate baselanguage change English *or* En`
             }
         )
         .setTimestamp()
