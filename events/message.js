@@ -1,8 +1,8 @@
 //Include
 const mysql = require('promise-mysql');
 const Discord = require('discord.js');
-const { maths } = require('mathjs');
-maths.config({
+const { create, all } = require('mathjs');
+const maths = create(all, {
     number: 'BigNumber',
     precision: 64
 });
