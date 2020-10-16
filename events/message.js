@@ -7,6 +7,9 @@ module.exports = (bot, message) => {
     //Ignore all bots
     if (message.author.bot) return;
 
+    console.log(message.content);
+    console.log(isValidMathExpression(message.content));
+
     //Get connection
     bot.dbpool.then((p) => {
         return p.getConnection();
