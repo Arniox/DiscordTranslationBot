@@ -1,5 +1,6 @@
 //Import classes
 const Discord = require('discord.js');
+const { lang } = require('moment');
 const googleApiKey = process.env.GOOGLE_API_KEY;
 const googleTranslate = require('google-translate')(googleApiKey, { "concurrentLimit": 20 });
 
@@ -561,24 +562,66 @@ exports.run = (bot, guild, message, args) => {
                                         //Check if query exists
                                         if (query) {
                                             //Check that the query exists in the supported languages or language names
-                                            var languageCodeFound = (value.find(i => i.language.toLowerCase() == query) ||
-                                                value.find(i => i.name.toLowerCase() == query));
-                                            //Check if language code exists
-                                            if (languageCodeFound) {
-                                                //Update the base server language
-                                                const update_cmd = `
-                                                UPDATE servers
-                                                SET Default_Language_Code = "${languageCodeFound.language}"
-                                                WHERE ServerId = "${message.guild.id}"
-                                                `;
-                                                bot.con.query(update_cmd, (error, results, fields) => {
-                                                    if (error) return console.error(error); //Throw error and return
-                                                    //Message
-                                                    message.channel.send(new Discord.MessageEmbed().setDescription(`Changed Server Base Language from ${baseLanguage} to ${languageCodeFound.name}`).setColor('#09b50c'));
-                                                });
-                                            } else {
-                                                message.channel.send(new Discord.MessageEmbed().setDescription(`Sorry, ${query} either doesn\'t exist or maybe you\'ve misspelled the language name?`).setColor('#b50909'));
-                                            }
+                                            new Promise((resolve, reject) => {
+                                                //Check if chinese
+                                                if (/(chinese)|(zh)/g.test(query)) {
+                                                    //Send selection message
+                                                    message.channel.send(new Discord.MessageEmbed().setDescription(`Which Chinese Version do you want?\n` +
+                                                        `🇸 - **Chinese Simplified**\n🇹 - **Chinese Traditional**`).setColor('#FFCC00'))
+                                                        .then((sent) => {
+                                                            sent.react('🇸')
+                                                                .then(() => sent.react('🇹'))
+                                                                .then(() => {
+                                                                    //Set up emoji reaction filter
+                                                                    const filter = (reaction, user) => {
+                                                                        return ['🇸', '🇹'].includes(reaction.emoji.name) && user.id === message.author.id;
+                                                                    };
+                                                                    //Create reaction collector
+                                                                    const collector = sent.createReactionCollector(filter, { max: 1, time: 30000 });
+
+                                                                    //Await reaction
+                                                                    collector.on('collect', (reaction, user) => {
+                                                                        var languageFound;
+                                                                        if (reaction.emoji.name == '🇸') languageFound = value.find(i => i.language == 'zh-CN');
+                                                                        else if (reaction.emoji.name == '🇹') languageFound = value.find(i => i.language == 'zh-TW');
+                                                                        //Stop collector and return found language
+                                                                        collector.stop(languageFound);
+                                                                    });
+                                                                    //Await reaction collector on stop
+                                                                    collector.on('end', (c, reason) => {
+                                                                        //Delete the message
+                                                                        sent.delete({ timeout: 100 });
+
+                                                                        //Add default simplified
+                                                                        if (m.size == 0) resolve(value.find(i => i.language == 'zh-CN'));
+                                                                        else resolve(reason);
+                                                                    });
+                                                                });
+                                                        });
+                                                } else {
+                                                    resolve(value.find(i => i.language.toLowerCase() == query) ||
+                                                        value.find(i => i.name.toLowerCase() == query));
+                                                }
+                                            }).then((languageCodeFound) => {
+                                                //Check if language code exists
+                                                if (languageCodeFound) {
+                                                    //Update the base server language
+                                                    const update_cmd = `
+                                                    UPDATE servers
+                                                    SET Default_Language_Code = "${languageCodeFound.language}"
+                                                    WHERE ServerId = "${message.guild.id}"
+                                                    `;
+                                                    bot.con.query(update_cmd, (error, results, fields) => {
+                                                        if (error) return console.error(error); //Throw error and return
+                                                        //Message
+                                                        message.channel.send(new Discord.MessageEmbed().setDescription(`Changed Server Base Language from ${baseLanguage} to ${languageCodeFound.name}`).setColor('#09b50c'));
+                                                    });
+                                                } else {
+                                                    message.channel.send(new Discord.MessageEmbed().setDescription(`Sorry, ${query} either doesn\'t exist or maybe you\'ve misspelled the language name?`).setColor('#b50909'));
+                                                }
+                                            }).catch((err) => {
+                                                return console.error(err); //Throw error and continue
+                                            });
                                         } else {
                                             message.channel.send(new Discord.MessageEmbed().setDescription('Sorry, you did not select a language name/code to change the base server language to.').setColor('#b50909'));
                                         }
