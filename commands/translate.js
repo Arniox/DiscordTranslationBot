@@ -473,7 +473,7 @@ exports.run = (bot, guild, message, args) => {
                                     bot.con.query(update_cmd, (error, results, fields) => {
                                         if (error) return console.error(error); //Throw error and return
                                         //Message
-                                        message.channel.send(new Discord.MessageEmbed().setDescription(`Successfully Turned ` +
+                                        message.channel.send(new Discord.MessageEmbed().setDescription(`Turned ` +
                                             `**${(guild.Auto_Delete_Translation == 1 ? 'Off' : 'On')}** Translation Messages Auto Deletion.`).setColor('#09b50c'));
                                     });
                                 } else {
@@ -515,7 +515,7 @@ exports.run = (bot, guild, message, args) => {
                                     bot.con.query(update_cmd, (error, results, fields) => {
                                         if (error) return console.error(error); //Throw error and return
                                         //Message
-                                        message.channel.send(new Discord.MessageEmbed().setDescription(`Successfully Turned ` +
+                                        message.channel.send(new Discord.MessageEmbed().setDescription(`Turned ` +
                                             `**${(guild.Embedded_Translations == 1 ? 'Off' : 'On')}** Embedded Translation Message Outputs.`).setColor('#09b50c'));
                                     });
                                 } else {
@@ -534,6 +534,72 @@ exports.run = (bot, guild, message, args) => {
                         message.channel.send(new Discord.MessageEmbed().setDescription(`Currently I ` +
                             `**${(guild.Embedded_Translations == 1 ? 'Will' : 'Will Not')}** Use Embedded Translation messages as the output.`).setColor('#0099ff'));
                     }
+                    break;
+                case 'baselanguage': case 'globallanguage': case 'baselang': case 'globallang': case 'baselan': case 'globallan':
+                case 'basel': case 'globall': case 'base': case 'global': case 'bl': case 'gl': case 'b': case 'g':
+                    //Get all supported languages
+                    new Promise((resolve, reject) => {
+                        googleTranslate.getSupportedLanguages('en', function (err, languageCodes) {
+                            if (!err) resolve(languageCodes);
+                        });
+                    }).then((value) => {
+                        //Get base language name
+                        var baseLanguage = value.find(i => i.language == guild.Default_Language_Code).name
+
+                        if (args.length > 0) {
+                            //Get language query. This should either be a language name or language code
+                            var command = args.shift().toLowerCase();
+
+                            //Check which command you want
+                            switch (command) {
+                                case 'change': case 'ch': case '=': //Change server base language
+                                    //Check if user has perms
+                                    if (message.member.hasPermission('MANAGE_GUILD')) {
+                                        //Get query
+                                        var query = args.shift().toLowerCase();
+
+                                        //Check if query exists
+                                        if (query) {
+                                            //Check that the query exists in the supported languages or language names
+                                            var languageCodeFound = (value.find(i => i.language.toLowerCase() == query) ||
+                                                value.find(i => i.name.toLowerCase() == query));
+                                            //Check if language code exists
+                                            if (languageCodeFound) {
+                                                //Update the base server language
+                                                const update_cmd = `
+                                                UPDATE servers
+                                                SET Default_Language_Code = "${languageCodeFound.language}"
+                                                WHERE ServerId = "${message.guild.id}"
+                                                `;
+                                                bot.con.query(update_cmd, (error, results, fields) => {
+                                                    if (error) return console.error(error); //Throw error and return
+                                                    //Message
+                                                    message.channel.send(new Discord.MessageEmbed().setDescription(`Changed Server Base Language from ${baseLanguage} to ${languageCodeFound.name}`).setColor('#09b50c'));
+                                                });
+                                            } else {
+                                                message.channel.send(new Discord.MessageEmbed().setDescription(`Sorry, ${query} either doesn\'t exist or maybe you\'ve misspelled the language name?`).setColor('#b50909'));
+                                            }
+                                        } else {
+                                            message.channel.send(new Discord.MessageEmbed().setDescription('Sorry, you did not select a language name/code to change the base server language to.').setColor('#b50909'));
+                                        }
+                                    } else {
+                                        message.channel.send(new Discord.MessageEmbed().setDescription('Sorry, you need to have server manager permissions to change the base server language.').setColor('#b50909'));
+                                    }
+                                    break;
+                                case 'current': case 'curr': case 'cur': case 'c': //List out base language setting for the user
+                                    //Send message
+                                    message.channel.send(new Discord.MessageEmbed().setDescription(`The Current Server Base Language is ` +
+                                        `**${baseLanguage}**. Anything not in ${baseLanguage} will be translated to ${baseLanguage}`).setColor('#0099ff'));
+                                    break;
+                            }
+                        } else {
+                            //Send message
+                            message.channel.send(new Discord.MessageEmbed().setDescription(`The Current Server Base Language is ` +
+                                `**${baseLanguage}**. Anything not in ${baseLanguage} will be translated to ${baseLanguage}`).setColor('#0099ff'));
+                        }
+                    }).catch((err) => {
+                        message.channel.send(new Discord.MessageEmbed().setDescription(`${err}`).setColor('#b50909'));
+                    });
                     break;
                 default:
                     HelpMessage(bot, guild, message, args);
