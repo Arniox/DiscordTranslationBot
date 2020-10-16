@@ -111,7 +111,7 @@ module.exports = (bot, message) => {
 //Function evaluate the calculation
 function evaluate(expr) {
     try {
-        return maths.evaluate(expr);
+        return maths.format(maths.evaluate(expr), { notation: 'fixed' });
     } catch (err) {
         return;
     }
