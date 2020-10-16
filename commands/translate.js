@@ -600,7 +600,7 @@ exports.run = (bot, guild, message, args) => {
                                                         });
                                                 } else {
                                                     resolve(value.find(i => i.language.toLowerCase() == query) ||
-                                                        value.find(i => i.name.toLowerCase() == query));
+                                                        value.find(i => i.name.toLowerCase() == query) || '');
                                                 }
                                             }).then((languageCodeFound) => {
                                                 //Check if language code exists
