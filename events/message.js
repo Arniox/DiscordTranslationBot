@@ -1,5 +1,7 @@
 //Include
 const mysql = require('promise-mysql');
+const maths = require('math.js');
+const Discord = require('discord.js');
 
 module.exports = (bot, message) => {
     //Ignore all bots
@@ -82,6 +84,8 @@ module.exports = (bot, message) => {
                         cmd.run(bot, results[0], message, args);
                         message.delete({ timeout: 200 }); //Delete message
                     }).catch(() => { return; });
+                } else if (isValidMathExpression(message.content)) {
+                    message.reply(new Discord.MessageEmbed().setDescription(`> ${message.content}\n = ${math.evaluate(message.content)}`).setColor('#0099ff'));
                 } else {
                     //If message is empty
                     if (!message.content) return;
@@ -102,4 +106,14 @@ module.exports = (bot, message) => {
     }).catch((err) => {
         console.log(err, `Connection failed on message`);
     });
+}
+
+//Function check if string is maths equation
+function isValidMathExpression(expr) {
+    try {
+        maths.parse(expr);
+        return true;
+    } catch (err) {
+        return false;
+    }
 }
