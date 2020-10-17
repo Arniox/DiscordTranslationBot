@@ -90,6 +90,8 @@ module.exports = (bot, message) => {
                             message.delete({ timeout: 200 }); //Delete message
                         }).catch(() => { return; });
                     } else if (evaluate(message.content)) {
+                        console.log('I can calculate this');
+
                         message.channel.send(new Discord.MessageEmbed().setDescription(`> ${NickName(message.member)} ${message.content}\n = ${evaluate(message.content).trimString(2048)}`).setColor('#0099ff'));
                     } else {
                         //Get the specific translatemessage command data from client.commands Enmap
