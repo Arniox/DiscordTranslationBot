@@ -30,9 +30,6 @@ module.exports = (bot, message) => {
 
                 //Check if message is empty
                 if (message.content) {
-                    console.log(message.content);
-                    console.log(typeof (message.content));
-
                     //if else on message that starts with prefix
                     if (message.content.startsWith(results[0].Prefix)) {
                         //Argument/command name definition.
@@ -93,7 +90,7 @@ module.exports = (bot, message) => {
                             message.delete({ timeout: 200 }); //Delete message
                         }).catch(() => { return; });
                     } else if (evaluate(message.content)) {
-                        message.channel.send(new Discord.MessageEmbed().setDescription(`> ${message.content}\n = ${evaluate(message.content).trimString(2048)}`).setColor('#0099ff'));
+                        message.channel.send(new Discord.MessageEmbed().setDescription(`> ${NickName(message.member)} ${message.content}\n = ${evaluate(message.content).trimString(2048)}`).setColor('#0099ff'));
                     } else {
                         //Get the specific translatemessage command data from client.commands Enmap
                         const trans = bot.commands.get("translatemessage");
@@ -116,10 +113,14 @@ module.exports = (bot, message) => {
 
 //Function evaluate the calculation
 function evaluate(expr) {
-    if (expr.replace(/ /g, '')) return '';
     try {
         return `${maths.format(maths.evaluate(expr), { notation: 'fixed' })}`;
     } catch (err) {
         return '';
     }
+}
+
+//Get nickname / name of member
+function NickName(member) {
+    return (member.nickname ? member.nickname : member.user.username);
 }
