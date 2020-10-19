@@ -207,9 +207,11 @@ exports.run = (bot, guild, message, args) => {
                         },
                         {
                             name: 'Command Patterns: ',
-                            value: `${guild.Prefix}nick [translate:trans:tran:t / set:s / reset:rest:res:r / ignore:ign:ig:i / ` +
+                            value: `${guild.Prefix}nick [translate:trans:tran:t / set:s / append:app:a / prepend:prep:p / reset:rest:res:r / ignore:ign:ig:i / ` +
                                 `frozen:freeze:freez:free:fr:f / unfrozen:unfreeze:unfreez:unfree:unfr:unf:uf] [selector] [setting]\n` +
                                 `${guild.Prefix}nick translate [all:a / me:m / someone:some:s:one / whisper:whis:wis:w ] [:?member tag] [:?languagecode]\n` +
+                                `${guild.Prefix}nick append [all:a / me:m / someone:some:s:one] [:?member tag] [suffix]\n` +
+                                `${guild.Prefix}nick prepend [all:a / me:m / someone:some:s:one] [:?member tag] [prefix]\n` +
                                 `${guild.Prefix}nick set [all:a / me:m / someone:some:s:one] [:?member tag] [newname]\n` +
                                 `${guild.Prefix}nick reset [all:a / me:m / someone:some:s:one] [:?member tag]\n` +
                                 `${guild.Prefix}nick freeze [member tag / lists:list:lis:li:l] [:?newname]\n` +
@@ -230,6 +232,12 @@ exports.run = (bot, guild, message, args) => {
                                 `${guild.Prefix}nick set all StuffAndThings\n` +
                                 `${guild.Prefix}nick set me StuffAndThings\n` +
                                 `${guild.Prefix}nick set someone ${randomMember.toString()} StuffAndThings\n` +
+                                `${guild.Prefix}nick append all .APEX\n` +
+                                `${guild.Prefix}nick append me .APEX\n` +
+                                `${guild.Prefix}nick append someone ${randomMember.toString()} .APEX\n` +
+                                `${guild.Prefix}nick prepend all Slacker-\n` +
+                                `${guild.Prefix}nick prepend me Slacker-\n` +
+                                `${guild.Prefix}nick prepend someone ${randomMember.toString()} Slacker-\n` +
                                 `${guild.Prefix}nick reset all\n` +
                                 `${guild.Prefix}nick reset me\n` +
                                 `${guild.Prefix}nick reset someone ${randomMember.toString()}\n` +
