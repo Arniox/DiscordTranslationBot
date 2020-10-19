@@ -513,8 +513,50 @@ exports.run = (bot, guild, message, args) => {
                             }
                             break;
                         case 'me': case 'm':
+                            var query = args.join(" ");
+
+                            //Check if query exists
+                            if (query) {
+                                if (IsLowerRoles(message, message.member)) {
+                                    //Get current user nickname
+                                    var currentUserNickName = NickName(message.member);
+                                    //Change nickname
+                                    message.member.setNickname((NickName(message.member) + query), `Appended ${message.member.user.username}\'s nickname with ${query}.`);
+                                    //Send message
+                                    message.channel.send(new Discord.MessageEmbed().setDescription(`I have appended your name, ${currentUserNickName}, with ${query}`).setColor('#09b50c'));
+                                } else {
+                                    message.channel.send(new Discord.MessageEmbed().setDescription(`I cannot append your nickname ${message.member.toString()} due to Missing Permissions.`).setColor('#b50909'));
+                                }
+                            } else {
+                                message.channel.send(new Discord.MessageEmbed().setDescription(`Sorry, you cannot set yor own name to nothing.`).setColor('#b50909'));
+                            }
                             break;
                         case 'someone': case 'some': case 'one': case 's':
+                            //Check if correct perms
+                            if (IsNickNamer(message)) {
+                                if (mentions.size == 1) {
+                                    if (IsLowerRoles(message, mentions.first())) {
+                                        //Get query
+                                        args.shift(); //Remove mention
+                                        var query = args.join(" ");
+
+                                        //Check if query exists
+                                        if (query) {
+                                            //Change nickname
+                                            mentions.first().setNickname((NickName(mentions.first()) + query), `Appended ${mentions.first().user.username}\'s nickname with ${query}`);
+                                        } else {
+                                            message.channel.send(new Discord.MessageEmbed().setDescription(`Sorry, I cannot append ${mentions.first().toString()}\'s nickname with nothing.`).setColor('#b50909'));
+                                        }
+                                    } else {
+                                        message.channel.send(new Discord.MessageEmbed().setDescription(`I had a problem appending ${mentions.first().toString()}\'s nickname due to Missing Permissions.`).setColor('#b50909'));
+                                    }
+                                } else {
+                                    message.channel.send(new Discord.MessageEmbed().setDescription('Sorry, you either didn\'t select anyone or you selected too many people to run this command on.' +
+                                        'I can only set one person at a time.').setColor('#b50909'));
+                                }
+                            } else {
+                                message.channel.send(new Discord.MessageEmbed().setDescription('Sorry, you need nick naming perms to run this command.').setColor('#b50909'));
+                            }
                             break;
                         default:
                             HelpMessage(bot, guild, message, args);
@@ -585,8 +627,50 @@ exports.run = (bot, guild, message, args) => {
                             }
                             break;
                         case 'me': case 'm':
+                            var query = args.join(" ");
+
+                            //Check if query exists
+                            if (query) {
+                                if (IsLowerRoles(message, message.member)) {
+                                    //Get current user nickname
+                                    var currentUserNickName = NickName(message.member);
+                                    //Change nickname
+                                    message.member.setNickname((query + NickName(message.member)), `Prepended ${message.member.user.username}\'s nickname with ${query}.`);
+                                    //Send message
+                                    message.channel.send(new Discord.MessageEmbed().setDescription(`I have prepended your name, ${currentUserNickName}, with ${query}`).setColor('#09b50c'));
+                                } else {
+                                    message.channel.send(new Discord.MessageEmbed().setDescription(`I cannot prepend your nickname ${message.member.toString()} due to Missing Permissions.`).setColor('#b50909'));
+                                }
+                            } else {
+                                message.channel.send(new Discord.MessageEmbed().setDescription(`Sorry, you cannot set yor own name to nothing.`).setColor('#b50909'));
+                            }
                             break;
                         case 'someone': case 'some': case 'one': case 's':
+                            //Check if correct perms
+                            if (IsNickNamer(message)) {
+                                if (mentions.size == 1) {
+                                    if (IsLowerRoles(message, mentions.first())) {
+                                        //Get query
+                                        args.shift(); //Remove mention
+                                        var query = args.join(" ");
+
+                                        //Check if query exists
+                                        if (query) {
+                                            //Change nickname
+                                            mentions.first().setNickname((query + NickName(mentions.first())), `Prepended ${mentions.first().user.username}\'s nickname with ${query}`);
+                                        } else {
+                                            message.channel.send(new Discord.MessageEmbed().setDescription(`Sorry, I cannot prepend ${mentions.first().toString()}\'s nickname with nothing.`).setColor('#b50909'));
+                                        }
+                                    } else {
+                                        message.channel.send(new Discord.MessageEmbed().setDescription(`I had a problem prepending ${mentions.first().toString()}\'s nickname due to Missing Permissions.`).setColor('#b50909'));
+                                    }
+                                } else {
+                                    message.channel.send(new Discord.MessageEmbed().setDescription('Sorry, you either didn\'t select anyone or you selected too many people to run this command on.' +
+                                        'I can only set one person at a time.').setColor('#b50909'));
+                                }
+                            } else {
+                                message.channel.send(new Discord.MessageEmbed().setDescription('Sorry, you need nick naming perms to run this command.').setColor('#b50909'));
+                            }
                             break;
                         default:
                             HelpMessage(bot, guild, message, args);
