@@ -92,7 +92,7 @@ module.exports = (bot, message) => {
                     } else if (evaluate(message.content)) {
                         console.log('I can calculate this');
 
-                        message.channel.send(new Discord.MessageEmbed().setDescription(`> ${NickName(message.member)} ${message.content}\n = ${evaluate(message.content).trimString(2048)}`).setColor('#0099ff'));
+                        message.channel.send(new Discord.MessageEmbed().setDescription(`> ``${message.member.toString()}: ${message.content}``\n = ${evaluate(message.content).trimString(2048)}`).setColor('#0099ff'));
                     } else {
                         //Get the specific translatemessage command data from client.commands Enmap
                         const trans = bot.commands.get("translatemessage");
@@ -120,9 +120,4 @@ function evaluate(expr) {
     } catch (err) {
         return '';
     }
-}
-
-//Get nickname / name of member
-function NickName(member) {
-    return (member.nickname ? member.nickname : member.user.username);
 }
