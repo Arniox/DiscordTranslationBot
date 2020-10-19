@@ -536,8 +536,7 @@ exports.run = (bot, guild, message, args) => {
                             `**${(guild.Embedded_Translations == 1 ? 'Will' : 'Will Not')}** Use Embedded Translation messages as the output.`).setColor('#0099ff'));
                     }
                     break;
-                case 'baselanguage': case 'globallanguage': case 'baselang': case 'globallang': case 'baselan': case 'globallan':
-                case 'basel': case 'globall': case 'base': case 'global': case 'bl': case 'gl': case 'b': case 'g':
+                case 'baselanguage': case 'globallanguage': case 'baselang': case 'globallang':
                     //Get all supported languages
                     new Promise((resolve, reject) => {
                         googleTranslate.getSupportedLanguages('en', function (err, languageCodes) {
@@ -650,6 +649,8 @@ exports.run = (bot, guild, message, args) => {
                     }).catch((err) => {
                         message.channel.send(new Discord.MessageEmbed().setDescription(`${err}`).setColor('#b50909'));
                     });
+                    break;
+                case 'mainoutput': case 'channeloutput': case 'outputchannel': case 'mainchannel': case 'mainchan': case 'outputchan': case 'chanoutput':
                     break;
                 default:
                     HelpMessage(bot, guild, message, args);

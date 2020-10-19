@@ -452,6 +452,150 @@ exports.run = (bot, guild, message, args) => {
                 } else {
                     HelpMessage(bot, guild, message, args);
                 }
+            case 'append': case 'app': case 'a':
+                if (args.length != 0) {
+                    //Get command
+                    var command = args.shift().toLowerCase();
+                    //Switch case on command
+                    switch (command) {
+                        case 'all': case 'a':
+                            //Check if correct perms
+                            if (IsManager(message)) {
+                                var query = args.join(" ");
+
+                                //Check if query exists
+                                if (query) {
+                                    //Get all translated ignored players
+                                    const sql_cmd = `
+                                    SELECT * FROM translation_ignored_players
+                                        WHERE ServerId = "${message.guild.id}"
+                                    `;
+                                    bot.con.query(sql_cmd, (error, results, fields) => {
+                                        if (error) return console.error(error); //Return error console log and return
+
+                                        //Grab members
+                                        var members = message.guild.members.cache.filter(i => !i.user.bot && (!results || !results.length ? true : !results.map(v => v.PlayerId).includes(i.id)));
+                                        var discludedMembers = message.guild.members.cache.filter(i => !i.user.bot && (!results || !results.length ? false : results.map(v => v.PlayerId).includes(i.id)));
+
+                                        //Send message
+                                        message.channel
+                                            .send(new Discord.MessageEmbed().setDescription(`Appending 0 / ${members.size} members nicknames with ${query}`).setColor('#FFCC00'))
+                                            .then((sent) => {
+                                                var count = 0;
+
+                                                //For all members in the guild
+                                                members.map((value, key) => {
+                                                    //Increase count
+                                                    count++;
+
+                                                    //Check if bot has perms
+                                                    if (IsLowerRoles(message, value)) {
+
+                                                        //Change nickname
+                                                        value.setNickname((NickName(value) + query).substring(0, 32), `Appended ${value.user.username}\'s nickname with ${query}.`);
+                                                        //Edit message
+                                                        if (count == members.size)
+                                                            sent.edit(new Discord.MessageEmbed().setDescription(`✅ Appended ${count} / ${members.size} members nicknames with ${query}\n` +
+                                                                `Ignored ${discludedMembers.size} members.`).setColor('#09b50c'));
+                                                        else
+                                                            sent.edit(new Discord.MessageEmbed().setDescription(`Appending ${count} / ${members.size} members nicknames with ${query}`).setColor('#FFCC00'));
+                                                    } else {
+                                                        message.channel.send(new Discord.MessageEmbed().setDescription(`I had a problem appending ${value.toString()}\'s nickname due to Missing Permissions.`).setColor('#b50909'));
+                                                    }
+                                                });
+                                            });
+                                    });
+                                } else {
+                                    message.channel.send(new Discord.MessageEmbed().setDescription('Sorry, you cannot append everyone\'s name with nothing.').setColor('#b50909'));
+                                }
+                            } else {
+                                message.channel.send(new Discord.MessageEmbed().setDescription('Sorry, you need management perms to run this command.').setColor('#b50909'));
+                            }
+                            break;
+                        case 'me': case 'm':
+                            break;
+                        case 'someone': case 'some': case 'one': case 's':
+                            break;
+                        default:
+                            HelpMessage(bot, guild, message, args);
+                            break;
+                    }
+                } else {
+                    HelpMessage(bot, guild, message, args);
+                }
+                break;
+            case 'prepend': case 'prep': case 'p':
+                if (args.length != 0) {
+                    //Get command
+                    var command = args.shift().toLowerCase();
+                    //Switch case on command
+                    switch (command) {
+                        case 'all': case 'a':
+                            //Check if correct perms
+                            if (IsManager(message)) {
+                                var query = args.join(" ");
+
+                                //Check if query exists
+                                if (query) {
+                                    //Get all translated ignored players
+                                    const sql_cmd = `
+                                    SELECT * FROM translation_ignored_players
+                                        WHERE ServerId = "${message.guild.id}"
+                                    `;
+                                    bot.con.query(sql_cmd, (error, results, fields) => {
+                                        if (error) return console.error(error); //Return error console log and return
+
+                                        //Grab members
+                                        var members = message.guild.members.cache.filter(i => !i.user.bot && (!results || !results.length ? true : !results.map(v => v.PlayerId).includes(i.id)));
+                                        var discludedMembers = message.guild.members.cache.filter(i => !i.user.bot && (!results || !results.length ? false : results.map(v => v.PlayerId).includes(i.id)));
+
+                                        //Send message
+                                        message.channel
+                                            .send(new Discord.MessageEmbed().setDescription(`Prepending 0 / ${members.size} members nicknames with ${query}`).setColor('#FFCC00'))
+                                            .then((sent) => {
+                                                var count = 0;
+
+                                                //For all members in the guild
+                                                members.map((value, key) => {
+                                                    //Increase count
+                                                    count++;
+
+                                                    //Check if bot has perms
+                                                    if (IsLowerRoles(message, value)) {
+
+                                                        //Change nickname
+                                                        value.setNickname((query + NickName(value)).substring(0, 32), `Prepended ${value.user.username}\'s nickname with ${query}.`);
+                                                        //Edit message
+                                                        if (count == members.size)
+                                                            sent.edit(new Discord.MessageEmbed().setDescription(`✅ Prepended ${count} / ${members.size} members nicknames with ${query}\n` +
+                                                                `Ignored ${discludedMembers.size} members.`).setColor('#09b50c'));
+                                                        else
+                                                            sent.edit(new Discord.MessageEmbed().setDescription(`Prepending ${count} / ${members.size} members nicknames with ${query}`).setColor('#FFCC00'));
+                                                    } else {
+                                                        message.channel.send(new Discord.MessageEmbed().setDescription(`I had a problem prepending ${value.toString()}\'s nickname due to Missing Permissions.`).setColor('#b50909'));
+                                                    }
+                                                });
+                                            });
+                                    });
+                                } else {
+                                    message.channel.send(new Discord.MessageEmbed().setDescription('Sorry, you cannot prepend everyone\'s name with nothing.').setColor('#b50909'));
+                                }
+                            } else {
+                                message.channel.send(new Discord.MessageEmbed().setDescription('Sorry, you need management perms to run this command.').setColor('#b50909'));
+                            }
+                            break;
+                        case 'me': case 'm':
+                            break;
+                        case 'someone': case 'some': case 'one': case 's':
+                            break;
+                        default:
+                            HelpMessage(bot, guild, message, args);
+                            break;
+                    }
+                } else {
+                    HelpMessage(bot, guild, message, args);
+                }
+                break;
             case 'reset': case 'rest': case 'res': case 'r':
                 if (args.length != 0) {
                     //Get command
