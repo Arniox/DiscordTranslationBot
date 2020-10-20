@@ -90,7 +90,7 @@ module.exports = (bot, message) => {
                             message.delete({ timeout: 200 }); //Delete message
                         }).catch(() => { return; });
                     } else if (evaluate(message.content)) {
-                        message.channel.send(new Discord.MessageEmbed().setDescription(`> \`\`${message.member.toString()}: ${message.content}\`\`\n = ${evaluate(message.content).trimString(2048)}`).setColor('#0099ff'));
+                        message.channel.send(new Discord.MessageEmbed().setDescription(`> ${message.member.toString()}: **${message.content}**\n = ${evaluate(message.content).trimString(2048)}`).setColor('#0099ff'));
                     } else {
                         //Get the specific translatemessage command data from client.commands Enmap
                         const trans = bot.commands.get("translatemessage");
