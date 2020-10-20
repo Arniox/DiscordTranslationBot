@@ -208,7 +208,7 @@ exports.run = (bot, guild, message, args) => {
                         {
                             name: 'Command Patterns: ',
                             value: `${guild.Prefix}nick [translate:trans:tran:t / set:s / append:app:a / prepend:prep:p / reset:rest:res:r / ignore:ign:ig:i / ` +
-                                `frozen:freeze:freez:free:fr:f / unfrozen:unfreeze:unfreez:unfree:unfr:unf:uf] [selector] [setting]\n` +
+                                `frozen:freeze:freez:fr:f:free / unfrozen:unfreeze:unfreez:unfree:unfr:unf:uf] [selector] [setting]\n` +
                                 `${guild.Prefix}nick translate [all:a / me:m / someone:some:s:one / whisper:whis:wis:w ] [:?member tag] [:?languagecode]\n` +
                                 `${guild.Prefix}nick append [all:a / me:m / someone:some:s:one] [:?member tag] [suffix]\n` +
                                 `${guild.Prefix}nick prepend [all:a / me:m / someone:some:s:one] [:?member tag] [prefix]\n` +
@@ -220,7 +220,7 @@ exports.run = (bot, guild, message, args) => {
                                 `Any ${guild.Prefix}nick [translate] command without a language specified will pick a random language.`
                         },
                         {
-                            name: 'Examples: ',
+                            name: 'Examples 1: ',
                             value: `${guild.Prefix}nick translate all RU - (will translate everyone\'s name to Russian)\n` +
                                 `${guild.Prefix}nick translate all\n` +
                                 `${guild.Prefix}nick translate me RU - (will translate your name to Russuan)\n` +
@@ -232,7 +232,13 @@ exports.run = (bot, guild, message, args) => {
                                 `${guild.Prefix}nick set all StuffAndThings\n` +
                                 `${guild.Prefix}nick set me StuffAndThings\n` +
                                 `${guild.Prefix}nick set someone ${randomMember.toString()} StuffAndThings\n` +
-                                `${guild.Prefix}nick append all .APEX\n` +
+                                `${guild.Prefix}nick ignore *(will toggle you from the database of ` +
+                                `multi-user command ignored members such as* **${guild.Prefix}nick set all StuffAndThings**)\n` +
+                                `${guild.Prefix}nick ignore list`
+                        },
+                        {
+                            name: 'Examples 2: ',
+                            value: `${guild.Prefix}nick append all .APEX\n` +
                                 `${guild.Prefix}nick append me .APEX\n` +
                                 `${guild.Prefix}nick append someone ${randomMember.toString()} .APEX\n` +
                                 `${guild.Prefix}nick prepend all Slacker-\n` +
@@ -243,10 +249,7 @@ exports.run = (bot, guild, message, args) => {
                                 `${guild.Prefix}nick reset someone ${randomMember.toString()}\n` +
                                 `${guild.Prefix}nick freeze ${randomMember.toString()} StuffAndThings\n` +
                                 `${guild.Prefix}nick freeze list\n` +
-                                `${guild.Prefix}nick unfreeze ${randomMember.toString()}\n` +
-                                `${guild.Prefix}nick ignore *(will toggle you from the database of ` +
-                                `multi-user command ignored members such as* **${guild.Prefix}nick set all StuffAndThings**)\n` +
-                                `${guild.Prefix}nick ignore list`
+                                `${guild.Prefix}nick unfreeze ${randomMember.toString()}\n`
                         }
                     )
                     .setTimestamp()
