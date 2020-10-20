@@ -544,6 +544,8 @@ exports.run = (bot, guild, message, args) => {
                                         if (query) {
                                             //Change nickname
                                             mentions.first().setNickname((NickName(mentions.first()) + query), `Appended ${mentions.first().user.username}\'s nickname with ${query}`);
+                                            //Send message
+                                            message.channel.send(new Discord.MessageEmbed().setDescription(`I have appended ${mentions.first().toString()}\'s nickname with ${query}`).setColor('#09b50c'));
                                         } else {
                                             message.channel.send(new Discord.MessageEmbed().setDescription(`Sorry, I cannot append ${mentions.first().toString()}\'s nickname with nothing.`).setColor('#b50909'));
                                         }
@@ -658,6 +660,8 @@ exports.run = (bot, guild, message, args) => {
                                         if (query) {
                                             //Change nickname
                                             mentions.first().setNickname((query + NickName(mentions.first())), `Prepended ${mentions.first().user.username}\'s nickname with ${query}`);
+                                            //Send message
+                                            message.channel.send(new Discord.MessageEmbed().setDescription(`I have prepended ${mentions.first().toString()}\'s nickname with ${query}`).setColor('#09b50c'));
                                         } else {
                                             message.channel.send(new Discord.MessageEmbed().setDescription(`Sorry, I cannot prepend ${mentions.first().toString()}\'s nickname with nothing.`).setColor('#b50909'));
                                         }
