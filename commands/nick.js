@@ -1075,7 +1075,7 @@ function HelpMessage(bot, guild, message, args) {
                     `Any ${guild.Prefix}nick [translate] command without a language specified will pick a random language.`
             },
             {
-                name: 'Examples: ',
+                name: 'Examples 1: ',
                 value: `${guild.Prefix}nick translate all RU - (will translate everyone\'s name to Russian)\n` +
                     `${guild.Prefix}nick translate all\n` +
                     `${guild.Prefix}nick translate me RU - (will translate your name to Russuan)\n` +
@@ -1087,7 +1087,13 @@ function HelpMessage(bot, guild, message, args) {
                     `${guild.Prefix}nick set all StuffAndThings\n` +
                     `${guild.Prefix}nick set me StuffAndThings\n` +
                     `${guild.Prefix}nick set someone ${randomMember.toString()} StuffAndThings\n` +
-                    `${guild.Prefix}nick append all .APEX\n` +
+                    `${guild.Prefix}nick ignore *(will toggle you from the database of ` +
+                    `multi-user command ignored members such as* **${guild.Prefix}nick set all StuffAndThings**)\n` +
+                    `${guild.Prefix}nick ignore list`
+            },
+            {
+                name: 'Examples 2: ',
+                value: `${guild.Prefix}nick append all .APEX\n` +
                     `${guild.Prefix}nick append me .APEX\n` +
                     `${guild.Prefix}nick append someone ${randomMember.toString()} .APEX\n` +
                     `${guild.Prefix}nick prepend all Slacker-\n` +
@@ -1098,10 +1104,7 @@ function HelpMessage(bot, guild, message, args) {
                     `${guild.Prefix}nick reset someone ${randomMember.toString()}\n` +
                     `${guild.Prefix}nick freeze ${randomMember.toString()} StuffAndThings\n` +
                     `${guild.Prefix}nick freeze list\n` +
-                    `${guild.Prefix}nick unfreeze ${randomMember.toString()}\n` +
-                    `${guild.Prefix}nick ignore *(will toggle you from the database of ` +
-                    `multi-user command ignored members such as* **${guild.Prefix}nick set all StuffAndThings**)\n` +
-                    `${guild.Prefix}nick ignore list`
+                    `${guild.Prefix}nick unfreeze ${randomMember.toString()}\n`
             }
         )
         .setTimestamp()
