@@ -71,7 +71,7 @@ exports.run = (bot, guild, message, args) => {
                             //Check if user has perms
                             if (message.member.hasPermission('MANAGE_GUILD')) {
                                 //Get all timezones
-                                var allTimeZones = moment.tz.names();
+                                var allTimeZones = moment.tz.zonesForCountry();
                                 //Map
                                 var allCountries = allTimeZones.map(v => v.match(/^([^\/])+/g).join('')).unique();
                                 console.log(allCountries);
