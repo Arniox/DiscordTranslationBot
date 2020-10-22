@@ -72,7 +72,7 @@ exports.run = (bot, guild, message, args) => {
                             if (message.member.hasPermission('MANAGE_GUILD')) {
                                 //Get all timezones
                                 var allTimeZones = moment.tz.names();
-                                console.log(allTimeZones);
+                                console.dir(allTimeZones, { 'maxArrayLength': null });
 
                                 //Map
                                 var allCountries = allTimeZones.map(v => v.match(/^([^\/])+/g).join('')).unique();
