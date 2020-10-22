@@ -132,6 +132,11 @@ String.prototype.trimString = function (length, eclipse = '...') {
         this;
 }
 
+//Array make unique
+Array.prototype.unique() = function () {
+    return [...new Set(this)];
+}
+
 //Array shuffle
 Array.prototype.shuffle = function () {
     for (let i = this.length - 1; i > 0; i--) {

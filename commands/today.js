@@ -61,7 +61,35 @@ exports.run = (bot, guild, message, args) => {
                 }
                 break;
             case 'timezones': case 'timezone': case 'zone': case 'z':
-                message.channel.send(new Discord.MessageEmbed().setDescription(`Current Time Zone is: **${now.format('zz | ZZ')}**`).setColor('#09b50c'));
+                //For timezone
+                if (args.length > 0) {
+                    var command = args.shift().toLowerCase();
+
+                    //Check which command you want
+                    switch (command) {
+                        case 'change': case 'ch': case '=':
+                            //Check if user has perms
+                            if (message.member.hasPermission('MANAGE_GUILD')) {
+                                //Get all timezones
+                                var allTimeZones = moment.tz.names();
+                                //Map
+                                var allCountries = allTimeZones.map(v => v.match(/^([^\/])+/g).join('')).unique();
+                                console.log(allCountries);
+
+                            } else {
+                                message.channel.send(new Discord.MessageEmbed().setDescription('Sorry, you need to have server manager permissions to change the server timezone.').setColor('#b50909'));
+                            }
+                            break;
+                        case 'current': case 'curr': case 'cur': case 'c':
+                            message.channel.send(new Discord.MessageEmbed().setDescription(`Current Time Zone is: **${now.format('zz | ZZ')}**`).setColor('#09b50c'));
+                            break;
+                        default:
+                            HelpMessage(bot, guild, message, args);
+                            break;
+                    }
+                } else {
+                    message.channel.send(new Discord.MessageEmbed().setDescription(`Current Time Zone is: **${now.format('zz | ZZ')}**`).setColor('#09b50c'));
+                }
                 break;
             //Calculate time
             case 'calculate': case 'calc': case 'c':
