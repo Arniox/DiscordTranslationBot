@@ -179,12 +179,12 @@ Array.prototype.max = function () {
 
 //Remove specific element in array
 Array.prototype.removeElement = function (elementToRemove) {
-    for (var i = 0; i < this.length; i++) {
-        if (this[i] === elementToRemove) {
-            this.splice(i, 1);
-        }
-    }
-    return this;
+    return this.filter(item => item !== elementToRemove);
+}
+
+//Remove all items
+Array.prototype.removeThese = function (elementsToRemove) {
+    return this.filter(item => !elementsToRemove.includes(item));
 }
 
 //Maps to Math.abs

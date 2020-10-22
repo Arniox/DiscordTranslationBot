@@ -75,7 +75,9 @@ exports.run = (bot, guild, message, args) => {
                                 console.dir(allTimeZones, { 'maxArrayLength': null });
 
                                 //Map
-                                var allCountries = allTimeZones.map(v => v.match(/^([^\/])+/g).join('')).unique();
+                                var allCountries = allTimeZones.map(v => v.match(/^([^\/])+/g).join('')).unique()
+                                    .removeThese(['CET', 'CST6CDT', 'EET', 'EST', 'EST5EDT', 'Etc', 'GB', 'GB-Eire', 'GMT', 'GMT+0', 'GMT-0', 'GMT0', 'HST',
+                                        'MET', 'MST', 'MST7MDT', 'NZ', 'NZ-CHAT', 'PRC', 'PST8PDT', 'ROC', 'ROK', 'UCT', 'US', 'UTC', 'W-SU', 'WET']);
                                 console.log(allCountries);
 
                             } else {
