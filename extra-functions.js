@@ -133,7 +133,7 @@ String.prototype.trimString = function (length, eclipse = '...') {
 }
 
 //Array make unique
-Array.prototype.unique() = function () {
+Array.prototype.unique = function () {
     return [...new Set(this)];
 }
 
