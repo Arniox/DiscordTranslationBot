@@ -72,13 +72,112 @@ exports.run = (bot, guild, message, args) => {
                             if (message.member.hasPermission('MANAGE_GUILD')) {
                                 //Get all timezones
                                 var allTimeZones = moment.tz.names();
-                                console.dir(allTimeZones, { 'maxArrayLength': null });
-
                                 //Map
                                 var allCountries = allTimeZones.map(v => v.match(/^([^\/])+/g).join('')).unique()
                                     .removeThese(['CET', 'CST6CDT', 'EET', 'EST', 'EST5EDT', 'Etc', 'GB', 'GB-Eire', 'GMT', 'GMT+0', 'GMT-0', 'GMT0', 'HST',
                                         'MET', 'MST', 'MST7MDT', 'NZ', 'NZ-CHAT', 'PRC', 'PST8PDT', 'ROC', 'ROK', 'UCT', 'US', 'UTC', 'W-SU', 'WET']);
-                                console.log(allCountries);
+
+                                //Send message
+                                message.channel
+                                    .send(new Discord.MessageEmbed().setDescription(`What country is your new timezone?\n${allCountries.join('\n')}`).setColor('#FFCC00'))
+                                    .then((sent) => {
+                                        //Message filter and collector
+                                        const countryFilter = m => m.member.id == message.member.id && m.content;
+                                        const countryCollector = sent.channel.createMessageCollector(countryFilter, { time: 20000 });
+
+                                        //Await message collector on collect
+                                        countryCollector.on('collect', m => {
+                                            m.delete({ timeout: 100 }); //Delete message
+
+                                            //Check if that country exists
+                                            if (allCountries.map(i => i.toLowerCase()).includes(m.content.toLowerCase())) {
+                                                //Countries timezones
+                                                var countryTimeZones = allTimeZones.filter(i => i.toLowerCase().startsWith(m.content.toLowerCase())).map(v => v.match(/([^\/])+$/g)).unique();
+
+                                                //Check if this country only has one option
+                                                if (countryTimeZones.length > 1) {
+                                                    //Send new message
+                                                    sent.edit(new Discord.MessageEmbed().setDescription(`What specific timezone from ${m.content} do you want to select?\n${countryTimeZones.join('\n')}`).setColor('#FFCC00'))
+                                                        .then((sent) => {
+                                                            //Message filter and collector
+                                                            const cityFilter = m => m.member.id == message.member.id && m.content;
+                                                            const cityCollector = sent.channel.createMessageCollector(cityFilter, { time: 20000 });
+
+                                                            //Await message collector on collect
+                                                            cityCollector.on('collect', m2 => {
+                                                                m2.delete({ timeout: 100 }); //Delete message
+
+                                                                //Check if that city exists
+                                                                if (countryTimeZones.map(i => i.toLowerCase()).includes(m2.content.toLowerCase())) {
+                                                                    //Cityies timezones
+                                                                    var cityTimeZone = countryTimeZones.find(i => i.toLowerCase() == m2.content.toLowerCase());
+
+                                                                    //Update server database
+                                                                    //Update new setting
+                                                                    const update_cmd = `
+                                                                    UPDATE servers
+                                                                    SET Time_Zone_Offset = "${allTimeZones.find(i => i.toLowerCase().startsWith(m.content.toLowerCase()) && i.toLowerCase().endsWith(m2.content.toLowerCase()))}"
+                                                                    WHERE ServerId = "${message.guild.id}"
+                                                                    `;
+                                                                    bot.con.query(update_cmd, (error, results, fields) => {
+                                                                        if (error) return console.error(error); //Throw error and return
+                                                                        //Message
+                                                                        sent.edit(new Discord.MessageEmbed().setDescription(`Updated server timezone from ${guild.Time_Zone_Offset} to ${m.content}/${cityTimeZone}`).setColor('#09b50c'));
+                                                                    });
+                                                                } else {
+                                                                    //Send error message
+                                                                    message.channel
+                                                                        .send(new Discord.MessageEmbed().setDescription(`Sorry, ${m.content} is not a city I recognize! Please type the city again.`).setColor('#b50909'))
+                                                                        .then((sent) => {
+                                                                            sent.delete({ timeout: 5000 });
+                                                                        });
+                                                                    //Empty the collector and reset the timer
+                                                                    cityCollector.empty();
+                                                                    cityCollector.resetTimer();
+                                                                }
+                                                            });
+                                                            //Await message collector on end
+                                                            cityCollector.on('end', m => {
+                                                                //Do not save
+                                                                if (m.size == 0)
+                                                                    sent.edit(new Discord.MessageEmbed().setDescription(`No city was selected within 20s. Try again next time.`).setColor('#b50909'));
+                                                            });
+                                                        });
+                                                } else {
+                                                    //Update server database
+
+                                                    //Update new setting
+                                                    const update_cmd = `
+                                                    UPDATE servers
+                                                    SET Time_Zone_Offset = "${allTimeZones.find(i => i.toLowerCase().startsWith(m.content.toLowerCase()))}"
+                                                    WHERE ServerId = "${message.guild.id}"
+                                                    `;
+                                                    bot.con.query(update_cmd, (error, results, fields) => {
+                                                        if (error) return console.error(error); //Throw error and return
+                                                        //Message
+                                                        sent.edit(new Discord.MessageEmbed().setDescription(`Updated server timezone from ${guild.Time_Zone_Offset} to ${countryTimeZones[0]}`).setColor('#09b50c'));
+                                                    });
+                                                }
+                                            } else {
+                                                //Send error message
+                                                message.channel
+                                                    .send(new Discord.MessageEmbed().setDescription(`Sorry, ${m.content} is not a country I recognize! Please type the country again.`).setColor('#b50909'))
+                                                    .then((sent) => {
+                                                        sent.delete({ timeout: 5000 });
+                                                    });
+                                                //Empty the collector and reset the timer
+                                                countryCollector.empty();
+                                                countryCollector.resetTimer();
+                                            }
+                                        });
+                                        //Await message collector on end
+                                        countryCollector.on('end', m => {
+                                            //Do not go to next
+                                            if (m.size == 0)
+                                                sent.edit(new Discord.MessageEmbed().setDescription('No country was selected within 20s. Try again next time.').setColor('#b50909'));
+                                        });
+                                    });
+
 
                             } else {
                                 message.channel.send(new Discord.MessageEmbed().setDescription('Sorry, you need to have server manager permissions to change the server timezone.').setColor('#b50909'));
