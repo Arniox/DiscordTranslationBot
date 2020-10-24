@@ -96,8 +96,12 @@ exports.run = (bot, guild, message, args) => {
 
                                                 //Check if this country only has one option
                                                 if (countryTimeZones.length > 1) {
+                                                    //Stop old collector and delete message
+                                                    countryCollector.stop();
+                                                    sent.delete({ timeout: 0 });
+
                                                     //Send new message
-                                                    sent.edit(new Discord.MessageEmbed().setDescription(`What specific timezone from ${m.content} do you want to select?\n${countryTimeZones.join('\n')}`).setColor('#FFCC00'))
+                                                    message.channel.send(new Discord.MessageEmbed().setDescription(`What specific timezone from ${m.content} do you want to select?\n${countryTimeZones.join('\n')}`).setColor('#FFCC00'))
                                                         .then((sent) => {
                                                             //Message filter and collector
                                                             const cityFilter = m => m.member.id == message.member.id && m.content;
