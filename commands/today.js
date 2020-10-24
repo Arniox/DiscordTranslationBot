@@ -92,7 +92,7 @@ exports.run = (bot, guild, message, args) => {
                                             //Check if that country exists
                                             if (allCountries.map(i => i.toLowerCase()).includes(m.content.toLowerCase())) {
                                                 //Countries timezones
-                                                var countryTimeZones = allTimeZones.filter(i => i.toLowerCase().startsWith(m.content.toLowerCase())).map(v => v.match(/([^\/])+$/g)).unique();
+                                                var countryTimeZones = allTimeZones.filter(i => i.toLowerCase().startsWith(m.content.toLowerCase())).map(v => v.match(/([^\/])+$/g).join('')).unique();
 
                                                 //Check if this country only has one option
                                                 if (countryTimeZones.length > 1) {
