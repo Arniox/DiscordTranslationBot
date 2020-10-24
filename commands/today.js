@@ -123,6 +123,7 @@ exports.run = (bot, guild, message, args) => {
                                                                         if (error) return console.error(error); //Throw error and return
                                                                         //Message
                                                                         sent.edit(new Discord.MessageEmbed().setDescription(`Updated server timezone from ${guild.Time_Zone_Offset} to ${m.content}/${cityTimeZone}`).setColor('#09b50c'));
+                                                                        cityCollector.stop();
                                                                     });
                                                                 } else {
                                                                     //Send error message
@@ -132,7 +133,6 @@ exports.run = (bot, guild, message, args) => {
                                                                             sent.delete({ timeout: 5000 });
                                                                         });
                                                                     //Empty the collector and reset the timer
-                                                                    cityCollector.empty();
                                                                     cityCollector.resetTimer();
                                                                 }
                                                             });
@@ -156,6 +156,7 @@ exports.run = (bot, guild, message, args) => {
                                                         if (error) return console.error(error); //Throw error and return
                                                         //Message
                                                         sent.edit(new Discord.MessageEmbed().setDescription(`Updated server timezone from ${guild.Time_Zone_Offset} to ${countryTimeZones[0]}`).setColor('#09b50c'));
+                                                        countryCollector.stop();
                                                     });
                                                 }
                                             } else {
@@ -166,7 +167,6 @@ exports.run = (bot, guild, message, args) => {
                                                         sent.delete({ timeout: 5000 });
                                                     });
                                                 //Empty the collector and reset the timer
-                                                countryCollector.empty();
                                                 countryCollector.resetTimer();
                                             }
                                         });
