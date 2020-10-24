@@ -111,8 +111,6 @@ exports.run = (bot, guild, message, args) => {
                                                             cityCollector.on('collect', m2 => {
                                                                 m2.delete({ timeout: 100 }); //Delete message
 
-                                                                console.log(countryTimeZones);
-
                                                                 //Check if that city exists
                                                                 if (countryTimeZones.map(i => i.toLowerCase()).includes(m2.content.toLowerCase())) {
                                                                     //Cityies timezones
