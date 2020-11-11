@@ -650,7 +650,7 @@ exports.run = (bot, guild, message, args) => {
                         message.channel.send(new Discord.MessageEmbed().setDescription(`${err}`).setColor('#b50909'));
                     });
                     break;
-                case 'mainoutput': case 'channeloutput': case 'outputchannel': case 'mainchannel': case 'mainchan': case 'outputchan': case 'chanoutput':
+                case 'mainoutput': case 'mainout': case 'channeloutput': case 'outputchannel': case 'mainchannel': case 'mainchan': case 'outputchan': case 'chanoutput': case 'outmain':
                     //Get base channel output name
                     var baseChannel = (guild.Default_Channel_Output ?
                         message.guild.channels.cache.get(guild.Default_Channel_Output).toString() : '**Default**');

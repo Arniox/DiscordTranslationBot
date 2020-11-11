@@ -48,7 +48,8 @@ exports.run = (bot, guild, message, args) => {
                             googleTranslate.translate(message.content, detection.language, guild.Default_Language_Code, function (err, translation) {
                                 if (translation.translatedText !== message.content) {
                                     //Auto delete messages if turned on
-                                    if (guild.Auto_Delete_Translation == 1) message.delete({ timeout: 100 }); //Delete message
+                                    //Also, only delete message if the channel it's posted in is the same as the output channel
+                                    if (guild.Auto_Delete_Translation == 1 && guild.Default_Channel_Output == message.channel.id) message.delete({ timeout: 100 }); //Delete message
                                     //Get country
                                     //Always get all the supported languages in english for readability
                                     googleTranslate.getSupportedLanguages('en', function (err, languageCodes) {
