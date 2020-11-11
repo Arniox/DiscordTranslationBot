@@ -9,6 +9,17 @@ module.exports = (bot, channel) => {
         //Attach connection to bot
         bot.con = connection;
 
+        //Delete main channel translation output
+        const remove_maintrans_cmd = `
+        UPDATE servers
+        Default_Channel_Output = NULL
+        WHERE Default_Channel_Output = "${channel.id}"
+        AND ServerId = "${channel.guild.id}"
+        `;
+        bot.con.query(remove_maintrans_cmd, (error, results, fields) => {
+            if (error) return console.error(error); //Return error console log
+        });
+
         //Delete from database for translation_ignored_channels
         const remove_trans_cmd = `
         DELETE FROM translation_ignored_channels

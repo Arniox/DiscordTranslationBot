@@ -547,7 +547,6 @@ exports.run = (bot, guild, message, args) => {
                         var baseLanguage = value.find(i => i.language == guild.Default_Language_Code).name
 
                         if (args.length > 0) {
-                            //Get language query. This should either be a language name or language code
                             var command = args.shift().toLowerCase();
 
                             //Check which command you want
@@ -557,6 +556,7 @@ exports.run = (bot, guild, message, args) => {
                                     if (message.member.hasPermission('MANAGE_GUILD')) {
                                         //Get query
                                         if (args.length != 0) {
+                                            //Get language query. This should either be a language name or language code
                                             var query = args.shift().toLowerCase();
 
                                             //Check if query exists
@@ -651,6 +651,77 @@ exports.run = (bot, guild, message, args) => {
                     });
                     break;
                 case 'mainoutput': case 'channeloutput': case 'outputchannel': case 'mainchannel': case 'mainchan': case 'outputchan': case 'chanoutput':
+                    //Get base channel output name
+                    var baseChannel = (guild.Default_Channel_Output ?
+                        message.guild.channels.cache.get(guild.Default_Channel_Output).toString() : '**Default**');
+
+                    //Get channel mentions
+                    var channelMentions = message.mentions.channels;
+
+                    if (args.length > 0) {
+                        var command = args.shift().toLowerCase();
+
+                        //Check which command you want
+                        switch (command) {
+                            case 'change': case 'ch': case '=': //Change the main channel output.
+                                //Check if userr has perms
+                                if (message.member.hasPermission('MANAGE_GUILD')) {
+                                    if (channelMentions.size > 0) {
+                                        if (channelMentions.size < 2) {
+                                            //Set main channel to selected channel
+
+                                            //Update the base server translation output channel
+                                            const update_cmd = `
+                                            UPDATE servers
+                                            SET Default_Channel_Output = "${channelMentions.first().id}"
+                                            WHERE ServerId = "${message.guild.id}"
+                                            `;
+                                            bot.con.query(update_cmd, (error, results, fields) => {
+                                                if (error) return console.error(error); //Throw error and return
+                                                //Message
+                                                message.channel.send(new Discord.MessageEmbed().setDescription(`Changed Server main translation output channel from ${baseChannel} to ${channelMentions.first().toString()}`).setColor('#09b50c'));
+                                            });
+                                        } else {
+                                            message.channel.send(new Discord.MessageEmbed().setDescription(`Sorry, you can only set the main translation output channel to one channel.`).setColor('#b50909'));
+                                        }
+                                    } else {
+                                        //Set main channel to default
+
+                                        //Update the base server translation output channel
+                                        const update_cmd = `
+                                        UPDATE servers
+                                        SET Default_Channel_Output = NULL
+                                        WHERE ServerId = "${message.guild.id}"
+                                        `;
+                                        bot.con.query(update_cmd, (error, results, fields) => {
+                                            if (error) return console.error(error); //Throw error and return
+                                            //Message
+                                            message.channel.send(new Discord.MessageEmbed().setDescription(`Changed Server main translation output channel from ${baseChannel} to **Default**`).setColor('#09b50c'));
+                                        });
+                                    }
+                                } else {
+                                    message.channel.send(new Discord.MessageEmbed().setDescription(`Sorry, you need to have server manager permissions to change the main translation output channel.`).setColor('#b50909'));
+                                }
+                                break;
+                            case 'current': case 'curr': case 'cur': case 'c': //List out the current main channel output.
+                                //Send message
+                                message.channel.send(new Discord.MessageEmbed()
+                                    .setDescription(`The main translation output channel is ${baseChannel}`)
+                                    .setColor('#0099ff')
+                                    .setFooter('*(By default, translations are output to the same channel as the sent message)*'));
+                                break;
+                            default:
+                                HelpMessage(bot, guild, message, args);
+                                break;
+                        }
+                    } else {
+                        //Send message
+                        message.channel.send(new Discord.MessageEmbed()
+                            .setDescription(`The main translation output channel is ${baseChannel}`)
+                            .setColor('#0099ff')
+                            .setFooter('*(By default, translations are output to the same channel as the sent message)*'));
+                    }
+
                     break;
                 default:
                     HelpMessage(bot, guild, message, args);

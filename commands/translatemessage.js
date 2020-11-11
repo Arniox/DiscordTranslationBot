@@ -51,35 +51,46 @@ exports.run = (bot, guild, message, args) => {
                                     if (guild.Auto_Delete_Translation == 1) message.delete({ timeout: 100 }); //Delete message
                                     //Get country
                                     //Always get all the supported languages in english for readability
-                                    googleTranslate.getSupportedLanguages('en', function (err, languageCodes) {
-                                        var currentBaseLang = languageCodes.find(i => i.language == guild.Default_Language_Code);
-                                        var detectedLang = languageCodes.find(i => i.language == detection.language);
+                                    new Promise((resolve, reject) => {
+                                        googleTranslate.getSupportedLanguages('en', function (err, languageCodes) {
+                                            var currentBaseLang = languageCodes.find(i => i.language == guild.Default_Language_Code);
+                                            var detectedLang = languageCodes.find(i => i.language == detection.language);
 
-                                        //Check if server has embedded translation on
-                                        if (guild.Embedded_Translations == 1) {
-                                            //Create embedded message
-                                            var embeddedTranslation = new Discord.MessageEmbed()
-                                                .setColor('#0099ff')
-                                                .setAuthor(message.author.username, message.author.avatarURL())
-                                                .setDescription(translation.translatedText)
-                                                .addFields(
-                                                    { name: 'Original text', value: `${message.content}` },
-                                                    {
-                                                        name: 'Detected Language',
-                                                        value: `**${detectedLang.name}** -> **${currentBaseLang.name}** with ` +
-                                                            `${(detection.confidence * 100).floor().toString()}% confidence.`,
-                                                        inline: true
-                                                    }
-                                                )
-                                                .setTimestamp()
-                                                .setFooter('Powered by Google Translate');
-                                            //Send
-                                            message.channel.send(embeddedTranslation);
-                                        } else {
-                                            //Send normal message
-                                            message.channel.send(`*${message.author.username}:* ${translation.translatedText} | ` +
-                                                `**${detectedLang.name}** -> **${currentBaseLang.name}**`);
-                                        }
+                                            //Check if server has embedded translation on
+                                            if (guild.Embedded_Translations == 1) {
+                                                //Create embedded message
+                                                var embeddedTranslation = new Discord.MessageEmbed()
+                                                    .setColor('#0099ff')
+                                                    .setAuthor(message.author.username, message.author.avatarURL())
+                                                    .setDescription(translation.translatedText)
+                                                    .addFields(
+                                                        { name: 'Original text', value: `${message.content}` },
+                                                        {
+                                                            name: 'Detected Language',
+                                                            value: `**${detectedLang.name}** -> **${currentBaseLang.name}** with ` +
+                                                                `${(detection.confidence * 100).floor().toString()}% confidence.`,
+                                                            inline: true
+                                                        }
+                                                    )
+                                                    .setTimestamp()
+                                                    .setFooter('Powered by Google Translate');
+                                                //Send
+                                                resolve(embeddedTranslation);
+                                            } else {
+                                                //Send normal message
+                                                resolve(`*${message.author.username}:* ${translation.translatedText} | ` +
+                                                    `**${detectedLang.name}** -> **${currentBaseLang.name}**`);
+                                            }
+                                        });
+                                    }).then((newMessage) => {
+                                        //Check whether to output to main channel or default output
+                                        var channelTo = (guild.Default_Channel_Output ?
+                                            message.guild.channels.cache.get(guild.Default_Channel_Output) : message.channel);
+
+                                        //Send message
+                                        channelTo.send(newMessage);
+                                    }).catch(error => {
+                                        return; //Just return
                                     });
                                 }
                             });
