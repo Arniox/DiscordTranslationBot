@@ -822,6 +822,9 @@ exports.run = (bot, guild, message, args) => {
                                                                                             });
                                                                                     });
                                                                             } else {
+                                                                                console.log(value.filter(i => i.language.toLowerCase() == m.content.toLowerCase() || i.name.toLowerCase() == m.content.toLowerCase()));
+                                                                                console.log(value.filter(i => i.language.toLowerCase() == m.content.toLowerCase() || i.name.toLowerCase() == m.content.toLowerCase()).length);
+
                                                                                 //Check if the language exists
                                                                                 if (value.filter(i => i.language.toLowerCase() == m.content.toLowerCase() || i.name.toLowerCase() == m.content.toLowerCase()).length > 0) {
                                                                                     //Resolve the promise with the found language
