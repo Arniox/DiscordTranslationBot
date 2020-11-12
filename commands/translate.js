@@ -1,6 +1,5 @@
 //Import classes
 const Discord = require('discord.js');
-const { lang } = require('moment');
 const googleApiKey = process.env.GOOGLE_API_KEY;
 const googleTranslate = require('google-translate')(googleApiKey, { "concurrentLimit": 20 });
 
@@ -14,6 +13,10 @@ exports.run = (bot, guild, message, args) => {
             //Check for either patterns or channels
             switch (command) {
                 case 'settings': case 'setting': case 'sett': case 'set': case 'se': case 's':
+                    //Get base channel
+                    var baseChannel = (guild.Default_Channel_Output ?
+                        message.guild.channels.cache.get(guild.Default_Channel_Output).toString() : '**Default**');
+
                     //Send message of all the server's translation settings
                     message.channel.send(new Discord.MessageEmbed()
                         .setDescription(`Current Server Translation Settings: `)
@@ -21,6 +24,7 @@ exports.run = (bot, guild, message, args) => {
                             { name: 'Translation Confidence Restriction: ', value: `${(guild.Translation_Confidence * 100)}% Confidence is needed to translate a message` },
                             { name: 'Auto Delete Translated Messages: ', value: `${(guild.Auto_Delete_Translation == 1 ? 'Turned **On**' : 'Turned **Off**')}` },
                             { name: 'Embedded Translated Messages: ', value: `${(guild.Embedded_Translations == 1 ? 'Turned **On**' : 'Turned **Off**')}` },
+                            { name: 'Main Translation Output Channel: ', value: `${baseChannel} *(By default, translations are output to the same channel as the sent message)*` },
                             {
                                 name: 'Ignored Patterns: ',
                                 value: `By default, I will not translate *Emojis*, *Tagged Members*, or *Tagged Channels*.` +
@@ -384,7 +388,7 @@ exports.run = (bot, guild, message, args) => {
                                     });
                             });
                     }).catch((err) => {
-                        message.channel.send(new Discord.MessageEmbed().setDescription(`${err} `).setColor('#b50909'));
+                        console.error(err); //Just throw error in console
                     });
                     break;
                 case 'confidence': case 'conf': case 'con':
@@ -647,7 +651,7 @@ exports.run = (bot, guild, message, args) => {
                                 `**${baseLanguage}**. Anything not in ${baseLanguage} will be translated to ${baseLanguage}`).setColor('#0099ff'));
                         }
                     }).catch((err) => {
-                        message.channel.send(new Discord.MessageEmbed().setDescription(`${err}`).setColor('#b50909'));
+                        console.error(err); //Just throw error in console
                     });
                     break;
                 case 'mainoutput': case 'mainout': case 'channeloutput': case 'outputchannel': case 'mainchannel': case 'mainchan': case 'outputchan': case 'chanoutput': case 'outmain':
@@ -721,7 +725,296 @@ exports.run = (bot, guild, message, args) => {
                             .setColor('#0099ff')
                             .setFooter('*(By default, translations are output to the same channel as the sent message)*'));
                     }
+                    break;
+                case 'customchannel': case 'channelfrom': case 'fromchannel': case 'channelto': case 'tochannel': case 'customcha': case 'customch':
+                case 'custom': case 'custcha': case 'custch': case 'custfrom': case 'fromcust': case 'custto': case 'tocust': case 'cust':
+                    //Get all supported languages
+                    new Promise((resolve, reject) => {
+                        googleTranslate.getSupportedLanguages('en', function (err, languageCodes) {
+                            if (!err) resolve(languageCodes);
+                        });
+                    }).then((value) => {
+                        //Get base channel output name
+                        var baseChannel = (guild.Default_Channel_Output ?
+                            message.guild.channels.cache.get(guild.Default_Channel_Output).toString() : '**Default**');
 
+                        //Get channel mentions
+                        var channelMentions = message.mentions.channels;
+
+                        if (args.length > 0) {
+                            var command = args.shift().toLowerCase();
+
+                            //Check which command you want
+                            switch (command) {
+                                case 'set': case 's': case '=':
+                                    //Check if has perms
+                                    if (message.member.hasPermission('MANAGE_GUILD')) {
+                                        //Check that at least some channels where mentioned
+                                        if (channelMentions.size < 1) {
+                                            if (channelMentions.size == 2) {
+                                                //Create new entry. Send message
+                                                message.channel
+                                                    .send(new Discord.MessageEmbed().setDescription(`What language should be used in ${channelMentions.first().toString()}?\nReact with ❌ for **Default** language`).setColor('#FFCC00'))
+                                                    .then((sent) => {
+                                                        sent.react('❌')
+                                                            .then(() => {
+                                                                //Complex promise to wait on either reaction collector or message collector
+                                                                new Promise((resolve, reject) => {
+                                                                    //Reaction filter and collector
+                                                                    const reactionFilter = (reaction, user) => {
+                                                                        return ['❌'].includes(reaction.emoji.name) && user.id == message.author.id;
+                                                                    };
+                                                                    const reactionCollector = sent.createReactionCollector(reactionFilter, { max: 1, time: 30000 });
+
+                                                                    //Message filter and collector
+                                                                    const messageFilter = m => m.member.id == message.author.id && m.content;
+                                                                    const messageCollector = sent.createMessageCollector(messageFilter, { max: 1, time: 20000 });
+
+                                                                    //Await on reaction collector
+                                                                    reactionCollector.on('collect', (reaction, user) => {
+                                                                        //Stop reactionCollector and messageCollector with no end listener
+                                                                        reactionCollector.stop(''); messageCollector.stop('');
+                                                                    });
+                                                                    reactionCollector.on('end', (m, raeson) => {
+                                                                        //Resolve as nothing
+                                                                        resolve('');
+                                                                    });
+                                                                    //Await on message collector
+                                                                    messageCollector.on('collect', m => {
+                                                                        m.delete({ timeout: 100 }); //Delete message
+
+                                                                        //Check if query exists
+                                                                        if (m.size > 0) {
+                                                                            //Check that the query exists in the supported languages or language names
+                                                                            new Promise((resolve, reject) => {
+                                                                                //Check if chinese
+                                                                                if (/(chinese)|(zh)/g.test(query)) {
+                                                                                    //Send selection message
+                                                                                    message.channel.send(new Discord.MessageEmbed().setDescription(`Which Chinese Version do you want?\n` +
+                                                                                        `🇸 - **Chinese Simplified**\n🇹 - **Chinese Traditional**`).setColor('#FFCC00'))
+                                                                                        .then((sent) => {
+                                                                                            sent.react('🇸')
+                                                                                                .then(() => sent.react('🇹'))
+                                                                                                .then(() => {
+                                                                                                    //Set up emoji reaction filter
+                                                                                                    const filter = (reaction, user) => {
+                                                                                                        return ['🇸', '🇹'].includes(reaction.emoji.name) && user.id === message.author.id;
+                                                                                                    };
+                                                                                                    //Create reaction collector
+                                                                                                    const collector = sent.createReactionCollector(filter, { max: 1, time: 30000 });
+
+                                                                                                    //Await reaction
+                                                                                                    collector.on('collect', (reaction, user) => {
+                                                                                                        var languageFound;
+                                                                                                        if (reaction.emoji.name == '🇸') languageFound = value.find(i => i.language == 'zh-CN');
+                                                                                                        else if (reaction.emoji.name == '🇹') languageFound = value.find(i => i.language == 'zh-TW');
+                                                                                                        //Stop collector and return found language
+                                                                                                        collector.stop(languageFound);
+                                                                                                    });
+                                                                                                    //Await reaction collector on stop
+                                                                                                    collector.on('end', (m, reason) => {
+                                                                                                        //Delete the message
+                                                                                                        sent.delete({ timeout: 100 });
+
+                                                                                                        //Add default simplified
+                                                                                                        if (m.size == 0) resolve(value.find(i => i.language == 'zh-CN'));
+                                                                                                        else resolve(reason);
+                                                                                                    });
+                                                                                                });
+                                                                                        });
+                                                                                } else {
+                                                                                    //Check if the language exists
+                                                                                    if (value.filter(i => i.language.toLowerCase() == m.content.toLowerCase() || i.name.toLowerCase() == m.content.toLowerCase()).length > 0) {
+                                                                                        //Resolve the promise with the found language
+                                                                                        resolve(value.find(i => i.language.toLowerCase() == m.content.toLowerCase() ||
+                                                                                            value.find(i => i.name.toLowerCase() == m.content.toLowerCase())));
+                                                                                    } else {
+                                                                                        //Send error message
+                                                                                        message.channel
+                                                                                            .send(new Discord.MessageEmbed().setDescription(`Sorry, ${m.content} is not a language I support! ` +
+                                                                                                `Please type the language again or react to the original message with ❌`).setColor('#b50909'))
+                                                                                            .then((sent) => {
+                                                                                                sent.delete({ timeout: 5000 });
+                                                                                            });
+                                                                                        //Empty the collectors and reset the timers
+                                                                                        reactionCollector.empty(); reactionCollector.resetTimer();
+                                                                                        messageCollector.resetTimer();
+                                                                                    }
+                                                                                }
+                                                                            });
+                                                                        } else
+                                                                            resolve('');
+                                                                    });
+                                                                }).then((languageFrom) => {
+                                                                    //Create new entry. Create second message
+                                                                    //First delete old message
+                                                                    sent.delete({ timeout: 0 });
+                                                                    message.channel
+                                                                        .send(new Discord.MessageEmbed().setDescription(`What language should be output in ${channelMentions.last().toString()}?\nReact with ❌ for **Default** language`).setColor('#FFCC00'))
+                                                                        .then((sent) => {
+                                                                            sent.react('❌')
+                                                                                .then(() => {
+                                                                                    //Complex second promise to wait on either reaction collector or message collector
+                                                                                    new Promise((resolve, reject) => {
+                                                                                        //Reaction filter and collector
+                                                                                        const reactionFilter = (reaction, user) => {
+                                                                                            return ['❌'].includes(reaction.emoji.name) && user.id == message.author.id;
+                                                                                        };
+                                                                                        const reactionCollector = sent.createReactionCollector(reactionFilter, { max: 1, time: 30000 });
+
+                                                                                        //Message filter and collector
+                                                                                        const messageFilter = m => m.member.id == message.author.id && m.content;
+                                                                                        const messageCollector = sent.createMessageCollector(messageFilter, { max: 1, time: 20000 });
+
+                                                                                        //Await on reaction collector
+                                                                                        reactionCollector.on('collect', (reaction, user) => {
+                                                                                            //Stop reactionCollector and messageCollector with no end listener
+                                                                                            reactionCollector.stop(''); messageCollector.stop('');
+                                                                                        });
+                                                                                        reactionCollector.on('end', (m, reason) => {
+                                                                                            //Resolve as nothing
+                                                                                            resolve('');
+                                                                                        });
+                                                                                        //Await on message collector
+                                                                                        messageCollector.on('collect', m => {
+                                                                                            m.delete({ timeout: 100 }); //Delete message
+
+                                                                                            //Check if query exists
+                                                                                            if (m.size > 0) {
+                                                                                                //Check that the query exists in the supported languages or language names
+                                                                                                new Promise((resolve, reject) => {
+                                                                                                    //Check if chinese
+                                                                                                    if (/(chinese)|(zh)/g.test(query)) {
+                                                                                                        //Send selection message
+                                                                                                        message.channel.send(new Discord.MessageEmbed().setDescription(`Which Chinese Version do you want?\n` +
+                                                                                                            `🇸 - **Chinese Simplified**\n🇹 - **Chinese Traditional**`).setColor('#FFCC00'))
+                                                                                                            .then((sent) => {
+                                                                                                                sent.react('🇸')
+                                                                                                                    .then(() => sent.react('🇹'))
+                                                                                                                    .then(() => {
+                                                                                                                        //Set up emoji reaction filter
+                                                                                                                        const filter = (reaction, user) => {
+                                                                                                                            return ['🇸', '🇹'].includes(reaction.emoji.name) && user.id === message.author.id;
+                                                                                                                        };
+                                                                                                                        //Create reaction collector
+                                                                                                                        const collector = sent.createReactionCollector(filter, { max: 1, time: 30000 });
+
+                                                                                                                        //Await reaction
+                                                                                                                        collector.on('collect', (reaction, user) => {
+                                                                                                                            var languageFound;
+                                                                                                                            if (reaction.emoji.name == '🇸') languageFound = value.find(i => i.language == 'zh-CN');
+                                                                                                                            else if (reaction.emoji.name == '🇹') languageFound = value.find(i => i.language == 'zh-TW');
+                                                                                                                            //Stop collector and return found language
+                                                                                                                            collector.stop(languageFound);
+                                                                                                                        });
+                                                                                                                        //Await reaction collector on stop
+                                                                                                                        collector.on('end', (m, reason) => {
+                                                                                                                            //Delete the message
+                                                                                                                            sent.delete({ timeout: 100 });
+
+                                                                                                                            //Add default simplified
+                                                                                                                            if (m.size == 0) resolve(value.find(i => i.language == 'zh-CN'));
+                                                                                                                            else resolve(reason);
+                                                                                                                        });
+                                                                                                                    });
+                                                                                                            });
+                                                                                                    } else {
+                                                                                                        //Check if the language exists
+                                                                                                        if (value.filter(i => i.language.toLowerCase() == m.content.toLowerCase() || i.name.toLowerCase() == m.content.toLowerCase()).length > 0) {
+                                                                                                            //Resolve the promise
+                                                                                                            resolve(value.find(i => i.language.toLowerCase() == m.content.toLowerCase() ||
+                                                                                                                value.find(i => i.name.toLowerCase() == m.content.toLowerCase())));
+                                                                                                        } else {
+                                                                                                            //Send error message
+                                                                                                            message.channel
+                                                                                                                .send(new Discord.MessageEmbed().setDescription(`Sorry, ${m.content} is not a language I support! ` +
+                                                                                                                    `Please type the language again or react to the original message with ❌`).setColor('#b50909'))
+                                                                                                                .then((sent) => {
+                                                                                                                    sent.delete({ timeout: 5000 });
+                                                                                                                });
+                                                                                                            //Empty the collectors and reset the timers
+                                                                                                            reactionCollector.empty(); reactionCollector.resetTimer();
+                                                                                                            messageCollector.resetTimer();
+                                                                                                        }
+                                                                                                    }
+                                                                                                });
+                                                                                            } else
+                                                                                                resolve('');
+                                                                                        });
+                                                                                    }).then((languageTo) => {
+                                                                                        //Add new custom translation directory
+                                                                                        const insert_cmd = `
+                                                                                        INSERT INTO custom_translation_channels (ServerId, Channel_From, Channel_To, Language_From, Language_To)
+                                                                                            VALUES ("${message.guild.id}", "${channelMentions.first().id}", "${channelMentions.last().id}", ` +
+                                                                                            `"${(languageFrom ? languageFrom.language : 'NULL')}", "${(languageTo ? languageTo.language : 'NULL')}")
+                                                                                        `;
+                                                                                        bot.con.query(insert_cmd, (error, results, fields) => {
+                                                                                            if (error) return console.error(error); //Throw error and return
+                                                                                            //Message
+                                                                                            message.channel.send(new Discord.MessageEmbed().setDescription(`Created new custom translation directory: ` +
+                                                                                                `Id: *${results.insertId}*, ` +
+                                                                                                `From: ${channelMentions.first().toString()} (Lang: ${(languageFrom ? languageFrom.name : '**Default**')}) -> ` +
+                                                                                                `To: ${channelMentions.last().toString()} (Lang: ${languageTo ? languageTo.name : '**Default**'})`).setColor('#09b50c'));
+                                                                                        });
+                                                                                    }).catch((err) => {
+                                                                                        console.error(err); //Throw console error
+                                                                                    });
+                                                                                });
+                                                                        });
+                                                                }).catch((err) => {
+                                                                    console.error(err); //Throw console error
+                                                                });
+                                                            });
+                                                    });
+                                            } else {
+                                                message.channel.send(new Discord.MessageEmbed().setDescription('Sorry, to set a custom translation channel directory, you need to connect one channel to another. Please state at least 2 channels').setColor('#0099ff'));
+                                            }
+                                        } else {
+                                            message.channel.send(new Discord.MessageEmbed().setDescription('Sorry, you didn\'t mention any channels for a custom translation directory.').setColor('#0099ff'));
+                                        }
+                                    } else {
+                                        message.channel.send(new Discord.MessageEmbed().setDescription('Sorry, you do not have manage server permissions.').setColor('#b50909'));
+                                    }
+                                    break;
+                                case 'list': case 'li': case 'l':
+                                    //Look for existing patterns
+                                    const sql_cmd = `
+                                    SELECT * FROM custom_translation_channels
+                                        WHERE ServerId = "${message.guild.id}"
+                                    `;
+                                    bot.con.query(sql_cmd, (error, results, frields) => {
+                                        if (error) return console.error(error); //Return error console log
+
+                                        //For loop them into an output
+                                        var output = "";
+                                        for (var i = 0; i < results.length; i++) {
+                                            //Get language_from and language_to
+                                            var languageFrom = (results[i].Language_From ? value.find(i => i.language == results[i].Language_From).name : '**Default**');
+                                            var languageTo = (results[i].Language_To ? value.find(i => i.language == results[i].Language_To).name : '**Default**');
+
+                                            //Create output per set
+                                            output += `Id: *${results[i].Id}*, ` +
+                                                `From: ${message.guild.channels.cache.get(results[i].Channel_From)} (Lang: ${languageFrom}) -> ` +
+                                                `To: ${message.guild.channels.cache.get(results[i].Channel_To)} (Lang: ${languageTo})\n`;
+                                        }
+                                        //Send message
+                                        message.channel.send(new Discord.MessageEmbed().setDescription(`${results.length} custom translation channel directories.\n${output}`).setColor('#0099ff'));
+                                    });
+                                    break;
+                                default:
+                                    HelpMessage(bot, guild, message, args);
+                                    break;
+                            }
+                        } else {
+                            //Sent message
+                            message.channel.send(new Discord.MessageEmbed()
+                                .setDescription(`Please select two channels to translate FROM and TO a channel (in that order). The main output channel is ${baseChannel}`)
+                                .setColor('#0099ff')
+                                .setFooter('*(By default, translations are output to the same channel as the sent message)*'));
+                        }
+                    }).catch((err) => {
+                        console.error(err); //Just throw error in console
+                    });
                     break;
                 default:
                     HelpMessage(bot, guild, message, args);
