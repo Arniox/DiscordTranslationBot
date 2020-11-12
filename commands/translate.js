@@ -981,7 +981,7 @@ exports.run = (bot, guild, message, args) => {
                                     SELECT * FROM custom_translation_channels
                                         WHERE ServerId = "${message.guild.id}"
                                     `;
-                                    bot.con.query(sql_cmd, (error, results, frields) => {
+                                    bot.con.query(sql_cmd, (error, results, fields) => {
                                         if (error) return console.error(error); //Return error console log
 
                                         //For loop them into an output
