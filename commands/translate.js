@@ -989,6 +989,8 @@ exports.run = (bot, guild, message, args) => {
                                         for (var i = 0; i < results.length; i++) {
                                             console.log(results[i]);
 
+                                            console.log(results[i].Language_From);
+
                                             //Get language_from and language_to
                                             var languageFrom = (results[i].Language_From ? value.find(i => i.language == results[i].Language_From).name : '**Default**');
                                             var languageTo = (results[i].Language_To ? value.find(i => i.language == results[i].Language_To).name : '**Default**');
