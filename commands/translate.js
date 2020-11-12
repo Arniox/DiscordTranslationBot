@@ -782,11 +782,8 @@ exports.run = (bot, guild, message, args) => {
                                                                 messageCollector.on('collect', m => {
                                                                     m.delete({ timeout: 100 }); //Delete message
 
-                                                                    console.log(m);
-                                                                    console.log(m.size);
-
                                                                     //Check if query exists
-                                                                    if (m.size > 0) {
+                                                                    if (m.content) {
                                                                         //Check that the query exists in the supported languages or language names
                                                                         new Promise((resolve, reject) => {
                                                                             //Check if chinese
@@ -885,7 +882,7 @@ exports.run = (bot, guild, message, args) => {
                                                                                         m.delete({ timeout: 100 }); //Delete message
 
                                                                                         //Check if query exists
-                                                                                        if (m.size > 0) {
+                                                                                        if (m.content) {
                                                                                             //Check that the query exists in the supported languages or language names
                                                                                             new Promise((resolve, reject) => {
                                                                                                 //Check if chinese
