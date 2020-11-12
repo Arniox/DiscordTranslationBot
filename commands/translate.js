@@ -948,7 +948,7 @@ exports.run = (bot, guild, message, args) => {
                                                                                     const insert_cmd = `
                                                                                         INSERT INTO custom_translation_channels (ServerId, Channel_From, Channel_To, Language_From, Language_To)
                                                                                             VALUES ("${message.guild.id}", "${channelMentions.first().id}", "${channelMentions.last().id}", ` +
-                                                                                        `"${(languageFrom ? languageFrom.language : 'NULL')}", "${(languageTo ? languageTo.language : 'NULL')}")
+                                                                                        `${(languageFrom ? `"${languageFrom.language}"` : null)}, ${(languageTo ? `"${languageTo.language}"` : null)})
                                                                                         `;
                                                                                     bot.con.query(insert_cmd, (error, results, fields) => {
                                                                                         if (error) return console.error(error); //Throw error and return
@@ -988,8 +988,6 @@ exports.run = (bot, guild, message, args) => {
                                         var output = "";
                                         for (var i = 0; i < results.length; i++) {
                                             console.log(results[i]);
-
-                                            console.log(results[i].Language_From);
 
                                             //Get language_from and language_to
                                             var languageFrom = (results[i].Language_From ? value.find(i => i.language == results[i].Language_From).name : '**Default**');
