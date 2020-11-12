@@ -750,8 +750,8 @@ exports.run = (bot, guild, message, args) => {
                                     //Check if has perms
                                     if (message.member.hasPermission('MANAGE_GUILD')) {
                                         //Check that at least some channels where mentioned
-                                        if (channelMentions.size < 1) {
-                                            if (channelMentions.size == 2) {
+                                        if (channelMentions.size > 1) {
+                                            if (channelMentions.size < 3) {
                                                 //Create new entry. Send message
                                                 message.channel
                                                     .send(new Discord.MessageEmbed().setDescription(`What language should be used in ${channelMentions.first().toString()}?\nReact with ❌ for **Default** language`).setColor('#FFCC00'))
