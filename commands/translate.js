@@ -984,6 +984,8 @@ exports.run = (bot, guild, message, args) => {
                                     bot.con.query(sql_cmd, (error, results, frields) => {
                                         if (error) return console.error(error); //Return error console log
 
+                                        console.log(results);
+
                                         //For loop them into an output
                                         var output = "";
                                         for (var i = 0; i < results.length; i++) {
