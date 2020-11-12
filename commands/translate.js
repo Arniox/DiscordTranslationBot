@@ -785,7 +785,7 @@ exports.run = (bot, guild, message, args) => {
                                                                     //Check if query exists
                                                                     if (m.content) {
                                                                         //Check if chinese
-                                                                        if (/(chinese)|(zh)/g.test(query)) {
+                                                                        if (/(chinese)|(zh)/g.test(m.content)) {
                                                                             //Send selection message
                                                                             message.channel.send(new Discord.MessageEmbed().setDescription(`Which Chinese Version do you want?\n` +
                                                                                 `🇸 - **Chinese Simplified**\n🇹 - **Chinese Traditional**`).setColor('#FFCC00'))
@@ -853,32 +853,32 @@ exports.run = (bot, guild, message, args) => {
                                                                                 //Complex second promise to wait on either reaction collector or message collector
                                                                                 new Promise((resolve, reject) => {
                                                                                     //Reaction filter and collector
-                                                                                    const reactionFilter = (reaction, user) => {
+                                                                                    const reactionFilter2 = (reaction, user) => {
                                                                                         return ['❌'].includes(reaction.emoji.name) && user.id == message.author.id;
                                                                                     };
-                                                                                    const reactionCollector = sent.createReactionCollector(reactionFilter, { max: 1, time: 30000 });
+                                                                                    const reactionCollector2 = sent.createReactionCollector(reactionFilter2, { max: 1, time: 30000 });
 
                                                                                     //Message filter and collector
-                                                                                    const messageFilter = m => m.member.id == message.author.id && m.content;
-                                                                                    const messageCollector = sent.channel.createMessageCollector(messageFilter, { max: 1, time: 20000 });
+                                                                                    const messageFilter2 = m => m.member.id == message.author.id && m.content;
+                                                                                    const messageCollector2 = sent.channel.createMessageCollector(messageFilter2, { max: 1, time: 20000 });
 
                                                                                     //Await on reaction collector
-                                                                                    reactionCollector.on('collect', (reaction, user) => {
+                                                                                    reactionCollector2.on('collect', (reaction, user) => {
                                                                                         //Stop reactionCollector and messageCollector with no end listener
-                                                                                        reactionCollector.stop(''); messageCollector.stop('');
+                                                                                        reactionCollector2.stop(''); messageCollector2.stop('');
                                                                                     });
-                                                                                    reactionCollector.on('end', (m, reason) => {
+                                                                                    reactionCollector2.on('end', (m, reason) => {
                                                                                         //Resolve as nothing
                                                                                         resolve('');
                                                                                     });
                                                                                     //Await on message collector
-                                                                                    messageCollector.on('collect', m => {
+                                                                                    messageCollector2.on('collect', m => {
                                                                                         m.delete({ timeout: 100 }); //Delete message
 
                                                                                         //Check if query exists
                                                                                         if (m.content) {
                                                                                             //Check if chinese
-                                                                                            if (/(chinese)|(zh)/g.test(query)) {
+                                                                                            if (/(chinese)|(zh)/g.test(m.content)) {
                                                                                                 //Send selection message
                                                                                                 message.channel.send(new Discord.MessageEmbed().setDescription(`Which Chinese Version do you want?\n` +
                                                                                                     `🇸 - **Chinese Simplified**\n🇹 - **Chinese Traditional**`).setColor('#FFCC00'))
@@ -927,8 +927,8 @@ exports.run = (bot, guild, message, args) => {
                                                                                                             sent.delete({ timeout: 5000 });
                                                                                                         });
                                                                                                     //Empty the collectors and reset the timers
-                                                                                                    reactionCollector.empty(); reactionCollector.resetTimer();
-                                                                                                    messageCollector.resetTimer();
+                                                                                                    reactionCollector2.empty(); reactionCollector2.resetTimer();
+                                                                                                    messageCollector2.resetTimer();
                                                                                                 }
                                                                                             }
                                                                                         } else
