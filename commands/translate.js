@@ -967,10 +967,10 @@ exports.run = (bot, guild, message, args) => {
                                                             });
                                                     });
                                             } else {
-                                                message.channel.send(new Discord.MessageEmbed().setDescription('Sorry, to set a custom translation channel directory, you need to connect one channel to another. Please state at least 2 channels').setColor('#0099ff'));
+                                                message.channel.send(new Discord.MessageEmbed().setDescription(`Please select two channels to translate FROM and TO a channel (in that order). The main output channel is ${baseChannel}`).setColor('#b50909'));
                                             }
                                         } else {
-                                            message.channel.send(new Discord.MessageEmbed().setDescription('Sorry, you didn\'t mention any channels for a custom translation directory.').setColor('#0099ff'));
+                                            message.channel.send(new Discord.MessageEmbed().setDescription(`Please select two channels to translate FROM and TO a channel (in that order). The main output channel is ${baseChannel}`).setColor('#b50909'));
                                         }
                                     } else {
                                         message.channel.send(new Discord.MessageEmbed().setDescription('Sorry, you do not have manage server permissions.').setColor('#b50909'));
@@ -1007,10 +1007,7 @@ exports.run = (bot, guild, message, args) => {
                             }
                         } else {
                             //Sent message
-                            message.channel.send(new Discord.MessageEmbed()
-                                .setDescription(`Please select two channels to translate FROM and TO a channel (in that order). The main output channel is ${baseChannel}`)
-                                .setColor('#0099ff')
-                                .setFooter('*(By default, translations are output to the same channel as the sent message)*'));
+                            HelpMessage(bot, guild, message, args);
                         }
                     }).catch((err) => {
                         console.error(err); //Just throw error in console
