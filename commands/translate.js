@@ -941,6 +941,9 @@ exports.run = (bot, guild, message, args) => {
                                                                                             resolve('');
                                                                                     });
                                                                                 }).then((languageTo) => {
+                                                                                    //First delete old message
+                                                                                    sent.delete({ timeout: 0 });
+
                                                                                     //Add new custom translation directory
                                                                                     const insert_cmd = `
                                                                                         INSERT INTO custom_translation_channels (ServerId, Channel_From, Channel_To, Language_From, Language_To)
