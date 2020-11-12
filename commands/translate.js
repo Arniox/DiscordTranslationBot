@@ -753,7 +753,7 @@ exports.run = (bot, guild, message, args) => {
                                         if (channelMentions.size == 2) {
                                             //Create new entry. Send message
                                             message.channel
-                                                .send(new Discord.MessageEmbed().setDescription(`What language should be used in ${channelMentions.first().toString()}?\nReact with ❌ for **Default** language`).setColor('#FFCC00'))
+                                                .send(new Discord.MessageEmbed().setDescription(`What language should be **INPUT** in ${channelMentions.first().toString()}?\nReact with ❌ for **Default** language`).setColor('#FFCC00'))
                                                 .then((sent) => {
                                                     sent.react('❌')
                                                         .then(() => {
@@ -849,7 +849,7 @@ exports.run = (bot, guild, message, args) => {
                                                                 //First delete old message
                                                                 sent.delete({ timeout: 0 });
                                                                 message.channel
-                                                                    .send(new Discord.MessageEmbed().setDescription(`What language should be output in ${channelMentions.last().toString()}?\nReact with ❌ for **Default** language`).setColor('#FFCC00'))
+                                                                    .send(new Discord.MessageEmbed().setDescription(`What language should **OUTPUT** to ${channelMentions.last().toString()}?\nReact with ❌ for **Default** language`).setColor('#FFCC00'))
                                                                     .then((sent) => {
                                                                         sent.react('❌')
                                                                             .then(() => {
