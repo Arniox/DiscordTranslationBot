@@ -1051,7 +1051,9 @@ function HelpMessage(bot, guild, message, args) {
                     `${guild.Prefix}translate [embedded:embeds:embed:embe:emb:em:e:] ` +
                     `[:?current:curr:cur:c / =:change:ch:toggle:togg:tog:to:t:switch:swit:swi:sw:s]\n` +
                     `${guild.Prefix}translate [baselanguage:globallanguage:baselang:globallang:` +
-                    `baselan:globallan:basel:globall:base:global:bl:gl:g:b] [:?current:curr:cur:c / change:ch:=]`
+                    `baselan:globallan:basel:globall:base:global:bl:gl:g:b] [:?current:curr:cur:c / change:ch:=]` +
+                    `${guild.Prefix}translate [mainoutput:mainout:channeloutput:outputchannel:mainchannel:mainchan:\n` +
+                    `outputchan:chanoutput:outmain] [:?current:curr:cur:c / change:ch:=]`
             },
             {
                 name: 'Examples: ',
@@ -1060,7 +1062,7 @@ function HelpMessage(bot, guild, message, args) {
                     `${guild.Prefix}translate pattern remove 1\n` +
                     `${guild.Prefix}translate pattern list\n` +
                     `${guild.Prefix}translate channel add ${randomChannel.toString()} *You can tag multiple to add*\n` +
-                    `${guild.Prefix}translate channel remove ${randomChannel.toString()}\n` +
+                    `${guild.Prefix}translate channel remove ${randomChannel.toString()} *You can tag multiple to remove*\n` +
                     `${guild.Prefix}translate channel list\n` +
                     `${guild.Prefix}translate confidence change 56 *or* 0.56\n` +
                     `${guild.Prefix}translate confidence\n` +
@@ -1069,7 +1071,9 @@ function HelpMessage(bot, guild, message, args) {
                     `${guild.Prefix}translate embeds\n` +
                     `${guild.Prefix}translate embeds toggle\n` +
                     `${guild.Prefix}translate baselanguage\n` +
-                    `${guild.Prefix}translate baselanguage change English *or* En`
+                    `${guild.Prefix}translate baselanguage change English *or* En` +
+                    `${guild.Prefix}translate mainoutput\n` +
+                    `${guild.Prefix}translate mainoutput change ${randomChannel.toString()}`
             }
         )
         .setTimestamp()
