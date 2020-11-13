@@ -741,6 +741,8 @@ exports.run = (bot, guild, message, args) => {
                         //Get channel mentions
                         var channelMentions = message.mentions.channels;
 
+                        console.log(value);
+
                         if (args.length > 0) {
                             var command = args.shift().toLowerCase();
 
