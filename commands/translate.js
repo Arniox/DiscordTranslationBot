@@ -935,6 +935,9 @@ exports.run = (bot, guild, message, args) => {
                                                                                             resolve('');
                                                                                     });
                                                                                 }).then((languageTo) => {
+                                                                                    //Delete old message
+                                                                                    secondsent.delete({ timeout: 0 });
+
                                                                                     //Add new custom translation directory
                                                                                     const insert_cmd = `
                                                                                         INSERT INTO custom_translation_channels (ServerId, Channel_From, Channel_To, Language_From, Language_To)
@@ -944,7 +947,7 @@ exports.run = (bot, guild, message, args) => {
                                                                                     bot.con.query(insert_cmd, (error, results, fields) => {
                                                                                         if (error) return console.error(error); //Throw error and return
                                                                                         //Message
-                                                                                        secondsent.edit(new Discord.MessageEmbed().setDescription(`Created new custom translation directory: ` +
+                                                                                        message.channel.send(new Discord.MessageEmbed().setDescription(`Created new custom translation directory: ` +
                                                                                             `Id: *${results.insertId}*, ` +
                                                                                             `From: ${channelMentions.first().toString()} (Lang: ${(languageFrom ? languageFrom.name : '**Default**')}) -> ` +
                                                                                             `To: ${channelMentions.last().toString()} (Lang: ${languageTo ? languageTo.name : '**Default**'})`).setColor('#09b50c'));
