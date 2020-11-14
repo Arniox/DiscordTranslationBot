@@ -809,18 +809,17 @@ exports.run = (bot, guild, message, args) => {
                                                                                             var languageFound;
                                                                                             if (reaction.emoji.name == '🇸') languageFound = value.find(i => i.language == 'zh-CN');
                                                                                             else if (reaction.emoji.name == '🇹') languageFound = value.find(i => i.language == 'zh-TW');
-                                                                                            //Stop collector and return found language
+                                                                                            //Stop collectors and return found language
+                                                                                            messageCollector.stop();
                                                                                             chineseCollector.stop(languageFound);
                                                                                         });
                                                                                         //Await reaction collector on stop
                                                                                         chineseCollector.on('end', (m, reason) => {
-                                                                                            //Delete the message
-                                                                                            chinesesent.delete({ timeout: 100 });
-
-                                                                                            //Stop collectors
-                                                                                            messageCollector.stop();
                                                                                             //Delete old message
                                                                                             sent.delete({ timeout: 0 });
+                                                                                            //Delete the message
+                                                                                            chinesesent.delete({ timeout: 0 });
+
                                                                                             //Add default simplified
                                                                                             if (m.size == 0) resolve(value.find(i => i.language == 'zh-CN'));
                                                                                             else resolve(reason);
