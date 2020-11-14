@@ -940,16 +940,8 @@ exports.run = (bot, guild, message, args) => {
                                         //For loop them into an output
                                         var output = "";
                                         for (var i = 0; i < results.length; i++) {
-                                            value.dumpAll();
-                                            console.log('-------------------------------------');
-                                            console.log(results);
-                                            console.log('-------------------------------------');
-                                            console.log(results[i]);
-                                            console.log(results[i].Language_To);
-                                            console.log(value.find(i => i.language == results[i].Language_To).name);
-
                                             //Get language_to
-                                            var languageTo = (results[i].Language_To ? `*${value.find(i => i.language == results[i].Language_To).name}*` : '**Default**');
+                                            var languageTo = (results[i].Language_To ? `*${value.find(n => n.language == results[i].Language_To).name}*` : '**Default**');
 
                                             //Create output per set
                                             output += `Id: **${results[i].Id}**, ` +
