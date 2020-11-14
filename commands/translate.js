@@ -727,7 +727,8 @@ exports.run = (bot, guild, message, args) => {
                     }
                     break;
                 case 'customchannel': case 'channelfrom': case 'fromchannel': case 'channelto': case 'tochannel': case 'customcha': case 'customch':
-                case 'custom': case 'custcha': case 'custch': case 'custfrom': case 'fromcust': case 'custto': case 'tocust': case 'cust':
+                case 'custom': case 'custcha': case 'custch': case 'custfrom': case 'fromcust': case 'custto': case 'tocust': case 'cust': case 'linkchannels':
+                case 'linkchannel': case 'linkchan': case 'linkch': case 'link':
                     //Get all supported languages
                     new Promise((resolve, reject) => {
                         googleTranslate.getSupportedLanguages('en', function (err, languageCodes) {
@@ -868,6 +869,62 @@ exports.run = (bot, guild, message, args) => {
                                         message.channel.send(new Discord.MessageEmbed().setDescription('Sorry, you do not have manage server permissions.').setColor('#b50909'));
                                     }
                                     break;
+                                case 'remove': case 'r': case '-':
+                                    //Check if has perms
+                                    if (message.member.hasPermission('MANAGE_GUILD')) {
+                                        var query = args.shift();
+
+                                        //Check if query exists
+                                        if (query) {
+                                            //Check if query is actually a number
+                                            if (/^\d+$/.test(query)) {
+                                                var numberSelector = parseInt(query);
+
+                                                //Look for existing custom translation channel links
+                                                const sql_cmd = `
+                                                SELECT * FROM custom_translation_channels
+                                                    WHERE ServerId = "${message.guild.id}"
+                                                `;
+                                                bot.con.query(sql_cmd, (error, results, fields) => {
+                                                    if (error) return console.error(error); //Return error console log
+
+                                                    //Fin existing
+                                                    if (results.map(v => v.Id).includes(numberSelector)) {
+                                                        //Save for message
+                                                        var existingChannelLink = results.find(i => i.Id == numberSelector);
+
+                                                        //Delete existing pattern
+                                                        const delete_cmd = `
+                                                        DELETE FROM custom_translation_channels
+                                                            WHERE Id = "${numberSelector}"
+                                                            AND ServerId = "${message.guild.id}"
+                                                        `;
+                                                        bot.con.query(delete_cmd, (error, results, fields) => {
+                                                            if (error) return console.error(error); //Return error console log
+
+                                                            //Get channel_from, channel_to, and language_to
+                                                            var channelFrom = message.guild.channels.cache.get(existingChannelLink.Channel_From).toString();
+                                                            var channelTo = message.guild.channels.cache.get(existingChannelLink.Channel_To).toString();
+                                                            var languageTo = (existingChannelLink.Language_To ? `*${value.find(i => i.language == existingChannelLink.Language_To).name}*` : '**Default**');
+
+                                                            //Message
+                                                            message.channel.send(new Discord.MessageEmbed().setDescription(`Removed the custom translation channel link between\n` +
+                                                                `${channelFrom} and ${channelTo} (Lang: ${languageTo})`).setColor('#09b50c'));
+                                                        });
+                                                    } else {
+                                                        message.channel.send(new Discord.MessageEmbed().setDescription(`I couldn\'t find the custom translation channel link with the Id of ${numberSelector}`).setColor('#b50909'));
+                                                    }
+                                                });
+                                            } else {
+                                                message.channel.send(new Discord.MessageEmbed().setDescription(`${query} is not a number I can get an index of.`).setColor('#b50909'));
+                                            }
+                                        } else {
+                                            message.channel.send(new Discord.MessageEmbed().setDescription('I did not see any custom translation channel link to remove sorry.').setColor('#b50909'));
+                                        }
+                                    } else {
+                                        message.channel.send(new Discord.MessageEmbed().setDescription('Sorry, you do not have manage server permissions.').setColor('#b50909'));
+                                    }
+                                    break;
                                 case 'list': case 'li': case 'l':
                                     //Look for existing patterns
                                     const sql_cmd = `
@@ -894,7 +951,7 @@ exports.run = (bot, guild, message, args) => {
                                                 `To: ${message.guild.channels.cache.get(results[i].Channel_To)} (Lang: ${languageTo})\n`;
                                         }
                                         //Send message
-                                        message.channel.send(new Discord.MessageEmbed().setDescription(`${results.length} custom translation channel directories.\n${output}`).setColor('#0099ff'));
+                                        message.channel.send(new Discord.MessageEmbed().setDescription(`${results.length} custom translation channel links.\n${output}`).setColor('#0099ff'));
                                     });
                                     break;
                                 default:
