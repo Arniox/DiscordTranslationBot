@@ -768,13 +768,23 @@ exports.run = (bot, guild, message, args) => {
                                                             m.delete({ timeout: 100 }); //Delete message
                                                             var mess = m.content.toLowerCase();
 
+                                                            console.log('-----------------message collected', mess, m);
+
                                                             //Check if a message was sent at all
                                                             if (mess) {
+                                                                console.log('-----------------mess exists', mess, m);
+
                                                                 if (mess == 'nothing' || mess == 'null' || mess == 'default') {
+                                                                    console.log('-----------------mess is nothing', mess, m);
+
                                                                     resolve(''); //Resolve as language nothing
                                                                 } else {
+                                                                    console.log('-----------------mess is not nothing', mess, m);
+
                                                                     //Check if chinese
                                                                     if (/(chinese)|(zh)/g.test(mess)) {
+                                                                        console.log('-----------------mess is chinese', mess, m);
+
                                                                         //Send selection message
                                                                         message.channel.send(new Discord.MessageEmbed().setDescription(`Which Chinese Version do you want?\n` +
                                                                             `🇸 - **Chinese Simplified**\n🇹 - **Chinese Traditional**`).setColor('#FFCC00'))
@@ -809,12 +819,18 @@ exports.run = (bot, guild, message, args) => {
                                                                                     });
                                                                             });
                                                                     } else {
+                                                                        console.log('-----------------mess is not chinese', mess, m);
+
                                                                         //Check that the query exists in the supported languages or language names
                                                                         if (value.filter(i => i.language.toLowerCase() == mess || i.name.toLowerCase() == mess).length > 0) {
+                                                                            console.log('-----------------mess was found as a language', mess, m);
+
                                                                             //Resolve the promise with the found language
                                                                             resolve(value.find(i => i.language.toLowerCase() == mess ||
                                                                                 value.find(i => i.name.toLowerCase() == mess)));
                                                                         } else {
+                                                                            console.log('-----------------mess was not found as a language', mess, m);
+
                                                                             //Send error message
                                                                             message.channel
                                                                                 .send(new Discord.MessageEmbed().setDescription(`Sorry, ${mess.toTitleCase()} is not a language I support! ` +
@@ -823,6 +839,7 @@ exports.run = (bot, guild, message, args) => {
                                                                                     deletesend.delete({ timeout: 5000 });
                                                                                 });
                                                                             //Empty the collectors and reset the timers
+                                                                            console.log('-----------------collector resetTimer', m, m.content, mess);
                                                                             collector.resetTimer();
                                                                         }
                                                                     }
@@ -830,8 +847,13 @@ exports.run = (bot, guild, message, args) => {
                                                             } else
                                                                 resolve(''); //Resolve as language nothing
                                                         });
-                                                        //Await on message collector "end" - Resolve as language nothing
-                                                        collector.on('end', m => { resolve(''); });
+                                                        //Await on message collector "end"
+                                                        collector.on('end', m => {
+                                                            console.log('collector ended', m);
+
+                                                            if (m.size == 0)
+                                                                resolve(''); //Resolve as language nothing
+                                                        });
                                                     }).then((languageTo) => {
                                                         //Delete old message
                                                         sent.delete({ timeout: 0 });
