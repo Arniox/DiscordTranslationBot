@@ -769,7 +769,7 @@ exports.run = (bot, guild, message, args) => {
 
                                                                 //Message filter and collector
                                                                 const messageFilter = m => m.member.id == message.author.id && m.content;
-                                                                const messageCollector = sent.channel.createMessageCollector(messageFilter, { time: 20000 });
+                                                                const messageCollector = sent.channel.createMessageCollector(messageFilter, { time: 30000 });
 
                                                                 //Await on reaction collector collect
                                                                 reactionCollector.on('collect', (reaction, user) => {
