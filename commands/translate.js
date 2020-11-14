@@ -818,7 +818,7 @@ exports.run = (bot, guild, message, args) => {
                                                                                             chinesesent.delete({ timeout: 100 });
 
                                                                                             //Stop collectors
-                                                                                            reactionCollector.stop(); messageCollector.stop();
+                                                                                            messageCollector.stop();
                                                                                             //Delete old message
                                                                                             sent.delete({ timeout: 0 });
                                                                                             //Add default simplified
@@ -831,7 +831,7 @@ exports.run = (bot, guild, message, args) => {
                                                                         //Check that the query exists in the supported languages or language names
                                                                         if (value.filter(i => i.language.toLowerCase() == mess || i.name.toLowerCase() == mess).length > 0) {
                                                                             //Stop collectors
-                                                                            reactionCollector.stop(); messageCollector.stop();
+                                                                            messageCollector.stop();
                                                                             //Delete old message
                                                                             sent.delete({ timeout: 0 });
                                                                             //Resolve the promise with the found language
