@@ -780,8 +780,6 @@ exports.run = (bot, guild, message, args) => {
 
                                                                 //Await on message collector collect
                                                                 messageCollector.on('collect', m => {
-                                                                    console.log('-------------------DELETING User message', m);
-
                                                                     m.delete({ timeout: 100 }); //Delete message
                                                                     var mess = m.content.toLowerCase();
 
@@ -794,6 +792,9 @@ exports.run = (bot, guild, message, args) => {
                                                                                 chinesesent.react('🇸')
                                                                                     .then(() => chinesesent.react('🇹'))
                                                                                     .then(() => {
+                                                                                        //Stop the message collector and reaction collector
+                                                                                        messageCollector.stop(); reactionCollector.stop();
+
                                                                                         //Set up emoji reaction filter
                                                                                         const chineseFilter = (reaction, user) => {
                                                                                             return ['🇸', '🇹'].includes(reaction.emoji.name) && user.id === message.author.id;
@@ -808,12 +809,10 @@ exports.run = (bot, guild, message, args) => {
                                                                                             else if (reaction.emoji.name == '🇹') languageFound = value.find(i => i.language == 'zh-TW');
 
                                                                                             //Stop collectors and return found language
-                                                                                            messageCollector.stop(); chineseCollector.stop(languageFound);
+                                                                                            chineseCollector.stop(languageFound);
                                                                                         });
                                                                                         //Await reaction collector on stop
                                                                                         chineseCollector.on('end', (m, reason) => {
-                                                                                            console.log('-------------------DELETING Chinese message', chinesesent);
-
                                                                                             //Delete the message
                                                                                             chinesesent.delete({ timeout: 0 });
 
@@ -845,7 +844,7 @@ exports.run = (bot, guild, message, args) => {
                                                                     }
                                                                 });
                                                             }).then((languageTo) => {
-                                                                console.log('-------------------DELETING Original Sent Message', sent);
+                                                                //Delete original message
                                                                 sent.delete({ timeout: 0 });
 
                                                                 //Add new custom translation directory
