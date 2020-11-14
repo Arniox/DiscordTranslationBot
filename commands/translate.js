@@ -775,16 +775,13 @@ exports.run = (bot, guild, message, args) => {
                                                                 reactionCollector.on('collect', (reaction, user) => {
                                                                     //Stop reactionCollector and messageCollector with no end listener
                                                                     reactionCollector.stop(); messageCollector.stop();
-                                                                });
-                                                                //Await on reaction collector end - resolve as nothing
-                                                                reactionCollector.on('end', (m, reason) => {
-                                                                    //Delete old message
-                                                                    sent.delete({ timeout: 0 });
                                                                     resolve('');
                                                                 });
 
                                                                 //Await on message collector collect
                                                                 messageCollector.on('collect', m => {
+                                                                    console.log('-------------------DELETING User message', m);
+
                                                                     m.delete({ timeout: 100 }); //Delete message
                                                                     var mess = m.content.toLowerCase();
 
@@ -810,14 +807,13 @@ exports.run = (bot, guild, message, args) => {
                                                                                             if (reaction.emoji.name == '🇸') languageFound = value.find(i => i.language == 'zh-CN');
                                                                                             else if (reaction.emoji.name == '🇹') languageFound = value.find(i => i.language == 'zh-TW');
 
-                                                                                            //Delete old message
-                                                                                            sent.delete({ timeout: 0 });
                                                                                             //Stop collectors and return found language
-                                                                                            messageCollector.stop();
-                                                                                            chineseCollector.stop(languageFound);
+                                                                                            messageCollector.stop(); chineseCollector.stop(languageFound);
                                                                                         });
                                                                                         //Await reaction collector on stop
                                                                                         chineseCollector.on('end', (m, reason) => {
+                                                                                            console.log('-------------------DELETING Chinese message', chinesesent);
+
                                                                                             //Delete the message
                                                                                             chinesesent.delete({ timeout: 0 });
 
@@ -832,8 +828,6 @@ exports.run = (bot, guild, message, args) => {
                                                                         if (value.filter(i => i.language.toLowerCase() == mess || i.name.toLowerCase() == mess).length > 0) {
                                                                             //Stop collectors
                                                                             messageCollector.stop();
-                                                                            //Delete old message
-                                                                            sent.delete({ timeout: 0 });
                                                                             //Resolve the promise with the found language
                                                                             resolve(value.find(i => i.language.toLowerCase() == mess || i.name.toLowerCase() == mess));
                                                                         } else {
@@ -851,6 +845,9 @@ exports.run = (bot, guild, message, args) => {
                                                                     }
                                                                 });
                                                             }).then((languageTo) => {
+                                                                console.log('-------------------DELETING Original Sent Message', sent);
+                                                                sent.delete({ timeout: 0 });
+
                                                                 //Add new custom translation directory
                                                                 const insert_cmd = `
                                                                 INSERT INTO custom_translation_channels (ServerId, Channel_From, Channel_To, Language_To)
