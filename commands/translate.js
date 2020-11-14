@@ -774,7 +774,7 @@ exports.run = (bot, guild, message, args) => {
                                                                 //Await on reaction collector collect
                                                                 reactionCollector.on('collect', (reaction, user) => {
                                                                     //Stop reactionCollector and messageCollector with no end listener
-                                                                    reactionCollector.stop(''); messageCollector.stop('');
+                                                                    reactionCollector.stop(); messageCollector.stop();
                                                                 });
                                                                 //Await on reaction collector end - resolve as nothing
                                                                 reactionCollector.on('end', (m, reason) => {
@@ -817,6 +817,8 @@ exports.run = (bot, guild, message, args) => {
                                                                                             //Delete the message
                                                                                             chinesesent.delete({ timeout: 100 });
 
+                                                                                            //Stop collectors
+                                                                                            reactionCollector.stop(); messageCollector.stop();
                                                                                             //Delete old message
                                                                                             sent.delete({ timeout: 0 });
                                                                                             //Add default simplified
@@ -828,6 +830,8 @@ exports.run = (bot, guild, message, args) => {
                                                                     } else {
                                                                         //Check that the query exists in the supported languages or language names
                                                                         if (value.filter(i => i.language.toLowerCase() == mess || i.name.toLowerCase() == mess).length > 0) {
+                                                                            //Stop collectors
+                                                                            reactionCollector.stop(); messageCollector.stop();
                                                                             //Delete old message
                                                                             sent.delete({ timeout: 0 });
                                                                             //Resolve the promise with the found language
