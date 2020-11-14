@@ -40,6 +40,16 @@ module.exports = (bot, channel) => {
             if (error) return console.error(error); //Return error console log
         });
 
+        //Delte from database for custom_translation_channels
+        const remove_custom_trans_cmd = `
+        DELETE FROM custom_translation_channels
+            WHERE (Channel_From = "${channel.id}" OR Channel_To = "${channel.id}")
+            AND ServerId = "${channel.guild.id}"
+        `;
+        bot.con.query(remove_custom_trans_cmd, (error, results, fields) => {
+            if (error) return console.error(error); //Return error console log
+        });
+
         //Release connection when done
         bot.con.release();
     }).catch((err) => {
