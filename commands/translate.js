@@ -777,7 +777,11 @@ exports.run = (bot, guild, message, args) => {
                                                                     reactionCollector.stop(''); messageCollector.stop('');
                                                                 });
                                                                 //Await on reaction collector end - resolve as nothing
-                                                                reactionCollector.on('end', (m, reason) => { resolve(''); });
+                                                                reactionCollector.on('end', (m, reason) => {
+                                                                    //Delete old message
+                                                                    sent.delete({ timeout: 0 });
+                                                                    resolve('');
+                                                                });
 
                                                                 //Await on message collector collect
                                                                 messageCollector.on('collect', m => {
@@ -813,6 +817,8 @@ exports.run = (bot, guild, message, args) => {
                                                                                             //Delete the message
                                                                                             chinesesent.delete({ timeout: 100 });
 
+                                                                                            //Delete old message
+                                                                                            sent.delete({ timeout: 0 });
                                                                                             //Add default simplified
                                                                                             if (m.size == 0) resolve(value.find(i => i.language == 'zh-CN'));
                                                                                             else resolve(reason);
@@ -822,6 +828,8 @@ exports.run = (bot, guild, message, args) => {
                                                                     } else {
                                                                         //Check that the query exists in the supported languages or language names
                                                                         if (value.filter(i => i.language.toLowerCase() == mess || i.name.toLowerCase() == mess).length > 0) {
+                                                                            //Delete old message
+                                                                            sent.delete({ timeout: 0 });
                                                                             //Resolve the promise with the found language
                                                                             resolve(value.find(i => i.language.toLowerCase() == mess || i.name.toLowerCase() == mess));
                                                                         } else {
@@ -838,11 +846,6 @@ exports.run = (bot, guild, message, args) => {
                                                                     }
                                                                 });
                                                             }).then((languageTo) => {
-                                                                console.log('------------------ Language To: ', languageTo);
-
-                                                                //Delete old message
-                                                                sent.delete({ timeout: 0 });
-
                                                                 //Add new custom translation directory
                                                                 const insert_cmd = `
                                                                 INSERT INTO custom_translation_channels (ServerId, Channel_From, Channel_To, Language_To)
