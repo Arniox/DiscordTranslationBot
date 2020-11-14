@@ -794,6 +794,8 @@ exports.run = (bot, guild, message, args) => {
                                                                                     .then(() => {
                                                                                         //Stop the message collector and reaction collector
                                                                                         messageCollector.stop(); reactionCollector.stop();
+                                                                                        //Remove all old reactions
+                                                                                        sent.reactions.removeAll().catch(error => console.error(error));
 
                                                                                         //Set up emoji reaction filter
                                                                                         const chineseFilter = (reaction, user) => {
