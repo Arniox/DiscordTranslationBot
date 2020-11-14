@@ -821,6 +821,8 @@ exports.run = (bot, guild, message, args) => {
                                                                     } else {
                                                                         //Check that the query exists in the supported languages or language names
                                                                         if (value.filter(i => i.language.toLowerCase() == mess || i.name.toLowerCase() == mess).length > 0) {
+                                                                            console.log(mess);
+
                                                                             console.log('------------------ All Languages: ', value);
                                                                             console.log('------------------ Language Found: ', value.find(i => i.language.toLowerCase() == mess ||
                                                                                 value.find(i => i.name.toLowerCase() == mess)));
