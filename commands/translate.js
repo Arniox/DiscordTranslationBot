@@ -940,6 +940,8 @@ exports.run = (bot, guild, message, args) => {
                                         //For loop them into an output
                                         var output = "";
                                         for (var i = 0; i < results.length; i++) {
+                                            value.dumpAll();
+                                            console.log('-------------------------------------');
                                             console.log(results);
                                             console.log('-------------------------------------');
                                             console.log(results[i]);
