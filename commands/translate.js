@@ -944,6 +944,7 @@ exports.run = (bot, guild, message, args) => {
                                             console.log('-------------------------------------');
                                             console.log(results[i]);
                                             console.log(results[i].Language_To);
+                                            console.log(value.find(i => i.language == results[i].Language_To).name);
 
                                             //Get language_to
                                             var languageTo = (results[i].Language_To ? `*${value.find(i => i.language == results[i].Language_To).name}*` : '**Default**');
