@@ -754,37 +754,37 @@ exports.run = (bot, guild, message, args) => {
                                             //Create new entry. Send message
                                             message.channel
                                                 .send(new Discord.MessageEmbed().setDescription(`Messages will be translated from ${channelMentions.first().toString()} and sent to ${channelMentions.last().toString()}.\n` +
-                                                    `What language should be **OUTPUT** to ${channelMentions.last().toString()}?\n\n` +
-                                                    `Message with *nothing*, *null* or *default* to simply translate the output as the **Default** language.`).setColor('#FFCC00'))
+                                                    `What language should be **OUTPUT** to ${channelMentions.last().toString()}?\nReact with ❌ for **Default** language`).setColor('#FFCC00'))
                                                 .then((sent) => {
-                                                    //Complex promise to wait for message collector
-                                                    new Promise((resolve, reject) => {
-                                                        //Message filter and collector
-                                                        const filter = m => m.member.id == message.author.id && m.content;
-                                                        const collector = sent.channel.createMessageCollector(filter, { max: 1, time: 30000 });
+                                                    sent.react('❌')
+                                                        .then(() => {
+                                                            //Complex promise to wait on either reaction collector or message collector
+                                                            new Promise((resolve, reject) => {
+                                                                //Reaction fiulter and collector
+                                                                const reactionFilter = (reaction, user) => {
+                                                                    return ['❌'].includes(reaction.emoji.name) && user.id == message.author.id;
+                                                                };
+                                                                const reactionCollector = sent.createReactionCollector(reactionFilter, { max: 1, time: 30000 });
 
-                                                        //Await on message collector "collect"
-                                                        collector.on('collect', m => {
-                                                            m.delete({ timeout: 100 }); //Delete message
-                                                            var mess = m.content.toLowerCase();
+                                                                //Message filter and collector
+                                                                const messageFilter = m => m.member.id == message.author.id && m.content;
+                                                                const messageCollector = sent.channel.createMessageCollector(messageFilter, { time: 20000 });
 
-                                                            console.log('-----------------message collected', mess, m);
+                                                                //Await on reaction collector collect
+                                                                reactionCollector.on('collect', (reaction, user) => {
+                                                                    //Stop reactionCollector and messageCollector with no end listener
+                                                                    reactionCollector.stop(''); messageCollector.stop('');
+                                                                });
+                                                                //Await on reaction collector end - resolve as nothing
+                                                                reactionCollector.on('end', (m, reason) => { resolve(''); });
 
-                                                            //Check if a message was sent at all
-                                                            if (mess) {
-                                                                console.log('-----------------mess exists', mess, m);
-
-                                                                if (mess == 'nothing' || mess == 'null' || mess == 'default') {
-                                                                    console.log('-----------------mess is nothing', mess, m);
-
-                                                                    resolve(''); //Resolve as language nothing
-                                                                } else {
-                                                                    console.log('-----------------mess is not nothing', mess, m);
+                                                                //Await on message collector collect
+                                                                messageCollector.on('collect', m => {
+                                                                    m.delete({ timeout: 100 }); //Delete message
+                                                                    var mess = m.content.toLowerCase();
 
                                                                     //Check if chinese
                                                                     if (/(chinese)|(zh)/g.test(mess)) {
-                                                                        console.log('-----------------mess is chinese', mess, m);
-
                                                                         //Send selection message
                                                                         message.channel.send(new Discord.MessageEmbed().setDescription(`Which Chinese Version do you want?\n` +
                                                                             `🇸 - **Chinese Simplified**\n🇹 - **Chinese Traditional**`).setColor('#FFCC00'))
@@ -819,18 +819,12 @@ exports.run = (bot, guild, message, args) => {
                                                                                     });
                                                                             });
                                                                     } else {
-                                                                        console.log('-----------------mess is not chinese', mess, m);
-
                                                                         //Check that the query exists in the supported languages or language names
                                                                         if (value.filter(i => i.language.toLowerCase() == mess || i.name.toLowerCase() == mess).length > 0) {
-                                                                            console.log('-----------------mess was found as a language', mess, m);
-
                                                                             //Resolve the promise with the found language
                                                                             resolve(value.find(i => i.language.toLowerCase() == mess ||
                                                                                 value.find(i => i.name.toLowerCase() == mess)));
                                                                         } else {
-                                                                            console.log('-----------------mess was not found as a language', mess, m);
-
                                                                             //Send error message
                                                                             message.channel
                                                                                 .send(new Discord.MessageEmbed().setDescription(`Sorry, ${mess.toTitleCase()} is not a language I support! ` +
@@ -839,42 +833,32 @@ exports.run = (bot, guild, message, args) => {
                                                                                     deletesend.delete({ timeout: 5000 });
                                                                                 });
                                                                             //Empty the collectors and reset the timers
-                                                                            console.log('-----------------collector resetTimer', m, m.content, mess);
-                                                                            collector.resetTimer();
+                                                                            messageCollector.resetTimer();
                                                                         }
                                                                     }
-                                                                }
-                                                            } else
-                                                                resolve(''); //Resolve as language nothing
-                                                        });
-                                                        //Await on message collector "end"
-                                                        collector.on('end', m => {
-                                                            console.log('collector ended', m);
+                                                                });
+                                                            }).then((languageTo) => {
+                                                                //Delete old message
+                                                                sent.delete({ timeout: 0 });
 
-                                                            if (m.size == 0)
-                                                                resolve(''); //Resolve as language nothing
+                                                                //Add new custom translation directory
+                                                                const insert_cmd = `
+                                                                INSERT INTO custom_translation_channels (ServerId, Channel_From, Channel_To, Language_To)
+                                                                    VALUES ("${message.guild.id}", "${channelMentions.first().id}", "${channelMentions.last().id}", ` +
+                                                                    `${(languageTo ? `"${languageTo.language}"` : null)})
+                                                                `;
+                                                                bot.con.query(insert_cmd, (error, results, fields) => {
+                                                                    if (error) return console.error(error); //Throw error and return
+                                                                    //Message
+                                                                    message.channel.send(new Discord.MessageEmbed().setDescription(`Created new custom translation directory: ` +
+                                                                        `Id: **${results.insertId}**, ` +
+                                                                        `From: ${channelMentions.first().toString()} -> ` +
+                                                                        `To: ${channelMentions.last().toString()} (Lang: ${languageTo ? `*${languageTo.name}*` : '**Default**'})`).setColor('#09b50c'));
+                                                                });
+                                                            }).catch((err) => {
+                                                                console.error(err); //Throw error
+                                                            });
                                                         });
-                                                    }).then((languageTo) => {
-                                                        //Delete old message
-                                                        sent.delete({ timeout: 0 });
-
-                                                        //Add new custom translation directory
-                                                        const insert_cmd = `
-                                                        INSERT INTO custom_translation_channels (ServerId, Channel_From, Channel_To, Language_To)
-                                                            VALUES ("${message.guild.id}", "${channelMentions.first().id}", "${channelMentions.last().id}", ` +
-                                                            `${(languageTo ? `"${languageTo.language}"` : null)})
-                                                        `;
-                                                        bot.con.query(insert_cmd, (error, results, fields) => {
-                                                            if (error) return console.error(error); //Throw error and return
-                                                            //Message
-                                                            message.channel.send(new Discord.MessageEmbed().setDescription(`Created new custom translation directory: ` +
-                                                                `Id: **${results.insertId}**, ` +
-                                                                `From: ${channelMentions.first().toString()} -> ` +
-                                                                `To: ${channelMentions.last().toString()} (Lang: ${languageTo ? `*${languageTo.name}*` : '**Default**'})`).setColor('#09b50c'));
-                                                        });
-                                                    }).catch((err) => {
-                                                        console.error(err); //Throw error
-                                                    });
                                                 });
                                         } else {
                                             message.channel.send(new Discord.MessageEmbed().setDescription(`Please select two channels to translate FROM and TO a channel (in that order). The main output channel is ${baseChannel}`).setColor('#b50909'));
