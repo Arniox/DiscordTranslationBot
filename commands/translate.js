@@ -753,8 +753,8 @@ exports.run = (bot, guild, message, args) => {
                                         if (channelMentions.size == 2) {
                                             //Create new entry. Send message
                                             message.channel
-                                                .send(new Discord.MessageEmbed().setDescription(`Messages will be translated from ${channelMentions.first().toString()} and sent to ${channelMentions.second().toString()}.\n` +
-                                                    `What language should be **OUTPUT** to ${channelMentions.second().toString()}?\nMessage with *nothing*, *null* or *default* to simply translate the output as the **Default** language.`).setColor('#FFCC00'))
+                                                .send(new Discord.MessageEmbed().setDescription(`Messages will be translated from ${channelMentions.first().toString()} and sent to ${channelMentions.last().toString()}.\n` +
+                                                    `What language should be **OUTPUT** to ${channelMentions.last().toString()}?\nMessage with *nothing*, *null* or *default* to simply translate the output as the **Default** language.`).setColor('#FFCC00'))
                                                 .then((sent) => {
                                                     //Complex promise to wait for message collector
                                                     new Promise((resolve, reject) => {
