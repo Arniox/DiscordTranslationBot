@@ -765,11 +765,11 @@ exports.run = (bot, guild, message, args) => {
                                                                 const reactionFilter = (reaction, user) => {
                                                                     return ['❌'].includes(reaction.emoji.name) && user.id == message.author.id;
                                                                 };
-                                                                const reactionCollector = sent.createReactionCollector(reactionFilter, { max: 1, time: 30000 });
+                                                                const reactionCollector = sent.createReactionCollector(reactionFilter, { max: 1, time: 100000 });
 
                                                                 //Message filter and collector
                                                                 const messageFilter = m => m.member.id == message.author.id && m.content;
-                                                                const messageCollector = sent.channel.createMessageCollector(messageFilter, { time: 30000 });
+                                                                const messageCollector = sent.channel.createMessageCollector(messageFilter, { time: 100000 });
 
                                                                 //Await on reaction collector collect
                                                                 reactionCollector.on('collect', (reaction, user) => {
@@ -809,14 +809,15 @@ exports.run = (bot, guild, message, args) => {
                                                                                             var languageFound;
                                                                                             if (reaction.emoji.name == '🇸') languageFound = value.find(i => i.language == 'zh-CN');
                                                                                             else if (reaction.emoji.name == '🇹') languageFound = value.find(i => i.language == 'zh-TW');
+
+                                                                                            //Delete old message
+                                                                                            sent.delete({ timeout: 0 });
                                                                                             //Stop collectors and return found language
                                                                                             messageCollector.stop();
                                                                                             chineseCollector.stop(languageFound);
                                                                                         });
                                                                                         //Await reaction collector on stop
                                                                                         chineseCollector.on('end', (m, reason) => {
-                                                                                            //Delete old message
-                                                                                            sent.delete({ timeout: 0 });
                                                                                             //Delete the message
                                                                                             chinesesent.delete({ timeout: 0 });
 
@@ -844,6 +845,7 @@ exports.run = (bot, guild, message, args) => {
                                                                                     deletesend.delete({ timeout: 5000 });
                                                                                 });
                                                                             //Empty the collectors and reset the timers
+                                                                            reactionCollector.empty(); reactionCollector.resetTimer();
                                                                             messageCollector.resetTimer();
                                                                         }
                                                                     }
