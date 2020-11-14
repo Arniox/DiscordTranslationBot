@@ -754,7 +754,8 @@ exports.run = (bot, guild, message, args) => {
                                             //Create new entry. Send message
                                             message.channel
                                                 .send(new Discord.MessageEmbed().setDescription(`Messages will be translated from ${channelMentions.first().toString()} and sent to ${channelMentions.last().toString()}.\n` +
-                                                    `What language should be **OUTPUT** to ${channelMentions.last().toString()}?\nMessage with *nothing*, *null* or *default* to simply translate the output as the **Default** language.`).setColor('#FFCC00'))
+                                                    `What language should be **OUTPUT** to ${channelMentions.last().toString()}?\n\n` +
+                                                    `Message with *nothing*, *null* or *default* to simply translate the output as the **Default** language.`).setColor('#FFCC00'))
                                                 .then((sent) => {
                                                     //Complex promise to wait for message collector
                                                     new Promise((resolve, reject) => {
@@ -772,8 +773,6 @@ exports.run = (bot, guild, message, args) => {
                                                         });
                                                         //Await on message collector "end"
                                                         collector.on('end', (m, reason) => {
-                                                            console.log(m.content, reason);
-
                                                             //Check if a message was sent at all
                                                             if (reason) {
                                                                 if (reason == 'nothing' || reason == 'null' || reason == 'default') {
@@ -823,7 +822,7 @@ exports.run = (bot, guild, message, args) => {
                                                                         } else {
                                                                             //Send error message
                                                                             message.channel
-                                                                                .send(new Discord.MessageEmbed().setDescription(`Sorry, ${reason.toProperCase()} is not a language I support! ` +
+                                                                                .send(new Discord.MessageEmbed().setDescription(`Sorry, ${reason.toTitleCase()} is not a language I support! ` +
                                                                                     `Please type the language again or react to the original message with ❌`).setColor('#b50909'))
                                                                                 .then((deletesend) => {
                                                                                     deletesend.delete({ timeout: 5000 });
@@ -850,9 +849,9 @@ exports.run = (bot, guild, message, args) => {
                                                             if (error) return console.error(error); //Throw error and return
                                                             //Message
                                                             message.channel.send(new Discord.MessageEmbed().setDescription(`Created new custom translation directory: ` +
-                                                                `Id: *${results.insertId}*, ` +
+                                                                `Id: **${results.insertId}**, ` +
                                                                 `From: ${channelMentions.first().toString()} -> ` +
-                                                                `To: ${channelMentions.last().toString()} (Lang: ${languageTo ? languageTo.name : '**Default**'})`).setColor('#09b50c'));
+                                                                `To: ${channelMentions.last().toString()} (Lang: ${languageTo ? `*${languageTo.name}*` : '**Default**'})`).setColor('#09b50c'));
                                                         });
                                                     }).catch((err) => {
                                                         console.error(err); //Throw error
@@ -878,10 +877,10 @@ exports.run = (bot, guild, message, args) => {
                                         var output = "";
                                         for (var i = 0; i < results.length; i++) {
                                             //Get language_to
-                                            var languageTo = (results[i].Language_To ? value.find(i => i.language == results[i].Language_To).name : '**Default**');
+                                            var languageTo = (results[i].Language_To ? `*${value.find(i => i.language == results[i].Language_To).name}*` : '**Default**');
 
                                             //Create output per set
-                                            output += `Id: *${results[i].Id}*, ` +
+                                            output += `Id: **${results[i].Id}**, ` +
                                                 `From: ${message.guild.channels.cache.get(results[i].Channel_From)} -> ` +
                                                 `To: ${message.guild.channels.cache.get(results[i].Channel_To)} (Lang: ${languageTo})\n`;
                                         }

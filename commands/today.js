@@ -101,7 +101,7 @@ exports.run = (bot, guild, message, args) => {
                                                     sent.delete({ timeout: 0 });
 
                                                     //Send new message
-                                                    message.channel.send(new Discord.MessageEmbed().setDescription(`What specific timezone from ${m.content.toProperCase()} do you want to select?\n${countryTimeZones.join('\n')}`).setColor('#FFCC00'))
+                                                    message.channel.send(new Discord.MessageEmbed().setDescription(`What specific timezone from ${m.content.toTitleCase()} do you want to select?\n${countryTimeZones.join('\n')}`).setColor('#FFCC00'))
                                                         .then((sent) => {
                                                             //Message filter and collector
                                                             const cityFilter = m => m.member.id == message.member.id && m.content;
@@ -126,13 +126,13 @@ exports.run = (bot, guild, message, args) => {
                                                                     bot.con.query(update_cmd, (error, results, fields) => {
                                                                         if (error) return console.error(error); //Throw error and return
                                                                         //Message
-                                                                        sent.edit(new Discord.MessageEmbed().setDescription(`Updated server timezone from ${guild.Time_Zone_Offset} to ${m.content.toProperCase()}/${cityTimeZone}`).setColor('#09b50c'));
+                                                                        sent.edit(new Discord.MessageEmbed().setDescription(`Updated server timezone from ${guild.Time_Zone_Offset} to ${m.content.toTitleCase()}/${cityTimeZone}`).setColor('#09b50c'));
                                                                         cityCollector.stop();
                                                                     });
                                                                 } else {
                                                                     //Send error message
                                                                     message.channel
-                                                                        .send(new Discord.MessageEmbed().setDescription(`Sorry, ${m.content.toProperCase()} is not a city I recognize! Please type the city again.`).setColor('#b50909'))
+                                                                        .send(new Discord.MessageEmbed().setDescription(`Sorry, ${m.content.toTitleCase()} is not a city I recognize! Please type the city again.`).setColor('#b50909'))
                                                                         .then((sent) => {
                                                                             sent.delete({ timeout: 5000 });
                                                                         });
@@ -159,7 +159,7 @@ exports.run = (bot, guild, message, args) => {
                                                     bot.con.query(update_cmd, (error, results, fields) => {
                                                         if (error) return console.error(error); //Throw error and return
                                                         //Message
-                                                        sent.edit(new Discord.MessageEmbed().setDescription(`Updated server timezone from ${guild.Time_Zone_Offset} to ${countryTimeZones[0].toProperCase()}`).setColor('#09b50c'));
+                                                        sent.edit(new Discord.MessageEmbed().setDescription(`Updated server timezone from ${guild.Time_Zone_Offset} to ${countryTimeZones[0].toTitleCase()}`).setColor('#09b50c'));
                                                         countryCollector.stop();
                                                     });
                                                 }
