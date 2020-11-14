@@ -766,20 +766,15 @@ exports.run = (bot, guild, message, args) => {
                                                         //Await on message collector "collect"
                                                         collector.on('collect', m => {
                                                             m.delete({ timeout: 100 }); //Delete message
+                                                            var mess = m.content.toLowerCase();
 
-                                                            console.log(m.content.toLowerCase());
-
-                                                            collector.stop(m.content.toLowerCase());
-                                                        });
-                                                        //Await on message collector "end"
-                                                        collector.on('end', (m, reason) => {
                                                             //Check if a message was sent at all
-                                                            if (reason) {
-                                                                if (reason == 'nothing' || reason == 'null' || reason == 'default') {
+                                                            if (mess) {
+                                                                if (mess == 'nothing' || mess == 'null' || mess == 'default') {
                                                                     resolve(''); //Resolve as language nothing
                                                                 } else {
                                                                     //Check if chinese
-                                                                    if (/(chinese)|(zh)/g.test(reason)) {
+                                                                    if (/(chinese)|(zh)/g.test(mess)) {
                                                                         //Send selection message
                                                                         message.channel.send(new Discord.MessageEmbed().setDescription(`Which Chinese Version do you want?\n` +
                                                                             `🇸 - **Chinese Simplified**\n🇹 - **Chinese Traditional**`).setColor('#FFCC00'))
@@ -815,14 +810,14 @@ exports.run = (bot, guild, message, args) => {
                                                                             });
                                                                     } else {
                                                                         //Check that the query exists in the supported languages or language names
-                                                                        if (value.filter(i => i.language.toLowerCase() == reason || i.name.toLowerCase() == reason).length > 0) {
+                                                                        if (value.filter(i => i.language.toLowerCase() == mess || i.name.toLowerCase() == mess).length > 0) {
                                                                             //Resolve the promise with the found language
-                                                                            resolve(value.find(i => i.language.toLowerCase() == reason ||
-                                                                                value.find(i => i.name.toLowerCase() == reason)));
+                                                                            resolve(value.find(i => i.language.toLowerCase() == mess ||
+                                                                                value.find(i => i.name.toLowerCase() == mess)));
                                                                         } else {
                                                                             //Send error message
                                                                             message.channel
-                                                                                .send(new Discord.MessageEmbed().setDescription(`Sorry, ${reason.toTitleCase()} is not a language I support! ` +
+                                                                                .send(new Discord.MessageEmbed().setDescription(`Sorry, ${mess.toTitleCase()} is not a language I support! ` +
                                                                                     `Please type the language again or react to the original message with ❌`).setColor('#b50909'))
                                                                                 .then((deletesend) => {
                                                                                     deletesend.delete({ timeout: 5000 });
@@ -833,8 +828,10 @@ exports.run = (bot, guild, message, args) => {
                                                                     }
                                                                 }
                                                             } else
-                                                                resolve('') //Resolve as default language
+                                                                resolve(''); //Resolve as language nothing
                                                         });
+                                                        //Await on message collector "end" - Resolve as language nothing
+                                                        collector.on('end', m => { resolve(''); });
                                                     }).then((languageTo) => {
                                                         //Delete old message
                                                         sent.delete({ timeout: 0 });
