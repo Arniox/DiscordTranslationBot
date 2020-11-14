@@ -723,7 +723,7 @@ exports.run = (bot, guild, message, args) => {
                         message.channel.send(new Discord.MessageEmbed()
                             .setDescription(`The main translation output channel is ${baseChannel}`)
                             .setColor('#0099ff')
-                            .setFooter('*(By default, translations are output to the same channel as the sent message)*'));
+                            .setFooter('(By default, translations are output to the same channel as the sent message)'));
                     }
                     break;
                 case 'customchannel': case 'channelfrom': case 'fromchannel': case 'channelto': case 'tochannel': case 'customcha': case 'customch':
@@ -1000,8 +1000,7 @@ function HelpMessage(bot, guild, message, args) {
                     `[:?current:curr:cur:c / =:change:ch:toggle:togg:tog:to:t:switch:swit:swi:sw:s]\n` +
                     `${guild.Prefix}translate [embedded:embeds:embed:embe:emb:em:e:] ` +
                     `[:?current:curr:cur:c / =:change:ch:toggle:togg:tog:to:t:switch:swit:swi:sw:s]\n` +
-                    `${guild.Prefix}translate [baselanguage:globallanguage:baselang:globallang:` +
-                    `baselan:globallan:basel:globall:base:global:bl:gl:g:b] [:?current:curr:cur:c / change:ch:=]` +
+                    `${guild.Prefix}translate [baselanguage:globallanguage:baselang:globallang] [:?current:curr:cur:c / change:ch:=]` +
                     `${guild.Prefix}translate [mainoutput:mainout:channeloutput:outputchannel:mainchannel:mainchan:\n` +
                     `outputchan:chanoutput:outmain] [:?current:curr:cur:c / change:ch:=]`
             },

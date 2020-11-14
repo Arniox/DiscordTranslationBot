@@ -41,58 +41,116 @@ exports.run = (bot, guild, message, args) => {
                 if (messy) {
                     //Detect
                     googleTranslate.detectLanguage(messy, function (err, detection) {
-                        //Translate if not english or link
-                        if (detection.language != guild.Default_Language_Code && detection.language != 'und' && detection.confidence > guild.Translation_Confidence) {
-                            //Translate
-                            googleTranslate.translate(message.content, detection.language, guild.Default_Language_Code, function (err, translation) {
-                                if (translation.translatedText !== message.content) {
-                                    //Auto delete messages if turned on
-                                    //Also, only delete message if the channel it's posted in is the same as the output channel
-                                    if (guild.Auto_Delete_Translation == 1 &&
-                                        (guild.Default_Channel_Output == message.channel.id || !guild.Default_Channel_Output)) message.delete({ timeout: 100 }); //Delete message
-                                    //Get country
-                                    //Always get all the supported languages in english for readability
-                                    googleTranslate.getSupportedLanguages('en', function (err, languageCodes) {
-                                        var currentBaseLang = languageCodes.find(i => i.language == guild.Default_Language_Code);
-                                        var detectedLang = languageCodes.find(i => i.language == detection.language);
+                        //Check whether this is a custom translation channel link
+                        const custom_trans_links_cmd = `
+                        SELECT * FROM custom_translation_channels
+                            WHERE ServerId = "${message.guild.id}"
+                        `;
+                        bot.con.query(custom_trans_links_cmd, (error, results, fields) => {
+                            if (error) return console.error(error); //Return console error
 
-                                        var messageTo;
-                                        //Check if server has embedded translation on
-                                        if (guild.Embedded_Translations == 1) {
-                                            //Create embedded message
-                                            messageTo = new Discord.MessageEmbed()
-                                                .setColor('#0099ff')
-                                                .setAuthor(message.author.username, message.author.avatarURL())
-                                                .setDescription(translation.translatedText)
-                                                .addFields(
-                                                    { name: 'Original text', value: `${message.content}` },
-                                                    {
-                                                        name: 'Detected Language',
-                                                        value: `**${detectedLang.name}** -> **${currentBaseLang.name}** with ` +
-                                                            `${(detection.confidence * 100).floor().toString()}% confidence.`,
-                                                        inline: true
+                            if (results.find(i => i.Channel_From == message.channel.id)) {
+                                //For each custom translation link
+                                results.filter(i => i.Channel_From == message.channel.id).forEach(channelLink => {
+                                    //Translate if not in the output language or link or confidence
+                                    if (detection.language != (channelLink.Language_To || guild.Default_Language_Code) && detection.language != 'und' && detection.confidence > guild.Translation_Confidence) {
+                                        //Translate
+                                        googleTranslate.translate(message.content, detection.language, (channelLink.Language_To || guild.Default_Language_Code), function (err, translation) {
+                                            if (translation.translatedText !== message.content) {
+                                                //Auto delete message if turned on
+                                                //Also, only delete message if the channel it's posted in is the same as the output channel
+                                                if (guild.Auto_Delete_Translation == 1 && channelLink.Channel_To == message.channel.id) message.delete({ timeout: 100 }); //Delete message
+                                                //Get country
+                                                //Always get all the supported languages in english for readability
+                                                googleTranslate.getSupportedLanguages('en', function (err, languageCodes) {
+                                                    var currentLang = languageCodes.find(i => i.language == (channelLink.Language_To || guild.Default_Language_Code));
+                                                    var detectedLang = languageCodes.find(i => i.language == detection.language);
+
+                                                    var messageTo;
+                                                    //Check if server has embedded translation on
+                                                    if (guild.Embedded_Translations == 1) {
+                                                        //Create embedded message
+                                                        messageTo = new Discord.MessageEmbed()
+                                                            .setColor('#0099ff')
+                                                            .setAuthor(message.author.username, message.author.avatarURL())
+                                                            .setDescription(translation.translatedText)
+                                                            .addFields(
+                                                                { name: 'Original text', value: `${message.content}` },
+                                                                {
+                                                                    name: 'Detected Language',
+                                                                    value: `**${detectedLang.name}** -> **${currentLang.name}** with ` +
+                                                                        `${(detection.confidence * 100).floor().toString()}% confidence.`,
+                                                                    inline: true
+                                                                }
+                                                            )
+                                                            .setTimestamp()
+                                                            .setFooter('Powered by Google Translate');
+                                                    } else {
+                                                        //Create normal message
+                                                        messageTo = `*${message.author.username}:*\n${translation.translatedText}\n` +
+                                                            `**${detectedLang.name}** -> **${currentLang.name}**`;
                                                     }
-                                                )
-                                                .setTimestamp()
-                                                .setFooter('Powered by Google Translate');
-                                        } else {
-                                            //Create normal message
-                                            messageTo = `*${message.author.username}:* ${translation.translatedText} | ` +
-                                                `**${detectedLang.name}** -> **${currentBaseLang.name}**`;
+
+                                                    //Get channel and send
+                                                    message.guild.channels.cache.get(channelLink.Channel_To).send(messageTo);
+                                                });
+                                            }
+                                        });
+                                    }
+                                });
+                            } else {
+                                //Translate if not english or link or confidence
+                                if (detection.language != guild.Default_Language_Code && detection.language != 'und' && detection.confidence > guild.Translation_Confidence) {
+                                    //Translate
+                                    googleTranslate.translate(message.content, detection.language, guild.Default_Language_Code, function (err, translation) {
+                                        if (translation.translatedText !== message.content) {
+                                            //Auto delete messages if turned on
+                                            //Also, only delete message if the channel it's posted in is the same as the output channel
+                                            if (guild.Auto_Delete_Translation == 1 &&
+                                                (guild.Default_Channel_Output == message.channel.id || !guild.Default_Channel_Output)) message.delete({ timeout: 100 }); //Delete message
+                                            //Get country
+                                            //Always get all the supported languages in english for readability
+                                            googleTranslate.getSupportedLanguages('en', function (err, languageCodes) {
+                                                var currentBaseLang = languageCodes.find(i => i.language == guild.Default_Language_Code);
+                                                var detectedLang = languageCodes.find(i => i.language == detection.language);
+
+                                                var messageTo;
+                                                //Check if server has embedded translation on
+                                                if (guild.Embedded_Translations == 1) {
+                                                    //Create embedded message
+                                                    messageTo = new Discord.MessageEmbed()
+                                                        .setColor('#0099ff')
+                                                        .setAuthor(message.author.username, message.author.avatarURL())
+                                                        .setDescription(translation.translatedText)
+                                                        .addFields(
+                                                            { name: 'Original text', value: `${message.content}` },
+                                                            {
+                                                                name: 'Detected Language',
+                                                                value: `**${detectedLang.name}** -> **${currentBaseLang.name}** with ` +
+                                                                    `${(detection.confidence * 100).floor().toString()}% confidence.`,
+                                                                inline: true
+                                                            }
+                                                        )
+                                                        .setTimestamp()
+                                                        .setFooter('Powered by Google Translate');
+                                                } else {
+                                                    //Create normal message
+                                                    messageTo = `*${message.author.username}:*\n${translation.translatedText}\n` +
+                                                        `**${detectedLang.name}** -> **${currentBaseLang.name}**`;
+                                                }
+
+                                                //Check whether to output to main channel or default output
+                                                var channelTo = (guild.Default_Channel_Output ?
+                                                    message.guild.channels.cache.get(guild.Default_Channel_Output) : message.channel);
+
+                                                //Send message
+                                                channelTo.send(messageTo);
+                                            });
                                         }
-
-                                        //Check whether this is a custom translation channel link
-
-                                        //Check whether to output to main channel or default output
-                                        var channelTo = (guild.Default_Channel_Output ?
-                                            message.guild.channels.cache.get(guild.Default_Channel_Output) : message.channel);
-
-                                        //Send message
-                                        channelTo.send(messageTo);
                                     });
                                 }
-                            });
-                        }
+                            }
+                        });
                     });
                 }
             });
