@@ -187,6 +187,11 @@ Array.prototype.removeThese = function (elementsToRemove) {
     return this.filter(item => !elementsToRemove.includes(item));
 }
 
+//Console log entire array
+Array.prototype.dumpAll = function () {
+    console.dir(this, { 'maxArrayLength': null });
+}
+
 //Maps to Math.abs
 Number.prototype.abs = function () {
     return Math.abs(this);

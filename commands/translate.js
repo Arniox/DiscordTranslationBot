@@ -823,7 +823,8 @@ exports.run = (bot, guild, message, args) => {
                                                                         if (value.filter(i => i.language.toLowerCase() == mess || i.name.toLowerCase() == mess).length > 0) {
                                                                             console.log(mess);
 
-                                                                            console.log('------------------ All Languages: ', value);
+                                                                            console.log('------------------ All Languages: ');
+                                                                            value.dumpAll();
                                                                             console.log('------------------ Language Found: ', value.find(i => i.language.toLowerCase() == mess ||
                                                                                 value.find(i => i.name.toLowerCase() == mess)));
 
@@ -887,6 +888,11 @@ exports.run = (bot, guild, message, args) => {
                                         //For loop them into an output
                                         var output = "";
                                         for (var i = 0; i < results.length; i++) {
+                                            console.log(results);
+                                            console.log('-------------------------------------');
+                                            console.log(results[i]);
+                                            console.log(results[i].Language_To);
+
                                             //Get language_to
                                             var languageTo = (results[i].Language_To ? `*${value.find(i => i.language == results[i].Language_To).name}*` : '**Default**');
 
