@@ -765,12 +765,17 @@ exports.run = (bot, guild, message, args) => {
                                                         //Await on message collector "collect"
                                                         collector.on('collect', m => {
                                                             m.delete({ timeout: 100 }); //Delete message
+
+                                                            console.log(m.content.toLowerCase());
+
                                                             collector.stop(m.content.toLowerCase());
                                                         });
                                                         //Await on message collector "end"
                                                         collector.on('end', (m, reason) => {
+                                                            console.log(m.content, reason);
+
                                                             //Check if a message was sent at all
-                                                            if (m.content && reason) {
+                                                            if (reason) {
                                                                 if (reason == 'nothing' || reason == 'null' || reason == 'default') {
                                                                     resolve(''); //Resolve as language nothing
                                                                 } else {
