@@ -92,11 +92,6 @@ setInterval(function () {
 	console.log('I am currently alive.');
 }, interval);
 
-//To funny case
-function ToFunnyCase(str) {
-	return str.split('').map((v, i) => i % 2 == 0 ? v.toLowerCase() : v.toUpperCase()).join('');
-}
-
 //---------------PROTOTYPES-----------------------
 String.prototype.toHHMMSS = function () {
 	var sec_num = parseInt(this, 10); //don't forget the second param

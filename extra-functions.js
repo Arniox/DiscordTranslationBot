@@ -265,3 +265,8 @@ String.prototype.toSentenceCase = function () {
         return txt.toUpperCase();
     });
 }
+
+//To funny case
+String.prototype.toFunnyCase = function () {
+    return this.split('').map((v, i) => i % 2 == 0 ? v.toLowerCase() : v.toUpperCase()).join('');
+}

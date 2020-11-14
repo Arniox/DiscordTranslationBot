@@ -64,23 +64,4 @@ module.exports = (bot) => {
             redditcmd.run(bot);
         }, interval);
     }
-
-    //Get print schedules command
-    const printcmd = bot.commands.get("printschedules");
-    //If command doesn't exist, exit and do nothing
-    if (printcmd) {
-        //Function variables / Globals
-        const hours = 24, interval = hours * 60 * 60 * 1000;
-        setInterval(function () {
-            //check if sunday
-            var now = new Date();
-            if (now.getDay() == 6) {
-                //Run command
-                printcmd.run(bot);
-            } else {
-                //Log
-                console.log(`Another day, another dollar. Today is ${now.toString()}`);
-            }
-        }, interval);
-    }
 };
