@@ -22,8 +22,6 @@ exports.run = (bot, guild, message, command, args) => {
             case 'play': case 'p':
                 var query = args.shift();
 
-                console.log(query);
-
                 //Check that query exists
                 if (query) {
                     //Check if user not in voice
@@ -45,6 +43,8 @@ exports.run = (bot, guild, message, command, args) => {
                                         var songInfo = await ytdl.getInfo(query);
                                         resolve(songInfo);
                                     }).then((songInfo) => {
+                                        console.log(songInfo);
+
                                         //Get song
                                         var song = {
                                             title: songInfo.videoDetails.title,
