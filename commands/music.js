@@ -227,34 +227,6 @@ exports.run = (bot, guild, message, command, args) => {
         default:
             HelpMessage(bot, guild, message, args);
     }
-
-    //Check every now and then if the music bot is not playing anything for a while
-    const interval = setInterval(() => {
-        //Check if the bot is in a voice
-        if (botVoice && (serverQueue && !serverQueue.songs.length > 0)) {
-            //Check if bot has been paused for 5 minutes (300,000 milliseconds)
-            if (serverQueue.connection.dispatcher.pausedTime > 300000) {
-                //Send message
-                serverQueue.textChannel.send(new Discord.MessageEmbed().setDescription(`I have not played anything new in over 5 minutes now so have left the channel.`).setColor('#0099ff'));
-                serverQueue.voiceChannel.leave(); //Leave the voice channel
-                queue.delete(message.guild.id); //Delete the server queue
-
-                //Undefean bot
-                message.guild.me.voice.setDeaf(false);
-
-                //Clear the interval
-                clearInterval(interval);
-            }
-        } else {
-            if (!botVoice || !serverQueue) {
-                queue.delete(message.guild.id); //Delete the server queue
-                message.guild.me.voice.setDeaf(false); //Undefean bot
-
-                //Clear the interval
-                clearInterval(interval);
-            }
-        }
-    }, 60000);
 }
 
 function HelpMessage(bot, guild, message, args) {
@@ -283,8 +255,9 @@ async function play(bot, dataguild, message, guild, song, repeated = 0) {
 
     //Check if a song exists.
     if (!song) {
-        //Pause with silence so can be continued later
-        serverQueue.connection.dispatcher.pause(true);
+        //Leave channel
+        serverQueue.voiceChannel.leave();
+        bot.musicQueue.delete(guild.id);
         return;
     } else {
         //Create readable video object
