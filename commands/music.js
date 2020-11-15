@@ -43,8 +43,6 @@ exports.run = (bot, guild, message, command, args) => {
                                         var songInfo = await ytdl.getInfo(query);
                                         resolve(songInfo);
                                     }).then((songInfo) => {
-                                        console.log(songInfo);
-
                                         //Get song
                                         var song = {
                                             title: songInfo.videoDetails.title,
@@ -80,7 +78,7 @@ exports.run = (bot, guild, message, command, args) => {
                                                     console.error(error);
                                                     queue.delete(message.guild.id);
                                                     //Send message error
-                                                    message.channel.send(new Discord.MessageEmbed().setDescription(err).setColor('#b50909'));
+                                                    message.channel.send(new Discord.MessageEmbed().setDescription(error).setColor('#b50909'));
                                                 });
                                         } else {
                                             serverQueue.songs.push(song);
