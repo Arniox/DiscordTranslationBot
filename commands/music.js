@@ -285,7 +285,7 @@ function play(guild, song) {
     } else {
         //Create dispatcher and play
         const dispatcher = serverQueue.connection
-            .play(ytld(song.song.url))
+            .play(ytdl(song.song.url))
             .on("finish", () => {
                 serverQueue.songs.shift();
                 play(guild, serverQueue.songs[0]);
