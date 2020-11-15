@@ -1,7 +1,7 @@
 //Import
 const Discord = require('discord.js');
 
-exports.run = (bot, guild, message, args) => {
+exports.run = (bot, guild, message, command, args) => {
     message.channel.send(new Discord.MessageEmbed().setDescription(`Right back at you! Yes, I am alive. Current uptime is: ${UpTime()}. Current Prefix is: ${guild.Prefix}`));
 }
 

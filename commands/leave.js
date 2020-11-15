@@ -1,7 +1,7 @@
 //Import
 const Discord = require('discord.js');
 
-exports.run = (bot, guild, message, args) => {
+exports.run = (bot, guild, message, command, args) => {
     //Grab bot voice channel
     var memberVoice = message.member.voice.channel;
     var botVoice = message.guild.me.voice.channel;

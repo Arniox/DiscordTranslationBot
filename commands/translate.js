@@ -5,7 +5,7 @@ const googleTranslate = require('google-translate')(googleApiKey, { "concurrentL
 //Import functions
 require('../message-commands.js')();
 
-exports.run = (bot, guild, message, args) => {
+exports.run = (bot, guild, message, command, args) => {
     if (args.length != 0) {
         //Get command
         var command = args.shift().toLowerCase();

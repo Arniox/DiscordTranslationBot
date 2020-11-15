@@ -1,7 +1,7 @@
 //Import
 const Discord = require('discord.js');
 
-exports.run = (bot, guild, message, args) => {
+exports.run = (bot, guild, message, command, args) => {
     //Grab member voice channel
     var voiceChannel = message.member.voice.channel;
     var botVoice = message.guild.me.voice.channel;
@@ -40,7 +40,7 @@ exports.run = (bot, guild, message, args) => {
                                 sent.edit(new Discord.MessageEmbed().setDescription(`✅ Now listening to ${membersInVoice.size} members in ${voiceChannel.toString()}`).setColor('#09b50c'));
                             })
                             .catch(error => {
-                                sent.edit(new Discord.MessageEmbed().setDescription(`For some reason, I hae failed to join this channel. Please try again later or contact the bot developer`).setColor('#b50909'));
+                                sent.edit(new Discord.MessageEmbed().setDescription(`For some reason, I have failed to join this channel. Please try again later or contact the bot developer`).setColor('#b50909'));
                             });
                     });
             } else {

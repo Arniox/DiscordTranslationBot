@@ -1,7 +1,7 @@
 //Import
 const Discord = require('discord.js');
 
-exports.run = (bot, guild, message, args) => {
+exports.run = (bot, guild, message, command, args) => {
     if (args.length != 0) {
         if (message.member.hasPermission('MUTE_MEMBERS')) {
             var voiceChannel = args.join(' ');

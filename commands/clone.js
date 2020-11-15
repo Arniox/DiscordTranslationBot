@@ -2,7 +2,7 @@
 const Discord = require('discord.js');
 const moment = require('moment-timezone');
 
-exports.run = (bot, guild, message, args) => {
+exports.run = (bot, guild, message, command, args) => {
     if (args.length != 0) {
         //Get all channel mentions
         var channelMentions = message.mentions.channels.map((v, k) => v);

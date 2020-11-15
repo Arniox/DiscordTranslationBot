@@ -79,6 +79,9 @@ module.exports = (bot, message) => {
                                     return resolve(bot.commands.get('nick'));
                                 case 'reddit': case 'redd': case 'r':
                                     return resolve(bot.commands.get('reddit'));
+                                case 'play': case 'p': case 'skip': case 's': case 'stop':
+                                case 'pause': case 'resume': case 'nowplaying': case 'nowp': case 'now': case 'np':
+                                    return resolve(bot.commands.get('music'));
                                 default:
                                     return reject();
                             }
@@ -86,7 +89,7 @@ module.exports = (bot, message) => {
                             //If command doesn't exist, exiot and do nothing
                             if (!cmd) return;
                             //Run the command
-                            cmd.run(bot, results[0], message, args);
+                            cmd.run(bot, results[0], message, command, args);
                             message.delete({ timeout: 200 }); //Delete message
                         }).catch(() => { return; });
                     } else if (evaluate(message.content)) {

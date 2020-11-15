@@ -1,7 +1,7 @@
 //Import
 const Discord = require('discord.js');
 
-exports.run = (bot, guild, message, args) => {
+exports.run = (bot, guild, message, command, args) => {
     if (args.length != 0) {
         if (message.member.hasPermission('MOVE_MEMBERS')) {
             //If the length of the array is over 1, then it's a direct channel - channel

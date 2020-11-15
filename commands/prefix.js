@@ -1,7 +1,7 @@
 //Import classes
 const Discord = require('discord.js');
 
-exports.run = (bot, guild, message, args) => {
+exports.run = (bot, guild, message, command, args) => {
     if (args.length > 0) {
         var command = args.shift().toLowerCase();
         //Check which option you want

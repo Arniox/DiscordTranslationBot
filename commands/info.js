@@ -3,7 +3,7 @@ const Discord = require('discord.js');
 //Import functions
 require('../message-commands.js')();
 
-exports.run = (bot, guild, message, args) => {
+exports.run = (bot, guild, message, command, args) => {
     if (args.length != 0) {
         //Get all message mentions first
         var channelMentions = message.mentions.channels;

@@ -1,7 +1,7 @@
 //Import
 const Discord = require('discord.js');
 
-exports.run = (bot, guild, message, args) => {
+exports.run = (bot, guild, message, command, args) => {
     //Has to be posted by me
     //my id: 167152832422608896
     if (message.member.id == '167152832422608896') {
