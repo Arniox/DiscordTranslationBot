@@ -19,7 +19,7 @@ module.exports = function () {
 
         //Only send dynamic message if the message is big enough
         if (messageArray.length < 2) {
-            message.channel.send(messageArray[0].setColor('#09b50c')); //Send normal message
+            message.channel.send((messageArray.length > 0 ? messageArray[0] : new Discord.MessageEmbed().setDescription(text)).setColor('#09b50c')); //Send normal message
         } else {
             message.channel.send(messageArray[0])
                 .then((sent) => {
