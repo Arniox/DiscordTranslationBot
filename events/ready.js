@@ -27,9 +27,6 @@ module.exports = (bot) => {
                     bot.con.query(server_controller_cmd, (error, results, fields) => {
                         if (error) return console.error(error); //Throw error and return
                     });
-                } else {
-                    //Set the bot user activity for this specific server
-                    value.me.user.setActivity(`the ${results.find(i => i.ServerId == key).Prefix} prefix`, { type: 'WATCHING' });
                 }
             });
         });
