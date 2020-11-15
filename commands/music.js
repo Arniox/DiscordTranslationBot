@@ -79,8 +79,8 @@ exports.run = (bot, guild, message, command, args) => {
                                     } else {
                                         serverQueue.songs.push(song);
                                         //Play music if paused
-                                        if (serverQueue.connection.dispatcher.paused)
-                                            play(bot, guild, message, message.guild, serverQueue.songs[0]);
+                                        // if (serverQueue.connection.dispatcher.paused)
+                                        //     play(bot, guild, message, message.guild, serverQueue.songs[0]);
                                         //Send message
                                         message.channel.send(new Discord.MessageEmbed().setDescription(`${song.title} has been added to the queue.`).setColor('#09b50c'));
                                     }
@@ -255,6 +255,9 @@ async function play(bot, dataguild, message, guild, song, repeated = 0) {
 
     //Check if a song exists.
     if (!song) {
+        //Send message
+        serverQueue.textChannel.send(new Discord.MessageEmbed().setDescription(`Finished playing music from the queue.`).setColor('#0099ff'));
+
         //Leave channel
         serverQueue.voiceChannel.leave();
         bot.musicQueue.delete(guild.id);
