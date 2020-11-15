@@ -2,6 +2,8 @@
 const Discord = require('discord.js');
 const googleApiKey = process.env.GOOGLE_API_KEY;
 const googleTranslate = require('google-translate')(googleApiKey, { "concurrentLimit": 20 });
+//Import functions
+import { ListMessage, MessageToArray } from '../message'
 
 exports.run = (bot, guild, message, args) => {
     if (args.length != 0) {
@@ -940,19 +942,23 @@ exports.run = (bot, guild, message, args) => {
                                     bot.con.query(sql_cmd, (error, results, fields) => {
                                         if (error) return console.error(error); //Return error console log
 
-                                        //For loop them into an output
-                                        var output = "";
-                                        for (var i = 0; i < results.length; i++) {
-                                            //Get language_to
-                                            var languageTo = (results[i].Language_To ? `*${value.find(n => n.language == results[i].Language_To).name}*` : '**Default**');
+                                        ListMessage(message.channel, `${results.length} custom translation channel links.\n`, MessageToArray(() => {
+                                            //For loop them into an output
+                                            var output = "";
+                                            for (var i = 0; i < results.length; i++) {
+                                                //Get language_to
+                                                var languageTo = (results[i].Language_To ? `*${value.find(n => n.language == results[i].Language_To).name}*` : '**Default**');
 
-                                            //Create output per set
-                                            output += `Id: **${results[i].Id}**, ` +
-                                                `From: ${message.guild.channels.cache.get(results[i].Channel_From)} -> ` +
-                                                `To: ${message.guild.channels.cache.get(results[i].Channel_To)} (Lang: ${languageTo})\n`;
-                                        }
+                                                //Create output per set
+                                                output += `Id: **${results[i].Id}**, ` +
+                                                    `From: ${message.guild.channels.cache.get(results[i].Channel_From)} -> ` +
+                                                    `To: ${message.guild.channels.cache.get(results[i].Channel_To)} (Lang: ${languageTo})\n`;
+                                            }
+                                            return output;
+                                        }));
+
                                         //Send message
-                                        message.channel.send(new Discord.MessageEmbed().setDescription(`${results.length} custom translation channel links.\n${output}`).setColor('#0099ff'));
+                                        //message.channel.send(new Discord.MessageEmbed().setDescription(`${results.length} custom translation channel links.\n${output}`).setColor('#0099ff'));
                                     });
                                     break;
                                 default:
