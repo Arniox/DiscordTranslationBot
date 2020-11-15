@@ -1,6 +1,8 @@
 //Import
 const Discord = require('discord.js');
 const moment = require('moment-timezone');
+//Import functions
+require('../message-commands.js')();
 
 //List of all emojis
 const emojiRandomArray = [
@@ -253,15 +255,17 @@ exports.run = (bot, guild, message, command, args) => {
                 bot.con.query(sql_cmd, (error, results, fields) => {
                     if (error) return console.error(error); //Return error console log
 
-                    //For loop them into an output
-                    var output = "";
-                    for (var i = 0; i < results.length; i++) {
-                        //Create output per sub reddit
-                        output += `Id: **${results[i].Id}**, Subreddit: **${results[i].SubName}**${results[i].Flair_Filter ? `, with flair filter of: **${results[i].Flair_Filter}**` : ''}` +
-                            ` - ${message.guild.channels.cache.get(results[i].ChannelId).toString()}\n`;
-                    }
                     //Send message
-                    message.channel.send(new Discord.MessageEmbed().setDescription(`${results.length} Subscribed Subreddits.\n${output}`).setColor('#0099ff'));
+                    ListMessage(message, `**Subscribed Subreddits:\n**`, '#0099ff', MessageToArray(() => {
+                        //For loop them into an output
+                        var output = '';
+                        for (var i = 0; i < results.length; i++) {
+                            //Create output per subreddit
+                            output += `Id: **${results[i].Id}**, Subreddit: **${results[i].SubName}**${results[i].Flair_Filter ? `, with flair filter of: **${results[i].Flair_Filter}**` : ''}` +
+                                ` - ${message.guild.channels.cache.get(results[i].ChannelId).toString()}\n`;
+                        }
+                        return output;
+                    }), 5, '#0099ff');
                 });
                 break;
             default:
