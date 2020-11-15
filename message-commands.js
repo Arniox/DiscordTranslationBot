@@ -2,7 +2,7 @@
 const Discord = require('discord.js');
 
 module.exports = function () {
-    this.ListMessage = function (message, text, color, array, chunk = 10) {
+    this.ListMessage = function (message, text, color, array, chunk = 10, endColour = '#09b50c') {
         //Cut the array into chunks
         var i, j, arrayArray = [], messageArray = [];
         for (i = 0, j = array.length; i < j; i += chunk) {
@@ -18,7 +18,7 @@ module.exports = function () {
 
         //Only send dynamic message if the message is big enough
         if (messageArray.length < 2) {
-            message.channel.send((messageArray.length > 0 ? messageArray[0] : new Discord.MessageEmbed().setDescription(finalText)).setColor('#09b50c')); //Send normal message
+            message.channel.send((messageArray.length > 0 ? messageArray[0] : new Discord.MessageEmbed().setDescription(finalText)).setColor(endColour)); //Send normal message
         } else {
             message.channel.send(messageArray[0])
                 .then((sent) => {
@@ -59,7 +59,7 @@ module.exports = function () {
                                 //Remove reactions and then edit message
                                 sent.reactions.removeAll()
                                     .then(() => {
-                                        sent.edit(messageArray[index].setColor('#09b50c'));
+                                        sent.edit(messageArray[index].setColor(endColour));
                                     }).catch((error) => { return; });
                             });
                         });

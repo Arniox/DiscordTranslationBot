@@ -2,6 +2,8 @@
 const Discord = require('discord.js');
 const moment = require('moment-timezone');
 const ytdl = require('ytdl-core');
+//Import functions
+require('../message-commands.js')();
 
 //Server queue
 const queue = new Map();
@@ -206,6 +208,24 @@ exports.run = (bot, guild, message, command, args) => {
                 if (botVoice && (serverQueue && serverQueue.songs.length > 0)) {
                     message.channel.send(new Discord.MessageEmbed().setDescription(`Now playing: **${serverQueue.songs[0].song.title}** - ` +
                         `Queued by: ${serverQueue.songs[0].queuedBy.toString()}`).setColor('#0099ff'));
+                } else {
+                    message.channel.send(new Discord.MessageEmbed().setDescription('I am not playing anything right now...').setColor('#0099ff'));
+                }
+                break;
+            case 'queue': case 'q':
+                //Check if bot is not in voice
+                if (botVoice && serverQueue) {
+                    //Send message
+                    ListMessage(message, `Music Queue:\nCurrently playing: **${serverQueue.songs[0].song.title}** - ` +
+                        `Queued by: ${serverQueue.songs[0].queuedBy.toString()}\n`, '#0099ff', MessageToArray(() => {
+                            //For loop them into an output
+                            var output = '';
+                            for (var i = 0; i < serverQueue.songs.length; i++) {
+                                //Create output per song
+                                output += `**${serverQueue.songs[i].song.title}** - Queued by: ${serverQueue.songs[i].queuedBy.toString()}\n`;
+                            }
+                            return output;
+                        }), 20, '#0099ff');
                 } else {
                     message.channel.send(new Discord.MessageEmbed().setDescription('I am not playing anything right now...').setColor('#0099ff'));
                 }

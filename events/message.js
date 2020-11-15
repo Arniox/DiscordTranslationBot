@@ -80,7 +80,8 @@ module.exports = (bot, message) => {
                                 case 'reddit': case 'redd': case 'r':
                                     return resolve(bot.commands.get('reddit'));
                                 case 'play': case 'p': case 'skip': case 's': case 'stop':
-                                case 'pause': case 'resume': case 'nowplaying': case 'nowp': case 'now': case 'np':
+                                case 'pause': case 'resume': case 'nowplaying': case 'nowp':
+                                case 'now': case 'np': case 'queue': case 'q':
                                     return resolve(bot.commands.get('music'));
                                 default:
                                     return reject();
