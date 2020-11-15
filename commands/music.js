@@ -26,71 +26,64 @@ exports.run = (bot, guild, message, command, args) => {
                     if (botVoice && (botVoice != voiceChannel)) {
                         cannotEffect(message, botVoice, 'queue up any music');
                     } else {
-                        //Check if bot is not in voice
-                        if (!botVoice) {
-                            //Get permissions for joining channels
-                            var permissions = voiceChannel.permissionsFor(message.client.user);
-                            if (!permissions.has('CONNECT') && !permissions.has("SPEAK")) {
-                                message.channel.send(new Discord.MessageEmbed().setDescription(`I need permissions to join and speak in your voice channel!`).setColor('#b50909'));
-                            } else {
-                                //Promise based ytdl-core
-                                new Promise(async (resolve, reject) => {
-                                    //Get song info
-                                    var songInfo = await ytdl.getInfo(query);
-                                    resolve(songInfo);
-                                }).then((songInfo) => {
-                                    //Get song
-                                    var song = {
-                                        title: songInfo.videoDetails.title,
-                                        url: (songInfo.videoDetails.video_url || songInfo.videoDetails.videoId)
+                        //Get permissions for joining channels
+                        var permissions = voiceChannel.permissionsFor(message.client.user);
+                        if (!permissions.has('CONNECT') && !permissions.has("SPEAK")) {
+                            message.channel.send(new Discord.MessageEmbed().setDescription(`I need permissions to join and speak in your voice channel!`).setColor('#b50909'));
+                        } else {
+                            //Promise based ytdl-core
+                            new Promise(async (resolve, reject) => {
+                                //Get song info
+                                var songInfo = await ytdl.getInfo(query);
+                                resolve(songInfo);
+                            }).then((songInfo) => {
+                                //Get song
+                                var song = {
+                                    title: songInfo.videoDetails.title,
+                                    url: (songInfo.videoDetails.video_url || songInfo.videoDetails.videoId)
+                                };
+                                //If server queue empty, then create it for this server
+                                if (!serverQueue) {
+                                    //Create queue construct
+                                    const queueConstruct = {
+                                        textChannel: message.channel,
+                                        voiceChannel: voiceChannel,
+                                        connection: null,
+                                        songs: [],
+                                        volume: 5,
+                                        playing: true
                                     };
-                                    //If server queue empty, then create it for this server
-                                    if (!serverQueue) {
-                                        //Create queue construct
-                                        const queueConstruct = {
-                                            textChannel: message.channel,
-                                            voiceChannel: voiceChannel,
-                                            connection: null,
-                                            songs: [],
-                                            volume: 5,
-                                            playing: true
-                                        };
 
-                                        //Set the queue to this server id
-                                        bot.musicQueue.set(message.guild.id, queueConstruct);
-                                        queueConstruct.songs.push({ song: song, queuedBy: message.member });
+                                    //Set the queue to this server id
+                                    bot.musicQueue.set(message.guild.id, queueConstruct);
+                                    queueConstruct.songs.push({ song: song, queuedBy: message.member });
 
-                                        //Defean bot
-                                        message.guild.me.voice.setDeaf(true);
-                                        //Join voice channel
-                                        voiceChannel
-                                            .join()
-                                            .then((connection) => {
-                                                //Attach connection to the queueConstruct
-                                                queueConstruct.connection = connection;
-                                                //Play music
-                                                play(bot, guild, message, message.guild, queueConstruct.songs[0]);
-                                            }).catch(error => {
-                                                console.error(error);
-                                                queue.delete(message.guild.id);
-                                                //Send message error
-                                                message.channel.send(new Discord.MessageEmbed().setDescription(error).setColor('#b50909'));
-                                            });
-                                    } else {
-                                        console.log('Adding song');
-
-                                        serverQueue.songs.push({ song: song, queuedBy: message.member });
-
-                                        console.log(serverQueue);
-                                        //Play music if paused
-                                        if (serverQueue.connection.dispatcher.paused) serverQueue.connection.dispatcher.resume();
-                                        //Send message
-                                        message.channel.send(new Discord.MessageEmbed().setDescription(`${song.title} has been added to the queue.`).setColor('#09b50c'));
-                                    }
-                                }).catch((err) => {
-                                    console.error(err); //Return console error
-                                });
-                            }
+                                    //Defean bot
+                                    message.guild.me.voice.setDeaf(true);
+                                    //Join voice channel
+                                    voiceChannel
+                                        .join()
+                                        .then((connection) => {
+                                            //Attach connection to the queueConstruct
+                                            queueConstruct.connection = connection;
+                                            //Play music
+                                            play(bot, guild, message, message.guild, queueConstruct.songs[0]);
+                                        }).catch(error => {
+                                            console.error(error);
+                                            queue.delete(message.guild.id);
+                                            //Send message error
+                                            message.channel.send(new Discord.MessageEmbed().setDescription(error).setColor('#b50909'));
+                                        });
+                                } else {
+                                    serverQueue.songs.push({ song: song, queuedBy: message.member });
+                                    //Play music if paused
+                                    if (serverQueue.connection.dispatcher.paused) serverQueue.connection.dispatcher.resume();
+                                    //Send message
+                                    message.channel.send(new Discord.MessageEmbed().setDescription(`${song.title} has been added to the queue.`).setColor('#09b50c'));
+                                }
+                            }).catch((err) => {
+                                console.error(err); //Return console error
+                            });
                         }
                     }
                 } else {
