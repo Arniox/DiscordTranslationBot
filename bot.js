@@ -21,12 +21,29 @@ const reddit = new RedditJS.Client({
 	appSecret: process.env.REDDIT_APP_SECRET
 });
 
-//Initialize Discord bot with websocket settings for enabled intents.
+//Initialize Discord bot with settings for enabled intents.
 //Enable: GUILD_MEMBERS
 //Do not need right now: GUILD_PRESENCES
+//Enable everything else right now
+//Enabled in the discord developer portal
 const bot = new Discord.Client({
 	ws: {
-		intents: ['GUILD_MEMBERS']
+		intents: [
+			'GUILDS',
+			'GUILD_MEMBERS',
+			'GUILD_BANS',
+			'GUILD_EMOJIS',
+			'GUILD_INTEGRATIONS',
+			'GUILD_WEBHOOKS',
+			'GUILD_INVITES',
+			'GUILD_VOICE_STATES',
+			'GUILD_MESSAGES',
+			'GUILD_MESSAGE_REACTIONS',
+			'GUILD_MESSAGE_TYPING',
+			'DIRECT_MESSAGES',
+			'DIRECT_MESSAGE_REACTIONS',
+			'DIRECT_MESSAGE_TYPING'
+		]
 	}
 });
 
