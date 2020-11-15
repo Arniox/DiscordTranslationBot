@@ -79,8 +79,7 @@ exports.run = (bot, guild, message, command, args) => {
                                     } else {
                                         serverQueue.songs.push(song);
                                         //Play music if paused
-                                        // if (serverQueue.connection.dispatcher.paused)
-                                        //     play(bot, guild, message, message.guild, serverQueue.songs[0]);
+                                        if (serverQueue.connection.dispatcher.paused) serverQueue.connection.dispatcher.resume();
                                         //Send message
                                         message.channel.send(new Discord.MessageEmbed().setDescription(`${song.title} has been added to the queue.`).setColor('#09b50c'));
                                     }
@@ -170,6 +169,7 @@ exports.run = (bot, guild, message, command, args) => {
                     if (botVoice) {
                         //Pause dispatcher
                         serverQueue.connection.dispatcher.pause(true);
+                        message.channel.send(new Discord.MessageEmbed().setDescription('Paused ⏸️').setColor('#0099ff'));
                     } else {
                         message.channel.send(new Discord.MessageEmbed().setDescription('I am currently not playing anything so cannot be paused.').setColor('#b50909'));
                     }
@@ -189,6 +189,7 @@ exports.run = (bot, guild, message, command, args) => {
                     if (botVoice && (serverQueue && serverQueue.songs.length > 0)) {
                         //Resume dispatcher
                         serverQueue.connection.dispatcher.resume();
+                        message.channel.send(new Discord.MessageEmbed().setDescription('Resumed ▶️').setColor('#0099ff'));
                     } else {
                         message.channel.send(new Discord.MessageEmbed().setDescription('I am currently not playing anything so cannot be resumed.').setColor('#b50909'));
                     }
