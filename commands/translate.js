@@ -3,7 +3,7 @@ const Discord = require('discord.js');
 const googleApiKey = process.env.GOOGLE_API_KEY;
 const googleTranslate = require('google-translate')(googleApiKey, { "concurrentLimit": 20 });
 //Import functions
-const { ListMessage, MessageToArray } = require('../message');
+require('../message')();
 
 exports.run = (bot, guild, message, args) => {
     if (args.length != 0) {
