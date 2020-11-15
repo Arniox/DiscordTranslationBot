@@ -242,14 +242,20 @@ exports.run = (bot, guild, message, command, args) => {
                 serverQueue.voiceChannel.leave(); //Leave the voice channel
                 queue.delete(message.guild.id); //Delete the server queue
 
-                //Defean bot
+                //Undefean bot
                 message.guild.me.voice.setDeaf(false);
 
                 //Clear the interval
                 clearInterval(interval);
             }
         } else {
-            if (!botVoice || !serverQueue) clearInterval(interval);
+            if (!botVoice || !serverQueue) {
+                queue.delete(message.guild.id); //Delete the server queue
+                message.guild.me.voice.setDeaf(false); //Undefean bot
+
+                //Clear the interval
+                clearInterval(interval);
+            }
         }
     }, 60000);
 }
