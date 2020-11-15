@@ -2,7 +2,7 @@
 const Discord = require('discord.js');
 
 module.exports = function () {
-    this.ListMessages = function (channel, message, array) {
+    this.ListMessage = function (channel, message, array) {
         //Cut the array into chunks
         var i, j, arrayarray = [], chunk = 10;
         for (i = 0, j = array.length; i < j; i += chunk) {
