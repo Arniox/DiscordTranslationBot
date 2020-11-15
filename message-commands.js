@@ -3,7 +3,7 @@ const Discord = require('discord.js');
 
 module.exports = function () {
     this.ListMessage = function (message, text, color, array, chunk = 10) {
-        console.log(message, text, color, array, chunk);
+        console.log(text, color, array, chunk);
 
         //Cut the array into chunks
         var i, j, arrayArray = [], messageArray = [];
@@ -71,7 +71,7 @@ module.exports = function () {
     this.MessageToArray = function (runme, split = '\n') {
         console.log(runme());
 
-        return runme().split(split);
+        return runme().split(split).filter(i => i);
     }
 
     //Custom join
