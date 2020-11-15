@@ -167,14 +167,16 @@ exports.run = (bot, guild, message, args) => {
                             bot.con.query(sql_cmd, (error, results, fields) => {
                                 if (error) return console.error(error); //Return error console log
 
-                                //For loop them into an output
-                                var output = "";
-                                for (var i = 0; i < results.length; i++) {
-                                    //Create output per pattern
-                                    output += `Id: *${results[i].Id}*, Desc: *${results[i].Reason}* - ***${results[i].Pattern.toString()}***\n`;
-                                }
                                 //Send message
-                                message.channel.send(new Discord.MessageEmbed().setDescription(`${results.length} translation ignored patterns.\n${output}`).setColor('#0099ff'));
+                                ListMessage(message, `${results.length} translation ignored patterns.\n`, '#0099ff', MessageToArray(() => {
+                                    //For loop them into an output
+                                    var output = "";
+                                    for (var i = 0; i < results.length; i++) {
+                                        //Create output per pattern
+                                        output += `Id: *${results[i].Id}*, Desc: *${results[i].Reason}* - ***${results[i].Pattern.toString()}***\n`;
+                                    }
+                                    return output;
+                                }), 5);
                             });
                             break;
                         default:
@@ -327,8 +329,9 @@ exports.run = (bot, guild, message, args) => {
                                 if (error) return console.error(error); //Return error console log
 
                                 //Send Message
-                                message.channel.send(new Discord.MessageEmbed().setDescription(`**${results.length} translation ignored channels.**\n` +
-                                    `${message.guild.channels.cache.map((v, k) => v).filter(i => results.map(v => v.ChannelId).includes(i.id)).map(v => v.toString()).join(',\n')}`).setColor('#0099ff'));
+                                ListMessage(message, `**${results.length} translation ignored channels.**\n`, '#0099ff', MessageToArray(() => {
+                                    return message.guild.channels.cache.map((v, k) => v).filter(i => results.map(v => v.ChannelId).includes(i.id)).map(v => v.toString()).join(',\n');
+                                }), 15);
                             });
                             break;
                         default:
@@ -955,7 +958,10 @@ exports.run = (bot, guild, message, args) => {
                                                     `To: ${message.guild.channels.cache.get(results[i].Channel_To)} (Lang: ${languageTo})\n`;
                                             }
                                             return output;
-                                        }), 10);
+                                        }), 10)
+                                            .then((sent) => {
+                                                console.log(sent);
+                                            });
 
                                         //Send message
                                         //message.channel.send(new Discord.MessageEmbed().setDescription(`${results.length} custom translation channel links.\n${output}`).setColor('#0099ff'));
