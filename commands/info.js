@@ -116,42 +116,42 @@ exports.run = (bot, guild, message, args) => {
                     //Switch on detail
                     switch (detail) {
                         case 'members': case 'member': case 'm':
-                            ListMessage(message, `**List of all Members in this Discord:**\n`, '#0099ff', MessageToArray(() => {
-                                return message.guild.members.cache.map((v, k) => NickName(v.user)).join('\n');
+                            ListMessage(message, `**Members in this Discord:**\n`, '#0099ff', MessageToArray(() => {
+                                return message.guild.members.cache.map((v, k) => v.user.username).join('\n');
                             }), 15);
                             break;
                         case 'emojis': case 'emoji': case 'e':
-                            ListMessage(message, `**List of all Emojis in this Discord:**\n`, '#0099ff', MessageToArray(() => {
+                            ListMessage(message, `**Emojis in this Discord:**\n`, '#0099ff', MessageToArray(() => {
                                 return message.guild.emojis.cache.map((v, k) => v.toString()).join('\n');
                             }), 15);
                             break;
                         case 'channels': case 'channel': case 'c':
-                            ListMessage(message, `**List of all Channels in this Discord:**\n`, '#0099ff', MessageToArray(() => {
+                            ListMessage(message, `**Channels in this Discord:**\n`, '#0099ff', MessageToArray(() => {
                                 return message.guild.channels.cache.map((v, k) => v.name).join('\n');
                             }), 15);
                             break;
                         case 'voices': case 'voice': case 'v':
-                            ListMessage(message, `**List of all Voice Channels in this Discord:**\n`, '#0099ff', MessageToArray(() => {
+                            ListMessage(message, `**Voice Channels in this Discord:**\n`, '#0099ff', MessageToArray(() => {
                                 return message.guild.channels.cache.map((v, k) => v).filter(i => i.type == 'voice').map(v => v.name).join('\n');
                             }), 15);
                             break;
                         case 'texts': case 'text': case 't':
-                            ListMessage(message, `**List of all Text Channels in this Discord:**\n`, '#0099ff', MessageToArray(() => {
+                            ListMessage(message, `**Text Channels in this Discord:**\n`, '#0099ff', MessageToArray(() => {
                                 return message.guild.channels.cache.map((v, k) => v).filter(i => i.type == 'text').map(v => v.name).join('\n');
                             }), 15);
                             break;
                         case 'categories': case 'category': case 'cat':
-                            ListMessage(message, `**List of all Categories in this Discord:**\n`, '#0099ff', MessageToArray(() => {
+                            ListMessage(message, `**Categories in this Discord:**\n`, '#0099ff', MessageToArray(() => {
                                 return message.guild.channels.cache.map((v, k) => v).filter(i => i.type == 'category').map(v => v.name).join('\n');
                             }), 15);
                             break;
                         case 'news': case 'new': case 'n':
-                            ListMessage(message, `**List of all News Channels in this Discord:**\n`, '#0099ff', MessageToArray(() => {
+                            ListMessage(message, `**News Channels in this Discord:**\n`, '#0099ff', MessageToArray(() => {
                                 return message.guild.channels.cache.map((v, k) => v).filter(i => i.type == 'news').map(v => v.name).join('\n');
                             }), 15);
                             break;
                         case 'stores': case 'store': case 's':
-                            ListMessage(message, `**List of all Store Channels in this Discord:**\n`, '#0099ff', MessageToArray(() => {
+                            ListMessage(message, `**Store Channels in this Discord:**\n`, '#0099ff', MessageToArray(() => {
                                 return message.guild.channels.cache.map((v, k) => v).filter(i => i.type == 'store').map(v => v.name).join('\n');
                             }), 15);
                             break;
