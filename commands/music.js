@@ -77,7 +77,7 @@ exports.run = (bot, guild, message, command, args) => {
                                                 message.channel.send(new Discord.MessageEmbed().setDescription(error).setColor('#b50909'));
                                             });
                                     } else {
-                                        serverQueue.songs.push(song);
+                                        serverQueue.songs.push({ song: song, queuedBy: message.member });
                                         //Play music if paused
                                         if (serverQueue.connection.dispatcher.paused) serverQueue.connection.dispatcher.resume();
                                         //Send message
