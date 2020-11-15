@@ -30,6 +30,8 @@ module.exports = (bot, message) => {
 
                 //Check if message is empty
                 if (message.content) {
+                    console.log(message.content);
+
                     //if else on message that starts with prefix
                     if (message.content.startsWith(results[0].Prefix)) {
                         //Argument/command name definition.

@@ -46,8 +46,6 @@ exports.run = (bot, guild, message, command, args) => {
                                         var songInfo = await ytdl.getInfo(query);
                                         resolve(songInfo);
                                     }).then((songInfo) => {
-                                        console.log(songInfo);
-
                                         //Get song
                                         var song = {
                                             title: songInfo.videoDetails.title,
