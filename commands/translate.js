@@ -942,7 +942,7 @@ exports.run = (bot, guild, message, args) => {
                                     bot.con.query(sql_cmd, (error, results, fields) => {
                                         if (error) return console.error(error); //Return error console log
 
-                                        ListMessage(message.channel, `${results.length} custom translation channel links.\n`, '#0099ff', MessageToArray(() => {
+                                        ListMessage(message, `${results.length} custom translation channel links.\n`, '#0099ff', MessageToArray(() => {
                                             //For loop them into an output
                                             var output = "";
                                             for (var i = 0; i < results.length; i++) {

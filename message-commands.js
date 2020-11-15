@@ -2,7 +2,7 @@
 const Discord = require('discord.js');
 
 module.exports = function () {
-    this.ListMessage = function (channel, message, color, array, chunk = 10) {
+    this.ListMessage = function (message, text, color, array, chunk = 10) {
         //Cut the array into chunks
         var i, j, arrayArray = [], messageArray = [];
         for (i = 0, j = array.length; i < j; i += chunk) {
@@ -11,10 +11,10 @@ module.exports = function () {
 
         //Create message array
         for (i = 0; i < arrayArray.length; i++) {
-            messageArray.push(new Discord.MessageEmbed().setDescription(message + arrayArray[i].join('\n')).setColor(color));
+            messageArray.push(new Discord.MessageEmbed().setDescription(text + arrayArray[i].join('\n')).setColor(color));
         }
 
-        channel.send(messageArray[0])
+        message.channel.send(messageArray[0])
             .then((sent) => {
                 sent.react('⬅️')
                     .then(() => sent.react('➡️'))
