@@ -41,7 +41,7 @@ module.exports = function () {
                                 return ['⬅️', '➡️'].includes(reaction.emoji.name) && user.id === message.author.id;
                             };
                             //Create reaction collector
-                            const collector = sent.createReactionCollector(filter, { max: 1, time: 30000 });
+                            const collector = sent.createReactionCollector(filter, { max: 1, time: 100000 });
 
                             //Await reaction
                             collector.on('collect', (reaction, user) => {

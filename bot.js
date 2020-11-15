@@ -21,8 +21,13 @@ const reddit = new RedditJS.Client({
 	appSecret: process.env.REDDIT_APP_SECRET
 });
 
-//Initialize Discord bot 
-const bot = new Discord.Client();
+//Initialize Discord bot with websocket settings for enabled intents.
+//Enable: GUILD_PRESENCES and GUILD_MEMBERS
+const bot = new Discord.Client({
+	ws: {
+		intents: ['GUILD_PRESENCES', 'GUILD_MEMBERS']
+	}
+});
 
 bot.dbpool = pool; //Attach pool to bot
 bot.reddit = reddit; //Attach reddit to bot
