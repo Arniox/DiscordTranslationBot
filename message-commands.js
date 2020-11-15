@@ -11,15 +11,16 @@ module.exports = function () {
             arrayArray.push(array.slice(i, i + chunk));
         }
 
+        //Create final message
+        var finalText = `${array.length} ${text}${text.slice(-1) == '\n' ? '' : '\n'}`;
         //Create message array
         for (i = 0; i < arrayArray.length; i++) {
-            messageArray.push(new Discord.MessageEmbed().setDescription(text +
-                `**${i * chunk} -> ${(i * chunk) + arrayArray[i].length} / ${array.length}**\n` + arrayArray[i].join('\n')).setColor(color));
+            messageArray.push(new Discord.MessageEmbed().setDescription(`${finalText}**${i * chunk} -> ${(i * chunk) + arrayArray[i].length}**\n` + arrayArray[i].join('\n')).setColor(color));
         }
 
         //Only send dynamic message if the message is big enough
         if (messageArray.length < 2) {
-            message.channel.send((messageArray.length > 0 ? messageArray[0] : new Discord.MessageEmbed().setDescription(text)).setColor('#09b50c')); //Send normal message
+            message.channel.send((messageArray.length > 0 ? messageArray[0] : new Discord.MessageEmbed().setDescription(finalText)).setColor('#09b50c')); //Send normal message
         } else {
             message.channel.send(messageArray[0])
                 .then((sent) => {
