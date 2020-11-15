@@ -346,52 +346,15 @@ exports.run = (bot, guild, message, args) => {
                         });
                     }).then((value) => {
                         //Send messages for list of languages
-                        var outputLangs = new Discord.MessageEmbed().setDescription(`** Language Names:**\n ** React with ➡️ to view languages names and ⬅️ to go back to codes.**\n\n` +
-                            `${value.map(i => i.name).join(', ')} `).setColor('#0099ff');
-                        var outputCodes = new Discord.MessageEmbed().setDescription(`** Language Codes:**\n ** React with ⬅️ to view languages codes and ➡️ to go back to names.**\n\n` +
-                            `${value.map(i => i.language).join(', ')} `).setColor('#0099ff');
-
-                        //Send embedded message
-                        message.channel
-                            .send(outputCodes)
-                            .then((sent) => {
-                                sent.react('⬅️')
-                                    .then(() => sent.react('➡️'))
-                                    .then(() => {
-                                        //Set up emoji reaction filter.
-                                        const filter = (reaction, user) => {
-                                            return ['⬅️', '➡️'].includes(reaction.emoji.name) && user.id === message.author.id;
-                                        };
-                                        //Create reaction collector
-                                        const collector = sent.createReactionCollector(filter, { max: 1, time: 30000 });
-
-                                        //Await reaction
-                                        collector.on('collect', (reaction, user) => {
-                                            if (reaction.emoji.name === '➡️') { //Go forward
-                                                //Edit to out put languages
-                                                sent.edit(outputLangs);
-                                            } else if (reaction.emoji.name === '⬅️') { //Go backward
-                                                //Edit to out put codes
-                                                sent.edit(outputCodes);
-                                            }
-
-                                            //Remove reaction by user
-                                            sent.reactions.cache.map((v, k) => v).filter(reaction => reaction.users.cache.has(user.id)).first().users.remove(user.id);
-                                            //Empty the collector and reset the timer
-                                            collector.empty();
-                                            collector.resetTimer();
-                                        });
-                                        //Await end
-                                        collector.on('end', r => {
-                                            //Remove reactions and then edit edit message
-                                            sent.reactions.removeAll()
-                                                .then(() => {
-                                                    sent.edit(new Discord.MessageEmbed().setDescription(`${value.map(i => i.language).join(', ')} \n\n` +
-                                                        `You can view the list of supported languages again with: ***${guild.Prefix}translate languages*** `).setColor('#09b50c'));
-                                                }).catch((error) => { return; });
-                                        });
-                                    });
-                            });
+                        ListMessage(message, `**Supported Languages:**\n`, '#0099ff', MessageToArray(() => {
+                            //For loop them into an output
+                            var output = '';
+                            for (var i = 0; i < value.length; i++) {
+                                //Create output per pattern
+                                output += `${value[i].language} - **${value[i].name}**`;
+                            }
+                            return output;
+                        }), 20);
                     }).catch((err) => {
                         console.error(err); //Just throw error in console
                     });
