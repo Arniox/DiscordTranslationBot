@@ -45,7 +45,7 @@ exports.run = (bot, guild, message, command, args) => {
                                     //Get song
                                     var song = {
                                         title: songInfo.videoDetails.title,
-                                        url: (songInfo.videoDetails.videoId)
+                                        url: (songInfo.videoDetails.video_url || songInfo.videoDetails.videoId)
                                     };
                                     //If server queue empty, then create it for this server
                                     if (!serverQueue) {
