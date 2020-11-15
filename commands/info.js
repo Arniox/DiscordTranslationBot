@@ -116,8 +116,16 @@ exports.run = (bot, guild, message, args) => {
                     //Switch on detail
                     switch (detail) {
                         case 'members': case 'member': case 'm':
+                            console.log('-------------------Message: ', message);
+                            console.log('-------------------Message Guild: ', message.guild);
+                            console.log('-------------------Message Guild Members: ', message.guild.members);
+                            console.log('-------------------Message Guild Members Cache: ', message.guild.members.cache);
+                            console.log('-------------------Message Guild Members Cache Map: ', message.guild.members.cache.map((v, k) => v));
+                            console.log('-------------------Message Guild Members Cache Map NickName: ', message.guild.members.cache.map((v, k) => NickName(v.user)));
+                            console.log('-------------------Message Guild Members Cache Map NickName Joined: ', message.guild.members.cache.map((v, k) => NickName(v.user)).join('\n'));
+
                             ListMessage(message, `**List of all Members in this Discord:**\n\n`, '#0099ff', MessageToArray(() => {
-                                return message.guild.members.cache.map((v, k) => v.user.username).join('\n');
+                                return message.guild.members.cache.map((v, k) => NickName(v.user)).join('\n');
                             }), 15);
                             break;
                         case 'emojis': case 'emoji': case 'e':

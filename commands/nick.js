@@ -2,6 +2,8 @@
 const Discord = require('discord.js');
 const googleApiKey = process.env.GOOGLE_API_KEY;
 const googleTranslate = require('google-translate')(googleApiKey, { "concurrentLimit": 20 });
+//Import functions
+require('../message-commands.js')();
 
 exports.run = (bot, guild, message, args) => {
     if (args.length != 0) {
@@ -1030,11 +1032,6 @@ function IsLowerRoles(message, member) {
 
 function IsOwner(message, member) {
     return message.guild.owner == member;
-}
-
-//Get nickname / name of member
-function NickName(member) {
-    return (member.nickname ? member.nickname : member.user.username);
 }
 
 //Check if user has the correct permissions

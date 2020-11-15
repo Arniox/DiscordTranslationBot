@@ -82,4 +82,9 @@ module.exports = function () {
             return out;
         }
     }
+
+    //Get nickname / name of member
+    this.NickName = function (member) {
+        return (member.nickname ? member.nickname : member.user.username);
+    }
 }
