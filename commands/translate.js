@@ -955,7 +955,7 @@ exports.run = (bot, guild, message, args) => {
                                                     `To: ${message.guild.channels.cache.get(results[i].Channel_To)} (Lang: ${languageTo})\n`;
                                             }
                                             return output;
-                                        }));
+                                        }), 5);
 
                                         //Send message
                                         //message.channel.send(new Discord.MessageEmbed().setDescription(`${results.length} custom translation channel links.\n${output}`).setColor('#0099ff'));
