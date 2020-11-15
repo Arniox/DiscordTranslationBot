@@ -22,30 +22,9 @@ const reddit = new RedditJS.Client({
 });
 
 //Initialize Discord bot with settings for enabled intents.
-//Enable: GUILD_MEMBERS
-//Do not need right now: GUILD_PRESENCES
-//Enable everything else right now
+//Enable: GUILD_MEMBERS and GUILD_PRESENCES
 //Enabled in the discord developer portal
-const bot = new Discord.Client({
-	ws: {
-		intents: [
-			'GUILDS',
-			'GUILD_MEMBERS',
-			'GUILD_BANS',
-			'GUILD_EMOJIS',
-			'GUILD_INTEGRATIONS',
-			'GUILD_WEBHOOKS',
-			'GUILD_INVITES',
-			'GUILD_VOICE_STATES',
-			'GUILD_MESSAGES',
-			'GUILD_MESSAGE_REACTIONS',
-			'GUILD_MESSAGE_TYPING',
-			'DIRECT_MESSAGES',
-			'DIRECT_MESSAGE_REACTIONS',
-			'DIRECT_MESSAGE_TYPING'
-		]
-	}
-});
+const bot = new Discord.Client();
 
 bot.dbpool = pool; //Attach pool to bot
 bot.reddit = reddit; //Attach reddit to bot
