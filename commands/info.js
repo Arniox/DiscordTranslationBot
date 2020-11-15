@@ -23,7 +23,7 @@ exports.run = (bot, guild, message, args) => {
                             break;
                         case 'names': case 'name': case 'n':
                             ListMessages(message, `**List of All Servers:**\n\n`, '#0099ff', MessageToArray(() => {
-                                bot.guilds.cache.map((value, key) => value.name).join('\n');
+                                return bot.guilds.cache.map((value, key) => value.name).join('\n');
                             }), 15);
                             break;
                         default:
