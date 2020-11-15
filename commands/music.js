@@ -243,6 +243,9 @@ exports.run = (bot, guild, message, command, args) => {
                     serverQueue.voiceChannel.leave(); //Leave the voice channel
                     queue.delete(message.guild.id); //Delete the server queue
 
+                    //Defean bot
+                    message.guild.me.voice.setDeaf(false);
+
                     //Clear the interval
                     clearInterval(interval);
                 }
