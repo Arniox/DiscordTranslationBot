@@ -234,7 +234,7 @@ exports.run = (bot, guild, message, command, args) => {
     //Check every now and then if the music bot is not playing anything for a while
     const interval = setInterval(() => {
         //Check if the bot is in a voice
-        if (botVoice && (!serverQueue || !serverQueue.songs.length > 0)) {
+        if (botVoice && (serverQueue && !serverQueue.songs.length > 0)) {
             //Check if bot has been paused for 5 minutes (300,000 milliseconds)
             if (serverQueue.connection.dispatcher.pausedTime > 300000) {
                 //Send message
@@ -248,6 +248,8 @@ exports.run = (bot, guild, message, command, args) => {
                 //Clear the interval
                 clearInterval(interval);
             }
+        } else {
+            if (!botVoice || !serverQueue) clearInterval(interval);
         }
     }, 60000);
 }
