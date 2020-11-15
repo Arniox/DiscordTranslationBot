@@ -351,7 +351,7 @@ exports.run = (bot, guild, message, args) => {
                             var output = '';
                             for (var i = 0; i < value.length; i++) {
                                 //Create output per pattern
-                                output += `${value[i].language} - **${value[i].name}**`;
+                                output += `${value[i].language} - **${value[i].name}**\n`;
                             }
                             return output;
                         }), 20);
