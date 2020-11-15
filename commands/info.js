@@ -1,5 +1,7 @@
 //Import
 const Discord = require('discord.js');
+//Import functions
+require('../message-commands.js')();
 
 exports.run = (bot, guild, message, args) => {
     if (args.length != 0) {
@@ -20,7 +22,9 @@ exports.run = (bot, guild, message, args) => {
                             message.channel.send(new Discord.MessageEmbed().setDescription(`**Total Server Count:**\n\n${bot.user.username} is part of ${bot.guilds.cache.size} discord servers.`).setColor('#0099ff'));
                             break;
                         case 'names': case 'name': case 'n':
-                            message.channel.send(new Discord.MessageEmbed().setDescription(`**List of All Servers:**\n\n${bot.guilds.cache.map((value, key) => value.name).join(', ')}`).setColor('#0099ff'));
+                            ListMessages(message, `**List of All Servers:**\n\n`, '#0099ff', MessageToArray(() => {
+                                bot.guilds.cache.map((value, key) => value.name).join('\n');
+                            }), 15);
                             break;
                         default:
                             message.channel.send(new Discord.MessageEmbed().setDescription('Sorry, I did not understand the detail argument you provided.').setColor('#b50909'));
@@ -112,33 +116,44 @@ exports.run = (bot, guild, message, args) => {
                     //Switch on detail
                     switch (detail) {
                         case 'members': case 'member': case 'm':
-                            message.channel.send(new Discord.MessageEmbed().setDescription(`**List of all Members in this Discord:**\n\n${cjoin(message.guild.members.cache.map((v, k) => v.user.username), ', ', 5, '\n')}`).setColor('#0099ff'));
+                            ListMessages(message, `**List of all Members in this Discord:**\n\n`, '#0099ff', MessageToArray(() => {
+                                return message.guild.members.cache.map((v, k) => v.user.username).join('\n');
+                            }), 15);
                             break;
                         case 'emojis': case 'emoji': case 'e':
-                            message.channel.send(new Discord.MessageEmbed().setDescription(`**List of all Emojis in this Discord:**\n\n${cjoin(message.guild.emojis.cache.map((v, k) => v.toString()), ', ', 10, '\n')}`).setColor('#0099ff'));
+                            ListMessages(message, `**List of all Emojis in this Discord:**\n\n`, '#0099ff', MessageToArray(() => {
+                                return message.guild.emojis.cache.map((v, k) => v.toString()).join('\n');
+                            }), 15);
                             break;
                         case 'channels': case 'channel': case 'c':
-                            message.channel.send(new Discord.MessageEmbed().setDescription(`**List of all Channels in this Discord:**\n\n${cjoin(message.guild.channels.cache.map((v, k) => v.name), ', ', 5, '\n')}`).setColor('#0099ff'));
+                            ListMessages(message, `**List of all Channels in this Discord:**\n\n`, '#0099ff', MessageToArray(() => {
+                                return message.guild.channels.cache.map((v, k) => v.name).join('\n');
+                            }), 15);
                             break;
                         case 'voices': case 'voice': case 'v':
-                            message.channel.send(new Discord.MessageEmbed().setDescription(`**List of all Voice Channels in this Discord:**\n\n` +
-                                `${cjoin(message.guild.channels.cache.map((v, k) => v).filter(i => i.type == 'voice').map(v => v.name), ', ', 5, '\n')}`).setColor('#0099ff'));
+                            ListMessages(message, `**List of all Voice Channels in this Discord:**\n\n`, '#0099ff', MessageToArray(() => {
+                                return message.guild.channels.cache.map((v, k) => v).filter(i => i.type == 'voice').map(v => v.name).join('\n');
+                            }), 15);
                             break;
                         case 'texts': case 'text': case 't':
-                            message.channel.send(new Discord.MessageEmbed().setDescription(`**List of all Text Channels in this Discord:**\n\n` +
-                                `${cjoin(message.guild.channels.cache.map((v, k) => v).filter(i => i.type == 'text').map(v => v.name), ', ', 5, '\n')}`).setColor('#0099ff'));
+                            ListMessages(message, `**List of all Text Channels in this Discord:**\n\n`, '#0099ff', MessageToArray(() => {
+                                return message.guild.channels.cache.map((v, k) => v).filter(i => i.type == 'text').map(v => v.name).join('\n');
+                            }), 15);
                             break;
                         case 'categories': case 'category': case 'cat':
-                            message.channel.send(new Discord.MessageEmbed().setDescription(`**List of all Categories in this Discord:**\n\n` +
-                                `${cjoin(message.guild.channels.cache.map((v, k) => v).filter(i => i.type == 'category').map(v => v.name), ', ', 5, '\n')}`).setColor('#0099ff'));
+                            ListMessages(message, `**List of all Categories in this Discord:**\n\n`, '#0099ff', MessageToArray(() => {
+                                return message.guild.channels.cache.map((v, k) => v).filter(i => i.type == 'category').map(v => v.name).join('\n');
+                            }), 15);
                             break;
                         case 'news': case 'n':
-                            message.channel.send(new Discord.MessageEmbed().setDescription(`**List of all News Channels in this Discord:**\n\n` +
-                                `${cjoin(message.guild.channels.cache.map((v, k) => v).filter(i => i.type == 'news').map(v => v.name), ', ', 5, '\n')}`).setColor('#0099ff'));
+                            ListMessages(message, `**List of all News Channels in this Discord:**\n\n`, '#0099ff', MessageToArray(() => {
+                                return message.guild.channels.cache.map((v, k) => v).filter(i => i.type == 'news').map(v => v.name).join('\n');
+                            }), 15);
                             break;
                         case 'stores': case 'store': case 's':
-                            message.channel.send(new Discord.MessageEmbed().setDescription(`**List of all Store Channels in this Discord:**\n\n` +
-                                `${cjoin(message.guild.channels.cache.map((v, k) => v).filter(i => i.type == 'store').map(v => v.name), ', ', 5, '\n')}`).setColor('#0099ff'));
+                            ListMessages(message, `**List of all Store Channels in this Discord:**\n\n`, '#0099ff', MessageToArray(() => {
+                                return message.guild.channels.cache.map((v, k) => v).filter(i => i.type == 'store').map(v => v.name).join('\n');
+                            }), 15);
                             break;
                         default:
                             message.channel.send(new Discord.MessageEmbed().setDescription('Sorry, I did not understand the detail argument you provided.').setColor('#b50909'));
@@ -278,20 +293,6 @@ function HelpMessage(bot, guild, message, args) {
 
     //set embedded message
     message.channel.send(embeddedHelpMessage);
-}
-
-//Custom join
-function cjoin(array, seperator = '', splittingDistance = 0, splittingSeperator = '') {
-    //If there is no splitting distance then just returned joined array
-    if (splittingDistance == 0) return array.join(seperator);
-    else {
-        var out = '';
-        for (var i = 0; i < array.length; i++) {
-            if (i % splittingDistance == 0) out += splittingSeperator + array[i];
-            else out += seperator + array[i];
-        }
-        return out;
-    }
 }
 
 //Sum all message count

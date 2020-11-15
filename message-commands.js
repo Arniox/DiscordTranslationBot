@@ -68,4 +68,18 @@ module.exports = function () {
     this.MessageToArray = function (runme, split = '\n') {
         return runme().split(split);
     }
+
+    //Custom join
+    this.CustomJoinText = function (array, seperator = '', splittingDistance = 0, splittingSeperator = '') {
+        //If there is no splitting distance then just returned joined array
+        if (splittingDistance == 0) return array.join(seperator);
+        else {
+            var out = '';
+            for (var i = 0; i < array.length; i++) {
+                if (i % splittingDistance == 0) out += splittingSeperator + array[i];
+                else out += seperator + array[i];
+            }
+            return out;
+        }
+    }
 }
