@@ -3,6 +3,8 @@ const Discord = require('discord.js');
 
 module.exports = function () {
     this.ListMessage = function (message, text, color, array, chunk = 10) {
+        console.log(message, text, color, array, chunk);
+
         //Cut the array into chunks
         var i, j, arrayArray = [], messageArray = [];
         for (i = 0, j = array.length; i < j; i += chunk) {
@@ -11,7 +13,7 @@ module.exports = function () {
 
         //Create message array
         for (i = 0; i < arrayArray.length; i++) {
-            messageArray.push(new Discord.MessageEmbed().setDescription(text + arrayArray[i].join('\n')).setColor(color));
+            messageArray.push(new Discord.MessageEmbed().setDescription(text + `**${i * chunk} -> ${(i + arrayArray[i].length) * chunk} / ${array.length}**\n` + arrayArray[i].join('\n')).setColor(color));
         }
 
         //Only send dynamic message if the message is big enough
@@ -66,6 +68,8 @@ module.exports = function () {
     }
 
     this.MessageToArray = function (runme, split = '\n') {
+        console.log(runme());
+
         return runme().split(split);
     }
 
