@@ -134,7 +134,7 @@ exports.run = (bot, guild, message, command, args) => {
                                 //Fire dispatcher event end to skip song
                                 serverQueue.connection.dispatcher.end();
                             } else {
-                                message.channel.send(new Discord.MessageEmbed().setDescription('There is no song playing that I could skip.').setColor('#b50909');)
+                                message.channel.send(new Discord.MessageEmbed().setDescription('There is no song playing that I could skip.').setColor('#b50909'));
                             }
                         } else {
                             message.channel.send(new Discord.MessageEmbed().setDescription('I am currently not playing anything in any voice channel.').setColor('#b50909'));
