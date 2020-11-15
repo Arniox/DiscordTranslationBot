@@ -3,8 +3,6 @@ const Discord = require('discord.js');
 
 module.exports = function () {
     this.ListMessage = function (message, text, color, array, chunk = 10) {
-        console.log(text, color, array, chunk);
-
         //Cut the array into chunks
         var i, j, arrayArray = [], messageArray = [];
         for (i = 0, j = array.length; i < j; i += chunk) {
@@ -70,8 +68,6 @@ module.exports = function () {
     }
 
     this.MessageToArray = function (runme, split = '\n') {
-        console.log(runme());
-
         return runme().split(split).filter(i => i);
     }
 
