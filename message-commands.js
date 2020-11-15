@@ -12,7 +12,7 @@ module.exports = function () {
         }
 
         //Create final message
-        var finalText = `${array.length} ${text}${text.slice(-1) == '\n' ? '' : '\n'}`;
+        var finalText = `**${array.length}** ${text}${text.slice(-1) == '\n' ? '' : '\n'}`;
         //Create message array
         for (i = 0; i < arrayArray.length; i++) {
             messageArray.push(new Discord.MessageEmbed().setDescription(`${finalText}**${i * chunk} -> ${(i * chunk) + arrayArray[i].length}**\n` + arrayArray[i].join('\n')).setColor(color));

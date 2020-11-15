@@ -95,7 +95,7 @@ exports.run = (bot, guild, message, args) => {
                         case 'categories': case 'category': case 'cat':
                             message.channel.send(new Discord.MessageEmbed().setDescription(`**Total Categories in this Discord:**\n\n${message.guild.channels.cache.map((v, k) => v).filter(i => i.type == 'category').length}`).setColor('#0099ff'));
                             break;
-                        case 'news': case 'n':
+                        case 'news': case 'new': case 'n':
                             message.channel.send(new Discord.MessageEmbed().setDescription(`**Total News Channels in this Discord:**\n\n${message.guild.channels.cache.map((v, k) => v).filter(i => i.type == 'news').length}`).setColor('#0099ff'));
                             break;
                         case 'stores': case 'store': case 's':
@@ -116,42 +116,42 @@ exports.run = (bot, guild, message, args) => {
                     //Switch on detail
                     switch (detail) {
                         case 'members': case 'member': case 'm':
-                            ListMessage(message, `**List of all Members in this Discord:**\n\n`, '#0099ff', MessageToArray(() => {
+                            ListMessage(message, `**List of all Members in this Discord:**\n`, '#0099ff', MessageToArray(() => {
                                 return message.guild.members.cache.map((v, k) => NickName(v.user)).join('\n');
                             }), 15);
                             break;
                         case 'emojis': case 'emoji': case 'e':
-                            ListMessage(message, `**List of all Emojis in this Discord:**\n\n`, '#0099ff', MessageToArray(() => {
+                            ListMessage(message, `**List of all Emojis in this Discord:**\n`, '#0099ff', MessageToArray(() => {
                                 return message.guild.emojis.cache.map((v, k) => v.toString()).join('\n');
                             }), 15);
                             break;
                         case 'channels': case 'channel': case 'c':
-                            ListMessage(message, `**List of all Channels in this Discord:**\n\n`, '#0099ff', MessageToArray(() => {
+                            ListMessage(message, `**List of all Channels in this Discord:**\n`, '#0099ff', MessageToArray(() => {
                                 return message.guild.channels.cache.map((v, k) => v.name).join('\n');
                             }), 15);
                             break;
                         case 'voices': case 'voice': case 'v':
-                            ListMessage(message, `**List of all Voice Channels in this Discord:**\n\n`, '#0099ff', MessageToArray(() => {
+                            ListMessage(message, `**List of all Voice Channels in this Discord:**\n`, '#0099ff', MessageToArray(() => {
                                 return message.guild.channels.cache.map((v, k) => v).filter(i => i.type == 'voice').map(v => v.name).join('\n');
                             }), 15);
                             break;
                         case 'texts': case 'text': case 't':
-                            ListMessage(message, `**List of all Text Channels in this Discord:**\n\n`, '#0099ff', MessageToArray(() => {
+                            ListMessage(message, `**List of all Text Channels in this Discord:**\n`, '#0099ff', MessageToArray(() => {
                                 return message.guild.channels.cache.map((v, k) => v).filter(i => i.type == 'text').map(v => v.name).join('\n');
                             }), 15);
                             break;
                         case 'categories': case 'category': case 'cat':
-                            ListMessage(message, `**List of all Categories in this Discord:**\n\n`, '#0099ff', MessageToArray(() => {
+                            ListMessage(message, `**List of all Categories in this Discord:**\n`, '#0099ff', MessageToArray(() => {
                                 return message.guild.channels.cache.map((v, k) => v).filter(i => i.type == 'category').map(v => v.name).join('\n');
                             }), 15);
                             break;
-                        case 'news': case 'n':
-                            ListMessage(message, `**List of all News Channels in this Discord:**\n\n`, '#0099ff', MessageToArray(() => {
+                        case 'news': case 'new': case 'n':
+                            ListMessage(message, `**List of all News Channels in this Discord:**\n`, '#0099ff', MessageToArray(() => {
                                 return message.guild.channels.cache.map((v, k) => v).filter(i => i.type == 'news').map(v => v.name).join('\n');
                             }), 15);
                             break;
                         case 'stores': case 'store': case 's':
-                            ListMessage(message, `**List of all Store Channels in this Discord:**\n\n`, '#0099ff', MessageToArray(() => {
+                            ListMessage(message, `**List of all Store Channels in this Discord:**\n`, '#0099ff', MessageToArray(() => {
                                 return message.guild.channels.cache.map((v, k) => v).filter(i => i.type == 'store').map(v => v.name).join('\n');
                             }), 15);
                             break;
@@ -165,63 +165,63 @@ exports.run = (bot, guild, message, args) => {
                 break;
             case 'counts': case 'count': case 'c':
                 if (args.length != 0) {
-                    //Check that you mentioned a channel
-                    if (channelMentions.size != 0) {
-                        //Check that you only mentioned one channel
-                        if (channelMentions.size < 2) {
-                            //Get detail
-                            var detail = args.shift().toLowerCase();
-                            //Switch on detail
-                            switch (detail) {
-                                case 'messages': case 'message': case 'mess': case 'm':
-                                    //Send loading message.
-                                    message.channel
-                                        .send(new Discord.MessageEmbed().setDescription(`Total **Messages** in ${channelMentions.first().toString()}\n\n***Loading....***`).setColor('#FFCC00'))
-                                        .then(async function (sent) {
-                                            //Fetch all messages and sequentially count them
-                                            var totalCount = await sumSequentially(channelMentions.first(), sent, 'Messages');
-                                            sent.edit(new Discord.MessageEmbed().setDescription(`Total **Messages** in ${channelMentions.first().toString()}:\n\n${totalCount}`).setColor('#0099ff'));
-                                        }).catch((err) => { console.log(err, 'There was a fatal error'); });
-                                    break;
-                                case 'words': case 'word': case 'wor': case 'wo': case 'w':
-                                    //Send loading message.
-                                    message.channel
-                                        .send(new Discord.MessageEmbed().setDescription(`Total **Words** in ${channelMentions.first().toString()}\n\n***Loading....***`).setColor('#FFCC00'))
-                                        .then(async function (sent) {
-                                            //Fetch all messages and sequentially count the words.
-                                            var totalCount = await sumSequentially(channelMentions.first(), sent, 'Words');
-                                            sent.edit(new Discord.MessageEmbed().setDescription(`Total **Words** in ${channelMentions.first().toString()}:\n\n${totalCount}`).setColor('#0099ff'));
-                                        }).catch((err) => { console.log(err, 'There was a fatal error'); });
-                                    break;
-                                case 'characters': case 'character': case 'charact': case 'chara': case 'chars': case 'char': case 'cha': case 'ch': case 'c':
-                                    //Send loading message.
-                                    message.channel
-                                        .send(new Discord.MessageEmbed().setDescription(`Total **Characters** in ${channelMentions.first().toString()}\n\n***Loading....***`).setColor('#FFCC00'))
-                                        .then(async function (sent) {
-                                            //Fetch all messages and sequentially count the words.
-                                            var totalCount = await sumSequentially(channelMentions.first(), sent, 'Characters');
-                                            sent.edit(new Discord.MessageEmbed().setDescription(`Total **Characters** in ${channelMentions.first().toString()}:\n\n${totalCount}`).setColor('#0099ff'));
-                                        }).catch((err) => { console.log(err, 'There was a fatal error'); });
-                                    break;
-                                case 'emojis': case 'emoji': case 'emoj': case 'emo': case 'em': case 'e':
-                                    //Send loading message.
-                                    message.channel
-                                        .send(new Discord.MessageEmbed().setDescription(`Total **Emojis** in ${channelMentions.first().toString()}\n\n***Loading....***`).setColor('#FFCC00'))
-                                        .then(async function (sent) {
-                                            //Fetch all messages and sequentially count the words.
-                                            var totalCount = await sumSequentially(channelMentions.first(), sent, 'Emojis');
-                                            sent.edit(new Discord.MessageEmbed().setDescription(`Total **Emojis** in ${channelMentions.first().toString()}:\n\n${totalCount}`).setColor('#0099ff'));
-                                        }).catch((err) => { console.log(err, 'There was a fatal error'); });
-                                    break;
-                                default:
-                                    message.channel.send(new Discord.MessageEmbed().setDescription('Sorry, I did not understand the detail argument you provided.').setColor('#b50909'));
-                                    break;
-                            }
-                        } else {
-                            message.channel.send(new Discord.MessageEmbed().setDescription('Sorry, I cannot count from more than one channel.').setColor('#b50909'));
+                    var channelMentioned;
+                    //Check that you mentioned a channel otherwise select current
+                    if (channelMentions.size != 0) channelMentioned = channelMentions.first();
+                    else channelMentioned = message.channel;
+
+                    //Check that you only mentioned one channel
+                    if (channelMentions.size < 2) {
+                        //Get detail
+                        var detail = args.shift().toLowerCase();
+                        //Switch on detail
+                        switch (detail) {
+                            case 'messages': case 'message': case 'mess': case 'm':
+                                //Send loading message.
+                                message.channel
+                                    .send(new Discord.MessageEmbed().setDescription(`Total **Messages** in ${channelMentioned.toString()}\n\n***Loading....***`).setColor('#FFCC00'))
+                                    .then(async function (sent) {
+                                        //Fetch all messages and sequentially count them
+                                        var totalCount = await sumSequentially(channelMentioned, sent, 'Messages');
+                                        sent.edit(new Discord.MessageEmbed().setDescription(`Total **Messages** in ${channelMentioned.toString()}:\n\n${totalCount}`).setColor('#0099ff'));
+                                    }).catch((err) => { console.log(err, 'There was a fatal error'); });
+                                break;
+                            case 'words': case 'word': case 'wor': case 'wo': case 'w':
+                                //Send loading message.
+                                message.channel
+                                    .send(new Discord.MessageEmbed().setDescription(`Total **Words** in ${channelMentioned.toString()}\n\n***Loading....***`).setColor('#FFCC00'))
+                                    .then(async function (sent) {
+                                        //Fetch all messages and sequentially count the words.
+                                        var totalCount = await sumSequentially(channelMentioned, sent, 'Words');
+                                        sent.edit(new Discord.MessageEmbed().setDescription(`Total **Words** in ${channelMentioned.toString()}:\n\n${totalCount}`).setColor('#0099ff'));
+                                    }).catch((err) => { console.log(err, 'There was a fatal error'); });
+                                break;
+                            case 'characters': case 'character': case 'charact': case 'chara': case 'chars': case 'char': case 'cha': case 'ch': case 'c':
+                                //Send loading message.
+                                message.channel
+                                    .send(new Discord.MessageEmbed().setDescription(`Total **Characters** in ${channelMentioned.toString()}\n\n***Loading....***`).setColor('#FFCC00'))
+                                    .then(async function (sent) {
+                                        //Fetch all messages and sequentially count the words.
+                                        var totalCount = await sumSequentially(channelMentioned, sent, 'Characters');
+                                        sent.edit(new Discord.MessageEmbed().setDescription(`Total **Characters** in ${channelMentioned.toString()}:\n\n${totalCount}`).setColor('#0099ff'));
+                                    }).catch((err) => { console.log(err, 'There was a fatal error'); });
+                                break;
+                            case 'emojis': case 'emoji': case 'emoj': case 'emo': case 'em': case 'e':
+                                //Send loading message.
+                                message.channel
+                                    .send(new Discord.MessageEmbed().setDescription(`Total **Emojis** in ${channelMentioned.toString()}\n\n***Loading....***`).setColor('#FFCC00'))
+                                    .then(async function (sent) {
+                                        //Fetch all messages and sequentially count the words.
+                                        var totalCount = await sumSequentially(channelMentioned, sent, 'Emojis');
+                                        sent.edit(new Discord.MessageEmbed().setDescription(`Total **Emojis** in ${channelMentioned.toString()}:\n\n${totalCount}`).setColor('#0099ff'));
+                                    }).catch((err) => { console.log(err, 'There was a fatal error'); });
+                                break;
+                            default:
+                                message.channel.send(new Discord.MessageEmbed().setDescription('Sorry, I did not understand the detail argument you provided.').setColor('#b50909'));
+                                break;
                         }
                     } else {
-                        message.channel.send(new Discord.MessageEmbed().setDescription('Sorry, you didn\'t mention a channel for me to check.').setColor('#b50909'));
+                        message.channel.send(new Discord.MessageEmbed().setDescription('Sorry, I cannot count from more than one channel.').setColor('#b50909'));
                     }
                 } else {
                     message.channel.send(new Discord.MessageEmbed().setDescription('Sorry, you did not supply the detail arugment.').setColor('#b50909'));
@@ -285,7 +285,7 @@ function HelpMessage(bot, guild, message, args) {
                     `${guild.Prefix}info list [stores:store:s]\n` +
                     `${guild.Prefix}info count [messages:message:mess:m / ` +
                     `characters:character:charact:chara:chars:char:cha:ch:c / ` +
-                    `emojis:emoji:emoj:emo:em:e] ${randomChannel.toString()}\n`
+                    `emojis:emoji:emoj:emo:em:e] [:?${randomChannel.toString()}]\n`
             }
         )
         .setTimestamp()
