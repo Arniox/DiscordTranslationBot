@@ -59,7 +59,7 @@ module.exports = function () {
                                 //Remove reactions and then edit message
                                 sent.reactions.removeAll()
                                     .then(() => {
-                                        sent.edit(messageArray[0].setColor('#09b50c'));
+                                        sent.edit(messageArray[index].setColor('#09b50c'));
                                     }).catch((error) => { return; });
                             });
                         });
