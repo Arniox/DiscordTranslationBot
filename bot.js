@@ -26,8 +26,12 @@ const reddit = new RedditJS.Client({
 //Enabled in the discord developer portal
 const bot = new Discord.Client();
 
+//Server music queue
+const queue = new Map();
+
 bot.dbpool = pool; //Attach pool to bot
 bot.reddit = reddit; //Attach reddit to bot
+bot.musicQueue = queue; //Attach music queue to bot
 
 bot.dbpool.then((p) => {
 	return p.getConnection();

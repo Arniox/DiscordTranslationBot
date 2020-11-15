@@ -5,12 +5,9 @@ const ytdl = require('ytdl-core');
 //Import functions
 require('../message-commands.js')();
 
-//Server queue
-const queue = new Map();
-
 exports.run = (bot, guild, message, command, args) => {
     //Get server queue
-    const serverQueue = queue.get(message.guild.id);
+    const serverQueue = bot.musicQueue.get(message.guild.id);
 
     //Get user voice and bot voice
     const voiceChannel = message.member.voice.channel;
@@ -60,7 +57,7 @@ exports.run = (bot, guild, message, command, args) => {
                                         };
 
                                         //Set the queue to this server id
-                                        queue.set(message.guild.id, queueConstruct);
+                                        bot.musicQueue.set(message.guild.id, queueConstruct);
                                         queueConstruct.songs.push({ song: song, queuedBy: message.member });
 
                                         //Defean bot
@@ -72,7 +69,7 @@ exports.run = (bot, guild, message, command, args) => {
                                                 //Attach connection to the queueConstruct
                                                 queueConstruct.connection = connection;
                                                 //Play music
-                                                play(guild, message, message.guild, queueConstruct.songs[0]);
+                                                play(bot, guild, message, message.guild, queueConstruct.songs[0]);
                                             }).catch(error => {
                                                 console.error(error);
                                                 queue.delete(message.guild.id);
@@ -83,7 +80,7 @@ exports.run = (bot, guild, message, command, args) => {
                                         serverQueue.songs.push(song);
                                         //Play music if paused
                                         if (serverQueue.connection.dispatcher.paused)
-                                            play(guild, message, message.guild, serverQueue.songs[0]);
+                                            play(bot, guild, message, message.guild, serverQueue.songs[0]);
                                         //Send message
                                         message.channel.send(new Discord.MessageEmbed().setDescription(`${song.title} has been added to the queue.`).setColor('#09b50c'));
                                     }
@@ -281,8 +278,8 @@ function HelpMessage(bot, guild, message, args) {
 }
 
 //Functions
-async function play(dataguild, message, guild, song, repeated = 0) {
-    const serverQueue = queue.get(guild.id);
+async function play(bot, dataguild, message, guild, song, repeated = 0) {
+    const serverQueue = bot.musicQueue.get(guild.id);
 
     //Check if a song exists.
     if (!song) {
@@ -297,13 +294,13 @@ async function play(dataguild, message, guild, song, repeated = 0) {
             .play(readable, { highWaterMark: 96, bitrate: 96, fec: true, volume: false })
             .on("finish", () => {
                 serverQueue.songs.shift();
-                play(dataguild, message, guild, serverQueue.songs[0]);
+                play(bot, dataguild, message, guild, serverQueue.songs[0]);
             })
             .on("error", (error) => {
                 repeated = repeated || 0;
                 //Skip song if too many errors
                 if (repeated === 4) bot.commands.get('music').run(bot, dataguild, 'skip', []);
-                else play(dataguild, message, guild, serverQueue.songs[0], ++repeated); //Try again
+                else play(bot, dataguild, message, guild, serverQueue.songs[0], ++repeated); //Try again
                 console.error(error); //Return console error
             });
 
