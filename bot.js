@@ -22,10 +22,11 @@ const reddit = new RedditJS.Client({
 });
 
 //Initialize Discord bot with websocket settings for enabled intents.
-//Enable: GUILD_PRESENCES and GUILD_MEMBERS
+//Enable: GUILD_MEMBERS
+//Do not need right now: GUILD_PRESENCES
 const bot = new Discord.Client({
 	ws: {
-		intents: ['GUILD_PRESENCES', 'GUILD_MEMBERS']
+		intents: ['GUILD_MEMBERS']
 	}
 });
 
