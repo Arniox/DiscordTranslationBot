@@ -13,7 +13,8 @@ module.exports = function () {
 
         //Create message array
         for (i = 0; i < arrayArray.length; i++) {
-            messageArray.push(new Discord.MessageEmbed().setDescription(text + `**${i * chunk} -> ${(i + arrayArray[i].length) * chunk} / ${array.length}**\n` + arrayArray[i].join('\n')).setColor(color));
+            messageArray.push(new Discord.MessageEmbed().setDescription(text +
+                `**${i * chunk} -> ${(i * chunk) + arrayArray[i].length} / ${array.length}**\n` + arrayArray[i].join('\n')).setColor(color));
         }
 
         //Only send dynamic message if the message is big enough
