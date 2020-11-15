@@ -168,7 +168,7 @@ exports.run = (bot, guild, message, args) => {
                                 if (error) return console.error(error); //Return error console log
 
                                 //Send message
-                                ListMessage(message, `${results.length} translation ignored patterns.\n`, '#0099ff', MessageToArray(() => {
+                                ListMessage(message, `Translation ignored patterns:\n`, '#0099ff', MessageToArray(() => {
                                     //For loop them into an output
                                     var output = "";
                                     for (var i = 0; i < results.length; i++) {
@@ -329,7 +329,7 @@ exports.run = (bot, guild, message, args) => {
                                 if (error) return console.error(error); //Return error console log
 
                                 //Send Message
-                                ListMessage(message, `**${results.length} translation ignored channels.**\n`, '#0099ff', MessageToArray(() => {
+                                ListMessage(message, `**Translation ignored channels:**\n`, '#0099ff', MessageToArray(() => {
                                     return message.guild.channels.cache.map((v, k) => v).filter(i => results.map(v => v.ChannelId).includes(i.id)).map(v => v.toString()).join(',\n');
                                 }), 15);
                             });
@@ -945,7 +945,7 @@ exports.run = (bot, guild, message, args) => {
                                     bot.con.query(sql_cmd, (error, results, fields) => {
                                         if (error) return console.error(error); //Return error console log
 
-                                        ListMessage(message, `${results.length} custom translation channel links.\n`, '#0099ff', MessageToArray(() => {
+                                        ListMessage(message, `Custom translation channel links:\n`, '#0099ff', MessageToArray(() => {
                                             //For loop them into an output
                                             var output = "";
                                             for (var i = 0; i < results.length; i++) {
