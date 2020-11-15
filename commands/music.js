@@ -22,6 +22,8 @@ exports.run = (bot, guild, message, command, args) => {
             case 'play': case 'p':
                 var query = args.shift();
 
+                console.log(query);
+
                 //Check that query exists
                 if (query) {
                     //Check if user not in voice
@@ -46,7 +48,7 @@ exports.run = (bot, guild, message, command, args) => {
                                         //Get song
                                         var song = {
                                             title: songInfo.videoDetails.title,
-                                            url: songInfo.videoDetails.video_url
+                                            url: (songInfo.videoDetails.videoId)
                                         };
                                         //If server queue empty, then create it for this server
                                         if (!serverQueue) {
@@ -277,7 +279,7 @@ function HelpMessage(bot, guild, message, args) {
 }
 
 //Functions
-function play(guild, song) {
+async function play(guild, song) {
     const serverQueue = queue.get(guild.id);
 
     //Check if a song exists.
@@ -286,9 +288,11 @@ function play(guild, song) {
         serverQueue.connection.dispatcher.pause(true);
         return;
     } else {
+        //Create readable video object
+        var readable = await ytdl(song.song.url, { quality: "highestaudio", highWaterMark: 1 << 25 });
         //Create dispatcher and play
         const dispatcher = serverQueue.connection
-            .play(ytdl(song.song.url))
+            .play(readable, { highWaterMark: 96, bitrate: 96, fec: true, volume: false })
             .on("finish", () => {
                 serverQueue.songs.shift();
                 play(guild, serverQueue.songs[0]);
