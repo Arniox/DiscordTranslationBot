@@ -285,7 +285,7 @@ async function play(guild, song) {
     //Check if a song exists.
     if (!song) {
         //Pause with silence so can be continued later
-        serverQueue.connection.dispatcher.pause(true);
+        //serverQueue.connection.dispatcher.pause(true);
         return;
     } else {
         //Create readable video object
