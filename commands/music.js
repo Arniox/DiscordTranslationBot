@@ -78,7 +78,7 @@ exports.run = (bot, guild, message, command, args) => {
                                                     //Attach connection to the queueConstruct
                                                     queueConstruct.connection = connection;
                                                     //Play music
-                                                    play(message.guild, queueConstruct.songs[0]);
+                                                    play(guild, message, message.guild, queueConstruct.songs[0]);
                                                 }).catch(error => {
                                                     console.error(error);
                                                     queue.delete(message.guild.id);
@@ -89,7 +89,7 @@ exports.run = (bot, guild, message, command, args) => {
                                             serverQueue.songs.push(song);
                                             //Play music if paused
                                             if (serverQueue.connection.dispatcher.paused)
-                                                play(message.guild, serverQueue.songs[0]);
+                                                play(guild, message, message.guild, serverQueue.songs[0]);
                                             //Send message
                                             message.channel.send(new Discord.MessageEmbed().setDescription(`${song.title} has been added to the queue.`).setColor('#09b50c'));
                                         }
@@ -282,7 +282,7 @@ function HelpMessage(bot, guild, message, args) {
 }
 
 //Functions
-async function play(guild, song) {
+async function play(dataguild, message, guild, song, repeated = 0) {
     const serverQueue = queue.get(guild.id);
 
     //Check if a song exists.
@@ -298,9 +298,15 @@ async function play(guild, song) {
             .play(readable, { highWaterMark: 96, bitrate: 96, fec: true, volume: false })
             .on("finish", () => {
                 serverQueue.songs.shift();
-                play(guild, serverQueue.songs[0]);
+                play(dataguild, message, guild, serverQueue.songs[0]);
             })
-            .on("error", error => console.error(error));
+            .on("error", (error) => {
+                repeated = repeated || 0;
+                //Skip song if too many errors
+                if (repeated === 4) bot.commands.get('music').run(bot, dataguild, 'skip', []);
+                else play(dataguild, message, guild, serverQueue.songs[0], ++repeated); //Try again
+                console.error(error); //Return console error
+            });
 
         //Set volume
         dispatcher.setVolumeLogarithmic(serverQueue.volume / 5);
