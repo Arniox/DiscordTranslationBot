@@ -101,6 +101,7 @@ exports.run = (bot, guild, message, command, args) => {
                         if (botVoice && (serverQueue && serverQueue.songs.length > 0)) {
                             //Resume dispatcher
                             serverQueue.connection.dispatcher.resume();
+                            message.channel.send(new Discord.MessageEmbed().setDescription('Resumed ▶️').setColor('#0099ff'));
                         } else {
                             message.channel.send(new Discord.MessageEmbed().setDescription('I am currently not playing anything so cannot be resumed.').setColor('#b50909'));
                         }
@@ -123,6 +124,8 @@ exports.run = (bot, guild, message, command, args) => {
                         if (serverQueue && serverQueue.songs.length > 0) {
                             //Fire dispatcher event end to skip song
                             serverQueue.connection.dispatcher.end();
+                            message.channel.send(new Discord.MessageEmbed().setDescription(`Skipped ⏩ **${serverQueue.songs[0].song.title}** - ` +
+                                `Queued by: ${serverQueue.songs[0].queuedBy.toString()}`).setColor('#0099ff'));
                         } else {
                             message.channel.send(new Discord.MessageEmbed().setDescription('There is no song playing that I could skip.').setColor('#b50909'));
                         }
@@ -147,6 +150,7 @@ exports.run = (bot, guild, message, command, args) => {
                         serverQueue.songs = [];
                         //Fire dispatcher event end to immediately exit recursion and exit
                         serverQueue.connection.dispatcher.end();
+                        message.channel.send(new Discord.MessageEmbed().setDescription('Stopped Playing ⏹️').setColor('#0099ff'));
                     } else {
                         message.channel.send(new Discord.MessageEmbed().setDescription('I am already stopped!').setColor('#b50909'));
                     }
@@ -213,12 +217,34 @@ exports.run = (bot, guild, message, command, args) => {
                     var output = '';
                     for (var i = 0; i < serverQueue.songs.length; i++) {
                         //Create output per song
-                        output += `**${serverQueue.songs[i].song.title}** - Queued by: ${serverQueue.songs[i].queuedBy.toString()}\n`;
+                        output += `${i} - **${serverQueue.songs[i].song.title}**\t - \tQueued by: ${serverQueue.songs[i].queuedBy.toString()}\n`;
                     }
                     return output;
-                }), 20, '#0099ff');
+                }), 10, '#0099ff');
             } else {
                 message.channel.send(new Discord.MessageEmbed().setDescription('I am not playing anything right now...').setColor('#0099ff'));
+            }
+            break;
+        case 'shuffle': case 'shuff': case 'shuf': case 'sh':
+            //Check if user not in voice
+            if (voiceChannel) {
+                //Check if bot voice already exists
+                if (botVoice && (botVoice != voiceChannel)) {
+                    cannotEffect(message, botVoice, 'shuffle the queue');
+                } else {
+                    //Check if bot is not in voice
+                    if (botVoice && (serverQueue && serverQueue.songs.length > 0)) {
+                        //Shuffle queue but keep playing current song
+                        var currentSong = serverQueue.songs.shift(); //Get current song and pull out from queue
+                        serverQueue.songs.shuffle(); //Shuffle queue
+                        serverQueue.songs.unshift(currentSong); //Add current song to front
+                        message.channel.send(new Discord.MessageEmbed().setDescription('Shuffled Queue 🔀').setColor('#0099ff'));
+                    } else {
+                        message.channel.send(new Discord.MessageEmbed().setDescription('I am currently not playing anything so the queue cannot be shuffeled.').setColor('#b50909'));
+                    }
+                }
+            } else {
+                message.channel.send(new Discord.MessageEmbed().setDescription('Please join a voice channel first.').setColor('#b50909'));
             }
             break;
         default:
