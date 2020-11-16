@@ -83,12 +83,15 @@ module.exports = (bot, message) => {
                                 case 'pause': case 'resume': case 'nowplaying': case 'nowp':
                                 case 'now': case 'np': case 'queue': case 'q':
                                 case 'shuffle': case 'shuff': case 'shuf': case 'sh':
-                                    return resolve(bot.commands.get('music'));
+                                    //return resolve(bot.commands.get('music'));
+                                    message.channel.send(new Discord.MessageEmbed().setDescription('YouTube API calls have been completely reworked and thus ytpl, ytsr and ytdl-core need reworking ' +
+                                        'in order for these commands to operate properly. Currently WIP').setColor('#7F0030'));
+                                    return reject();
                                 default:
                                     return reject();
                             }
                         }).then((cmd) => {
-                            //If command doesn't exist, exiot and do nothing
+                            //If command doesn't exist, exit and do nothing
                             if (!cmd) return;
                             //Run the command
                             cmd.run(bot, results[0], message, command, args);
