@@ -124,8 +124,7 @@ exports.run = (bot, guild, message, command, args) => {
                         if (serverQueue && serverQueue.songs.length > 0) {
                             //Fire dispatcher event end to skip song
                             serverQueue.connection.dispatcher.end();
-                            message.channel.send(new Discord.MessageEmbed().setDescription(`Skipped ⏩ **${serverQueue.songs[0].song.title}** - ` +
-                                `Queued by: ${serverQueue.songs[0].queuedBy.toString()}`).setColor('#0099ff'));
+                            message.channel.send(new Discord.MessageEmbed().setDescription(`Skipped ⏩`).setColor('#0099ff'));
                         } else {
                             message.channel.send(new Discord.MessageEmbed().setDescription('There is no song playing that I could skip.').setColor('#b50909'));
                         }
