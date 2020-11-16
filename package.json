@@ -33,6 +33,8 @@
     "opusscript": "0.0.7",
     "promise-mysql": "^4.1.3",
     "reddit": "^1.2.0",
-    "ytdl-core": "^4.0.3"
+    "ytdl-core": "^4.0.3",
+    "ytpl": "^1.0.1",
+    "ytsr": "^1.0.4"
   }
 }
