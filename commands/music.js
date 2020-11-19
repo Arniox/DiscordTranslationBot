@@ -61,6 +61,7 @@ exports.run = (bot, guild, message, command, args) => {
 
                                     //Defean bot
                                     message.guild.me.voice.setDeaf(true);
+                                    message.guild.me.voice.setMute(false);
                                     //Join voice channel
                                     voiceChannel
                                         .join()
@@ -76,6 +77,9 @@ exports.run = (bot, guild, message, command, args) => {
                                             message.channel.send(new Discord.MessageEmbed().setDescription(error).setColor('#b50909'));
                                         });
                                 } else {
+                                    //Unmute itself
+                                    message.guild.me.voice.setMute(false);
+                                    //Push song to queue
                                     serverQueue.songs.push({ song: song, queuedBy: message.member });
                                     //Play music if paused
                                     if (serverQueue.connection.dispatcher.paused) serverQueue.connection.dispatcher.resume();
