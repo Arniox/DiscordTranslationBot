@@ -53,8 +53,6 @@ function smallNum(num) {
 
 //Format a number as a string into the actual name of the number
 String.prototype.toWordsConverted = function () {
-    console.log(this);
-
     var s = this;
     //Check if too long
     if (s.length > 555) {
