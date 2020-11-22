@@ -14,7 +14,7 @@ exports.run = (bot, guild, message, command, args) => {
                 //Do not need to convert query to number
                 //Send message
                 ListMessage(message, `Answer:\n`, '#09b50c', MessageToArray(() => {
-                    message.content.toWordsConverted().replace(',', '\n');
+                    return message.content.toWordsConverted().replace(',', '\n');
                 }), 20);
             } else {
                 message.channel.send(new Discord.MessageEmbed().setDescription(`Sorry, ${query} is not a number.`).setColor('#b50909'));
