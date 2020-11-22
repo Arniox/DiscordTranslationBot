@@ -22,7 +22,7 @@ const illions = new Array('m', 'b', 'tr', 'quadr', 'quint', 'sext', 'sept', 'oct
     'octogintacent'); // We don't need numbers bigger than that: 17 * 2^1802, being an upper bound, is approximately 4,9 * 10^543.
 
 //Basic innser functions
-function smallNum(num, mag) {
+function smallNum(num) {
     var a = num.charAt(0);
     var b = num.charAt(1);
     var c = num.charAt(2);
@@ -59,16 +59,14 @@ String.prototype.toWordsConverted = function () {
         return `Your number is ${s.length} digits long. The maximum length is 555 digits.`;
     }
     var r = "",
-        temp = "",
-        i;
+        temp = "";
     //Pad with 0's
     while (s.length % 3 > 0) s = "0" + s;
     //Get maximum accessable in the illions array
-    var max = (s.length / 3).ceil();
+    var max = Math.ceil(s.length / 3);
     //For loop through the string
-    for (i = 0; i < max; i++) {
+    for (var i = 0; i < max; i++) {
         temp = smallNum(s.substr(i * 3, 3));
-        //If returned string is not nothing
         if (temp != "") {
             if (max - i == 1 && r != "" && s.substr(i * 3, 3) < 100) r += " and ";
             else if (r != "") r += ", ";
@@ -79,7 +77,7 @@ String.prototype.toWordsConverted = function () {
     }
     //Otherwise if string is 0
     if (s == 0) r = "zero";
-    r = r.toSentenceCase();
+    r = r.charAt(0).toUpperCase() + r.substring(1, r.length) + ".";
     return r;
 }
 

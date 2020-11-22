@@ -13,8 +13,8 @@ exports.run = (bot, guild, message, command, args) => {
             if (/^\d+$/.test(query)) {
                 //Do not need to convert query to number
                 //Send message
-                ListMessage(message, `Answer:\n`, '#09b50c', MessageToArray(() => {
-                    return message.content.toWordsConverted().replace(',', '\n');
+                ListMessage(message, `Pages for Answer:\n`, '#09b50c', MessageToArray(() => {
+                    return message.content.toWordsConverted().split(',').join('\n');
                 }), 20);
             } else {
                 message.channel.send(new Discord.MessageEmbed().setDescription(`Sorry, ${query} is not a number.`).setColor('#b50909'));
