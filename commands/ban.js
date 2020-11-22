@@ -115,6 +115,7 @@ exports.run = (bot, guild, message, command, args) => {
 };
 
 function HelpMessage(bot, guild, message, args) {
+    //Get random member
     var randomMember = message.guild.members.cache.random();
 
     var embeddedHelpMessage = new Discord.MessageEmbed()

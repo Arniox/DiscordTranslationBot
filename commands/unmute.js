@@ -56,6 +56,7 @@ exports.run = (bot, guild, message, command, args) => {
 };
 
 function HelpMessage(bot, guild, message, args) {
+    //Get random channel
     var randomChannel = message.guild.channels.cache.filter(i => i.type == 'voice').random().name;
 
     var embeddedHelpMessage = new Discord.MessageEmbed()

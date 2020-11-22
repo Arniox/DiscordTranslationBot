@@ -899,7 +899,7 @@ exports.run = (bot, guild, message, command, args) => {
                                         message.channel.send(new Discord.MessageEmbed().setDescription('Sorry, you do not have manage server permissions.').setColor('#b50909'));
                                     }
                                     break;
-                                case 'list': case 'li': case 'l':
+                                case 'list': case 'l':
                                     //Look for existing patterns
                                     const sql_cmd = `
                                     SELECT * FROM custom_translation_channels
@@ -954,7 +954,10 @@ exports.run = (bot, guild, message, command, args) => {
 //Functions
 function HelpMessage(bot, guild, message, args) {
     //Get random channel
-    var randomChannel = message.guild.channels.cache.random();
+    var randomChannel = message.guild.channels.cache.filter(i => i.type == 'text').random();
+    //Get 2 random text channels
+    var random1 = message.guild.channels.cache.filter(i => i.type == 'text').random();
+    var random2 = message.guild.channels.cache.filter(i => i.type == 'text').random();
 
     var embeddedHelpMessage = new Discord.MessageEmbed()
         .setColor('#b50909')
@@ -975,7 +978,11 @@ function HelpMessage(bot, guild, message, args) {
                     `[:?current:curr:cur:c / =:change:ch:toggle:togg:tog:to:t:switch:swit:swi:sw:s]\n` +
                     `${guild.Prefix}translate [baselanguage:globallanguage:baselang:globallang] [:?current:curr:cur:c / change:ch:=]` +
                     `${guild.Prefix}translate [mainoutput:mainout:channeloutput:outputchannel:mainchannel:mainchan:\n` +
-                    `outputchan:chanoutput:outmain] [:?current:curr:cur:c / change:ch:=]`
+                    `outputchan:chanoutput:outmain] [:?current:curr:cur:c / change:ch:=]\n` +
+                    `${guild.Prefix}translate [customchannel:channelfrom:fromchannel:channelto:` +
+                    `tochannel:customcha:customch:custom:custcha:custch:custfrom:fromcust:custto:` +
+                    `tocust:cust:linkchannels:linkchannel:linkchan:linkch:link] ` +
+                    `[set:s:= / remove:-:r / list:l]`
             },
             {
                 name: 'Examples: ',
@@ -995,7 +1002,10 @@ function HelpMessage(bot, guild, message, args) {
                     `${guild.Prefix}translate baselanguage\n` +
                     `${guild.Prefix}translate baselanguage change English *or* En` +
                     `${guild.Prefix}translate mainoutput\n` +
-                    `${guild.Prefix}translate mainoutput change ${randomChannel.toString()}`
+                    `${guild.Prefix}translate mainoutput change ${randomChannel.toString()}` +
+                    `${guild.Prefix}translate customchannel set ${random1} ${random2}` +
+                    `${guild.Prefix}translate customchannel remove 40` +
+                    `${guild.Prefix}translate customchannel list`
             }
         )
         .setTimestamp()

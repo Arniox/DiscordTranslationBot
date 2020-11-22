@@ -1,57 +1,130 @@
-module.exports = {
-    //Random
-    siteRand: function (high, low) {
-        return Math.random() * (high - low) + low;
-    },
-    //Maps to Math.ceil
-    ceil: function (num) {
-        return Math.ceil(num);
-    },
-    //Maps to Math.floor
-    floor: function (num) {
-        return Math.floor(num);
-    },
-    //Matches in array
-    matchInArray: function (string, expressions) {
-        if (expression.length == 0) {
-            return string.match(expressions);
-        } else {
-            for (var i = 0; i < expressions.length; ++i) {
-                if (string.match(expressions[i])) {
-                    return true;
-                }
-            }
-        }
-    },
-    //Remove from mathes
-    removeByMatches: function (string, expressions) {
-        if (expressions.length == 0) {
-            return string.replace(expressions, "");
-        } else {
-            var outPut = '';
-            for (var i = 0; i < expressions.length; ++i) {
-                outPut += string.replace(expressions[i], "");
-            }
-        }
-    },
-    //Randomly grab a number of elements from an array
-    getRandomFromArray: function (arr, n) {
-        return arr.sort(() => Math.random() - Math.random()).slice(0, n);
-    },
-    //Randomly grab a number of elements from
-    getRandomFromColl: function (arr, n) {
-        var result = new Array(n),
-            len = arr.size,
-            taken = new Array(len);
-        if (n > len)
-            return arr;
-        while (n--) {
-            var x = Math.floor(Math.random() * len);
-            result[n] = arr[x in taken ? taken[x] : x];
-            taken[x] = --len in taken ? taken[len] : len;
-        }
-        return result;
+const units = new Array("one", "two", "three", "four", "five", "six", "seven", "eight", "nine");
+const teens = new Array("ten", "eleven", "twelve", "thirteen", "fourteen", "fifteen", "sixteen", "seventeen", "eighteen ", "nineteen");
+const tens = new Array("twenty", "thirty", "forty", "fifty", "sixty", "seventy", "eighty", "ninety");
+const illions = new Array('m', 'b', 'tr', 'quadr', 'quint', 'sext', 'sept', 'oct', 'non', // 10^6 - 10^30
+    'dec', 'undec', 'duodec', 'tredec', 'quattuordec', 'quindec', 'sexdec', 'septendec', 'octodec', 'novemdec', // 10^33 - 10^60
+    'vigint', 'unvigint', 'duovigint', 'trevigint', 'quattuorvigint', 'quinvigint', 'sexvigint', 'septenvigint', 'octovigint', 'novemvigint', // 10^63 - 10^90
+    'trigint', 'untrigint', 'duotrigint', 'tretrigint', 'quattuortrigint', 'quintrigint', 'sextrigint', 'septentrigint', 'octotrigint', 'novemtrigint', // 10^93 - 10^120
+    'quadragint', 'unquadragint', 'duoquadragint', 'trequadragint', 'quattuorquadragint', 'quinquadragint', 'sexquadragint', 'septenquadragint', 'octoquadragint', 'novemquadragint', // 10^123 - 10^150
+    'quinquagint', 'unquinquagint', 'duoquinquagint', 'trequinquagint', 'quattuorquinquagint', 'quinquinquagint', 'sexquinquagint', 'septenquinquagint', 'octoquinquagint', 'novemquinquagint', // 10^153 - 10^180
+    'sexagint', 'unsexagint', 'duosexagint', 'tresexagint', 'quattuorsexagint', 'quinsexagint', 'sexsexagint', 'septsexagint', 'octosexagint', 'novemsexagint', // 10^183 - 10^210
+    'septuagint', 'unseptuagint', 'duoseptuagint', 'treseptuagint', 'quattuorseptuagint', 'quinseptuagint', 'sexseptuagint', 'septseptuagint', 'octoseptuagint', 'novemseptuagint', // 10^213 - 10^240
+    'octogint', 'unoctogint', 'duooctogint', 'treoctogint', 'quattuoroctogint', 'quinoctogint', 'sexoctogint', 'septoctogint', 'octooctogint', 'novemoctogint', // 10^243 - 10^270
+    'nonagint', 'unnonagint', 'duononagint', 'trenonagint', 'duattuornonagint', 'quinnonagint', 'sexnonagint', 'septnonagint', 'octononagint', 'novemnonagint', // 10^273 - 10^300
+    'cent', 'cenunt', 'duocent', 'centret', 'quattuorcent', 'quinquacent', 'sexcent', 'septencent', 'octocent', 'novemcent', // 10^303 - 10^330
+    'decicent', 'undecicent', 'duodecicent', 'tredecicent', 'quattuordecicent', 'quindecicent', 'sexdecicent', 'septendecicent', 'octodecicent', 'novemdecicent', // 10^333 - 10^360
+    'viginticent', 'unviginticent', 'duoviginticent', 'treviginticent', 'quattuorviginticent', 'quinviginticent', 'sexviginticent', 'septenviginticent', 'octoviginticent', 'novemviginticent', // 10^363 - 10^390
+    'trigintacent', 'untrigintacent', 'duotrigintacent', 'tretrigintacent', 'quattuortrigintacent', 'quintrigintacent', 'sextrigintacent', 'septentrigintacent', 'octotrigintacent', 'novemtrigintacent', // 10^393 - 10^420
+    'quadragintacent', 'unquadragintacent', 'duoquadragintacent', 'trequadragintacent', 'quattuorquadragintacent', 'quinquadragintacent', 'sexquadragintacent', 'septenquadragintacent', 'octoquadragintacent', 'novemquadragintacent', // 10^423 - 10^450
+    'quinquagintacent', 'unquinquagintacent', 'duoquinquagintacent', 'trequinquagintacent', 'quattuorquinquagintacent', 'quinquinquagintacent', 'sexquinquagintacent', 'sexquinquagintacent', 'septenquinquagintacent', 'octoquinquagintacent', 'novemquinquagintacent', // 10^453 - 10^480
+    'sexagintacent', 'unsexagintacent', 'duosexagintacent', 'tresexagintacent', 'quattuorsexagintacent', 'quinsexagintacent', 'sexsexagintacent', 'septensexagintacent', 'octosexagintacent', 'novemsexagintacent', // 10^483 - 10^510
+    'septuagintacent', 'unseptuagintacent', 'duoseptuagintacent', 'treseptuagintacent', 'quattorseptuagintacent', 'quinseptuagintacent', 'septenseptuagintacent', 'octoseptuagintacent', 'novemseptuagintacent', // 10^513 - 10^540
+    'octogintacent'); // We don't need numbers bigger than that: 17 * 2^1802, being an upper bound, is approximately 4,9 * 10^543.
+
+//Basic innser functions
+function smallNum(num, mag) {
+    var a = num.charAt(0);
+    var b = num.charAt(1);
+    var c = num.charAt(2);
+    var s = "";
+    //If a is not 0, then start with a hundred
+    if (a != 0) {
+        s += units[a - 1] + " hundred";
+        if (b == 0 && c == 0) return s;
+        else s += " and ";
     }
+    //If b is 0, then it's a single digit number
+    if (b == 0) {
+        if (c == 0) return "";
+        return s + units[c - 1];
+    }
+    //If b is 1, then it's a 10's number like 15 or 19
+    if (b == 1) {
+        return s + teens[c];
+    }
+    //If b is greater than 1, then it's either a 10's like 20 or 30
+    //Or it's something like 29 or 64
+    if (b > 1) {
+        s += tens[b - 2];
+        if (c > 0) s += "-" + units[c - 1];
+        return s;
+    }
+}
+
+//Format a number as a string into the actual name of the number
+String.prototype.toWordsConverted = function () {
+    var s = this;
+    //Check if too long
+    if (s.length > 555) {
+        return `Your number is ${s.length} digits long. The maximum length is 555 digits.`;
+    }
+    var r = "",
+        temp = "",
+        i;
+    //Pad with 0's
+    while (s.length % 3 > 0) s = "0" + s;
+    //Get maximum accessable in the illions array
+    var max = (s.length / 3).ceil();
+    //For loop through the string
+    for (i = 0; i < max; i++) {
+        temp = smallNum(s.substr(i * 3, 3));
+        //If returned string is not nothing
+        if (temp != "") {
+            if (max - i == 1 && r != "" && s.substr(i * 3, 3) < 100) r += " and ";
+            else if (r != "") r += ", ";
+            if (max - i == 2) temp += " thousand";
+            if (max - i > 2) temp += " " + illions[max - i - 3] + "illion";
+        }
+        r += temp;
+    }
+    //Otherwise if string is 0
+    if (s == 0) r = "zero";
+    r = r.toSentenceCase();
+    return r;
+}
+
+//Format the string seconds to the full HHMMSS time format
+String.prototype.toHHMMSS = function (en = false) {
+    var sec_num = parseInt(this, 10); // don't forget the second param
+    var hours = Math.floor(sec_num / 3600);
+    var minutes = Math.floor((sec_num - (hours * 3600)) / 60);
+    var seconds = sec_num - (hours * 3600) - (minutes * 60);
+
+    if (hours < 10) { hours = (!en ? "0" : "") + hours; }
+    if (minutes < 10) { minutes = (!en ? "0" : "") + minutes; }
+    if (seconds < 10) { seconds = (!en ? "0" : "") + seconds; }
+
+    if (!en) {
+        return hours + ':' + minutes + ':' + seconds;
+    } else {
+        return hours + ' hours, ' + minutes + ' minutes, and ' + seconds + ' seconds';
+    }
+}
+
+//Cut string shorter
+String.prototype.trimString = function (length, eclipse = '...') {
+    return this.length > length ?
+        this.substring(0, length - (eclipse.length + 1)) + eclipse :
+        this;
+}
+
+//Proper case for string
+String.prototype.toTitleCase = function () {
+    return this.replace(/\w\S*/g, function (txt) {
+        return txt.charAt(0).toUpperCase() + txt.substr(1).toLocaleLowerCase();
+    });
+}
+
+//Sentence casing
+String.prototype.toSentenceCase = function () {
+    return this.replace(/(^\s*\w|[\.\!\?]\s*\w)/g, function (txt) {
+        return txt.toUpperCase();
+    });
+}
+
+//To funny case
+String.prototype.toFunnyCase = function () {
+    return this.split('').map((v, i) => i % 2 == 0 ? v.toLowerCase() : v.toUpperCase()).join('');
 }
 
 //UTC to timezone date
@@ -105,91 +178,6 @@ Number.prototype.formatComma = function () {
 //Is this number an int
 Number.prototype.isInt = function () {
     return this % 1 == 0;
-}
-
-//Format the string seconds to the full HHMMSS time format
-String.prototype.toHHMMSS = function (en = false) {
-    var sec_num = parseInt(this, 10); // don't forget the second param
-    var hours = Math.floor(sec_num / 3600);
-    var minutes = Math.floor((sec_num - (hours * 3600)) / 60);
-    var seconds = sec_num - (hours * 3600) - (minutes * 60);
-
-    if (hours < 10) { hours = (!en ? "0" : "") + hours; }
-    if (minutes < 10) { minutes = (!en ? "0" : "") + minutes; }
-    if (seconds < 10) { seconds = (!en ? "0" : "") + seconds; }
-
-    if (!en) {
-        return hours + ':' + minutes + ':' + seconds;
-    } else {
-        return hours + ' hours, ' + minutes + ' minutes, and ' + seconds + ' seconds';
-    }
-}
-
-//Cut string shorter
-String.prototype.trimString = function (length, eclipse = '...') {
-    return this.length > length ?
-        this.substring(0, length - (eclipse.length + 1)) + eclipse :
-        this;
-}
-
-//Array make unique
-Array.prototype.unique = function () {
-    return [...new Set(this)];
-}
-
-//Array shuffle
-Array.prototype.shuffle = function () {
-    for (let i = this.length - 1; i > 0; i--) {
-        let j = Math.floor(Math.random() * (i + 1));
-        [this[i], this[j]] = [this[j], this[i]];
-    }
-}
-
-//Find last element in array
-Array.prototype.last = function () {
-    return this[this.length - 1];
-}
-
-//Find first element in array
-Array.prototype.first = function () {
-    return this[0];
-}
-
-//Find the max item in an array
-Array.prototype.max = function () {
-
-    var obj;
-    var maxNum = -Infinity;
-    var index = -Infinity;
-
-    for (var i = 0; i < this.length; i++) {
-        if (this[i] >= maxNum) {
-            maxNum = this[i];
-            index = i;
-        }
-    }
-
-    obj = {
-        maxNum: maxNum,
-        index: index,
-    }
-
-    return obj;
-}
-
-//Remove specific element in array
-Array.prototype.removeElement = function (elementToRemove) {
-    return this.filter(item => item !== elementToRemove);
-}
-
-//Remove all items
-Array.prototype.removeThese = function (elementsToRemove) {
-    return this.filter(item => !elementsToRemove.includes(item));
-}
-
-//Console log entire array
-Array.prototype.dumpAll = function () {
-    console.dir(this, { 'maxArrayLength': null });
 }
 
 //Maps to Math.abs
@@ -257,21 +245,59 @@ Number.prototype.sqrt = function () {
     return Math.sqrt(this);
 }
 
-//Proper case for string
-String.prototype.toTitleCase = function () {
-    return this.replace(/\w\S*/g, function (txt) {
-        return txt.charAt(0).toUpperCase() + txt.substr(1).toLocaleLowerCase();
-    });
+//Array make unique
+Array.prototype.unique = function () {
+    return [...new Set(this)];
 }
 
-//Sentence casing
-String.prototype.toSentenceCase = function () {
-    return this.replace(/(^\s*\w|[\.\!\?]\s*\w)/g, function (txt) {
-        return txt.toUpperCase();
-    });
+//Array shuffle
+Array.prototype.shuffle = function () {
+    for (let i = this.length - 1; i > 0; i--) {
+        let j = Math.floor(Math.random() * (i + 1));
+        [this[i], this[j]] = [this[j], this[i]];
+    }
 }
 
-//To funny case
-String.prototype.toFunnyCase = function () {
-    return this.split('').map((v, i) => i % 2 == 0 ? v.toLowerCase() : v.toUpperCase()).join('');
+//Find last element in array
+Array.prototype.last = function () {
+    return this[this.length - 1];
+}
+
+//Find first element in array
+Array.prototype.first = function () {
+    return this[0];
+}
+
+//Find the max item in an array
+Array.prototype.max = function () {
+    var obj;
+    var maxNum = -Infinity;
+    var index = -Infinity;
+
+    for (var i = 0; i < this.length; i++) {
+        if (this[i] >= maxNum) {
+            maxNum = this[i];
+            index = i;
+        }
+    }
+    obj = {
+        maxNum: maxNum,
+        index: index,
+    }
+    return obj;
+}
+
+//Remove specific element in array
+Array.prototype.removeElement = function (elementToRemove) {
+    return this.filter(item => item !== elementToRemove);
+}
+
+//Remove all items
+Array.prototype.removeThese = function (elementsToRemove) {
+    return this.filter(item => !elementsToRemove.includes(item));
+}
+
+//Console log entire array
+Array.prototype.dumpAll = function () {
+    console.dir(this, { 'maxArrayLength': null });
 }

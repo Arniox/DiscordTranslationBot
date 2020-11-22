@@ -21,7 +21,7 @@ exports.run = (bot, guild, message, command, args) => {
             case 'prefix': case 'pref': case 'pre': case 'pr':
                 //Reply with help message
                 var embeddedHelpMessage = new Discord.MessageEmbed()
-                    .setColor('#0099ff')
+                    .setColor('#b50909')
                     .setAuthor(bot.user.username, bot.user.avatarURL())
                     .setDescription(`You can use prefix by running *${guild.Prefix}prefix current* to list the current prefix, or *${guild.Prefix}prefix change [new prefix]* to change the prefix.`)
                     .addFields(
@@ -42,7 +42,7 @@ exports.run = (bot, guild, message, command, args) => {
                 var randomRole = message.guild.roles.cache.random().toString();
 
                 var embeddedHelpMessage = new Discord.MessageEmbed()
-                    .setColor('#0099ff')
+                    .setColor('#b50909')
                     .setAuthor(bot.user.username, bot.user.avatarURL())
                     .setDescription('The muterole command allows you to add, list, or remove mute ignored roles to the server database.')
                     .addFields(
@@ -68,10 +68,11 @@ exports.run = (bot, guild, message, command, args) => {
                 message.channel.send(embeddedHelpMessage);
                 break;
             case 'mute': case 'mu': case 'm':
+                //Get random channel
                 var randomChannel = message.guild.channels.cache.filter(i => i.type == 'voice').random().name;
 
                 var embeddedHelpMessage = new Discord.MessageEmbed()
-                    .setColor('#0099ff')
+                    .setColor('#b50909')
                     .setAuthor(bot.user.username, bot.user.avatarURL())
                     .setDescription('The mute command allows you to server mute everyone in a selected voice channel barring mute ignored roles. This works fine with spaces in the name and is case insensitive.')
                     .addFields(
@@ -88,10 +89,11 @@ exports.run = (bot, guild, message, command, args) => {
                 message.channel.send(embeddedHelpMessage);
                 break;
             case 'unmute': case 'unmu': case 'unm': case 'um':
+                //Get random channel
                 var randomChannel = message.guild.channels.cache.filter(i => i.type == 'voice').random().name;
 
                 var embeddedHelpMessage = new Discord.MessageEmbed()
-                    .setColor('#0099ff')
+                    .setColor('#b50909')
                     .setAuthor(bot.user.username, bot.user.avatarURL())
                     .setDescription('The unmute command allows you to server unmute everyone in a selected voice channel barring mute ignored roles. This works fine with spaces in the name and is case insensitive.')
                     .addFields(
@@ -109,7 +111,7 @@ exports.run = (bot, guild, message, command, args) => {
                 break;
             case 'listen': case 'lis': case 'li':
                 var embeddedHelpMessage = new Discord.MessageEmbed()
-                    .setColor('#0099ff')
+                    .setColor('#b50909')
                     .setAuthor(bot.user.username, bot.user.avatarURL())
                     .setDescription('[WIP] This command is a work in progress. Currently it\'s a bit buggy and can cause bot crashes. It will simply connect the bot to the current voice channel you\'re in.')
                     .addFields(
@@ -128,7 +130,7 @@ exports.run = (bot, guild, message, command, args) => {
                 break;
             case 'leave': case 'lea': case 'le':
                 var embeddedHelpMessage = new Discord.MessageEmbed()
-                    .setColor('#0099ff')
+                    .setColor('#b50909')
                     .setAuthor(bot.user.username, bot.user.avatarURL())
                     .setDescription('[WIP] This command is a work in progress. Currently it\'s a bit buggy and can cause bot crashes. It will simply disconnect the bot from it\'s current voice channel.')
                     .addFields(
@@ -142,7 +144,10 @@ exports.run = (bot, guild, message, command, args) => {
                 break;
             case 'translate': case 'trans': case 'tran': case 'tra': case 'tr': case 't':
                 //Get random channel
-                var randomChannel = message.guild.channels.cache.random();
+                var randomChannel = message.guild.channels.cache.filter(i => i.type == 'text').random();
+                //Get 2 random text channels
+                var random1 = message.guild.channels.cache.filter(i => i.type == 'text').random();
+                var random2 = message.guild.channels.cache.filter(i => i.type == 'text').random();
 
                 var embeddedHelpMessage = new Discord.MessageEmbed()
                     .setColor('#b50909')
@@ -161,10 +166,13 @@ exports.run = (bot, guild, message, command, args) => {
                                 `[:?current:curr:cur:c / =:change:ch:toggle:togg:tog:to:t:switch:swit:swi:sw:s]\n` +
                                 `${guild.Prefix}translate [embedded:embeds:embed:embe:emb:em:e:] ` +
                                 `[:?current:curr:cur:c / =:change:ch:toggle:togg:tog:to:t:switch:swit:swi:sw:s]\n` +
-                                `${guild.Prefix}translate [baselanguage:globallanguage:baselang:globallang:` +
-                                `baselan:globallan:basel:globall:base:global:bl:gl:g:b] [:?current:curr:cur:c / change:ch:=]` +
+                                `${guild.Prefix}translate [baselanguage:globallanguage:baselang:globallang] [:?current:curr:cur:c / change:ch:=]` +
                                 `${guild.Prefix}translate [mainoutput:mainout:channeloutput:outputchannel:mainchannel:mainchan:\n` +
-                                `outputchan:chanoutput:outmain] [:?current:curr:cur:c / change:ch:=]`
+                                `outputchan:chanoutput:outmain] [:?current:curr:cur:c / change:ch:=]\n` +
+                                `${guild.Prefix}translate [customchannel:channelfrom:fromchannel:channelto:` +
+                                `tochannel:customcha:customch:custom:custcha:custch:custfrom:fromcust:custto:` +
+                                `tocust:cust:linkchannels:linkchannel:linkchan:linkch:link] ` +
+                                `[set:s:= / remove:-:r / list:l]`
                         },
                         {
                             name: 'Examples: ',
@@ -184,7 +192,10 @@ exports.run = (bot, guild, message, command, args) => {
                                 `${guild.Prefix}translate baselanguage\n` +
                                 `${guild.Prefix}translate baselanguage change English *or* En` +
                                 `${guild.Prefix}translate mainoutput\n` +
-                                `${guild.Prefix}translate mainoutput change ${randomChannel.toString()}`
+                                `${guild.Prefix}translate mainoutput change ${randomChannel.toString()}` +
+                                `${guild.Prefix}translate customchannel set ${random1} ${random2}` +
+                                `${guild.Prefix}translate customchannel remove 40` +
+                                `${guild.Prefix}translate customchannel list`
                         }
                     )
                     .setTimestamp()
@@ -269,7 +280,7 @@ exports.run = (bot, guild, message, command, args) => {
                 var randomChannel3 = message.guild.channels.cache.filter(i => i.type == 'voice').random().name;
 
                 var embeddedHelpMessage = new Discord.MessageEmbed()
-                    .setColor('#0099ff')
+                    .setColor('#b50909')
                     .setAuthor(bot.user.username, bot.user.avatarURL())
                     .setDescription('Use selectors to move people in voice channels to other voice channels. This command has a lot of different options. It works fine with spaces in the name and is case insensitive.')
                     .addFields(
@@ -305,7 +316,7 @@ exports.run = (bot, guild, message, command, args) => {
                 var randomMember = message.guild.members.cache.random();
 
                 var embeddedHelpMessage = new Discord.MessageEmbed()
-                    .setColor('#0099ff')
+                    .setColor('#b50909')
                     .setAuthor(bot.user.username, bot.user.avatarURL())
                     .setDescription('Ban command. You can either softban someone which will ban and then unban a member and reinvite them. Or a hard ban which will just ban a member.')
                     .addFields(
@@ -315,7 +326,7 @@ exports.run = (bot, guild, message, command, args) => {
                             value: `${guild.Prefix}ban [softs:soft:sf:s / hards:hard:hd:h] [mention(s)], [:?reason]`
                         },
                         {
-                            name: 'Examples: ', value: `${guild.Prefix}ban hard ${randomMember.toString()}, optional reason\n\n` +
+                            name: 'Examples: ', value: `${guild.Prefix}ban hard ${randomMember.toString()}, optional reason\n` +
                                 `${guild.Prefix}ban soft ${randomMember.toString()}, optional reason`
                         }
                     )
@@ -358,7 +369,7 @@ exports.run = (bot, guild, message, command, args) => {
                 var randomChannel2 = message.guild.channels.cache.random();
 
                 var embeddedHelpMessage = new Discord.MessageEmbed()
-                    .setColor('#0099ff')
+                    .setColor('#b50909')
                     .setAuthor(bot.user.username, bot.user.avatarURL())
                     .setDescription(`Clone command allows you to clone all messages from one channel to another for merging purposes.`)
                     .addFields(
@@ -369,15 +380,15 @@ exports.run = (bot, guild, message, command, args) => {
                         },
                         {
                             name: 'Examples: ',
-                            value: `${guild.Prefix}clone this ${randomChannel2.toString()}\n\n` +
-                                `${guild.Prefix}clone ${randomChannel1.toString()} ${randomChannel2.toString()}\n\n` +
+                            value: `${guild.Prefix}clone this ${randomChannel2.toString()}\n` +
+                                `${guild.Prefix}clone ${randomChannel1.toString()} ${randomChannel2.toString()}\n` +
                                 `${guild.Prefix}clone this ${randomChannel2.toString()} delete`
                         }
                     )
                     .setTimestamp()
                     .setFooter('Thanks, and have a good day');
 
-                //Set embedded message
+                //Send embedded message
                 message.channel.send(embeddedHelpMessage);
                 break;
             case 'info': case 'i':
@@ -428,7 +439,7 @@ exports.run = (bot, guild, message, command, args) => {
                                 `${guild.Prefix}info list [stores:store:s]\n` +
                                 `${guild.Prefix}info count [messages:message:mess:m / ` +
                                 `characters:character:charact:chara:chars:char:cha:ch:c / ` +
-                                `emojis:emoji:emoj:emo:em:e] ${randomChannel.toString()}\n`
+                                `emojis:emoji:emoj:emo:em:e] [:?${randomChannel.toString()}]\n`
                         }
                     )
                     .setTimestamp()
@@ -439,7 +450,7 @@ exports.run = (bot, guild, message, command, args) => {
                 break;
             case 'today': case 'tod': case 'to':
                 var embeddedHelpMessage = new Discord.MessageEmbed()
-                    .setColor('#0099ff')
+                    .setColor('#b50909')
                     .setAuthor(bot.user.username, bot.user.avatarURL())
                     .setDescription('Use this command to calculate days and print out different formats for time.')
                     .addFields(

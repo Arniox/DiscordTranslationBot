@@ -242,7 +242,7 @@ exports.run = (bot, guild, message, command, args) => {
                                                                         var langCount = 0;
                                                                         var previousLanguage = '***Auto Detected***';
                                                                         //Shuffle array
-                                                                        languageCodes = Shuffle(languageCodes);
+                                                                        languageCodes.shuffle();
                                                                         var firstLanguage = `${languageCodes[0].name}`;
                                                                         var outPutName = currentUserNickName;
 
@@ -1113,27 +1113,6 @@ function HelpMessage(bot, guild, message, args) {
 
     //Send embedded message
     message.channel.send(embeddedHelpMessage);
-}
-
-//Shuffle array
-function Shuffle(array) {
-    let counter = array.length;
-
-    // While there are elements in the array
-    while (counter > 0) {
-        // Pick a random index
-        let index = Math.floor(Math.random() * counter);
-
-        // Decrease counter by 1
-        counter--;
-
-        // And swap the last element with it
-        let temp = array[counter];
-        array[counter] = array[index];
-        array[index] = temp;
-    }
-
-    return array;
 }
 
 //Random
