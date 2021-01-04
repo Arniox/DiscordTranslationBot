@@ -247,7 +247,7 @@ exports.run = (bot, guild, message, command, args) => {
                     var output = '';
                     for (var i = 0; i < serverQueue.songs.length; i++) {
                         //Create output per song
-                        output += `${i} - ${serverQueue.songs[i].song.title} [${serverQueue.songs[i].queuedBy.toString()}]`;
+                        output += `${i} - ${serverQueue.songs[i].song.title} [${serverQueue.songs[i].queuedBy.toString()}]\n`;
                     }
                     return output;
                 }), 10, '#0099ff');
