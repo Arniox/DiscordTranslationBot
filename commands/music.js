@@ -247,10 +247,10 @@ exports.run = (bot, guild, message, command, args) => {
                     var output = '';
                     for (var i = 0; i < serverQueue.songs.length; i++) {
                         //Create output per song
-                        output += `${i} - [${serverQueue.songs[i].song.title}](${serverQueue.songs[i].song.url}) [${serverQueue.songs[i].queuedBy.toString()}]`;
+                        output += `${i} - ${serverQueue.songs[i].song.title} [${serverQueue.songs[i].queuedBy.toString()}]`;
                     }
                     return output;
-                }), 5, '#0099ff');
+                }), 10, '#0099ff');
             } else {
                 message.channel.send(new Discord.MessageEmbed().setDescription('I am not playing anything right now...').setColor('#0099ff'));
             }
