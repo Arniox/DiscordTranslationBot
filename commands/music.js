@@ -75,16 +75,11 @@ exports.run = (bot, guild, message, command, args) => {
 
                                                         //Anon function
                                                         const sendMessage = (servQ) => {
-                                                            console.log(servQ);
-                                                            console.log(servQ.songs);
-                                                            console.log(servQ.songs.slice(-1));
-                                                            console.log(servQ.songs.slice(-1).song);
-
                                                             //If playlist was added then print message
                                                             if (playlist.length > 1)
                                                                 sent.edit(new Discord.MessageEmbed().setDescription(`**${playlist.length}** songs added to the queue [${message.member.toString()}]`).setColor('#09b50c'));
                                                             else
-                                                                sent.edit(new Discord.MessageEmbed().setDescription(`Queued [${servQ.songs.slice(-1).song.title}](${servQ.songs.slice(-1).song.url})` +
+                                                                sent.edit(new Discord.MessageEmbed().setDescription(`Queued [${servQ.songs.slice(-1)[0].song.title}](${servQ.songs.slice(-1)[0].song.url})` +
                                                                     ` [${message.member.toString()}]`).setColor('#09b50c'));
                                                         }
 
