@@ -74,12 +74,14 @@ exports.run = (bot, guild, message, command, args) => {
                                                         const tempServerQueue = bot.musicQueue.get(message.guild.id);
 
                                                         //Anon function
-                                                        const sendMessage = () => {
+                                                        const sendMessage = (servQ) => {
+                                                            console.log(servQ);
+
                                                             //If playlist was added then print message
                                                             if (playlist.length > 1)
                                                                 sent.edit(new Discord.MessageEmbed().setDescription(`**${playlist.length}** songs added to the queue [${message.member.toString()}]`).setColor('#09b50c'));
                                                             else
-                                                                sent.edit(new Discord.MessageEmbed().setDescription(`Queued [${tempServerQueue.songs.slice(-1).song.title}](${tempServerQueue.songs.slice(-1).song.url})` +
+                                                                sent.edit(new Discord.MessageEmbed().setDescription(`Queued [${servQ.songs.slice(-1).song.title}](${servQ.songs.slice(-1).song.url})` +
                                                                     ` [${message.member.toString()}]`).setColor('#09b50c'));
                                                         }
 
@@ -94,6 +96,7 @@ exports.run = (bot, guild, message, command, args) => {
                                                                     //Attach connection to the queue
                                                                     tempServerQueue.connection = connection;
                                                                     //Send message
+                                                                    console.log(tempServerQueue);
                                                                     sendMessage(tempServerQueue);
                                                                     //Play music
                                                                     play(bot, message, message.guild, tempServerQueue.songs[0]);
