@@ -20,7 +20,7 @@
   "dependencies": {
     "@discordjs/opus": "^0.3.3",
     "axios": "^0.19.2",
-    "discord.js": "^12.2.0",
+    "discord.js": "^12.5.1",
     "enmap": "^5.8.2",
     "ffmpeg-static": "^4.2.7",
     "google-translate": "^3.0.0",
@@ -31,7 +31,7 @@
     "opusscript": "0.0.7",
     "promise-mysql": "^5.0.1",
     "reddit": "^1.2.1",
-    "ytdl-core": "^4.0.3",
+    "ytdl-core": "^4.4.0",
     "ytpl": "^1.0.1",
     "ytsr": "^1.0.4"
   }
