@@ -51,9 +51,10 @@ exports.run = (bot, guild, message, command, args) => {
                                         };
                                         //Set the queue to this server id
                                         if (!serverQueue) bot.musicQueue.set(message.guild.id, queueConstruct);
+                                        const tempServerQueue = bot.musicQueue.get(message.guild.id);
 
                                         //For each on playlist
-                                        await playlist.forEach(async (queryThis) => {
+                                        resovle(await playlist.forEach(async (queryThis) => {
                                             //ytld-core get song info
                                             var songInfo = await ytdl.getInfo(queryThis);
 
@@ -63,12 +64,13 @@ exports.run = (bot, guild, message, command, args) => {
                                                 url: (songInfo.videoDetails.video_url || songInfo.videoDetails.videoId)
                                             };
                                             //Add to queue
-                                            bot.musicQueue.get(message.guild.id)
-                                                .songs.push({ song: song, queuedBy: message.member });
-                                        });
+                                            tempServerQueue.songs.push({ song: song, queuedBy: message.member });
+                                        }));
                                     }).then(() => {
+                                        const tempServerQueue = bot.musicQueue.get(message.guild.id);
+
                                         //Check if bot is in voice or not
-                                        if (!botVoice || !bot.musicQueue.get(message.guild.id).connection) {
+                                        if (!botVoice || !tempServerQueue.connection) {
                                             //Defean the bot
                                             message.guild.me.voice.setDeaf(true);
                                             //Join voice channel
@@ -76,10 +78,9 @@ exports.run = (bot, guild, message, command, args) => {
                                                 .join()
                                                 .then((connection) => {
                                                     //Attach connection to the queue
-                                                    bot.musicQueue.get(message.guild.id)
-                                                        .connection = connection;
+                                                    tempServerQueue.connection = connection;
                                                     //Play music
-                                                    play(bot, message, message.guild, bot.musicQueue.get(message.guild.id).songs[0]);
+                                                    play(bot, message, message.guild, tempServerQueue.songs[0]);
                                                 }).catch((error) => {
                                                     console.error(error);
                                                     bot.musicQueue.delete(message.guild.id);
@@ -94,8 +95,7 @@ exports.run = (bot, guild, message, command, args) => {
                                         if (playlist.length > 1)
                                             message.channel.send(new Discord.MessageEmbed().setDescription(`**${playlist.length}** songs added to the queue [${message.member.toString()}]`).setColor('#09b50c'));
                                         else
-                                            message.channel.send(new Discord.MessageEmbed().setDescription(`Queued [${bot.musicQueue.get(message.guild.id).songs.slice(-1)[0].song.title}]` +
-                                                `(${bot.musicQueue.get(message.guild.id).songs.slice(-1)[0].song.url})` +
+                                            message.channel.send(new Discord.MessageEmbed().setDescription(`Queued [${tempServerQueue.songs.slice(-1)[0].song.title}](${tempServerQueue.songs.slice(-1)[0].song.url})` +
                                                 ` [${message.member.toString()}]`).setColor('#09b50c'));
                                     }).catch((error) => {
                                         console.error(error); //Return console error
