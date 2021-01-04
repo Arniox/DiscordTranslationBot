@@ -21,7 +21,7 @@
     "@discordjs/opus": "^0.3.3",
     "axios": "^0.19.2",
     "discord.js": "^12.2.0",
-    "enmap": "^5.2.4",
+    "enmap": "^5.8.2",
     "ffmpeg-static": "^4.2.7",
     "google-translate": "^3.0.0",
     "js-reddit.js": "^1.0.9",
