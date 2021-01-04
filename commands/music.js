@@ -94,6 +94,7 @@ exports.run = (bot, guild, message, command, args) => {
                                                                     //Attach connection to the queue
                                                                     tempServerQueue.connection = connection;
                                                                     //Send message
+                                                                    console.log(tempServerQueue);
                                                                     sendMessage(tempServerQueue);
                                                                     //Play music
                                                                     play(bot, message, message.guild, tempServerQueue.songs[0]);
