@@ -156,7 +156,7 @@ exports.run = (bot, guild, message, command, args) => {
                                     //Play music if paused
                                     if (serverQueue.connection.dispatcher.paused) serverQueue.connection.dispatcher.resume();
                                     //Send message
-                                    message.channel.send(new Discord.MessageEmbed().setDescription(`${song.title} has been added to the queue.`).setColor('#09b50c'));
+                                    message.channel.send(new Discord.MessageEmbed().setDescription(`Queued [${song.title}](${song.url}) [${message.member.toString()}]`).setColor('#09b50c'));
                                 }
                             }).catch((err) => {
                                 console.error(err); //Return console error
@@ -280,8 +280,8 @@ exports.run = (bot, guild, message, command, args) => {
         case 'nowplaying': case 'nowp': case 'now': case 'np':
             //Check if bot is not in voice
             if (botVoice && (serverQueue && serverQueue.songs.length > 0)) {
-                message.channel.send(new Discord.MessageEmbed().setDescription(`Now playing: **${serverQueue.songs[0].song.title}** - ` +
-                    `Queued by: ${serverQueue.songs[0].queuedBy.toString()}`).setColor('#0099ff'));
+                message.channel.send(new Discord.MessageEmbed().setDescription(`Now playing [${serverQueue.songs[0].song.title}](${serverQueue.songs[0].song.url})` +
+                    ` [${serverQueue.songs[0].queuedBy.toString()}]`).setColor('#0099ff'));
             } else {
                 message.channel.send(new Discord.MessageEmbed().setDescription('I am not playing anything right now...').setColor('#0099ff'));
             }
@@ -290,12 +290,12 @@ exports.run = (bot, guild, message, command, args) => {
             //Check if bot is not in voice
             if (botVoice && serverQueue) {
                 //Send message
-                ListMessage(message, `Music Queue:\nCurrently playing: **${serverQueue.songs[0].song.title}**\n`, '#0099ff', MessageToArray(() => {
+                ListMessage(message, `Music Queue:\n`, '#0099ff', MessageToArray(() => {
                     //For loop them into an output
                     var output = '';
                     for (var i = 0; i < serverQueue.songs.length; i++) {
                         //Create output per song
-                        output += `${i} - **${serverQueue.songs[i].song.title}**\nQueued by: ${serverQueue.songs[i].queuedBy.toString()}++++`;
+                        output += `${i} - [${serverQueue.songs[i].song.title}](${serverQueue.songs[i].song.url}) [${serverQueue.songs[i].queuedBy.toString()}]`;
                     }
                     return output;
                 }, '++++'), 10, '#0099ff');
@@ -383,7 +383,8 @@ async function play(bot, message, guild, song, repeated = 0) {
 
         //Set volume
         dispatcher.setVolumeLogarithmic(serverQueue.volume / 5);
-        serverQueue.textChannel.send(new Discord.MessageEmbed().setDescription(`Started playing: **${song.song.title}** - Queued by: ${song.queuedBy.toString()}`).setColor('#0099ff'));
+        serverQueue.textChannel.send(new Discord.MessageEmbed().setDescription(`Started playing [${song.song.title}](${song.song.url})` +
+            ` [${song.queuedBy.toString()}]`).setColor('#0099ff'));
     }
 }
 
