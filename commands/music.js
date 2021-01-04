@@ -95,7 +95,7 @@ exports.run = (bot, guild, message, command, args) => {
                                         if (playlist.length > 1)
                                             message.channel.send(new Discord.MessageEmbed().setDescription(`**${playlist.length}** songs added to the queue [${message.member.toString()}]`).setColor('#09b50c'));
                                         else
-                                            message.channel.send(new Discord.MessageEmbed().setDescription(`Queued [${tempServerQueue.songs.slice(-1)[0].song.title}](${tempServerQueue.songs.slice(-1)[0].song.url})` +
+                                            message.channel.send(new Discord.MessageEmbed().setDescription(`Queued [${tempServerQueue.songs.slice(-1).song.title}](${tempServerQueue.songs.slice(-1).song.url})` +
                                                 ` [${message.member.toString()}]`).setColor('#09b50c'));
                                     }).catch((error) => {
                                         console.error(error); //Return console error
