@@ -19,20 +19,20 @@
   "license": "ISC",
   "dependencies": {
     "@discordjs/opus": "^0.3.3",
-    "axios": "^0.19.2",
+    "axios": "^0.21.1",
     "discord.js": "^12.5.1",
     "enmap": "^5.8.2",
     "ffmpeg-static": "^4.2.7",
     "google-translate": "^3.0.0",
     "js-reddit.js": "^1.0.9",
-    "mathjs": "^7.5.1",
+    "mathjs": "^8.1.1",
     "moment": "^2.29.1",
-    "moment-timezone": "^0.5.31",
+    "moment-timezone": "^0.5.32",
     "opusscript": "0.0.7",
     "promise-mysql": "^5.0.1",
     "reddit": "^1.2.1",
     "ytdl-core": "^4.4.0",
-    "ytpl": "^1.0.1",
-    "ytsr": "^1.0.4"
+    "ytpl": "^2.0.4",
+    "ytsr": "^3.2.1"
   }
 }
