@@ -85,7 +85,7 @@ bot.dbpool.then((p) => {
 }).catch(err => {
 	console.error(err, `Connection to ${process.env.CLEARDB_DATABASE_URL} has failed!`);
 });
-//Bot loggin
+//Bot log in
 bot.login(process.env.BOT_TOKEN);
 //Handle promise rejections
 process.on('unhandledRejection', error => console.error('Uncaught Promise Rejection', error));
