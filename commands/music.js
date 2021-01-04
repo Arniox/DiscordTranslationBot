@@ -32,13 +32,17 @@ exports.run = (bot, guild, message, command, args) => {
                         if (!permissions.has('CONNECT') && !permissions.has("SPEAK")) {
                             message.channel.send(new Discord.MessageEmbed().setDescription(`I need permissions to join and speak in your voice channel!`).setColor('#b50909'));
                         } else {
-                            //Check if the link is a playlist
-                            (ytpl.validateID(query) ? new Promise((resolve, reject) => {
-                                ytpl(query, { limit: Infinity }).then(playlist => resolve(playlist.items.map(v => v.shortUrl)));
-                            }) : new Promise((resolve, reject) => { return resolve([query]); }))
-                                .then((playlist) => {
-                                    message.channel.send(new Discord.MessageEmbed().setDescription(`Queueing **${playlist.length}** songs...`).setColor('#FFCC00'))
-                                        .then((sent) => {
+                            message.channel.send(new Discord.MessageEmbed().setDescription(`Loading...`).setColor('#FFCC00'))
+                                .then((sent) => {
+                                    //Check if the link is a playlist
+                                    (ytpl.validateID(query) ? new Promise((resolve, reject) => {
+                                        ytpl(query, { limit: Infinity }).then(playlist => resolve(playlist.items.map(v => v.shortUrl)));
+                                    }) : new Promise((resolve, reject) => { return resolve([query]); }))
+                                        .then((playlist) => {
+                                            //Edit message
+                                            sent.edit(new Discord.MessageEmbed().setDescription(`Queueing **${playlist.length}** songs...`).setColor('#FFCC00'));
+
+                                            //Create promise and process
                                             new Promise(async (resolve, reject) => {
                                                 //Create queue construct
                                                 const queueConstruct = {
