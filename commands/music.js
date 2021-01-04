@@ -34,7 +34,7 @@ exports.run = (bot, guild, message, command, args) => {
                         } else {
                             //Check if the link is a playlist
                             (ytpl.validateID(query) ? new Promise((resolve, reject) => {
-                                ytpl(query, { limit: Infinity }).then(playlist => resolve(playlist.items.map(v => v.url_simple)));
+                                ytpl(query, { limit: Infinity }).then(playlist => resolve(playlist));
                             }) : new Promise((resolve, reject) => { return resolve([query]); }))
                                 .then((playlist) => {
                                     console.log(playlist);
