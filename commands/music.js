@@ -54,7 +54,7 @@ exports.run = (bot, guild, message, command, args) => {
                                         const tempServerQueue = bot.musicQueue.get(message.guild.id);
 
                                         //For each on playlist
-                                        resovle(await playlist.forEach(async (queryThis) => {
+                                        resolve(await playlist.forEach(async (queryThis) => {
                                             //ytld-core get song info
                                             var songInfo = await ytdl.getInfo(queryThis);
 
