@@ -76,6 +76,9 @@ exports.run = (bot, guild, message, command, args) => {
                                                         //Anon function
                                                         const sendMessage = (servQ) => {
                                                             console.log(servQ);
+                                                            console.log(servQ.songs);
+                                                            console.log(servQ.songs.slice(-1));
+                                                            console.log(servQ.songs.slice(-1).song);
 
                                                             //If playlist was added then print message
                                                             if (playlist.length > 1)
@@ -96,7 +99,6 @@ exports.run = (bot, guild, message, command, args) => {
                                                                     //Attach connection to the queue
                                                                     tempServerQueue.connection = connection;
                                                                     //Send message
-                                                                    console.log(tempServerQueue);
                                                                     sendMessage(tempServerQueue);
                                                                     //Play music
                                                                     play(bot, message, message.guild, tempServerQueue.songs[0]);
