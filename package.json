@@ -26,11 +26,11 @@
     "google-translate": "^3.0.0",
     "js-reddit.js": "^1.0.9",
     "mathjs": "^7.5.1",
-    "moment": "^2.29.0",
+    "moment": "^2.29.1",
     "moment-timezone": "^0.5.31",
     "opusscript": "0.0.7",
     "promise-mysql": "^5.0.1",
-    "reddit": "^1.2.0",
+    "reddit": "^1.2.1",
     "ytdl-core": "^4.0.3",
     "ytpl": "^1.0.1",
     "ytsr": "^1.0.4"
