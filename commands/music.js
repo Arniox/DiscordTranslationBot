@@ -73,40 +73,42 @@ exports.run = (bot, guild, message, command, args) => {
                                                     }).then(() => {
                                                         const tempServerQueue = bot.musicQueue.get(message.guild.id);
 
-                                                        new Promise((resolve, reject) => {
-                                                            //Check if bot is in voice or not
-                                                            if (!botVoice || !tempServerQueue.connection) {
-                                                                //Defean the bot
-                                                                message.guild.me.voice.setDeaf(true);
-                                                                //Join voice channel
-                                                                voiceChannel
-                                                                    .join()
-                                                                    .then((connection) => {
-                                                                        //Attach connection to the queue
-                                                                        tempServerQueue.connection = connection;
-                                                                        //Play music
-                                                                        play(bot, message, message.guild, tempServerQueue.songs[0]);
-                                                                        resolve(tempServerQueue);
-                                                                    }).catch((error) => {
-                                                                        console.error(error);
-                                                                        bot.musicQueue.delete(message.guild.id);
-                                                                        //Send message error
-                                                                        message.channel.send(new Discord.MessageEmbed().setDescription(error).setColor('#b50909'));
-                                                                        reject();
-                                                                    });
-                                                            } else {
-                                                                //Play music if paused
-                                                                if (serverQueue.connection.dispatcher.paused) serverQueue.connection.dispatcher.resume();
-                                                                resolve(tempServerQueue);
-                                                            }
-                                                        }).then((tempServerQueue) => {
+                                                        //Anon function
+                                                        const sendMessage = (servQ) => {
                                                             //If playlist was added then print message
                                                             if (playlist.length > 1)
                                                                 sent.edit(new Discord.MessageEmbed().setDescription(`**${playlist.length}** songs added to the queue [${message.member.toString()}]`).setColor('#09b50c'));
                                                             else
-                                                                sent.edit(new Discord.MessageEmbed().setDescription(`Queued [${tempServerQueue.songs.slice(-1).song.title}](${tempServerQueue.songs.slice(-1).song.url})` +
+                                                                sent.edit(new Discord.MessageEmbed().setDescription(`Queued [${servQ.songs.slice(-1).song.title}](${servQ.songs.slice(-1).song.url})` +
                                                                     ` [${message.member.toString()}]`).setColor('#09b50c'));
-                                                        }).catch(() => { return; });
+                                                        }
+
+                                                        //Check if bot is in voice or not
+                                                        if (!botVoice || !tempServerQueue.connection) {
+                                                            //Defean the bot
+                                                            message.guild.me.voice.setDeaf(true);
+                                                            //Join voice channel
+                                                            voiceChannel
+                                                                .join()
+                                                                .then((connection) => {
+                                                                    //Attach connection to the queue
+                                                                    tempServerQueue.connection = connection;
+                                                                    //Send message
+                                                                    sendMessage(tempServerQueue);
+                                                                    //Play music
+                                                                    play(bot, message, message.guild, tempServerQueue.songs[0]);
+                                                                }).catch((error) => {
+                                                                    console.error(error);
+                                                                    bot.musicQueue.delete(message.guild.id);
+                                                                    //Send message error
+                                                                    message.channel.send(new Discord.MessageEmbed().setDescription(error).setColor('#b50909'));
+                                                                });
+                                                        } else {
+                                                            //Play music if paused
+                                                            if (serverQueue.connection.dispatcher.paused) serverQueue.connection.dispatcher.resume();
+                                                            //Send message
+                                                            sendMessage(tempServerQueue);
+                                                        }
                                                     }).catch((error) => {
                                                         console.error(error); //Return console error
                                                     });
