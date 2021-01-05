@@ -42,19 +42,21 @@ exports.run = (bot, guild, message, command, args) => {
                                             //Edit message
                                             sent.edit(new Discord.MessageEmbed().setDescription(`Queueing **${playlist.length}** songs...`).setColor('#FFCC00'))
                                                 .then((sent) => {
+                                                    //Create queue construct
+                                                    const queueConstruct = {
+                                                        textChannel: message.channel,
+                                                        voiceChannel: voiceChannel,
+                                                        connection: null,
+                                                        songs: [],
+                                                        volume: 5,
+                                                        playing: true
+                                                    };
+                                                    //Set the queue to this server id
+                                                    if (!serverQueue) bot.musicQueue.set(message.guild.id, queueConstruct);
+
                                                     //Create promise and process
                                                     new Promise(async (resolve, reject) => {
-                                                        //Create queue construct
-                                                        const queueConstruct = {
-                                                            textChannel: message.channel,
-                                                            voiceChannel: voiceChannel,
-                                                            connection: null,
-                                                            songs: [],
-                                                            volume: 5,
-                                                            playing: true
-                                                        };
-                                                        //Set the queue to this server id
-                                                        if (!serverQueue) bot.musicQueue.set(message.guild.id, queueConstruct);
+                                                        //Get temp queue construct
                                                         const tempServerQueue = bot.musicQueue.get(message.guild.id);
 
                                                         //For each on playlist
@@ -71,6 +73,7 @@ exports.run = (bot, guild, message, command, args) => {
                                                             tempServerQueue.songs.push({ song: song, queuedBy: message.member });
                                                         }));
                                                     }).then(() => {
+                                                        //Get temp queue construct
                                                         const tempServerQueue = bot.musicQueue.get(message.guild.id);
 
                                                         //Anon function
@@ -303,7 +306,7 @@ function HelpMessage(bot, guild, message, args) {
 }
 
 //Functions
-async function play(bot, message, guild, song, repeated = 0) {
+async function play(bot, message, guild, song) {
     const serverQueue = bot.musicQueue.get(guild.id);
 
     //Check if a song exists.
@@ -323,14 +326,7 @@ async function play(bot, message, guild, song, repeated = 0) {
             .play(readable, { highWaterMark: 96, bitrate: 96, fec: true, volume: false })
             .on("finish", () => {
                 serverQueue.songs.shift();
-                play(bot, message, guild, serverQueue.songs[0]);
-            })
-            .on("error", (error) => {
-                repeated = repeated || 0;
-                //Skip song if too many errors
-                if (repeated === 4) serverQueue.connection.dispatcher.end();
-                else play(bot, message, guild, serverQueue.songs[0], ++repeated); //Try again
-                console.error(error); //Return console error
+                return play(bot, message, guild, serverQueue.songs[0]);
             });
 
         //Set volume
