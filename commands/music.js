@@ -66,7 +66,7 @@ exports.run = (bot, guild, message, command, args) => {
                                                                 resolve(await ytdl.getInfo(link));
                                                             });
                                                         }));
-                                                    }).then((promisePlayList) => {
+                                                    }).then(async (promisePlayList) => {
                                                         //For loop through the promised play list
                                                         await promisePlayList.forEach(async (v) => {
                                                             //Take each song up on it's promise
