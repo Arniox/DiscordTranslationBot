@@ -67,25 +67,21 @@ exports.run = (bot, guild, message, command, args) => {
                                                             });
                                                         }));
                                                     }).then((promisePlayList) => {
-                                                        new Promise((resolve, reject) => {
-                                                            //Map through the promised play list
-                                                            resolve(promisePlayList.map((v) => {
-                                                                //Take each song up on it's promise
-                                                                v.then((songInfo) => {
-                                                                    //Get song
-                                                                    var song = {
-                                                                        title: songInfo.videoDetails.title,
-                                                                        url: (songInfo.videoDetails.video_url || songInfo.videoDetails.videoId)
-                                                                    };
-                                                                    //Add to queue
-                                                                    bot.musicQueue.get(message.guild.id).songs.push({ song: song, queuedBy: message.member });
-                                                                });
-                                                            }));
-                                                        }).then(() => {
-                                                            console.log(bot.musicQueue.get(message.guild.id).songs);
+                                                        //For loop through the promised play list
+                                                        await promisePlayList.forEach(async (v) => {
+                                                            //Take each song up on it's promise
+                                                            await v.then((songInfo) => {
+                                                                //Get song
+                                                                var song = {
+                                                                    title: songInfo.videoDetails.title,
+                                                                    url: (songInfo.videoDetails.video_url || songInfo.videoDetails.videoId)
+                                                                };
+                                                                //Add to queue
+                                                                bot.musicQueue.get(message.guild.id).songs.push({ song: song, queuedBy: message.member });
+                                                            });
                                                         });
-                                                    }).catch((err) => {
-                                                        return console.error(err);
+
+                                                        console.log(bot.musicQueue.get(message.guild.id).songs);
                                                     });
 
 
