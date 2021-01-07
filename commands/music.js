@@ -60,7 +60,7 @@ exports.run = (bot, guild, message, command, args) => {
                                                     //Promise that every song will be gathered
                                                     playlist.map((link) => {
                                                         //Return promise
-                                                        return new Promise(async (resolve, reject) => {
+                                                        new Promise(async (resolve, reject) => {
                                                             //ytld-core get song info
                                                             resolve(await ytdl.getInfo(link));
                                                         }).then((songInfo) => {
