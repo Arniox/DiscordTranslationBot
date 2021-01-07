@@ -10,7 +10,7 @@ module.exports = (bot, oldVoiceState, newVoiceState) => {
             //Check if the bot was undeafened
             if (!newVoiceState.deaf) {
                 //Send message
-                var textChannel = bot.guilds.cache.get(oldVoiceState.guild.id).channels.cache.get(serverQueue.textChannel);
+                var textChannel = oldVoiceState.guild.channels.cache.get(serverQueue.textChannel);
                 textChannel.send(new Discord.MessageEmbed().setDescription('Please do not undeafen me while I am playing music').setColor('#b50909'));
 
                 //Set bot to deaf
