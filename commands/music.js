@@ -160,6 +160,8 @@ exports.run = (bot, guild, message, command, args) => {
                         if (serverQueue && serverQueue.songs.length > 0) {
                             //Create end function
                             skipThis = () => {
+                                //Set skip to 0
+                                serverQueue.skip = 0;
                                 //Fire dispatcher event end to skip song
                                 serverQueue.connection.dispatcher.end();
                                 message.channel.send(new Discord.MessageEmbed().setDescription(`Skipped ⏩`).setColor('#0099ff'));
