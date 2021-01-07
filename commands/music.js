@@ -49,7 +49,9 @@ exports.run = (bot, guild, message, command, args) => {
                                                         connection: null,
                                                         songs: [],
                                                         volume: 5,
-                                                        playing: true
+                                                        playing: true,
+                                                        skip: 0,
+                                                        maxSkip: 3
                                                     };
                                                     //Set the queue to this server id
                                                     if (!serverQueue) bot.musicQueue.set(message.guild.id, queueConstruct);
@@ -156,9 +158,26 @@ exports.run = (bot, guild, message, command, args) => {
                     if (botVoice) {
                         //Check if there are any songs queued
                         if (serverQueue && serverQueue.songs.length > 0) {
-                            //Fire dispatcher event end to skip song
-                            serverQueue.connection.dispatcher.end();
-                            message.channel.send(new Discord.MessageEmbed().setDescription(`Skipped ⏩`).setColor('#0099ff'));
+                            //Create end function
+                            skipThis = () => {
+                                //Fire dispatcher event end to skip song
+                                serverQueue.connection.dispatcher.end();
+                                message.channel.send(new Discord.MessageEmbed().setDescription(`Skipped ⏩`).setColor('#0099ff'));
+                            }
+
+                            //Check if the member has a role named DJ
+                            if (message.member.roles.cache.map((v, k) => v).find(i => i.name.toLowerCase() == 'dj') || message.member.hasPermission('MANAGE_GUILD')) {
+                                skipThis();
+                            } else {
+                                //Check serverQueue construct skip stage
+                                if (serverQueue.skip >= serverQueue.maxSkip) {
+                                    skipThis();
+                                } else {
+                                    //Add one to skip
+                                    serverQueue.skip += 1;
+                                    message.channel.send(new Discord.MessageEmbed().setDescription(`Skipped ${serverQueue.skip} / ${serverQueue.maxSkip} ❌`).setColor('#0099ff'));
+                                }
+                            }
                         } else {
                             message.channel.send(new Discord.MessageEmbed().setDescription('There is no song playing that I could skip.').setColor('#b50909'));
                         }
@@ -292,7 +311,7 @@ function HelpMessage(bot, guild, message, args) {
         .setDescription('Used for playing and controlling your music in your discord!')
         .addFields(
             { name: 'Play: ', value: `${guild.Prefix}[play:p] [link / search query]` },
-            { name: 'Skip:', value: `${guild.Prefix}[skip:s]` },
+            { name: 'Skip:', value: `${guild.Prefix}[skip:s] *(Members with a role named \"DJ\" and server managers can insta skip songs)*` },
             { name: 'Stop:', value: `${guild.Prefix}[stop]` },
             { name: 'Pause:', value: `${guild.Prefix}[pause]` },
             { name: 'Resume:', value: `${guild.Prefix}[resume]` },
