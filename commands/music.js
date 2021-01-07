@@ -84,6 +84,8 @@ exports.run = (bot, guild, message, command, args) => {
                                                         }).then(() => {
                                                             console.log(bot.musicQueue.get(message.guild.id).songs);
                                                         });
+                                                    }).catch((err) => {
+                                                        return console.error(err);
                                                     });
 
 
