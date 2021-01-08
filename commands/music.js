@@ -359,7 +359,7 @@ function play(bot, message, guild, songPromise) {
                 url: (struc.songInfo.videoDetails.video_url || struc.songInfo.videoDetails.videoId)
             };
             //Add to queue
-            tempServerQueue.songs.push({ song: song, queuedBy: struc.queuedBy });
+            serverQueue.songs.push({ song: song, queuedBy: struc.queuedBy });
 
             //Create readable video 
             var readable = await ytdl(song.song.url, { quality: "highestaudio", highWaterMark: 1 << 25 });
