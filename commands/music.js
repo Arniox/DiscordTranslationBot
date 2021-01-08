@@ -352,6 +352,8 @@ function play(bot, message, guild, songPromise) {
     } else {
         //On song promise fulfilled
         songPromise.then(async (struc) => {
+            console.log(struc);
+
             //Take each song up on it's promise
             //Get song
             var song = {
