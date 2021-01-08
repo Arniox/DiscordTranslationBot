@@ -364,7 +364,7 @@ function play(bot, message, guild, songPromise) {
             serverQueue.songs.push({ song: song, queuedBy: struc.queuedBy });
 
             //Create readable video 
-            var readable = await ytdl(song.song.url, { quality: "highestaudio", highWaterMark: 1 << 25 });
+            var readable = await ytdl(song.url, { quality: "highestaudio", highWaterMark: 1 << 25 });
             //Create dispatcher and play
             const dispatcher = serverQueue.connection
                 .play(readable, { highWaterMark: 96, bitrate: 96, fec: true, volume: false })
