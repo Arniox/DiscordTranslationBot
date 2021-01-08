@@ -47,6 +47,7 @@ exports.run = (bot, guild, message, command, args) => {
                                                         textChannel: message.channel,
                                                         voiceChannel: voiceChannel,
                                                         connection: null,
+                                                        songsPromise: [],
                                                         songs: [],
                                                         volume: 5,
                                                         playing: true,
@@ -57,25 +58,43 @@ exports.run = (bot, guild, message, command, args) => {
                                                     if (!serverQueue) bot.musicQueue.set(message.guild.id, queueConstruct);
                                                     const tempServerQueue = bot.musicQueue.get(message.guild.id);
 
-                                                    //Promise that every song will be gathered
+                                                    //Push a promise of each song into the songs array
                                                     playlist.map((link) => {
-                                                        //Return promise
-                                                        new Promise(async (resolve, reject) => {
-                                                            //ytld-core get song info
-                                                            resolve(await ytdl.getInfo(link));
-                                                        }).then((songInfo) => {
-                                                            //Take each song up on it's promise
-                                                            //Get song
-                                                            var song = {
-                                                                title: songInfo.videoDetails.title,
-                                                                url: (songInfo.videoDetails.video_url || songInfo.videoDetails.videoId)
-                                                            };
-                                                            //Add to queue
-                                                            tempServerQueue.songs.push({ song: song, queuedBy: message.member });
-                                                        }).catch((error) => {
-                                                            console.error(error); //console error
-                                                        });
+                                                        //Create a promise and push it into the songs array.
+                                                        tempServerQueue.songsPromise.push(
+                                                            new Promise(async (resolve, reject) => {
+                                                                resolve({
+                                                                    songInfo: await ytdl.getInfo(link),
+                                                                    queuedBy: message.member
+                                                                });
+                                                            }));
                                                     });
+
+
+
+
+
+
+
+                                                    // //Promise that every song will be gathered
+                                                    // playlist.map((link) => {
+                                                    //     //Return promise
+                                                    //     new Promise(async (resolve, reject) => {
+                                                    //         //ytld-core get song info
+                                                    //         resolve(await ytdl.getInfo(link));
+                                                    //     }).then((songInfo) => {
+                                                    //         //Take each song up on it's promise
+                                                    //         //Get song
+                                                    //         var song = {
+                                                    //             title: songInfo.videoDetails.title,
+                                                    //             url: (songInfo.videoDetails.video_url || songInfo.videoDetails.videoId)
+                                                    //         };
+                                                    //         //Add to queue
+                                                    //         tempServerQueue.songs.push({ song: song, queuedBy: message.member });
+                                                    //     }).catch((error) => {
+                                                    //         console.error(error); //console error
+                                                    //     });
+                                                    // });
 
                                                     //Anon function
                                                     const sendMessage = () => {
@@ -96,7 +115,7 @@ exports.run = (bot, guild, message, command, args) => {
                                                                 //Send message
                                                                 sendMessage();
                                                                 //Play music
-                                                                play(bot, message, message.guild, tempServerQueue.songs[0]);
+                                                                play(bot, message, message.guild, tempServerQueue.songsPromise[0]);
                                                             }).catch((error) => {
                                                                 console.error(error);
                                                                 bot.musicQueue.delete(message.guild.id);
@@ -319,11 +338,10 @@ function HelpMessage(bot, guild, message, args) {
 }
 
 //Functions
-async function play(bot, message, guild, song) {
+function play(bot, message, guild, songPromise) {
     const serverQueue = bot.musicQueue.get(guild.id);
-
-    //Check if a song exists.
-    if (!song) {
+    //Check if a song exists
+    if (!songPromise) {
         //Send message
         serverQueue.textChannel.send(new Discord.MessageEmbed().setDescription(`Finished playing music from the queue.`).setColor('#0099ff'));
 
@@ -332,20 +350,32 @@ async function play(bot, message, guild, song) {
         bot.musicQueue.delete(guild.id);
         return;
     } else {
-        //Create readable video object
-        var readable = await ytdl(song.song.url, { quality: "highestaudio", highWaterMark: 1 << 25 });
-        //Create dispatcher and play
-        const dispatcher = serverQueue.connection
-            .play(readable, { highWaterMark: 96, bitrate: 96, fec: true, volume: false })
-            .on("finish", () => {
-                serverQueue.songs.shift();
-                return play(bot, message, guild, serverQueue.songs[0]);
-            });
+        //On song promise fulfilled
+        songPromise.then(async (struc) => {
+            //Take each song up on it's promise
+            //Get song
+            var song = {
+                title: struc.songInfo.videoDetails.title,
+                url: (struc.songInfo.videoDetails.video_url || struc.songInfo.videoDetails.videoId)
+            };
+            //Add to queue
+            tempServerQueue.songs.push({ song: song, queuedBy: struc.queuedBy });
 
-        //Set volume
-        dispatcher.setVolumeLogarithmic(serverQueue.volume / 5);
-        serverQueue.textChannel.send(new Discord.MessageEmbed().setDescription(`Started playing [${song.song.title}](${song.song.url})` +
-            ` [${song.queuedBy.toString()}]`).setColor('#0099ff'));
+            //Create readable video 
+            var readable = await ytdl(song.song.url, { quality: "highestaudio", highWaterMark: 1 << 25 });
+            //Create dispatcher and play
+            const dispatcher = serverQueue.connection
+                .play(readable, { highWaterMark: 96, bitrate: 96, fec: true, volume: false })
+                .on("finish", () => {
+                    serverQueue.songsPromise.shift();
+                    return play(bot, message, guild, serverQueue.songPromise[0]);
+                });
+
+            //Set volume
+            dispatcher.setVolumeLogarithmic(serverQueue.volume / 5);
+            serverQueue.textChannel.send(new Discord.MessageEmbed().setDescription(`Started playing [${song.song.title}](${song.song.url})` +
+                ` [${song.queuedBy.toString()}]`).setColor('#0099ff'));
+        });
     }
 }
 
