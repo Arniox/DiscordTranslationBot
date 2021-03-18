@@ -87,7 +87,7 @@ exports.run = (bot, guild, message, args) => {
                                                             .setFooter('Powered by Google Translate');
                                                     } else {
                                                         //Create normal message
-                                                        messageTo = `**${message.author.username}:**\u2001\u2001${translation.translatedText}\n` +
+                                                        messageTo = `**${message.member.toString()}:** ${translation.translatedText}\n` +
                                                             `**${detectedLang.name}** -> **${currentLang.name}**`;
                                                     }
 
@@ -135,7 +135,7 @@ exports.run = (bot, guild, message, args) => {
                                                         .setFooter('Powered by Google Translate');
                                                 } else {
                                                     //Create normal message
-                                                    messageTo = `**${message.author.username}:**\u2001\u2001${translation.translatedText}\n` +
+                                                    messageTo = `**${message.member.toString()}:** ${translation.translatedText}\n` +
                                                         `**${detectedLang.name}** -> **${currentBaseLang.name}**`;
                                                 }
 
