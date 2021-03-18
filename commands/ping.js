@@ -12,10 +12,10 @@ function UpTime() {
     //Convert process
     var time = process.uptime();
 
-    console.log((6541651651).toString().toHHMMSS());
-    console.log((987989849).toString().toHHMMSS(true));
+    console.log((6541651651).toString().toTimeString());
+    console.log((987989849).toString().toTimeString(true));
 
     //Convert to string
-    var timeString = time.toString().toHHMMSS(true);
+    var timeString = time.toString().toTimeString(true);
     return timeString;
 }

@@ -82,7 +82,7 @@ String.prototype.toWordsConverted = function () {
 }
 
 //Format the string seconds to the full HHMMSS time format
-String.prototype.toHHMMSS = function (en = false) {
+String.prototype.toTimeString = function (en = false) {
     var sec_num = parseInt(this, 10); // don't forget the second param
 
     //Get all time
