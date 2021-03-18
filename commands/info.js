@@ -192,7 +192,8 @@ exports.run = (bot, guild, message, command, args) => {
                                     .then(async function (sent) {
                                         //Fetch all messages and sequentially count them
                                         var totalCount = await sumSequentially(channelMentioned, sent, 'Messages');
-                                        sent.edit(new Discord.MessageEmbed().setDescription(`Total **Messages** in ${channelMentioned.toString()}:\n\n${totalCount}`).setColor('#0099ff'));
+                                        //Send Message
+                                        messageCount(sent, channelMentioned, totalCount, 'Messages');
                                     }).catch((err) => { console.log(err, 'There was a fatal error'); });
                                 break;
                             case 'words': case 'word': case 'wor': case 'wo': case 'w':
@@ -202,7 +203,8 @@ exports.run = (bot, guild, message, command, args) => {
                                     .then(async function (sent) {
                                         //Fetch all messages and sequentially count the words.
                                         var totalCount = await sumSequentially(channelMentioned, sent, 'Words');
-                                        sent.edit(new Discord.MessageEmbed().setDescription(`Total **Words** in ${channelMentioned.toString()}:\n\n${totalCount}`).setColor('#0099ff'));
+                                        //Send Message
+                                        messageCount(sent, channelMentioned, totalCount, 'Words');
                                     }).catch((err) => { console.log(err, 'There was a fatal error'); });
                                 break;
                             case 'characters': case 'character': case 'charact': case 'chara': case 'chars': case 'char': case 'cha': case 'ch': case 'c':
@@ -212,7 +214,8 @@ exports.run = (bot, guild, message, command, args) => {
                                     .then(async function (sent) {
                                         //Fetch all messages and sequentially count the words.
                                         var totalCount = await sumSequentially(channelMentioned, sent, 'Characters');
-                                        sent.edit(new Discord.MessageEmbed().setDescription(`Total **Characters** in ${channelMentioned.toString()}:\n\n${totalCount}`).setColor('#0099ff'));
+                                        //Send Message
+                                        messageCount(sent, channelMentioned, totalCount, 'Characters');
                                     }).catch((err) => { console.log(err, 'There was a fatal error'); });
                                 break;
                             case 'emojis': case 'emoji': case 'emoj': case 'emo': case 'em': case 'e':
@@ -222,7 +225,8 @@ exports.run = (bot, guild, message, command, args) => {
                                     .then(async function (sent) {
                                         //Fetch all messages and sequentially count the words.
                                         var totalCount = await sumSequentially(channelMentioned, sent, 'Emojis');
-                                        sent.edit(new Discord.MessageEmbed().setDescription(`Total **Emojis** in ${channelMentioned.toString()}:\n\n${totalCount}`).setColor('#0099ff'));
+                                        //Send Message
+                                        messageCount(sent, channelMentioned, totalCount, 'Emojis');
                                     }).catch((err) => { console.log(err, 'There was a fatal error'); });
                                 break;
                             default:
@@ -349,4 +353,13 @@ function sumSequentially(channels, message, whatToCount) {
     });
 
     return sum;
+}
+
+//Message function
+function messageCount(sent, channels, totalCount, type) {
+    //Check if more than one channel
+    if (channels.size < 2)
+        sent.edit(new Discord.MessageEmbed().setDescription(`Total **${type}** in ${channelMentioned.first().toString()}:\n\n${totalCount}`).setColor('#0099ff'));
+    else
+        sent.edit(new Discord.MessageEmbed().setDescription(`Total **${type}** in the whole server:\n\n${totalCount}`).setColor('#0099ff'));
 }
