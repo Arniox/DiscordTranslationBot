@@ -191,9 +191,11 @@ exports.run = (bot, guild, message, command, args) => {
                                     .send(new Discord.MessageEmbed().setDescription(`Total **Messages** in ${channelMentioned.toString()}\n\n***Loading....***`).setColor('#FFCC00'))
                                     .then(async function (sent) {
                                         //Fetch all messages and sequentially count them
-                                        var totalCount = await sumSequentially(channelMentioned, sent, 'Messages');
-                                        //Send Message
-                                        messageCount(sent, channelMentioned, totalCount, 'Messages');
+                                        sumSequentially(channelMentioned, sent, 'Messages')
+                                            .then((totalCount) => {
+                                                //Send Message
+                                                messageCount(sent, channelMentioned, totalCount, 'Messages');
+                                            });
                                     }).catch((err) => { console.log(err, 'There was a fatal error'); });
                                 break;
                             case 'words': case 'word': case 'wor': case 'wo': case 'w':
@@ -202,9 +204,11 @@ exports.run = (bot, guild, message, command, args) => {
                                     .send(new Discord.MessageEmbed().setDescription(`Total **Words** in ${channelMentioned.toString()}\n\n***Loading....***`).setColor('#FFCC00'))
                                     .then(async function (sent) {
                                         //Fetch all messages and sequentially count the words.
-                                        var totalCount = await sumSequentially(channelMentioned, sent, 'Words');
-                                        //Send Message
-                                        messageCount(sent, channelMentioned, totalCount, 'Words');
+                                        sumSequentially(channelMentioned, sent, 'Words')
+                                            .then((totalCount) => {
+                                                //Send Message
+                                                messageCount(sent, channelMentioned, totalCount, 'Words');
+                                            });
                                     }).catch((err) => { console.log(err, 'There was a fatal error'); });
                                 break;
                             case 'characters': case 'character': case 'charact': case 'chara': case 'chars': case 'char': case 'cha': case 'ch': case 'c':
@@ -213,9 +217,11 @@ exports.run = (bot, guild, message, command, args) => {
                                     .send(new Discord.MessageEmbed().setDescription(`Total **Characters** in ${channelMentioned.toString()}\n\n***Loading....***`).setColor('#FFCC00'))
                                     .then(async function (sent) {
                                         //Fetch all messages and sequentially count the words.
-                                        var totalCount = await sumSequentially(channelMentioned, sent, 'Characters');
-                                        //Send Message
-                                        messageCount(sent, channelMentioned, totalCount, 'Characters');
+                                        sumSequentially(channelMentioned, sent, 'Characters')
+                                            .then((totalCount) => {
+                                                //Send Message
+                                                messageCount(sent, channelMentioned, totalCount, 'Characters');
+                                            });
                                     }).catch((err) => { console.log(err, 'There was a fatal error'); });
                                 break;
                             case 'emojis': case 'emoji': case 'emoj': case 'emo': case 'em': case 'e':
@@ -224,9 +230,11 @@ exports.run = (bot, guild, message, command, args) => {
                                     .send(new Discord.MessageEmbed().setDescription(`Total **Emojis** in ${channelMentioned.toString()}\n\n***Loading....***`).setColor('#FFCC00'))
                                     .then(async function (sent) {
                                         //Fetch all messages and sequentially count the words.
-                                        var totalCount = await sumSequentially(channelMentioned, sent, 'Emojis');
-                                        //Send Message
-                                        messageCount(sent, channelMentioned, totalCount, 'Emojis');
+                                        sumSequentially(channelMentioned, sent, 'Emojis')
+                                            .then((totalCount) => {
+                                                //Send Message
+                                                messageCount(sent, channelMentioned, totalCount, 'Emojis');
+                                            });
                                     }).catch((err) => { console.log(err, 'There was a fatal error'); });
                                 break;
                             default:
@@ -310,49 +318,53 @@ function HelpMessage(bot, guild, message, args) {
 
 //Sum all message count
 function sumSequentially(channels, message, whatToCount) {
-    var sum = 0;
-    var last_id;
+    return new Promise((resolve, reject) => {
+        //Keep track
+        var last_id;
+        var sum = 0;
 
-    //For each channel
-    channels.forEach(async (channel) => {
-        while (true) {
-            //Create options and update to next message id
-            const options = { limit: 100 };
-            if (last_id) {
-                options.before = last_id;
+        //For each channel
+        channels.forEach(async (channel) => {
+            while (true) {
+                //Create options and update to next message id
+                const options = { limit: 100 };
+                if (last_id) {
+                    options.before = last_id;
+                }
+
+                //Await fetch messages and sum their total count
+                const messages = await channel.messages.fetch(options);
+
+                //Switch on what to count
+                switch (whatToCount) {
+                    case 'Messages':
+                        sum += messages.size;
+                        break;
+                    case 'Words':
+                        sum += messages.map((v, k) => (v.content.split(' ') || []).length).reduce((a, b) => a + b, 0);
+                        break;
+                    case 'Characters':
+                        sum += messages.map((v, k) => (v.content || []).length).reduce((a, b) => a + b, 0);
+                        break;
+                    case 'Emojis':
+                        sum += messages.map((v, k) => (v.content.match(/<:[a-zA-Z]+:\d+>/g) || []).length).reduce((a, b) => a + b, 0);
+                        break;
+                    default:
+                        throw 'The whatToCount variable was somehow broken!';
+                }
+                last_id = messages.last().id;
+
+                //Edit message with new number
+                message.edit(new Discord.MessageEmbed().setDescription(`**Total ${whatToCount} in ${channel.toString()}**\n\n*...${sum}...*`).setColor('#FFCC00'));
+
+                //Break when reach the end of messages
+                if (messages.size != 100) break;
             }
+        });
 
-            //Await fetch messages and sum their total count
-            const messages = await channel.messages.fetch(options);
-
-            //Switch on what to count
-            switch (whatToCount) {
-                case 'Messages':
-                    sum += messages.size;
-                    break;
-                case 'Words':
-                    sum += messages.map((v, k) => (v.content.split(' ') || []).length).reduce((a, b) => a + b, 0);
-                    break;
-                case 'Characters':
-                    sum += messages.map((v, k) => (v.content || []).length).reduce((a, b) => a + b, 0);
-                    break;
-                case 'Emojis':
-                    sum += messages.map((v, k) => (v.content.match(/<:[a-zA-Z]+:\d+>/g) || []).length).reduce((a, b) => a + b, 0);
-                    break;
-                default:
-                    throw 'The whatToCount variable was somehow broken!';
-            }
-            last_id = messages.last().id;
-
-            //Edit message with new number
-            message.edit(new Discord.MessageEmbed().setDescription(`**Total ${whatToCount} in ${channel.toString()}**\n\n*...${sum}...*`).setColor('#FFCC00'));
-
-            //Break when reach the end of messages
-            if (messages.size != 100) break;
-        }
+        //Resolve
+        resolve(sum);
     });
-
-    return sum;
 }
 
 //Message function
