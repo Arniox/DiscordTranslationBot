@@ -1,5 +1,6 @@
 //Import
 const Discord = require('discord.js');
+const moment = require('moment-timezone');
 
 exports.run = (bot, guild, message, command, args) => {
     message.channel.send(new Discord.MessageEmbed().setDescription(`Right back at you! Yes, I am alive. Current uptime is: ${UpTime()}. Current Prefix is: ${guild.Prefix}`));
@@ -8,7 +9,11 @@ exports.run = (bot, guild, message, command, args) => {
 //Functions
 //Find uptime
 function UpTime() {
+    //Convert process
     var time = process.uptime();
-    var uptime = (time + '').toHHMMSS();
-    return uptime;
+    var upTime = moment().unix(time);
+
+    //Convert to string
+    var timeString = upTime.toHHMMSS(true);
+    return timeString;
 }

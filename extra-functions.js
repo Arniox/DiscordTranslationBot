@@ -84,18 +84,26 @@ String.prototype.toWordsConverted = function () {
 //Format the string seconds to the full HHMMSS time format
 String.prototype.toHHMMSS = function (en = false) {
     var sec_num = parseInt(this, 10); // don't forget the second param
-    var hours = Math.floor(sec_num / 3600);
-    var minutes = Math.floor((sec_num - (hours * 3600)) / 60);
-    var seconds = sec_num - (hours * 3600) - (minutes * 60);
 
-    if (hours < 10) { hours = (!en ? "0" : "") + hours; }
-    if (minutes < 10) { minutes = (!en ? "0" : "") + minutes; }
-    if (seconds < 10) { seconds = (!en ? "0" : "") + seconds; }
+    //Get all time
+    var years = Math.floor(sec_num / 31556926); sec_num -= years * 31556926; //1 Year (365.24 days) = 31556926 Seconds
+    var months = Math.floor(sec_num / 2629743); sec_num -= months * 2629743; //1 Month (30.44 days) = 2629743 Seconds
+    var weeks = Math.floor(sec_num / 604800); sec_num -= weeks * 604800; //1 Week = 604800 Seconds
+    var days = Math.floor(sec_num / 86400); sec_num -= days * 86400; //1 Day = 86400 Seconds
+    var hours = Math.floor(sec_num / 3600); sec_num -= hours * 3600;  //1 Hour = 3600 Seconds
+    var minutes = Math.floor(sec_num / 60); sec_num -= minutes * 60; //1 Minute = 60 seconds
+    var seconds = sec_num;
 
     if (!en) {
-        return hours + ':' + minutes + ':' + seconds;
+        return `${years > 0 ? `${years}, ` : ''}${months > 0 ? `${months}, ` : ''}${weeks > 0 ? `${weeks}, ` : ''}${days > 0 ? `${days} - ` : ''}${hours > 0 ? `${hours.pad(2)}:` : ''}${minutes > 0 ? `${minutes.pad(2)}:` : ''}${seconds > 0 ? `${seconds.pad(2)}` : ''}`;
     } else {
-        return hours + ' hours, ' + minutes + ' minutes, and ' + seconds + ' seconds';
+        return `${years > 0 ? `${years} years, ` : ''}` +
+            `${months > 0 ? `${months} months, ` : ''}` +
+            `${weeks > 0 ? `${weeks} weeks, ` : ''}` +
+            `${days > 0 ? `${days} days - ` : ''}` +
+            `${hours > 0 ? `${hours} hours :` : ''}` +
+            `${minutes > 0 ? `${minutes} minutes :` : ''}` +
+            `${seconds > 0 ? `${seconds} seconds` : ''}`;
     }
 }
 
