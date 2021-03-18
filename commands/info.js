@@ -358,7 +358,7 @@ function sumSequentially(channels, message, whatToCount) {
                 last_id = messages.last().id;
 
                 //Edit message with new number
-                message.edit(new Discord.MessageEmbed().setDescription(`**Total ${whatToCount} in ${channel.toString()}**\n\n*...${sum}...*`).setColor('#FFCC00'));
+                //message.edit(new Discord.MessageEmbed().setDescription(`**Total ${whatToCount} in ${channel.toString()}**\n\n*...${sum}...*`).setColor('#FFCC00'));
 
                 //Break when reach the end of messages
                 if (messages.size != 100) break;
