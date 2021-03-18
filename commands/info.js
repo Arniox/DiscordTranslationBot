@@ -305,12 +305,12 @@ function HelpMessage(bot, guild, message, args) {
 }
 
 //Sum all message count
-async function sumSequentially(channels, message, whatToCount) {
+function sumSequentially(channels, message, whatToCount) {
     var sum = 0;
     var last_id;
 
     //For each channel
-    channels.forEach((channel) => {
+    channels.forEach(async (channel) => {
         while (true) {
             //Create options and update to next message id
             const options = { limit: 100 };
