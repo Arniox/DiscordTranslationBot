@@ -1,6 +1,8 @@
 //Requirements
 const Discord = require('discord.js');
 const moment = require('moment-timezone');
+//Import functions
+require('../message-commands.js')();
 
 exports.run = (bot, guild, message, command, args) => {
     if (args.length != 0) {
@@ -69,7 +71,7 @@ exports.run = (bot, guild, message, command, args) => {
                     switch (command) {
                         case 'change': case 'ch': case '=':
                             //Check if user has perms
-                            if (message.member.hasPermission('MANAGE_GUILD')) {
+                            if (IsManager(message)) {
                                 //Get all timezones
                                 var allTimeZones = moment.tz.names();
                                 //Map

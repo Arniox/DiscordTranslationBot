@@ -1,11 +1,14 @@
 //Import
 const Discord = require('discord.js');
+//Import functions
+require('../message-commands.js')();
 
 exports.run = (bot, guild, message, command, args) => {
     if (args.length != 0) {
         var person = message.mentions.members;
 
-        if (message.member.hasPermission('MOVE_MEMBERS')) {
+        //Check moving permissions
+        if (CanMoveMembers(message)) {
             if (args.length != 0 && person.size != 0) {
                 if (person.size < 2) {
                     args.shift(); //Shift down past mention
@@ -60,7 +63,7 @@ exports.run = (bot, guild, message, command, args) => {
                                 break;
                             default:
                                 //Check if message.member has admin power
-                                if (message.member.hasPermission('MANAGE_GUILD')) {
+                                if (IsManager(message)) {
                                     //Check if spamSelector is actually a number
                                     if (/^\d+$/.test(spamSelector)) {
                                         //Grab number from string

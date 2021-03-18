@@ -166,14 +166,23 @@ exports.run = (bot, guild, message, command, args) => {
             case 'counts': case 'count': case 'c':
                 if (args.length != 0) {
                     var channelMentioned;
-                    //Check that you mentioned a channel otherwise select current
-                    if (channelMentions.size != 0) channelMentioned = channelMentions.first();
-                    else channelMentioned = message.channel;
+                    //Get detail
+                    var detail = args.shift().toLowerCase();
+
+                    //Check if user meant all
+                    if (detail == 'all' || detail == 'al' || detail == 'a') {
+                        //Get all channels that are text
+                        channelMentioned = message.guild.channels.cache.map((v, k) => v.type == 'text');
+                        //Get detail again
+                        detail = args.shift().toLowerCase();
+                    } else {
+                        //Check that you mentioned a channel otherwise select current
+                        if (channelMentions.size != 0) channelMentioned = [channelMentions.first()].map(v => v);
+                        else channelMentioned = [message.channel].map(v => v);
+                    }
 
                     //Check that you only mentioned one channel
                     if (channelMentions.size < 2) {
-                        //Get detail
-                        var detail = args.shift().toLowerCase();
                         //Switch on detail
                         switch (detail) {
                             case 'messages': case 'message': case 'mess': case 'm':
@@ -283,7 +292,7 @@ function HelpMessage(bot, guild, message, args) {
                     `${guild.Prefix}info list [categories:category:cat]\n` +
                     `${guild.Prefix}info list [news:n]\n` +
                     `${guild.Prefix}info list [stores:store:s]\n` +
-                    `${guild.Prefix}info count [messages:message:mess:m / ` +
+                    `${guild.Prefix}info count [:?all] [messages:message:mess:m / ` +
                     `characters:character:charact:chara:chars:char:cha:ch:c / ` +
                     `emojis:emoji:emoj:emo:em:e] [:?${randomChannel.toString()}]\n`
             }
@@ -296,44 +305,48 @@ function HelpMessage(bot, guild, message, args) {
 }
 
 //Sum all message count
-async function sumSequentially(channel, message, whatToCount) {
+async function sumSequentially(channels, message, whatToCount) {
     var sum = 0;
     var last_id;
 
-    while (true) {
-        //Create options and update to next message id
-        const options = { limit: 100 };
-        if (last_id) {
-            options.before = last_id;
+    //For each channel
+    channels.forEach((channel) => {
+        while (true) {
+            //Create options and update to next message id
+            const options = { limit: 100 };
+            if (last_id) {
+                options.before = last_id;
+            }
+
+            //Await fetch messages and sum their total count
+            const messages = await channel.messages.fetch(options);
+
+            //Switch on what to count
+            switch (whatToCount) {
+                case 'Messages':
+                    sum += messages.size;
+                    break;
+                case 'Words':
+                    sum += messages.map((v, k) => (v.content.split(' ') || []).length).reduce((a, b) => a + b, 0);
+                    break;
+                case 'Characters':
+                    sum += messages.map((v, k) => (v.content || []).length).reduce((a, b) => a + b, 0);
+                    break;
+                case 'Emojis':
+                    sum += messages.map((v, k) => (v.content.match(/<:[a-zA-Z]+:\d+>/g) || []).length).reduce((a, b) => a + b, 0);
+                    break;
+                default:
+                    throw 'The whatToCount variable was somehow broken!';
+            }
+            last_id = messages.last().id;
+
+            //Edit message with new number
+            message.edit(new Discord.MessageEmbed().setDescription(`**Total ${whatToCount} in ${channel.toString()}**\n\n*...${sum}...*`).setColor('#FFCC00'));
+
+            //Break when reach the end of messages
+            if (messages.size != 100) break;
         }
+    });
 
-        //Await fetch messages and sum their total count
-        const messages = await channel.messages.fetch(options);
-
-        //Switch on what to count
-        switch (whatToCount) {
-            case 'Messages':
-                sum += messages.size;
-                break;
-            case 'Words':
-                sum += messages.map((v, k) => (v.content.split(' ') || []).length).reduce((a, b) => a + b, 0);
-                break;
-            case 'Characters':
-                sum += messages.map((v, k) => (v.content || []).length).reduce((a, b) => a + b, 0);
-                break;
-            case 'Emojis':
-                sum += messages.map((v, k) => (v.content.match(/<:[a-zA-Z]+:\d+>/g) || []).length).reduce((a, b) => a + b, 0);
-                break;
-            default:
-                throw 'The whatToCount variable was somehow broken!';
-        }
-        last_id = messages.last().id;
-
-        //Edit message with new number
-        message.edit(new Discord.MessageEmbed().setDescription(`**Total ${whatToCount} in ${channel.toString()}**\n\n*...${sum}...*`).setColor('#FFCC00'));
-
-        //Break when reach the end of messages
-        if (messages.size != 100) break;
-    }
     return sum;
 }

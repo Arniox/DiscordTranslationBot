@@ -1,5 +1,7 @@
 //Import
 const Discord = require('discord.js');
+//Import functions
+require('../message-commands.js')();
 
 exports.run = (bot, guild, message, command, args) => {
     var mentions = message.mentions.members; //Get all mentions
@@ -12,7 +14,7 @@ exports.run = (bot, guild, message, command, args) => {
         var reason = args.join(' ').split(',')[1];
 
         //Check permissions
-        if (message.member.hasPermission('BAN_MEMBERS')) {
+        if (CanBan(message)) {
             //Check that you mentioned anyone at all
             if (mentions.size != 0) {
                 //Switch case on command

@@ -107,4 +107,49 @@ module.exports = function () {
     this.NickName = function (member) {
         return member.nickname || member.user.username;
     }
+
+    //Check if the sender is the owner
+    this.IsOwner = function (message, member) {
+        return message.guild.owner == member;
+    }
+
+    //Check if the bot is lower roles than the sender & if not the owner
+    this.IsLowerRoles = function (message, member) {
+        return message.guild.me.roles.highest.comparePositionTo(member.roles.highest) > 0 && !this.IsOwner(message.member);
+    }
+
+    //Check if member is me
+    this.IsMe = function (message) {
+        return message.member.id == '167152832422608896';
+    }
+
+    //Check if user has the correct perms or is me
+    this.IsManager = function (message) {
+        return message.member.hasPermissions('MANAGE_GUILD') || this.IsMe(message);
+    }
+
+    //Check if user has the correct permissions
+    this.IsNickNamer = function (message) {
+        return message.member.hasPermissions('MANAGE_NICKNAMES') || this.IsMe(message);
+    }
+
+    //Check if user can ban
+    this.CanBan = function (message) {
+        return message.member.hasPermissions('BAN_MEMBERS') || this.IsMe(message);
+    }
+
+    //Check if user can manager channels
+    this.IsChannelManager = function (message) {
+        return message.member.hasPermissions('MANAGE_CHANNELS') || this.IsMe(message);
+    }
+
+    //Check if user has moving members permissions
+    this.CanMoveMembers = function (message) {
+        return message.member.hasPermissions('MOVE_MEMBERS') || this.IsMe(message);
+    }
+
+    //Check if user has mute members permissions
+    this.CanMuteMembers = function (message) {
+        return message.member.hasPermissions('MUTE_MEMBERS') || this.IsMe(message);
+    }
 }

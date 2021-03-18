@@ -1024,26 +1024,6 @@ exports.run = (bot, guild, message, command, args) => {
     }
 };
 
-//Functions
-
-function IsLowerRoles(message, member) {
-    return message.guild.me.roles.highest.comparePositionTo(member.roles.highest) > 0 && !IsOwner(message, member);
-}
-
-function IsOwner(message, member) {
-    return message.guild.owner == member;
-}
-
-//Check if user has the correct permissions
-function IsManager(message) {
-    return message.member.hasPermission('MANAGE_GUILD');
-}
-
-//Check if user has the correct permissions
-function IsNickNamer(message) {
-    return message.member.hasPermission('MANAGE_NICKNAMES');
-}
-
 //help message
 function HelpMessage(bot, guild, message, args) {
     //Get random member

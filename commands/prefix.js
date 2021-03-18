@@ -1,5 +1,7 @@
 //Import classes
 const Discord = require('discord.js');
+//Import functions
+require('../message-commands.js')();
 
 exports.run = (bot, guild, message, command, args) => {
     if (args.length > 0) {
@@ -8,7 +10,7 @@ exports.run = (bot, guild, message, command, args) => {
         switch (command) {
             //Change bot prefix
             case 'change': case 'ch': case '=':
-                if (message.member.hasPermission('MANAGE_GUILD')) {
+                if (IsManager(message)) {
                     var query = args.shift();
 
                     //Check if the query exists

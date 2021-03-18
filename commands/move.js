@@ -1,9 +1,12 @@
 //Import
 const Discord = require('discord.js');
+//Import functions
+require('../message-commands.js')();
 
 exports.run = (bot, guild, message, command, args) => {
     if (args.length != 0) {
-        if (message.member.hasPermission('MOVE_MEMBERS')) {
+        //Check for permissions
+        if (CanMoveMembers(message)) {
             //If the length of the array is over 1, then it's a direct channel - channel
             if (args.join(' ').split('-').length > 1) {
                 //Grab new array

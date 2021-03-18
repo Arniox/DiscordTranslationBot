@@ -22,7 +22,7 @@ exports.run = (bot, guild, message, command, args) => {
         switch (command) {
             case 'subscribe': case 'sub': case 's':
                 //Check if has perms
-                if (message.member.hasPermission('MANAGE_GUILD')) {
+                if (IsManager(message)) {
                     //Get reddit name
                     if (args.length != 0) {
                         var redditName = args.shift().toLowerCase();
@@ -193,7 +193,7 @@ exports.run = (bot, guild, message, command, args) => {
                 break;
             case 'unsubscribe': case 'unsub': case 'uns': case 'us':
                 //Check if member has perms
-                if (message.member.hasPermission('MANAGE_GUILD')) {
+                if (IsManager(message)) {
                     var query = args.shift();
 
                     //Check if query exists

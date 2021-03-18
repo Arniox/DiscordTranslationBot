@@ -1,10 +1,13 @@
 //Import
 const Discord = require('discord.js');
+//Import functions
+require('../message-commands.js')();
 
 exports.run = (bot, guild, message, command, args) => {
     //Has to be posted by me
     //my id: 167152832422608896
-    if (message.member.id == '167152832422608896') {
+
+    if (IsMe(message)) {
         if (args.length > 0) {
             var query = args.shift().toLowerCase();
 

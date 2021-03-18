@@ -1,50 +1,57 @@
 //Import
 const Discord = require('discord.js');
 const moment = require('moment-timezone');
+//Import functions
+require('../message-commands.js')();
 
 exports.run = (bot, guild, message, command, args) => {
     if (args.length != 0) {
-        //Get all channel mentions
-        var channelMentions = message.mentions.channels.map((v, k) => v);
+        //Check permissions
+        if (IsChannelManager(message)) {
+            //Get all channel mentions
+            var channelMentions = message.mentions.channels.map((v, k) => v);
 
-        //Check how many channel mentions there where
-        if (channelMentions.length > 0) {
-            if (channelMentions.length < 3) {
-                //Get command. If it is this, then get this channel, if not then grab channel mention number 1.
-                var command = args.shift().toLowerCase();
-                var thisChannel = null;
-                var toChannel = null;
+            //Check how many channel mentions there where
+            if (channelMentions.length > 0) {
+                if (channelMentions.length < 3) {
+                    //Get command. If it is this, then get this channel, if not then grab channel mention number 1.
+                    var command = args.shift().toLowerCase();
+                    var thisChannel = null;
+                    var toChannel = null;
 
-                //Grab thisChannel
-                switch (command) {
-                    case 'this': case 'thi': case 'th': case 't':
-                        thisChannel = message.channel;
-                        break;
-                    default:
-                        thisChannel = channelMentions.shift();
-                        break;
+                    //Grab thisChannel
+                    switch (command) {
+                        case 'this': case 'thi': case 'th': case 't':
+                            thisChannel = message.channel;
+                            break;
+                        default:
+                            thisChannel = channelMentions.shift();
+                            break;
+                    }
+                    //Grab toChannel
+                    toChannel = channelMentions.shift();
+
+                    //Shift away the toChannel
+                    args.shift();
+                    var flags = (args.length != 0 ? args.join('-').toLowerCase() : '');
+
+                    //Count and clone as the bot goes
+                    //Send loading message
+                    message.channel
+                        .send(new Discord.MessageEmbed().setDescription(`**Total Messages Cloned Accross from ${thisChannel.toString()} to ${toChannel.toString()}**\n\n***Loading....***`).setColor('#FFCC00'))
+                        .then(async function (sent) {
+                            //Fetch all messages and sequentially count them and clone them
+                            var totalCount = await cloneCountSequentially(thisChannel, toChannel, sent, flags);
+                            sent.edit(new Discord.MessageEmbed().setDescription(`**Total Messages Cloned Accross from ${thisChannel.toString()} to ${toChannel.toString()}**\n\n${totalCount}`).setColor('#0099ff'));
+                        });
+                } else {
+                    message.channel.send(new Discord.MessageEmbed().setDescription(`Sorry, the ${guild.Prefix}clone command only works with a this or #channelFrom tag and a #channelTo tag.`).setColor('#b50909'));
                 }
-                //Grab toChannel
-                toChannel = channelMentions.shift();
-
-                //Shift away the toChannel
-                args.shift();
-                var flags = (args.length != 0 ? args.join('-').toLowerCase() : '');
-
-                //Count and clone as the bot goes
-                //Send loading message
-                message.channel
-                    .send(new Discord.MessageEmbed().setDescription(`**Total Messages Cloned Accross from ${thisChannel.toString()} to ${toChannel.toString()}**\n\n***Loading....***`).setColor('#FFCC00'))
-                    .then(async function (sent) {
-                        //Fetch all messages and sequentially count them and clone them
-                        var totalCount = await cloneCountSequentially(thisChannel, toChannel, sent, flags);
-                        sent.edit(new Discord.MessageEmbed().setDescription(`**Total Messages Cloned Accross from ${thisChannel.toString()} to ${toChannel.toString()}**\n\n${totalCount}`).setColor('#0099ff'));
-                    });
             } else {
-                message.channel.send(new Discord.MessageEmbed().setDescription(`Sorry, the ${guild.Prefix}clone command only works with a this or #channelFrom tag and a #channelTo tag.`).setColor('#b50909'));
+                message.channel.send(new Discord.MessageEmbed().setDescription('Sorry, you didn\'t select any channels to clone from or too.').setColor('#b50909'));
             }
         } else {
-            message.channel.send(new Discord.MessageEmbed().setDescription('Sorry, you didn\'t select any channels to clone from or too.').setColor('#b50909'));
+            message.channel.send(new Discord.MessageEmbed().setDescription(`Sorry, you do not have channel management permissions.`).setColor('#b50909'));
         }
     } else {
         HelpMessage(bot, guild, message, args);

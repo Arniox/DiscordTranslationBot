@@ -1,9 +1,12 @@
 //Import
 const Discord = require('discord.js');
+//Import functions
+require('../message-commands.js')();
 
 exports.run = (bot, guild, message, command, args) => {
     if (args.length != 0) {
-        if (message.member.hasPermission('MUTE_MEMBERS')) {
+        //Check user permissions
+        if (CanMuteMembers(message)) {
             var voiceChannel = args.join(' ');
 
             //Channel name, find the voice channel

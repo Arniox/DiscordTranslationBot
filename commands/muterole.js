@@ -1,5 +1,7 @@
 //Import
 const Discord = require('discord.js');
+//Import functions
+require('../message-commands.js')();
 
 exports.run = (bot, guild, message, command, args) => {
     if (args.length != 0) {
@@ -9,7 +11,8 @@ exports.run = (bot, guild, message, command, args) => {
         //Check which direction you want the role to go
         switch (direction) {
             case 'add': case 'a': case '+':
-                if (message.member.hasPermission('MUTE_MEMBERS')) {
+                //Check permissions
+                if (CanMuteMembers(message)) {
                     if (roles.size != 0) {
                         if (roles.size < 2) {
                             //Look for existing role
@@ -47,7 +50,7 @@ exports.run = (bot, guild, message, command, args) => {
                 }
                 break;
             case 'remove': case 'r': case '-':
-                if (message.member.hasPermission('MUTE_MEMBERS')) {
+                if (CanMuteMembers(message)) {
                     if (roles.size != 0) {
                         if (roles.size < 2) {
                             //Look for existing role
