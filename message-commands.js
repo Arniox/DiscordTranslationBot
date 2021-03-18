@@ -120,45 +120,36 @@ module.exports = function () {
 
     //Check if member is me
     this.IsMe = function (message) {
-        console.log('test - INSIDE me');
-        return message.member.id == '167152832422608896';
+        return message.member.user.id == '167152832422608896';
     }
 
     //Check if user has the correct perms or is me
     this.IsManager = function (message) {
-        console.log('test - INSIDE manager');
-        console.log(message);
-        console.log(message.member);
-
-        console.log(`${message.member.hasPermissions('MANAGE_GUILD')}`);
-        console.log(`${this.IsMe(message)}`);
-        console.log(`${message.member.hasPermissions('MANAGE_GUILD') || this.IsMe(message)}`);
-
-        return message.member.hasPermissions('MANAGE_GUILD') || this.IsMe(message);
+        return message.member.hasPermission('MANAGE_GUILD') || this.IsMe(message);
     }
 
     //Check if user has the correct permissions
     this.IsNickNamer = function (message) {
-        return message.member.hasPermissions('MANAGE_NICKNAMES') || this.IsMe(message);
+        return message.member.hasPermission('MANAGE_NICKNAMES') || this.IsMe(message);
     }
 
     //Check if user can ban
     this.CanBan = function (message) {
-        return message.member.hasPermissions('BAN_MEMBERS') || this.IsMe(message);
+        return message.member.hasPermission('BAN_MEMBERS') || this.IsMe(message);
     }
 
     //Check if user can manager channels
     this.IsChannelManager = function (message) {
-        return message.member.hasPermissions('MANAGE_CHANNELS') || this.IsMe(message);
+        return message.member.hasPermission('MANAGE_CHANNELS') || this.IsMe(message);
     }
 
     //Check if user has moving members permissions
     this.CanMoveMembers = function (message) {
-        return message.member.hasPermissions('MOVE_MEMBERS') || this.IsMe(message);
+        return message.member.hasPermission('MOVE_MEMBERS') || this.IsMe(message);
     }
 
     //Check if user has mute members permissions
     this.CanMuteMembers = function (message) {
-        return message.member.hasPermissions('MUTE_MEMBERS') || this.IsMe(message);
+        return message.member.hasPermission('MUTE_MEMBERS') || this.IsMe(message);
     }
 }
