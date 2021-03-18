@@ -49,7 +49,7 @@ exports.run = (bot, guild, message, command, args) => {
                     switch (specifics) {
                         case 'add': case 'a': case '+': //Add a pattern
                             //Check if has perms
-                            if (message.member.hasPermission('MANAGE_GUILD')) {
+                            if (IsManager(message)) {
                                 var query = args.join("");
 
                                 //Check if query exists
@@ -110,7 +110,7 @@ exports.run = (bot, guild, message, command, args) => {
                             break;
                         case 'remove': case 'r': case '-'://Remove a pattern by id
                             //Check if has perms
-                            if (message.member.hasPermission('MANAGE_GUILD')) {
+                            if (IsManager(message)) {
                                 var query = args.shift();
 
                                 //Check if query exists
@@ -189,7 +189,7 @@ exports.run = (bot, guild, message, command, args) => {
                     switch (specifics) {
                         case 'add': case 'a': case '+': //Add a channel
                             //Check if has perms
-                            if (message.member.hasPermission('MANAGE_GUILD')) {
+                            if (IsManager(message)) {
                                 //Get mentions
                                 var channelMentions = message.mentions.channels.map((v, k) => v);
 
@@ -254,7 +254,7 @@ exports.run = (bot, guild, message, command, args) => {
                             break;
                         case 'remove': case 'r': case '-': //Remove a channel by tag
                             //Check if has perms
-                            if (message.member.hasPermission('MANAGE_GUILD')) {
+                            if (IsManager(message)) {
                                 //Get mentioned channels
                                 var channelMentions = message.mentions.channels.map((v, k) => v);
 
@@ -367,7 +367,7 @@ exports.run = (bot, guild, message, command, args) => {
                         switch (command) {
                             case 'change': case 'ch': case '=': //Change bot translation restriction
                                 //Check if user has perms
-                                if (message.member.hasPermission('MANAGE_GUILD')) {
+                                if (IsManager(message)) {
                                     var query = args.shift();
 
                                     //Check if the query exists
@@ -434,7 +434,7 @@ exports.run = (bot, guild, message, command, args) => {
                             case 'change': case 'ch': case '=': case 'toggle': case 'togg': case 'tog': case 'to': case 't':
                             case 'switch': case 'swit': case 'swi': case 'sw': case 's': //Change bot auto delete translation
                                 //Check if user has perms
-                                if (message.member.hasPermission('MANAGE_GUILD')) {
+                                if (IsManager(message)) {
                                     //Toggle on/off
 
                                     //Update new setting
@@ -476,7 +476,7 @@ exports.run = (bot, guild, message, command, args) => {
                             case 'change': case 'ch': case '=': case 'toggle': case 'togg': case 'tog': case 'to': case 't':
                             case 'switch': case 'swit': case 'swi': case 'sw': case 's': //Change bot embedded translation or not
                                 //Check if user has perms
-                                if (message.member.hasPermission('MANAGE_GUILD')) {
+                                if (IsManager(message)) {
                                     //Toggle on/off
 
                                     //Update new setting
@@ -525,7 +525,7 @@ exports.run = (bot, guild, message, command, args) => {
                             switch (command) {
                                 case 'change': case 'ch': case '=': //Change server base language
                                     //Check if user has perms
-                                    if (message.member.hasPermission('MANAGE_GUILD')) {
+                                    if (IsManager(message)) {
                                         //Get query
                                         if (args.length != 0) {
                                             //Get language query. This should either be a language name or language code
@@ -637,7 +637,7 @@ exports.run = (bot, guild, message, command, args) => {
                         switch (command) {
                             case 'change': case 'ch': case '=': //Change the main channel output.
                                 //Check if userr has perms
-                                if (message.member.hasPermission('MANAGE_GUILD')) {
+                                if (IsManager(message)) {
                                     if (channelMentions.size > 0) {
                                         if (channelMentions.size < 2) {
                                             //Set main channel to selected channel
@@ -717,7 +717,7 @@ exports.run = (bot, guild, message, command, args) => {
                             switch (command) {
                                 case 'set': case 's': case '=':
                                     //Check if has perms
-                                    if (message.member.hasPermission('MANAGE_GUILD')) {
+                                    if (IsManager(message)) {
                                         //Check that at least some channels where mentioned
                                         if (channelMentions.size == 2) {
                                             //Create new entry. Send message
@@ -845,7 +845,7 @@ exports.run = (bot, guild, message, command, args) => {
                                     break;
                                 case 'remove': case 'r': case '-':
                                     //Check if has perms
-                                    if (message.member.hasPermission('MANAGE_GUILD')) {
+                                    if (IsManager(message)) {
                                         var query = args.shift();
 
                                         //Check if query exists
