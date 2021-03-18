@@ -191,7 +191,7 @@ exports.run = (bot, guild, message, command, args) => {
                                     .send(new Discord.MessageEmbed().setDescription(`Total **Messages** in ${channelMentioned.toString()}\n\n***Loading....***`).setColor('#FFCC00'))
                                     .then(async function (sent) {
                                         //Fetch all messages and sequentially count them
-                                        sumSequentially(channelMentioned, sent, 'Messages')
+                                        await sumSequentially(channelMentioned, sent, 'Messages')
                                             .then((totalCount) => {
                                                 //Send Message
                                                 messageCount(sent, channelMentioned, totalCount, 'Messages');
@@ -204,7 +204,7 @@ exports.run = (bot, guild, message, command, args) => {
                                     .send(new Discord.MessageEmbed().setDescription(`Total **Words** in ${channelMentioned.toString()}\n\n***Loading....***`).setColor('#FFCC00'))
                                     .then(async function (sent) {
                                         //Fetch all messages and sequentially count the words.
-                                        sumSequentially(channelMentioned, sent, 'Words')
+                                        await sumSequentially(channelMentioned, sent, 'Words')
                                             .then((totalCount) => {
                                                 //Send Message
                                                 messageCount(sent, channelMentioned, totalCount, 'Words');
@@ -217,7 +217,7 @@ exports.run = (bot, guild, message, command, args) => {
                                     .send(new Discord.MessageEmbed().setDescription(`Total **Characters** in ${channelMentioned.toString()}\n\n***Loading....***`).setColor('#FFCC00'))
                                     .then(async function (sent) {
                                         //Fetch all messages and sequentially count the words.
-                                        sumSequentially(channelMentioned, sent, 'Characters')
+                                        await sumSequentially(channelMentioned, sent, 'Characters')
                                             .then((totalCount) => {
                                                 //Send Message
                                                 messageCount(sent, channelMentioned, totalCount, 'Characters');
@@ -230,7 +230,7 @@ exports.run = (bot, guild, message, command, args) => {
                                     .send(new Discord.MessageEmbed().setDescription(`Total **Emojis** in ${channelMentioned.toString()}\n\n***Loading....***`).setColor('#FFCC00'))
                                     .then(async function (sent) {
                                         //Fetch all messages and sequentially count the words.
-                                        sumSequentially(channelMentioned, sent, 'Emojis')
+                                        await sumSequentially(channelMentioned, sent, 'Emojis')
                                             .then((totalCount) => {
                                                 //Send Message
                                                 messageCount(sent, channelMentioned, totalCount, 'Emojis');
@@ -317,14 +317,14 @@ function HelpMessage(bot, guild, message, args) {
 }
 
 //Sum all message count
-function sumSequentially(channels, message, whatToCount) {
+async function sumSequentially(channels, message, whatToCount) {
     return new Promise((resolve, reject) => {
         //Keep track
         var last_id;
         var sum = 0;
 
         //For each channel
-        channels.forEach(async (channel) => {
+        await channels.forEach(async (channel) => {
             while (true) {
                 //Create options and update to next message id
                 const options = { limit: 100 };
