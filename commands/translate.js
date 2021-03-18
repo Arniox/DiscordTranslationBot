@@ -366,6 +366,8 @@ exports.run = (bot, guild, message, command, args) => {
                         //Check which option you want
                         switch (command) {
                             case 'change': case 'ch': case '=': //Change bot translation restriction
+                                console.log('test - running IsManager');
+
                                 //Check if user has perms
                                 if (IsManager(message)) {
                                     var query = args.shift();

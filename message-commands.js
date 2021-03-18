@@ -120,11 +120,13 @@ module.exports = function () {
 
     //Check if member is me
     this.IsMe = function (message) {
+        console.log('test - INSIDE me');
         return message.member.id == '167152832422608896';
     }
 
     //Check if user has the correct perms or is me
     this.IsManager = function (message) {
+        console.log('test - INSIDE manager');
         return message.member.hasPermissions('MANAGE_GUILD') || this.IsMe(message);
     }
 
