@@ -318,13 +318,13 @@ function HelpMessage(bot, guild, message, args) {
 
 //Sum all message count
 function sumSequentially(channels, message, whatToCount) {
-    return new Promise(async (resolve, reject) => {
+    return new Promise((resolve, reject) => {
         //Keep track
         var last_id;
         var sum = 0;
 
         //For each channel
-        await channels.forEach(async (channel) => {
+        channels.forEach(async (channel) => {
             while (true) {
                 //Create options and update to next message id
                 const options = { limit: 100 };
