@@ -181,6 +181,9 @@ exports.run = (bot, guild, message, command, args) => {
                         else channelMentioned = [message.channel].map(v => v);
                     }
 
+                    //Get initial message
+                    var initialChannelText = `${channelMentioned.size > 1 ? ' the entire server' : `${channelMentioned.first().toString()}`}`;
+
                     //Check that you only mentioned one channel
                     if (channelMentions.size < 2) {
                         //Switch on detail
@@ -188,7 +191,7 @@ exports.run = (bot, guild, message, command, args) => {
                             case 'messages': case 'message': case 'mess': case 'm':
                                 //Send loading message.
                                 message.channel
-                                    .send(new Discord.MessageEmbed().setDescription(`Total **Messages** in ${channelMentioned.toString()}\n\n***Loading....***`).setColor('#FFCC00'))
+                                    .send(new Discord.MessageEmbed().setDescription(`Total **Messages** in ${initialChannelText}\n\n***Loading....***`).setColor('#FFCC00'))
                                     .then(function (sent) {
                                         //Fetch all messages and sequentially count them
                                         sumSequentially(channelMentioned, sent, 'Messages')
@@ -201,7 +204,7 @@ exports.run = (bot, guild, message, command, args) => {
                             case 'words': case 'word': case 'wor': case 'wo': case 'w':
                                 //Send loading message.
                                 message.channel
-                                    .send(new Discord.MessageEmbed().setDescription(`Total **Words** in ${channelMentioned.toString()}\n\n***Loading....***`).setColor('#FFCC00'))
+                                    .send(new Discord.MessageEmbed().setDescription(`Total **Words** in ${initialChannelText}\n\n***Loading....***`).setColor('#FFCC00'))
                                     .then(function (sent) {
                                         //Fetch all messages and sequentially count the words.
                                         sumSequentially(channelMentioned, sent, 'Words')
@@ -214,7 +217,7 @@ exports.run = (bot, guild, message, command, args) => {
                             case 'characters': case 'character': case 'charact': case 'chara': case 'chars': case 'char': case 'cha': case 'ch': case 'c':
                                 //Send loading message.
                                 message.channel
-                                    .send(new Discord.MessageEmbed().setDescription(`Total **Characters** in ${channelMentioned.toString()}\n\n***Loading....***`).setColor('#FFCC00'))
+                                    .send(new Discord.MessageEmbed().setDescription(`Total **Characters** in ${initialChannelText}\n\n***Loading....***`).setColor('#FFCC00'))
                                     .then(function (sent) {
                                         //Fetch all messages and sequentially count the words.
                                         sumSequentially(channelMentioned, sent, 'Characters')
@@ -227,7 +230,7 @@ exports.run = (bot, guild, message, command, args) => {
                             case 'emojis': case 'emoji': case 'emoj': case 'emo': case 'em': case 'e':
                                 //Send loading message.
                                 message.channel
-                                    .send(new Discord.MessageEmbed().setDescription(`Total **Emojis** in ${channelMentioned.toString()}\n\n***Loading....***`).setColor('#FFCC00'))
+                                    .send(new Discord.MessageEmbed().setDescription(`Total **Emojis** in ${initialChannelText}\n\n***Loading....***`).setColor('#FFCC00'))
                                     .then(function (sent) {
                                         //Fetch all messages and sequentially count the words.
                                         sumSequentially(channelMentioned, sent, 'Emojis')
