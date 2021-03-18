@@ -172,7 +172,7 @@ exports.run = (bot, guild, message, command, args) => {
                     //Check if user meant all
                     if (detail == 'all' || detail == 'al' || detail == 'a') {
                         //Get all channels that are text
-                        channelMentioned = message.guild.channels.cache.map((v, k)).filter(i => i.type == 'text').map(v => v);
+                        channelMentioned = message.guild.channels.cache.map((v, k) => v).filter(i => i.type == 'text').map(v => v);
                         //Get detail again
                         detail = args.shift().toLowerCase();
                     } else {
