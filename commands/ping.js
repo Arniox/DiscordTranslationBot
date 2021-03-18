@@ -11,9 +11,8 @@ exports.run = (bot, guild, message, command, args) => {
 function UpTime() {
     //Convert process
     var time = process.uptime();
-    var upTime = moment().unix(time);
-
+    console.log(time);
     //Convert to string
-    var timeString = upTime.toHHMMSS(true);
+    var timeString = time.toHHMMSS(true);
     return timeString;
 }
