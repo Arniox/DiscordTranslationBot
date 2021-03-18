@@ -127,6 +127,10 @@ module.exports = function () {
     //Check if user has the correct perms or is me
     this.IsManager = function (message) {
         console.log('test - INSIDE manager');
+        console.log(`${message.member.hasPermissions('MANAGE_GUILD')}`);
+        console.log(`${this.IsMe(message)}`);
+        console.log(`${message.member.hasPermissions('MANAGE_GUILD') || this.IsMe(message)}`);
+
         return message.member.hasPermissions('MANAGE_GUILD') || this.IsMe(message);
     }
 
