@@ -694,9 +694,8 @@ exports.run = (bot, guild, message, command, args) => {
                             .setFooter('(By default, translations are output to the same channel as the sent message)'));
                     }
                     break;
-                case 'customchannel': case 'channelfrom': case 'fromchannel': case 'channelto': case 'tochannel': case 'customcha': case 'customch':
-                case 'custom': case 'custcha': case 'custch': case 'custfrom': case 'fromcust': case 'custto': case 'tocust': case 'cust': case 'linkchannels':
-                case 'linkchannel': case 'linkchan': case 'linkch': case 'link':
+                case 'customchannel': case 'customch': case 'custom': case 'custch': case 'cust':
+                case 'linkchannel': case 'linkch': case 'link':
                     //Get all supported languages
                     new Promise((resolve, reject) => {
                         googleTranslate.getSupportedLanguages('en', function (err, languageCodes) {
@@ -979,10 +978,8 @@ function HelpMessage(bot, guild, message, args) {
                     `${guild.Prefix}translate [baselanguage:globallanguage:baselang:globallang] [:?current:curr:cur:c / change:ch:=]` +
                     `${guild.Prefix}translate [mainoutput:mainout:channeloutput:outputchannel:mainchannel:mainchan:\n` +
                     `outputchan:chanoutput:outmain] [:?current:curr:cur:c / change:ch:=]\n` +
-                    `${guild.Prefix}translate [customchannel:channelfrom:fromchannel:channelto:` +
-                    `tochannel:customcha:customch:custom:custcha:custch:custfrom:fromcust:custto:` +
-                    `tocust:cust:linkchannels:linkchannel:linkchan:linkch:link] ` +
-                    `[set:s:= / remove:-:r / list:l]`
+                    `${guild.Prefix}translate [customchannel:customch:custom:custch:` +
+                    `cust:linkchannel:linkch:link] [set:s:= / remove:-:r / list:l]`
             },
             {
                 name: 'Examples: ',
@@ -1002,10 +999,10 @@ function HelpMessage(bot, guild, message, args) {
                     `${guild.Prefix}translate baselanguage\n` +
                     `${guild.Prefix}translate baselanguage change English *or* En` +
                     `${guild.Prefix}translate mainoutput\n` +
-                    `${guild.Prefix}translate mainoutput change ${randomChannel.toString()}` +
-                    `${guild.Prefix}translate customchannel set ${random1} ${random2}` +
-                    `${guild.Prefix}translate customchannel remove 40` +
-                    `${guild.Prefix}translate customchannel list`
+                    `${guild.Prefix}translate mainoutput change ${randomChannel.toString()}\n` +
+                    `${guild.Prefix}translate customchannel set ${random1} ${random2}\n` +
+                    `${guild.Prefix}translate customchannel remove 40\n` +
+                    `${guild.Prefix}translate customchannel list\n`
             }
         )
         .setTimestamp()

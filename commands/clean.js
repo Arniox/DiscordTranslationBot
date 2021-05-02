@@ -1,46 +1,55 @@
 //Import
 const Discord = require('discord.js');
+const message = require('../events/message.js');
 //Import functions
 require('../message-commands.js')();
 
 exports.run = (bot, guild, message, command, args) => {
-    if (args.lengthj != 0) {
-        //Check permissiuons
-        if (CanManageMessages(message)) {
-            //Get current channel
-            var currentChannel = message.channel;
-
-            //Get value
+    message.delete()
+        .then(() => {
             if (args.length != 0) {
-                //Get value
-                var value = args.shift();
-                //Check if value is actually a number
-                if (/^\d+$/.test(value)) {
-                    //Grab number from string
-                    var numToDelete = parseInt(value);
+                //Check permissions
+                if (CanManageMessages(message)) {
+                    //Get current channel
+                    var currentChannel = message.channel;
 
-                    async () => {
-                        //Await bulk delete
-                        await bulkDeleteSequentially(message.channel, message, numToDelete);
-                        //Send message to say finished
-                        thisChannel.send(new Discord.MessageEmbed().setDescription(`Deleted ${numToDelete} messages...`).setColor('#0099ff'))
-                            .then((newMessage) => {
-                                //Delete sent message after 4 seconds
-                                newMessage.delete({ timeout: 4000 });
-                            });
+                    //Get value
+                    if (args.length != 0) {
+                        //Get value
+                        var value = args.shift();
+                        //Check if value is actually a number
+                        if (/^\d+$/.test(value)) {
+                            //Grab number from string
+                            var numToDelete = parseInt(value);
+
+                            (async () => {
+                                //Await bulk delete
+                                await new Promise(async (resolve, reject) => {
+                                    await bulkDeleteSequentially(currentChannel, numToDelete);
+                                    resolve();
+                                });
+                                //Send message to say finished
+                                currentChannel.send(new Discord.MessageEmbed().setDescription(`Deleting ${numToDelete} messages...`).setColor('#0099ff'))
+                                    .then((newMessage) => {
+                                        //Delete sent message after 4 seconds
+                                        newMessage.delete({ timeout: 4000 });
+                                    }).catch(() => {
+                                        return console.log('I think a channel was deleted during a clean command.');
+                                    });
+                            })();
+                        } else {
+                            message.channel.send(new Discord.MessageEmbed().setDescription(`Sorry, ${value} is not a valid number.`).setColor('#b50909'));
+                        }
+                    } else {
+                        message.channel.send(new Discord.MessageEmbed().setDescription(`Sorry, how many messages did you want me to clean?`).setColor('#b50909'));
                     }
                 } else {
-                    message.channel.send(new Discord.MessageEmbed().setDescription(`Sorry, ${value} is not a valid number.`).setColor('#b50909'));
+                    message.channel.send(new Discord.MessageEmbed().setDescription(`Sorry, you do not have message management permissions.`).setColor('#b50909'));
                 }
             } else {
-                message.channel.send(new Discord.MessageEmbed().setDescription(`Sorry, how many messages did you want me to clean?`).setColor('#b50909'));
+                HelpMessage(bot, guild, message, args);
             }
-        } else {
-            message.channel.send(new Discord.MessageEmbed().setDescription(`Sorry, you do not have message management permissions.`).setColor('#b50909'));
-        }
-    } else {
-        HelpMessage(bot, guild, message, args);
-    }
+        });
 }
 
 //Functions
@@ -71,22 +80,44 @@ function HelpMessage(bot, guild, message, args) {
 }
 
 //Bulk Delete all messages
-async function bulkDeleteSequentially(thisChannel, message, value) {
+async function bulkDeleteSequentially(thisChannel, value) {
     //If bulk delete is under 100 then just run once
     if (value <= 100) {
-        await thisChannel.bulkDelete(value, true).catch((error) => { throw error; });
+        //Create options and update to next message id
+        const options = { limit: value };
+
+        //Await fetch messages and delete
+        const messages = await thisChannel.messages.fetch(options);
+
+        //For each message, delete them
+        await messages.map(async function (v, k) {
+            await v.delete(); //Delete message
+        });
     } else {
         var sum = value;
+        var last_id;
         //Count up by value
         while (true) {
-            //Bulk delete
-            await thisChannel.bulkDelete(sum, true).catch((error) => { throw error; });
+            //Create options
+            const options = { limit: (sum > 100 ? 100 : sum) }
+            if (last_id) {
+                options.before = last_id;
+            }
+
+            //Await fetch messages and delete
+            const messages = await thisChannel.messages.fetch(options);
+
+            //For each message, delete them
+            await messages.map(async function (v, k) {
+                await v.delete(); //Delete message
+            });
+
             //Remove 100 from sum
             sum -= 100;
+            last_id = messages.last().id;
+
             //Break if sum is bellow zero
             if (sum < 0) break;
         }
-
-
     }
 }

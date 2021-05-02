@@ -1,4 +1,6 @@
 //Import
+const { EventEmitter } = require('events');
+const eventEmitter = new EventEmitter();
 const Discord = require('discord.js');
 const moment = require('moment-timezone');
 //Import functions
@@ -39,10 +41,11 @@ exports.run = (bot, guild, message, command, args) => {
                     //Send loading message
                     message.channel
                         .send(new Discord.MessageEmbed().setDescription(`**Total Messages Cloned Accross from ${thisChannel.toString()} to ${toChannel.toString()}**\n\n***Loading....***`).setColor('#FFCC00'))
-                        .then(async function (sent) {
+                        .then(function (sent) {
                             //Fetch all messages and sequentially count them and clone them
-                            var totalCount = await cloneCountSequentially(thisChannel, toChannel, sent, flags);
-                            sent.edit(new Discord.MessageEmbed().setDescription(`**Total Messages Cloned Accross from ${thisChannel.toString()} to ${toChannel.toString()}**\n\n${totalCount}`).setColor('#0099ff'));
+                            cloneCountSequentially(thisChannel, toChannel, sent, flags);
+                        }).catch((error) => {
+                            return console.log(`I think a channel was deleted while I was cloning messages`);
                         });
                 } else {
                     message.channel.send(new Discord.MessageEmbed().setDescription(`Sorry, the ${guild.Prefix}clone command only works with a this or #channelFrom tag and a #channelTo tag.`).setColor('#b50909'));
@@ -89,45 +92,62 @@ function HelpMessage(bot, guild, message, args) {
 }
 
 //Sum and clone all messages
-async function cloneCountSequentially(thisChannel, toChannel, message, flags) {
+function cloneCountSequentially(thisChannel, toChannel, message, flags) {
     var sum = 0;
     var last_id;
 
-    while (true) {
-        //Create options and update to next message id
-        const options = { limit: 100 };
-        if (last_id) {
-            options.before = last_id;
+    (async () => {
+        while (true) {
+            //Create options and update to next message id
+            const options = { limit: 100 };
+            if (last_id) {
+                options.before = last_id;
+            }
+
+            //Await fetch messages and sum their total count
+            const messages = await thisChannel.messages.fetch(options);
+
+            //For each message, clone them
+            await messages.map(async function (v, k) {
+                if (!v.author.bot && v.type === 'DEFAULT')
+                    //Send message per message
+                    await toChannel.send(new Discord.MessageEmbed()
+                        .setAuthor(v.author.username, v.author.avatarURL())
+                        .setDescription(v.content)
+                        .setTimestamp(v.createdAt)
+                    );
+
+                //Delete all 100 messages
+                if (flags.includes('delete') || flags.includes('del') || flags.includes('d'))
+                    await v.delete({ timeout: 5000 }); //Delete message
+            });
+
+
+            //Sum messages
+            sum += messages.filter(i => !i.author.bot && i.type === 'DEFAULT').size;
+            last_id = messages.last().id;
+
+            //Edit messagte with new number
+            message.edit(new Discord.MessageEmbed().setDescription(`**Total Messages Cloned Accross from ${thisChannel.toString()} to ${toChannel.toString()}**\n\n***...${sum}...***`).setColor('#FFCC00'));
+
+            //Break when reach the end of messages
+            if (messages.size != 100) {
+                //Emit event and break
+                eventEmitter.emit('clonecheck');
+                break;
+            }
         }
+    })();
 
-        //Await fetch messages and sum their total count
-        const messages = await thisChannel.messages.fetch(options);
-
-        //For each message, clone them
-        await messages.map(async function (v, k) {
-            if (!v.author.bot && v.type === 'DEFAULT')
-                //Send message per message
-                await toChannel.send(new Discord.MessageEmbed()
-                    .setAuthor(v.author.username, v.author.avatarURL())
-                    .setDescription(v.content)
-                    .setTimestamp(v.createdAt)
-                );
-
-            //Delete all 100 messages
-            if (flags.includes('delete') || flags.includes('del') || flags.includes('d'))
-                await v.delete({ timeout: 5000 }); //Delete message
-        });
+    //Check event
+    eventEmitter.on('clonecheck', () => {
+        messageCount(message, thisChannel, toChannel, sum);
+    });
+}
 
 
-        //Sum messages
-        sum += messages.size;
-        last_id = messages.last().id;
-
-        //Edit messagte with new number
-        message.edit(new Discord.MessageEmbed().setDescription(`**Total Messages Cloned Accross from ${thisChannel.toString()} to ${toChannel.toString()}**\n\n***...${sum}...***`).setColor('#FFCC00'));
-
-        //Break when reach the end of messages
-        if (messages.size != 100) break;
-    }
-    return sum;
+//Message function
+function messageCount(sent, thisChannel, toChannel, totalCount) {
+    //Send message
+    sent.edit(new Discord.MessageEmbed().setDescription(`**Total Messages Cloned Accross from ${thisChannel.toString()} to ${toChannel.toString()}**\n\n${totalCount}`).setColor('#0099ff'));
 }

@@ -12,7 +12,7 @@ module.exports = (bot, channel) => {
         //Delete main channel translation output
         const remove_maintrans_cmd = `
         UPDATE servers
-        Default_Channel_Output = NULL
+        SET Default_Channel_Output = NULL
         WHERE Default_Channel_Output = "${channel.id}"
         AND ServerId = "${channel.guild.id}"
         `;

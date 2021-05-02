@@ -96,7 +96,7 @@ module.exports = (bot, message) => {
                             if (!cmd) return;
                             //Run the command
                             cmd.run(bot, results[0], message, command, args);
-                            message.delete({ timeout: 200 }); //Delete message
+                            message.delete({ timeout: 200 }).catch(() => { return; }); //Delete message
                         }).catch((error) => {
                             //Return console error
                             return console.error(error);
