@@ -152,4 +152,9 @@ module.exports = function () {
     this.CanMuteMembers = function (message) {
         return message.member.hasPermission('MUTE_MEMBERS') || this.IsMe(message);
     }
+
+    //Check if user has manage messages permissions
+    this.CanManageMessages = function (message) {
+        return message.member.hasPermission('MANAGE_MESSAGES') || this.IsMe(message);
+    }
 }

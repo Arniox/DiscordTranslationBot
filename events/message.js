@@ -86,6 +86,8 @@ module.exports = (bot, message) => {
                                 case 'now': case 'np': case 'queue': case 'q':
                                 case 'shuffle': case 'shuff': case 'shuf': case 'sh':
                                     return resolve(bot.commands.get('music'));
+                                case 'clean':
+                                    return resolve(bot.commands.get('clean'));
                                 default:
                                     return reject();
                             }
@@ -95,8 +97,11 @@ module.exports = (bot, message) => {
                             //Run the command
                             cmd.run(bot, results[0], message, command, args);
                             message.delete({ timeout: 200 }); //Delete message
-                        }).catch(() => { return; });
-                    } else if (evaluate(message.content)) {
+                        }).catch((error) => {
+                            //Return console error
+                            return console.error(error);
+                        });
+                    } else if (evaluate(message.content) && !message.content.includes('true')) {
                         message.channel.send(new Discord.MessageEmbed().setDescription(`> ${message.member.toString()}: **${message.content}**\n = ${evaluate(message.content)}`.trimString(2048)).setColor('#0099ff'));
                     } else {
                         //Get the specific translatemessage command data from client.commands Enmap
