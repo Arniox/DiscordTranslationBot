@@ -40,7 +40,9 @@ module.exports = (bot) => {
     //log
     console.log('Bot Connected!');
     console.log(`Logged in as ${bot.user.username} - (${bot.user.id})`);
-    console.log(`Ready to serve in ${bot.channels.cache.size} channels on ${bot.guilds.cache.size} servers, for a total of ${bot.users.cache.size} users.`);
+    console.log(`Ready to serve in ${bot.channels.cache.size}` +
+        ` channels on ${bot.guilds.cache.size}` +
+        ` servers, for a total of ${bot.users.cache.size} users.`);
     //Generate invite link
     bot.generateInvite({
         permissions: ['ADMINISTRATOR', 'SEND_MESSAGES', 'MANAGE_GUILD', 'MENTION_EVERYONE']
