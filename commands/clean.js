@@ -19,14 +19,16 @@ exports.run = (bot, guild, message, command, args) => {
                     //Grab number from string
                     var numToDelete = parseInt(value);
 
-                    //Await bulk delete
-                    await bulkDeleteSequentially(message.channel, message, numToDelete);
-                    //Send message to say finished
-                    thisChannel.send(new Discord.MessageEmbed().setDescription(`Deleted ${numToDelete} messages...`).setColor('#0099ff'))
-                        .then((newMessage) => {
-                            //Delete sent message after 4 seconds
-                            newMessage.delete({ timeout: 4000 });
-                        });
+                    async () => {
+                        //Await bulk delete
+                        await bulkDeleteSequentially(message.channel, message, numToDelete);
+                        //Send message to say finished
+                        thisChannel.send(new Discord.MessageEmbed().setDescription(`Deleted ${numToDelete} messages...`).setColor('#0099ff'))
+                            .then((newMessage) => {
+                                //Delete sent message after 4 seconds
+                                newMessage.delete({ timeout: 4000 });
+                            });
+                    }
                 } else {
                     message.channel.send(new Discord.MessageEmbed().setDescription(`Sorry, ${value} is not a valid number.`).setColor('#b50909'));
                 }
