@@ -6,6 +6,9 @@ const RedditJS = require('js-reddit.js/src');
 var fs = require('fs');
 var tools = require('./extra-functions');
 
+//Load process
+if (process.env.NODE_ENV !== 'production') require('dotenv').config();
+
 //Create mysql connection pool
 const pool = mysql.createPool({
 	host: process.env.CLEARDB_DATABASE_URL.match(/(@)[a-zA-Z\d-.]+/)[0].replace(/(@)/, ''), //Get host
