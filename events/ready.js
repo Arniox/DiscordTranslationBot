@@ -20,8 +20,8 @@ module.exports = (bot) => {
                 if (!results.map(v => v.ServerId).includes(key)) {
                     //Create default server controller
                     const server_controller_cmd = `
-                    INSERT INTO servers (ServerId, ServerName, Prefix)
-                        VALUES("${key}", "${value.name}", "$")
+                    INSERT INTO servers (ServerId, ServerName, Prefix, Active)
+                        VALUES("${key}", "${value.name}", "$", 1)
                     `;
                     //Insert new server details
                     bot.con.query(server_controller_cmd, (error, results, fields) => {
@@ -29,18 +29,15 @@ module.exports = (bot) => {
                     });
                 }
 
-                //Update servers
-                results.map(v => v.ServerId).forEach((id) => {
-                    //Set
-                    const set_cmd = `
-                        UPDATE servers
-                        SET Active = ${(id == key ? '1' : '0')}
-                        WHERE ServerId = "${id}"
-                        `;
-                    //Update server
-                    bot.con.query(set_cmd, (error, results, fields) => {
-                        if (error) throw error; //Throw error and return
-                    });
+                //Set 
+                const activate_cmd = `
+                UPDATE servers
+                SET Active = 1
+                WHERE ServerId = "${key}"
+                `;
+                //Update server
+                bot.con.query(activate_cmd, (error, results, fields) => {
+                    if (error) throw error; //Throw error and return
                 });
             });
         });

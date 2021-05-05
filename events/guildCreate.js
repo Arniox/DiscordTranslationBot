@@ -18,8 +18,8 @@ module.exports = (bot, guild) => {
             else if (!results || !results.length) {
                 //Create default server controller
                 const server_controller_cmd = `
-                INSERT INTO servers (ServerId, ServerName, Prefix)
-                    VALUES("${guild.id}", "${guild.name}", "$")
+                INSERT INTO servers (ServerId, ServerName, Prefix, Active)
+                    VALUES("${guild.id}", "${guild.name}", "$", 1)
                 `;
                 //Insert new server details
                 bot.con.query(server_controller_cmd, (error, results, fields) => {
