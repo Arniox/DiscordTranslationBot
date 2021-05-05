@@ -26,7 +26,7 @@ module.exports = (bot, guild) => {
                     if (error) throw error; //Throw error and return
                 });
 
-                //Create based counte
+                //Create based counter
                 const based_counter_cmd = `
                 INSERT INTO based_counter (ServerId)
                     VALUES("${guild.id}")

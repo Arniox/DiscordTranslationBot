@@ -28,6 +28,20 @@ module.exports = (bot) => {
                         if (error) return console.error(error); //Throw error and return
                     });
                 }
+
+                //Update servers
+                results.map(v => v.ServerId).forEach((id) => {
+                    //Set
+                    const set_cmd = `
+                        UPDATE servers
+                        SET Active = ${(id == key ? '1' : '0')}
+                        WHERE ServerId = "${id}"
+                        `;
+                    //Update server
+                    bot.con.query(set_cmd, (error, results, fields) => {
+                        if (error) throw error; //Throw error and return
+                    });
+                });
             });
         });
 

@@ -25,6 +25,16 @@ module.exports = (bot, oldGuild, newGuild) => {
                 bot.con.query(server_controller_cmd, (error, results, fields) => {
                     if (error) throw error; //Throw error and return
                 });
+
+                //Create based counter
+                const based_counter_cmd = `
+                INSERT INTO based_counter (ServerId)
+                    VALUES("${newGuild.id}")
+                `;
+                //Insert new based counter
+                bot.con.query(based_counter_cmd, (error, results, fields) => {
+                    if (error) throw error; //Throw error and return
+                });
             } else {
                 //Update server controller
                 const server_controller_cmd = `
