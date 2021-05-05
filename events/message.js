@@ -111,6 +111,17 @@ module.exports = (bot, message) => {
 
                         //Run translation
                         trans.run(bot, results[0], message, args);
+
+                        //Check if message is based
+                        if (message.content.toLowerCase().includes("based")) {
+                            //Get the specific basedcounter command data from client.commands Enmap
+                            const based = bot.commands.get("basedcounter");
+                            //If command doesn't exist, exit and do nothing
+                            if (!based) return;
+
+                            //Run based counter
+                            based.run(bot, results[0], message, args);
+                        }
                     }
                 }
             });

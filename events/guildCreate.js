@@ -25,6 +25,16 @@ module.exports = (bot, guild) => {
                 bot.con.query(server_controller_cmd, (error, results, fields) => {
                     if (error) throw error; //Throw error and return
                 });
+
+                //Create based counte
+                const based_counter_cmd = `
+                INSERT INTO based_counter (ServerId)
+                    VALUES("${guild.id}")
+                `;
+                //Insert new based counter
+                bot.con.query(based_counter_cmd, (error, results, fields) => {
+                    if (error) throw error; //Throw error and return
+                });
             }
         });
 

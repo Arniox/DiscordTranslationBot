@@ -16,7 +16,7 @@ module.exports = (bot) => {
 
             //Check all guilds
             bot.guilds.cache.map((value, key) => {
-                //If this guild isn;t in database, then add
+                //If this guild isn't in database, then add
                 if (!results.map(v => v.ServerId).includes(key)) {
                     //Create default server controller
                     const server_controller_cmd = `
@@ -25,6 +25,28 @@ module.exports = (bot) => {
                     `;
                     //Insert new server details
                     bot.con.query(server_controller_cmd, (error, results, fields) => {
+                        if (error) return console.error(error); //Throw error and return
+                    });
+                }
+            });
+        });
+
+        //Check all based counters
+        const sql2_cmd = `SELECT * FROM based_counter`;
+        bot.con.query(sql2_cmd, (error, results, fields) => {
+            if (error) throw error; //Return error console log and continue
+
+            //Check all guilds
+            bot.guilds.cache.map((value, key) => {
+                //If this guild isn't in database, then add
+                if (!results.map(v => v.ServerId).includes(key)) {
+                    //Create default based counter
+                    const based_counter_cmd = `
+                    INSERT INTO based_counter (ServerId)
+                        VALUES("${key}")
+                    `;
+                    //Insert new based counter
+                    bot.con.query(based_counter_cmd, (error, results, fields) => {
                         if (error) return console.error(error); //Throw error and return
                     });
                 }
