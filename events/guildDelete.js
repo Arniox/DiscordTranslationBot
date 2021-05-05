@@ -13,7 +13,7 @@ module.exports = (bot, guild) => {
         bot.con = connection;
 
         //Check if guild exists in database
-        const sql_cmd = `SELECT * FROM servers WHERE ServerId = "${guild}"`;
+        const sql_cmd = `SELECT * FROM servers WHERE ServerId = "${guild.id}"`;
         bot.con.query(sql_cmd, (error, results, fields) => {
             if (error) throw error; //Return error and return
             else if (!results || !results.length) {
