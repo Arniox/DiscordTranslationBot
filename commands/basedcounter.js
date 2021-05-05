@@ -27,7 +27,7 @@ exports.run = (bot, guild, message, args) => {
             if (error) return console.error(error); //Throw error and return
 
             //Send message
-            message.channel.send(new Discord.MessageEmbed().setDescription(`Based Counter: ${counter}`).setColor('#0099ff'));
+            message.channel.send(new Discord.MessageEmbed().setDescription(`Based Counter: ${counter + 1}`).setColor('#0099ff'));
         });
     });
 }
