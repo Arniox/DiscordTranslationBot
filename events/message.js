@@ -55,7 +55,7 @@ module.exports = (bot, message) => {
                                     return resolve(bot.commands.get('prefix'));
                                 case 'ban': case 'ba': case 'bn': case 'b':
                                     return resolve(bot.commands.get('ban'));
-                                case 'clone': case 'clo': case 'c':
+                                case 'clone': case 'clo':
                                     return resolve(bot.commands.get('clone'));
                                 case 'harrass': case 'harass': case 'harr': case 'har': case 'ha':
                                     return resolve(bot.commands.get('harrass'));
@@ -86,8 +86,10 @@ module.exports = (bot, message) => {
                                 case 'now': case 'np': case 'queue': case 'q':
                                 case 'shuffle': case 'shuff': case 'shuf': case 'sh':
                                     return resolve(bot.commands.get('music'));
-                                case 'clean':
+                                case 'clean': case 'c':
                                     return resolve(bot.commands.get('clean'));
+                                case 'basedcounter': case 'based':
+                                    return resolve(bot.commands.get('basedcounter'));
                                 default:
                                     return reject();
                             }
@@ -99,7 +101,7 @@ module.exports = (bot, message) => {
                             message.delete({ timeout: 200 }).catch(() => { return; }); //Delete message
                         }).catch((error) => {
                             //Return console error
-                            return console.error(error);
+                            return console.error(error || 'Unknown command');
                         });
                     } else if (evaluate(message.content) && !message.content.includes('true')) {
                         message.channel.send(new Discord.MessageEmbed().setDescription(`> ${message.member.toString()}: **${message.content}**\n = ${evaluate(message.content)}`.trimString(2048)).setColor('#0099ff'));
@@ -120,7 +122,7 @@ module.exports = (bot, message) => {
                             if (!based) return;
 
                             //Run based counter
-                            based.run(bot, results[0], message, args);
+                            based.run(bot, results[0], message, 'count', args);
                         }
                     }
                 }

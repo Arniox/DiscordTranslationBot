@@ -57,9 +57,9 @@ exports.run = (bot, guild, message, command, args) => {
                                     if (query) {
                                         //look for an existing pattern of the exact same kind
                                         const sql_cmd = `
-                                    SELECT * FROM translation_ignored_patterns
-                                        WHERE ServerId = "${message.guild.id}"
-                                    `;
+                                        SELECT * FROM translation_ignored_patterns
+                                            WHERE ServerId = "${message.guild.id}"
+                                        `;
                                         bot.con.query(sql_cmd, (error, results, fields) => {
                                             if (error) return console.error(error); //Return error console log
 
@@ -79,9 +79,9 @@ exports.run = (bot, guild, message, command, args) => {
 
                                                             //Add pattern
                                                             const create_cmd = `
-                                                        INSERT INTO translation_ignored_patterns (Reason, Pattern, ServerId)
-                                                            VALUES ("${m.content}", "${query}", "${message.guild.id}")
-                                                        `;
+                                                            INSERT INTO translation_ignored_patterns (Reason, Pattern, ServerId)
+                                                                VALUES ("${m.content}", "${query}", "${message.guild.id}")
+                                                            `;
                                                             bot.con.query(create_cmd, (error, results, fields) => {
                                                                 if (error) return console.error(error); //Return error console log
 
@@ -199,10 +199,9 @@ exports.run = (bot, guild, message, command, args) => {
                                     var channelMentions = message.mentions.channels.map((v, k) => v);
 
                                     //Check if channel exists
-                                    if (channelMentions.size != 0) {
-
+                                    if (channelMentions.length != 0) {
                                         //Message
-                                        message.channel.send(new Discord.MessageEmbed().setDescription(`**Adding 0 / ${channelMentions.size} new channel(s) to translation ignored channels:**`).setColor('#FFCC00'))
+                                        message.channel.send(new Discord.MessageEmbed().setDescription(`**Adding 0 / ${channelMentions.length} new channel(s) to translation ignored channels:**`).setColor('#FFCC00'))
                                             .then((sent) => {
                                                 //Count channels added and count channels not added
                                                 var channelsAdded = { "string": "", "count": 0 };
@@ -211,9 +210,9 @@ exports.run = (bot, guild, message, command, args) => {
 
                                                 //Look for existing channels
                                                 const sql_cmd = `
-                                            SELECT * FROM translation_ignored_channels
-                                                WHERE ServerId = "${message.guild.id}"
-                                            `;
+                                                SELECT * FROM translation_ignored_channels
+                                                    WHERE ServerId = "${message.guild.id}"
+                                                `;
                                                 bot.con.query(sql_cmd, (error, results, fields) => {
                                                     if (error) return console.error(error); //Return error console log
 
@@ -226,9 +225,9 @@ exports.run = (bot, guild, message, command, args) => {
                                                         if (!results.map(v => v.ChannelId).includes(c.id)) {
                                                             //Add channel to database
                                                             const add_sql = `
-                                                        INSERT INTO translation_ignored_channels (ChannelId, ServerId)
-                                                            VALUES ("${c.id}", "${message.guild.id}")
-                                                        `;
+                                                            INSERT INTO translation_ignored_channels (ChannelId, ServerId)
+                                                                VALUES ("${c.id}", "${message.guild.id}")
+                                                            `;
                                                             bot.con.query(add_sql, (error, results, fields) => {
                                                                 if (error) return console.error(error); //Return error console log
                                                             });
@@ -644,7 +643,7 @@ exports.run = (bot, guild, message, command, args) => {
                         //Check which command you want
                         switch (command) {
                             case 'change': case 'ch': case '=': //Change the main channel output.
-                                //Check if userr has perms
+                                //Check if user has perms
                                 if (IsManager(message)) {
                                     if (channelMentions.size > 0) {
                                         if (channelMentions.size < 2) {
