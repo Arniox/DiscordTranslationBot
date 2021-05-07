@@ -6,7 +6,7 @@ require('../message-commands.js')();
 
 module.exports = class AkinatorGame {
     //Akinator game constructor
-    constructor(guild, message, player) {
+    constructor(bot, guild, message, player) {
         //Set all
         this.region = 'en';
         this.aki = new Aki(this.region);
@@ -16,6 +16,7 @@ module.exports = class AkinatorGame {
         this.wonState = false;
         this.gameState;
         this.failures = 0;
+        this.bot = bot;
 
         // console.log('\n\n\n', this.region, '\n\n\n');
         // console.log(this.aki, '\n\n\n');
@@ -147,6 +148,9 @@ module.exports = class AkinatorGame {
                                 reason.message.fields = [];
                                 sent.edit(reason.message);
                             }
+
+                            //Delete the akinator game
+                            this.bot.akinatorGames.delete(this.player.id);
                         });
                     });
             }).catch((err) => {

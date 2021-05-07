@@ -14,7 +14,7 @@ exports.run = (bot, guild, message, command, args) => {
         switch (option) {
             case 'start': case 's':
                 //Create new game
-                const newAkinatorGame = new AkinatorGame(guild, message, player);
+                const newAkinatorGame = new AkinatorGame(bot, guild, message, player);
                 //Attach user to each game
                 bot.akinatorGames.set(player.id, newAkinatorGame);
 
