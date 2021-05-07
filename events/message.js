@@ -90,6 +90,8 @@ module.exports = (bot, message) => {
                                     return resolve(bot.commands.get('clean'));
                                 case 'basedcounter': case 'based':
                                     return resolve(bot.commands.get('basedcounter'));
+                                case 'akinator': case 'aki':
+                                    return resolve(bot.commands.get('akinator'));
                                 default:
                                     return reject();
                             }
@@ -106,23 +108,25 @@ module.exports = (bot, message) => {
                     } else if (evaluate(message.content) && !message.content.includes('true')) {
                         message.channel.send(new Discord.MessageEmbed().setDescription(`> ${message.member.toString()}: **${message.content}**\n = ${evaluate(message.content)}`.trimString(2048)).setColor('#0099ff'));
                     } else {
-                        //Get the specific translatemessage command data from client.commands Enmap
-                        const trans = bot.commands.get("translatemessage");
-                        //If command doesn't exist, exit and do nothing
-                        if (!trans) return;
-
-                        //Run translation
-                        trans.run(bot, results[0], message, args);
-
-                        //Check if message is based
-                        if (message.content.toLowerCase().includes("based")) {
-                            //Get the specific basedcounter command data from client.commands Enmap
-                            const based = bot.commands.get("basedcounter");
+                        if (!bot.akinatorGames.get(message.member.id)) {
+                            //Get the specific translatemessage command data from client.commands Enmap
+                            const trans = bot.commands.get("translatemessage");
                             //If command doesn't exist, exit and do nothing
-                            if (!based) return;
+                            if (!trans) return;
 
-                            //Run based counter
-                            based.run(bot, results[0], message, 'count', args);
+                            //Run translation
+                            trans.run(bot, results[0], message, args);
+
+                            //Check if message is based
+                            if (message.content.toLowerCase().includes("based")) {
+                                //Get the specific basedcounter command data from client.commands Enmap
+                                const based = bot.commands.get("basedcounter");
+                                //If command doesn't exist, exit and do nothing
+                                if (!based) return;
+
+                                //Run based counter
+                                based.run(bot, results[0], message, 'count', args);
+                            }
                         }
                     }
                 }

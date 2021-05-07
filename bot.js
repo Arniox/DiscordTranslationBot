@@ -31,10 +31,13 @@ const bot = new Discord.Client();
 
 //Server music queue
 const queue = new Map();
+//Akinator game queue
+const gameQueue = new Map();
 
 bot.dbpool = pool; //Attach pool to bot
 bot.reddit = reddit; //Attach reddit to bot
 bot.musicQueue = queue; //Attach music queue to bot
+bot.akinatorGames = gameQueue;
 
 //Test connection to database
 bot.dbpool.then((p) => {

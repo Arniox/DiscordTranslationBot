@@ -250,6 +250,21 @@ Number.prototype.sq = function () {
 Number.prototype.sqrt = function () {
     return Math.sqrt(this);
 }
+//Percentage number to color
+//From https://gist.github.com/mlocati/7210513
+Number.prototype.perc2color = function () {
+    var r, g, b = 0;
+    if (this < 50) {
+        r = 255;
+        g = Math.round(5.1 * this);
+    }
+    else {
+        g = 255;
+        r = Math.round(510 - 5.10 * this);
+    }
+    var h = r * 0x10000 + g * 0x100 + b * 0x1;
+    return '#' + ('000000' + h.toString(16)).slice(-6);
+}
 
 //Array make unique
 Array.prototype.unique = function () {

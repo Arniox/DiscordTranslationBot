@@ -15,7 +15,7 @@ exports.run = (bot, guild, message, command, args) => {
 
                     if (args.length != 0) {
                         //Check whether you want to spam them or spam move them.
-                        var spamSelector = args.shift();
+                        var spamSelector = args.shift().toLowerCase();
 
                         //Switch case on spamSelector
                         switch (spamSelector) {
