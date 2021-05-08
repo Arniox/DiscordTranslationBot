@@ -213,13 +213,13 @@ exports.run = (bot, guild, message, command, args) => {
                                                     if ((!results || !results.length ? true : !results.map(v => v.PlayerId).includes(key))) {
                                                         //Get query
                                                         args.shift(); //Remove mention
-                                                        var query = args.shift();
+                                                        var query = args.shift().toLowerCase();
 
                                                         //Check if query exists
                                                         new Promise((resolve, reject) => {
                                                             if (query) {
                                                                 googleTranslate.getSupportedLanguages('en', function (err, languageCodes) {
-                                                                    var language = languageCodes.find(i => i.language == query);
+                                                                    var language = languageCodes.find(i => i.language.toLowerCase() == query);
                                                                     //Return actual language or error
                                                                     if (language) resolve(language);
                                                                     else reject(`Unfortunately, my translation capabilities do not support ${query} as a language.`);

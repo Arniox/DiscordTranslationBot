@@ -55,7 +55,7 @@ exports.run = (bot, guild, message, command, args) => {
 //Functions
 function HelpMessage(bot, guild, message, args) {
     //Random number
-    var randNum = Math.random() * 1000
+    var randNum = (Math.random() * 1000).round();
 
     var embeddedHelpMessage = new Discord.MessageEmbed()
         .setColor('#b50909')
