@@ -103,10 +103,8 @@ module.exports = class AkinatorGame {
                                     } else {
                                         //Await on new step
                                         (async () => {
-                                            await this._stepGame(playersAnswer);
-
                                             //Get details
-                                            gameLoop = this._getDetails();
+                                            gameLoop = await this._giveAnswer(playersAnswer);
                                             //Edit message
                                             sent.edit(new Discord.MessageEmbed()
                                                 .setColor(`${gameLoop.progress.perc2color()}`)
@@ -211,8 +209,9 @@ module.exports = class AkinatorGame {
                                         confirmReactionCollector.empty(); confirmReactionCollector.stop();
                                         await sent.reactions.removeAll();
 
-                                        //Await game step forward with oposite answer to players given
-                                        await this._stepGame(
+                                        //Await game step back and then await step forward with oposite answer to players given
+                                        await this._backGame();
+                                        gameLoop = await this._giveAnswer(
                                             (() => {
                                                 switch (playersAnswer) {
                                                     case 0: return 1;
@@ -222,8 +221,6 @@ module.exports = class AkinatorGame {
                                                     case 4: return 3;
                                                 }
                                             })());
-                                        //Get details
-                                        gameLoop = this._getDetails();
 
                                         //Edit message
                                         sent.edit(new Discord.MessageEmbed()
