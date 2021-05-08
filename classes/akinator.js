@@ -6,9 +6,9 @@ require('../message-commands.js')();
 
 module.exports = class AkinatorGame {
     //Akinator game constructor
-    constructor(bot, guild, message, player) {
+    constructor(bot, guild, message, player, region = 'en') {
         //Set all
-        this.region = 'en';
+        this.region = region || 'en';
         this.aki = new Aki(this.region);
         this.guild = guild;
         this.message = message;
@@ -82,18 +82,17 @@ module.exports = class AkinatorGame {
                                             //Get details
                                             gameLoop = this._getDetails();
 
-                                            //Get first guess
                                             var firstGuess = gameLoop.answers[0];
                                             this.gameState = await this.secondMessage(playersAnswer, gameLoop, firstGuess, sent);
                                             //Switch case on status
                                             switch (this.gameState.rule) {
-                                                case 'c':
+                                                case 'Complete!':
                                                     messageCollector.stop(this.gameState);
                                                     break;
-                                                case 'r':
+                                                case 'Reset':
                                                     messageCollector.resetTimer();
                                                     break;
-                                                case 'x':
+                                                case 'Canceled':
                                                     messageCollector.stop(this.gameState);
                                                     break;
                                                 default:
@@ -167,7 +166,7 @@ module.exports = class AkinatorGame {
                     .setAuthor(this.player.user.username, this.player.user.avatarURL())
                     .setDescription(`I'm ${(parseFloat(firstGuess.proba) * 100).round()}% sure your character is...\n` +
                         `${firstGuess.name} ` +
-                        `${firstGuess.description != '-' && firstGuess.description ? `(${firstGuess.description})` : ''} `)
+                        `${!/^(-)+$/g.test(firstGuess.description) && firstGuess.description ? `(${firstGuess.description})` : ''} `)
                     .addFields({
                         name: `Is this correct?`,
                         value: `Yes: ✅, No: ❌. React with ⛔ to cancel the game.`
@@ -198,7 +197,7 @@ module.exports = class AkinatorGame {
                                     //Stop both collectors and remove all reactions
                                     confirmReactionCollector.empty(); confirmReactionCollector.stop();
                                     await sent.reactions.removeAll();
-                                    resolve({ rule: 'c', message: finalMessage });
+                                    resolve({ rule: 'Complete!', message: finalMessage });
                                 } else if (reaction.emoji.name == '❌') {
                                     //If failures is over 5 then just fail
                                     if (this.failures <= 5) {
@@ -210,7 +209,6 @@ module.exports = class AkinatorGame {
                                         await sent.reactions.removeAll();
 
                                         //Await game step back and then await step forward with oposite answer to players given
-                                        await this._backGame();
                                         gameLoop = await this._giveAnswer(
                                             (() => {
                                                 switch (playersAnswer) {
@@ -221,6 +219,8 @@ module.exports = class AkinatorGame {
                                                     case 4: return 3;
                                                 }
                                             })());
+                                        //Set progress to 0
+                                        this.aki.progress = 0;
 
                                         //Edit message
                                         sent.edit(new Discord.MessageEmbed()
@@ -229,7 +229,7 @@ module.exports = class AkinatorGame {
                                             .setDescription(`**Q${gameLoop.currentStep + 1}. ${gameLoop.question}**\n\nTrying again....`)
                                             .setFooter(`${gameLoop.answers.join(', ')}. Or type cancel to end the game.`));
 
-                                        resolve({ rule: 'r' });
+                                        resolve({ rule: 'Reset' });
                                     } else {
                                         //Stop reaction collector and remove all reactions
                                         confirmReactionCollector.empty(); confirmReactionCollector.stop();
@@ -241,18 +241,19 @@ module.exports = class AkinatorGame {
                                             .setAuthor(this.player.user.username, this.player.user.avatarURL())
                                             .setDescription(`Damn... You got me! I can't figure it out. Maybe next time...`);
 
-                                        resolve({ rule: 'x', message: finalMessage });
+                                        resolve({ rule: 'Canceled', message: finalMessage });
                                     }
                                 } else if (reaction.emoji.name == '⛔') {
                                     //Stop both collectors
                                     confirmReactionCollector.empty(); confirmReactionCollector.stop();
-                                    resolve({ rule: 'x' });
+                                    await sent.reactions.removeAll();
+                                    resolve({ rule: 'Canceled' });
                                 }
                             })
                         });
                 });
             } else {
-                resolve('x');
+                resolve('Canceled');
             }
         });
     }
