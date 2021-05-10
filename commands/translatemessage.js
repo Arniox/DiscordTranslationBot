@@ -130,6 +130,7 @@ function GetLanguages(languageCodes, guildLanguage, detectedLanguage) {
 
 function SendTranslation(guild, message, translation, detectedLang, currentLang, detection) {
     var messageTo;
+    var translatedText = translation.translatedText.replace(/(?<=<.*)(\s*)(?=.*>)/g, '');
 
     //Check if server has embedded translation on
     if (guild.Embedded_Translations == 1) {
@@ -137,7 +138,7 @@ function SendTranslation(guild, message, translation, detectedLang, currentLang,
         messageTo = new Discord.MessageEmbed()
             .setColor('#0099ff')
             .setAuthor(message.author.username, message.author.avatarURL())
-            .setDescription(translation.translatedText)
+            .setDescription(translatedText)
             .addFields(
                 { name: 'Original text', value: `${message.content}` },
                 {
@@ -151,7 +152,7 @@ function SendTranslation(guild, message, translation, detectedLang, currentLang,
             .setFooter('Powered by Google Translate');
     } else {
         //Create normal message
-        messageTo = `**${message.author.username}:** ${translation.translatedText}\n` +
+        messageTo = `**${message.author.username}:** ${translatedText}\n` +
             `**${detectedLang.name}** -> **${currentLang.name}**`;
     }
 
