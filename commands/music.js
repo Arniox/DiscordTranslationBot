@@ -88,7 +88,7 @@ exports.run = (bot, guild, message, command, args) => {
                                                     voiceChannel: voiceChannel,
                                                     connection: null,
                                                     songs: [],
-                                                    volume: 60,
+                                                    volume: 25,
                                                     playing: true,
                                                     skip: 0,
                                                     maxSkip: 3
