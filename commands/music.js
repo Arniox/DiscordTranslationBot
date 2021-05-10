@@ -359,7 +359,7 @@ async function play(bot, message, guild, song) {
         var readable = await ytdl(song.song.url, { quality: "highestaudio", highWaterMark: 1 << 25 });
         //Create dispatcher and play
         const dispatcher = serverQueue.connection
-            .play(readable, { highWaterMark: 96, bitrate: 96, fec: true, volume: 0.5 })
+            .play(readable, { highWaterMark: 96, bitrate: 96, fec: true, volume: 0.1 })
             .on("finish", () => {
                 serverQueue.songs.shift();
                 return play(bot, message, guild, serverQueue.songs[0]);
