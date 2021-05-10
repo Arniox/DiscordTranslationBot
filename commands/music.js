@@ -359,14 +359,14 @@ async function play(bot, message, guild, song) {
         var readable = await ytdl(song.song.url, { quality: "highestaudio", highWaterMark: 1 << 25 });
         //Create dispatcher and play
         const dispatcher = serverQueue.connection
-            .play(readable, { highWaterMark: 96, bitrate: 96, fec: true, volume: false })
+            .play(readable, { highWaterMark: 96, bitrate: 96, fec: true, volume: 0.5 })
             .on("finish", () => {
                 serverQueue.songs.shift();
                 return play(bot, message, guild, serverQueue.songs[0]);
             });
 
         //Set volume
-        dispatcher.setVolumeDecibels(serverQueue.volume);
+        //dispatcher.setVolumeDecibels(serverQueue.volume);
         serverQueue.textChannel.send(new Discord.MessageEmbed().setDescription(`Started playing [${song.song.title}](${song.song.url})` +
             ` [${song.queuedBy.toString()}]\n\n**Song Duration:**\n${(song.song.duration_ms / 1000).toString().toTimeString()}`).setColor('#0099ff'));
     }
