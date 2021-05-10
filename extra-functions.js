@@ -113,7 +113,7 @@ String.prototype.toTimeString = function (en = false) {
         output = `${(minutes > 0 || hours > 0 || days > 0 || weeks > 0 || months > 0 || years > 0 ? `${minutes.pad(2)} minutes : ` : '')}${output}`; //Add minutes
         output = `${(hours > 0 || days > 0 || weeks > 0 || months > 0 || years > 0 ? `${hours.pad(2)} hours : ` : '')}${output}`; //Add hours
         output = `${(days > 0 || weeks > 0 || months > 0 || years > 0 ? `${days.pad(1)} days - ` : '')}${output}`; //Add days
-        output = `${(weeks > 0 || months > 0 || years > 0 ? `${weeks.pad(1)}weeks, ` : '')}${output}`; //Add weeks
+        output = `${(weeks > 0 || months > 0 || years > 0 ? `${weeks.pad(1)} weeks, ` : '')}${output}`; //Add weeks
         output = `${(months > 0 || years > 0 ? `${months.pad(1)} months, ` : '')}${output}`; //Add months
         output = `${years > 0 ? `${years.pad(1)} years, ` : ''}${output}`; //Add years
     }
