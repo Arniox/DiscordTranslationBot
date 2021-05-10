@@ -1,3 +1,5 @@
+const { min } = require("moment");
+
 const units = new Array("one", "two", "three", "four", "five", "six", "seven", "eight", "nine");
 const teens = new Array("ten", "eleven", "twelve", "thirteen", "fourteen", "fifteen", "sixteen", "seventeen", "eighteen ", "nineteen");
 const tens = new Array("twenty", "thirty", "forty", "fifty", "sixty", "seventy", "eighty", "ninety");
@@ -94,17 +96,28 @@ String.prototype.toTimeString = function (en = false) {
     var minutes = Math.floor(sec_num / 60); sec_num -= minutes * 60; //1 Minute = 60 seconds
     var seconds = sec_num;
 
+    console.log(years, months, weeks, days, hours, minutes, seconds);
+
+    //Output
+    var output = '';
     if (!en) {
-        return `${years > 0 ? `${years}-` : ''}${months > 0 ? `${months}-` : ''}${weeks > 0 ? `${weeks}-` : ''}${days > 0 ? `${days}/` : ''}${hours > 0 ? `${hours.pad(2)}:` : ''}${minutes > 0 ? `${minutes.pad(2)}:` : ''}${seconds.pad(2)}`;
+        output = `${seconds.pad(2)}${output}`; //Add seconds
+        output = `${(minutes > 0 || hours > 0 || days > 0 || weeks > 0 || months > 0 || years > 0 ? `${minutes.pad(2)}:` : '')}${output}`; //Add minutes
+        output = `${(hours > 0 || days > 0 || weeks > 0 || months > 0 || years > 0 ? `${hours.pad(2)}:` : '')}${output}`; //Add hours
+        output = `${(days > 0 || weeks > 0 || months > 0 || years > 0 ? `${days.pad(1)} - ` : '')}${output}`; //Add days
+        output = `${(weeks > 0 || months > 0 || years > 0 ? `${weeks.pad(1)}/` : '')}${output}`; //Add weeks
+        output = `${(months > 0 || years > 0 ? `${months.pad(1)}/` : '')}${output}`; //Add months
+        output = `${years > 0 ? `${years.pad(1)}/` : ''}${output}`; //Add years
     } else {
-        return `${years > 0 ? `${years} years, ` : ''}` +
-            `${months > 0 ? `${months} months, ` : ''}` +
-            `${weeks > 0 ? `${weeks} weeks, ` : ''}` +
-            `${days > 0 ? `${days} days - ` : ''}` +
-            `${hours > 0 ? `${hours} hours : ` : ''}` +
-            `${minutes > 0 ? `${minutes} minutes : ` : ''}` +
-            `${seconds} seconds`;
+        output = `${seconds.pad(2)} seconds${output}`; //Add seconds
+        output = `${(minutes > 0 || hours > 0 || days > 0 || weeks > 0 || months > 0 || years > 0 ? `${minutes.pad(2)} minutes : ` : '')}${output}`; //Add minutes
+        output = `${(hours > 0 || days > 0 || weeks > 0 || months > 0 || years > 0 ? `${hours.pad(2)} hours : ` : '')}${output}`; //Add hours
+        output = `${(days > 0 || weeks > 0 || months > 0 || years > 0 ? `${days.pad(1)} days - ` : '')}${output}`; //Add days
+        output = `${(weeks > 0 || months > 0 || years > 0 ? `${weeks.pad(1)}weeks, ` : '')}${output}`; //Add weeks
+        output = `${(months > 0 || years > 0 ? `${months.pad(1)} months, ` : '')}${output}`; //Add months
+        output = `${years > 0 ? `${years.pad(1)} years, ` : ''}${output}`; //Add years
     }
+    return output;
 }
 
 //Cut string shorter
