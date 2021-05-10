@@ -95,7 +95,7 @@ String.prototype.toTimeString = function (en = false) {
     var seconds = sec_num;
 
     if (!en) {
-        return `${years > 0 ? `${years}-` : ''}${months > 0 ? `${months}-` : ''}${weeks > 0 ? `${weeks}-` : ''}${days > 0 ? `${days}/` : ''}${hours > 0 ? `${hours.pad(2)}:` : ''}${minutes > 0 ? `${minutes.pad(2)}:` : ''}${seconds > 0 ? `${seconds.pad(2)}` : ''}`;
+        return `${years > 0 ? `${years}-` : ''}${months > 0 ? `${months}-` : ''}${weeks > 0 ? `${weeks}-` : ''}${days > 0 ? `${days}/` : ''}${hours > 0 ? `${hours.pad(2)}:` : ''}${minutes > 0 ? `${minutes.pad(2)}:` : ''}${seconds.pad(2)}`;
     } else {
         return `${years > 0 ? `${years} years, ` : ''}` +
             `${months > 0 ? `${months} months, ` : ''}` +
@@ -103,7 +103,7 @@ String.prototype.toTimeString = function (en = false) {
             `${days > 0 ? `${days} days - ` : ''}` +
             `${hours > 0 ? `${hours} hours : ` : ''}` +
             `${minutes > 0 ? `${minutes} minutes : ` : ''}` +
-            `${seconds > 0 ? `${seconds} seconds` : ''}`;
+            `${seconds} seconds`;
     }
 }
 

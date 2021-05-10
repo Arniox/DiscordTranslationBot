@@ -1,8 +1,8 @@
 //Import requirements
 const Discord = require('discord.js');
-const moment = require('moment-timezone');
 const ytdl = require('ytdl-core');
 const ytpl = require('ytpl');
+const axios = require('axios');
 //Import functions
 require('../message-commands.js')();
 
@@ -17,7 +17,7 @@ exports.run = (bot, guild, message, command, args) => {
     //Switch on music command
     switch (command) {
         case 'play': case 'p':
-            var query = args.shift();
+            var query = args.join('');
 
             //Check that query exists
             if (query) {
@@ -34,83 +34,103 @@ exports.run = (bot, guild, message, command, args) => {
                         } else {
                             message.channel.send(new Discord.MessageEmbed().setDescription(`Loading...`).setColor('#FFCC00'))
                                 .then((sent) => {
-                                    //Check if the link is a playlist
-                                    (ytpl.validateID(query) ? new Promise((resolve, reject) => {
-                                        ytpl(query, { limit: Infinity }).then(playlist => resolve(playlist.items.map(v => v.shortUrl)));
-                                    }) : new Promise((resolve, reject) => { return resolve([query]); }))
-                                        .then((playlist) => {
+                                    //Async function
+                                    (async () => {
+                                        try {
+                                            //Get response from custom API
+                                            const response = await axios.post(`https://youtube-link-api.herokuapp.com/query`, {
+                                                search: query
+                                            });
+                                            const playListData = response.data.response;
+
+                                            var messageToSend;
+                                            var playListArray;
+                                            var duration = 0;
+                                            //Check type of response
+                                            switch (playListData.Message) {
+                                                case 'playlist':
+                                                    //Get duration and send message
+                                                    duration = (playListData.Array.map(v => v.duration_ms).reduce((a, b) => a + b) / 1000).toString().toTimeString(true);
+                                                    messageToSend = new Discord.MessageEmbed()
+                                                        .setDescription(`Queued **${playListData.Array.length}** song(s) - [${message.member.toString()}]`)
+                                                        .setColor('#09b50c')
+                                                        .addField('Total Playlist Duration: ', duration, true);
+                                                    //Create playListArray
+                                                    playListArray = playListData.Array;
+                                                    break;
+                                                case 'song':
+                                                    //Get duration and send message
+                                                    duration = (playListData.Array[0].duration_ms / 1000).toString().toTimeString(true);
+                                                    messageToSend = new Discord.MessageEmbed()
+                                                        .setDescription(`Queued **${playListData.Array[0].title}** - [${message.member.toString()}]`)
+                                                        .setColor('#09b50c')
+                                                        .addField('Song Duration: ', duration, true);
+                                                    //Create playListArray
+                                                    playListArray = playListData.Array;
+                                                    break;
+                                                case 'search':
+                                                    //Get duration and send message
+                                                    duration = (playListData.Array[0].duration_ms / 1000).toString().toTimeString(true);
+                                                    messageToSend = new Discord.MessageEmbed()
+                                                        .setDescription(`Found and Queued **${playListData.Array[0].title}** - [${message.member.toString()}]`)
+                                                        .setColor('#09b50c')
+                                                        .addField('Song Duration: ', duration, true);
+                                                    //Create playListArray
+                                                    playListArray = [playListData.Array[0]];
+                                                    break;
+                                            }
+
                                             //Edit message
-                                            sent.edit(new Discord.MessageEmbed().setDescription(`Queueing **${playlist.length}** songs...`).setColor('#FFCC00'))
-                                                .then((sent) => {
-                                                    //Create queue construct
-                                                    const queueConstruct = {
-                                                        textChannel: message.channel,
-                                                        voiceChannel: voiceChannel,
-                                                        connection: null,
-                                                        songs: [],
-                                                        volume: 5,
-                                                        playing: true,
-                                                        skip: 0,
-                                                        maxSkip: 3
-                                                    };
-                                                    //Set the queue to this server id
-                                                    if (!serverQueue) bot.musicQueue.set(message.guild.id, queueConstruct);
-                                                    const tempServerQueue = bot.musicQueue.get(message.guild.id);
+                                            sent.edit(messageToSend).then((sent) => {
+                                                //Create queue construct
+                                                const queueConstruct = {
+                                                    textChannel: message.channel,
+                                                    voiceChannel: voiceChannel,
+                                                    connection: null,
+                                                    songs: [],
+                                                    volume: 5,
+                                                    playing: true,
+                                                    skip: 0,
+                                                    maxSkip: 3
+                                                };
+                                                //Set the queue to this server id
+                                                if (!serverQueue) bot.musicQueue.set(message.guild.id, queueConstruct);
+                                                const tempServerQueue = bot.musicQueue.get(message.guild.id);
 
-                                                    //Promise that every song will be gathered
-                                                    playlist.map((link) => {
-                                                        //Return promise
-                                                        new Promise(async (resolve, reject) => {
-                                                            //ytld-core get song info
-                                                            resolve(await ytdl.getInfo(link));
-                                                        }).then((songInfo) => {
-                                                            //Take each song up on it's promise
-                                                            //Get song
-                                                            var song = {
-                                                                title: songInfo.videoDetails.title,
-                                                                url: (songInfo.videoDetails.video_url || songInfo.videoDetails.videoId)
-                                                            };
-                                                            //Add to queue
-                                                            tempServerQueue.songs.push({ song: song, queuedBy: message.member });
+                                                //Add to queue
+                                                for (const song of playListArray) {
+                                                    tempServerQueue.songs.push({ song: song, queuedBy: message.member });
+                                                }
+
+                                                //Check if bot is in voice or not
+                                                if (!botVoice || !tempServerQueue.connection) {
+                                                    //Defean the bot
+                                                    message.guild.me.voice.setDeaf(true);
+                                                    //Join voice channel
+                                                    voiceChannel
+                                                        .join()
+                                                        .then((connection) => {
+                                                            //Attach connection to the queue
+                                                            tempServerQueue.connection = connection;
+                                                            //Play music
+                                                            play(bot, message, message.guild, tempServerQueue.songs[0]);
                                                         }).catch((error) => {
-                                                            console.error(error); //console error
+                                                            console.error(error);
+                                                            bot.musicQueue.delete(message.guild.id);
+                                                            //Send message error
+                                                            message.channel.send(new Discord.MessageEmbed().setDescription(error).setColor('#b50909'));
                                                         });
-                                                    });
-
-                                                    //Anon function
-                                                    const sendMessage = () => {
-                                                        //Print message
-                                                        sent.edit(new Discord.MessageEmbed().setDescription(`**${playlist.length}** song${(playlist.length > 1 ? 's' : '')} queued - [${message.member.toString()}]`).setColor('#09b50c'));
-                                                    }
-
-                                                    //Check if bot is in voice or not
-                                                    if (!botVoice || !tempServerQueue.connection) {
-                                                        //Defean the bot
-                                                        message.guild.me.voice.setDeaf(true);
-                                                        //Join voice channel
-                                                        voiceChannel
-                                                            .join()
-                                                            .then((connection) => {
-                                                                //Attach connection to the queue
-                                                                tempServerQueue.connection = connection;
-                                                                //Send message
-                                                                sendMessage();
-                                                                //Play music
-                                                                play(bot, message, message.guild, tempServerQueue.songs[0]);
-                                                            }).catch((error) => {
-                                                                console.error(error);
-                                                                bot.musicQueue.delete(message.guild.id);
-                                                                //Send message error
-                                                                message.channel.send(new Discord.MessageEmbed().setDescription(error).setColor('#b50909'));
-                                                            });
-                                                    } else {
-                                                        //Play music if paused
-                                                        if (serverQueue.connection.dispatcher.paused) serverQueue.connection.dispatcher.resume();
-                                                        //Send message
-                                                        sendMessage();
-                                                    }
-                                                });
-                                        });
+                                                } else {
+                                                    //Play music if paused
+                                                    if (serverQueue.connection.dispatcher.paused) serverQueue.connection.dispatcher.resume();
+                                                }
+                                            });
+                                        } catch (error) {
+                                            //Send error message
+                                            console.log(error);
+                                            sent.edit(new Discord.MessageEmbed().setDescription(`Sorry, there was an error with this link for some reason. Please try a different query`).setColor('#b50909'));
+                                        }
+                                    })();
                                 });
                         }
                     }
@@ -249,7 +269,8 @@ exports.run = (bot, guild, message, command, args) => {
             //Check if bot is not in voice
             if (botVoice && (serverQueue && serverQueue.songs.length > 0)) {
                 message.channel.send(new Discord.MessageEmbed().setDescription(`Now playing [${serverQueue.songs[0].song.title}](${serverQueue.songs[0].song.url})` +
-                    ` [${serverQueue.songs[0].queuedBy.toString()}]`).setColor('#0099ff'));
+                    ` [${serverQueue.songs[0].queuedBy.toString()}]\n\n` +
+                    `**Song Duration:**\n${(serverQueue.songs[0].song.duration_ms / 1000).toString().toTimeString()}`).setColor('#0099ff'));
             } else {
                 message.channel.send(new Discord.MessageEmbed().setDescription('I am not playing anything right now...').setColor('#0099ff'));
             }
@@ -258,15 +279,17 @@ exports.run = (bot, guild, message, command, args) => {
             //Check if bot is not in voice
             if (botVoice && serverQueue) {
                 //Send message
-                ListMessage(message, `Music Queue:\n`, '#0099ff', MessageToArray(() => {
-                    //For loop them into an output
-                    var output = '';
-                    for (var i = 0; i < serverQueue.songs.length; i++) {
-                        //Create output per song
-                        output += (`${i} - ${serverQueue.songs[i].song.title}`).trimString(40) + ` [${serverQueue.songs[i].queuedBy.toString()}]\n`;
-                    }
-                    return output;
-                }), 10, '#0099ff');
+                ListMessage(message, `Songs\nMusic Queue:\n\n**Total Queue Duration:**\n` +
+                    `${(serverQueue.songs.map(v => v.song.duration_ms).reduce((a, b) => a + b) / 1000).toString().toTimeString(true)}\n\n`, '#0099ff', MessageToArray(() => {
+                        //For loop them into an output
+                        var output = '';
+                        for (var i = 0; i < serverQueue.songs.length; i++) {
+                            //Create output per song
+                            output += `${i} - [${(`${serverQueue.songs[i].song.title}`).trimString(35)}](${serverQueue.songs[i].song.url})` +
+                                ` [${serverQueue.songs[i].queuedBy.toString()}]\n`;
+                        }
+                        return output;
+                    }), 10, '#0099ff');
             } else {
                 message.channel.send(new Discord.MessageEmbed().setDescription('I am not playing anything right now...').setColor('#0099ff'));
             }
@@ -345,7 +368,7 @@ async function play(bot, message, guild, song) {
         //Set volume
         dispatcher.setVolumeLogarithmic(serverQueue.volume / 5);
         serverQueue.textChannel.send(new Discord.MessageEmbed().setDescription(`Started playing [${song.song.title}](${song.song.url})` +
-            ` [${song.queuedBy.toString()}]`).setColor('#0099ff'));
+            ` [${song.queuedBy.toString()}]\n\n**Song Duration:**\n${(song.song.duration_ms / 1000).toString().toTimeString()}`).setColor('#0099ff'));
     }
 }
 
