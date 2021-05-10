@@ -96,8 +96,6 @@ String.prototype.toTimeString = function (en = false) {
     var minutes = Math.floor(sec_num / 60); sec_num -= minutes * 60; //1 Minute = 60 seconds
     var seconds = sec_num;
 
-    console.log(years, months, weeks, days, hours, minutes, seconds);
-
     //Output
     var output = '';
     if (!en) {
