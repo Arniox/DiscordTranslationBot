@@ -88,7 +88,7 @@ exports.run = (bot, guild, message, command, args) => {
                                                     voiceChannel: voiceChannel,
                                                     connection: null,
                                                     songs: [],
-                                                    volume: 1,
+                                                    volume: 60,
                                                     playing: true,
                                                     skip: 0,
                                                     maxSkip: 3
@@ -366,7 +366,7 @@ async function play(bot, message, guild, song) {
             });
 
         //Set volume
-        dispatcher.setVolumeLogarithmic(serverQueue.volume / 20);
+        dispatcher.setVolumeDecibels(serverQueue.volume);
         serverQueue.textChannel.send(new Discord.MessageEmbed().setDescription(`Started playing [${song.song.title}](${song.song.url})` +
             ` [${song.queuedBy.toString()}]\n\n**Song Duration:**\n${(song.song.duration_ms / 1000).toString().toTimeString()}`).setColor('#0099ff'));
     }
