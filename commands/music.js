@@ -88,7 +88,7 @@ exports.run = (bot, guild, message, command, args) => {
                                                     voiceChannel: voiceChannel,
                                                     connection: null,
                                                     songs: [],
-                                                    volume: 25,
+                                                    volume: 0.1,
                                                     playing: true,
                                                     skip: 0,
                                                     maxSkip: 3
@@ -128,7 +128,10 @@ exports.run = (bot, guild, message, command, args) => {
                                         } catch (error) {
                                             //Send error message
                                             console.log(error);
-                                            sent.edit(new Discord.MessageEmbed().setDescription(`Sorry, there was an error with this link for some reason. Please try a different query`).setColor('#b50909'));
+                                            sent.edit(new Discord.MessageEmbed()
+                                                .setDescription(`Sorry, there was an error. Is your link a super large playlist? I don't handle those too well.`)
+                                                .setColor('#b50909')
+                                                .setFooter('*Link Parser probably timed out. This is still a work in process.*'));
                                         }
                                     })();
                                 });
@@ -344,9 +347,6 @@ function HelpMessage(bot, guild, message, args) {
 //Functions
 async function play(bot, message, guild, song) {
     const serverQueue = bot.musicQueue.get(guild.id);
-    //Song details
-    const { title, url, duration_ms } = song.song;
-    const queuedBy = song.queuedBy.toString();
 
     //Check if a song exists.
     if (!song) {
@@ -358,26 +358,30 @@ async function play(bot, message, guild, song) {
         bot.musicQueue.delete(guild.id);
         return;
     } else {
+        //Song details
+        const { title, url, duration_ms } = song.song;
+        const queuedBy = song.queuedBy.toString();
+
         //Create readable video object
         var readable = await ytdl(url, { quality: "highestaudio", highWaterMark: 1 << 25 });
         //Create dispatcher and play
-        const dispatcher = serverQueue.connection.play(readable, { highWaterMark: 96, bitrate: 96, fec: true, volume: 0.1 });
-        //Events
-        dispatcher.on('start', () => {
-            //Send message
-            serverQueue.textChannel.send(new Discord.MessageEmbed().setDescription(`Started playing [${title}](${url})` +
-                ` [${queuedBy}]\n\n**Song Duration:**\n${(duration_ms / 1000).toString().toTimeString()}`).setColor('#0099ff'));
-        }).on("finish", () => {
-            //Shift songs and play next recursively
-            serverQueue.songs.shift();
-            return play(bot, message, guild, serverQueue.songs[0]);
-        }).on('error', (err) => {
-            //Send message
-            serverQueue.textChannel.send(new Discord.MessageEmbed().setDescription(`[${title}](${url}) encountered an error while streaming. Skipped.`).setColor('#b50909'));
-            //Shift songs and play next recursively
-            serverQueue.songs.shift();
-            return play(bot, message, guild, serverQueue.songs[0]);
-        });
+        const dispatcher = serverQueue.connection
+            .play(readable, { highWaterMark: 1, bitrate: 'auto', fec: true, volume: 0.1 })
+            .on('start', () => {
+                //Send message
+                serverQueue.textChannel.send(new Discord.MessageEmbed().setDescription(`Started playing [${title}](${url})` +
+                    ` [${queuedBy}]\n\n**Song Duration:**\n${(duration_ms / 1000).toString().toTimeString()}`).setColor('#0099ff'));
+            }).on("finish", () => {
+                //Shift songs and play next recursively
+                serverQueue.songs.shift();
+                return play(bot, message, guild, serverQueue.songs[0]);
+            }).on('error', (err) => {
+                //Send message
+                serverQueue.textChannel.send(new Discord.MessageEmbed().setDescription(`[${title}](${url}) encountered an error while streaming. Skipped.`).setColor('#b50909'));
+                //Shift songs and play next recursively
+                serverQueue.songs.shift();
+                return play(bot, message, guild, serverQueue.songs[0]);
+            });
     }
 }
 
