@@ -6,7 +6,6 @@ require('../message-commands.js')();
 exports.run = (bot, guild, message, command, args) => {
     //Has to be posted by me
     //my id: 167152832422608896
-
     if (IsMe(message)) {
         if (args.length > 0) {
             var query = args.shift().toLowerCase();
@@ -21,13 +20,12 @@ exports.run = (bot, guild, message, command, args) => {
                 WHERE ServerId = "${query.trim()}"
                 `;
                 bot.con.query(update_cmd, (error, results, fields) => {
-                    if (error)
-                        return message.channel.send(new Discord.MessageEmbed().setDescription(`Sorry, the server with the id of ${query} doesn\'t exist`).setColor('#b50909'));
+                    if (error) message.WaffleResponse(`Sorry, the server with the id of ${query} doesn\'t exist`);
                     //Message
-                    message.channel.send(new Discord.MessageEmbed().setDescription(`Translation capababilities have been **activated** for the server with id of ${query}`).setColor('#09b50c'));
+                    message.WaffleResponse(`Translation capababilities have been **activated** for the server with id of ${query}`, MTYPE.Sucess);
                 });
             } else {
-                message.channel.send(new Discord.MessageEmbed().setDescription('Sorry, you didn\'t supply a server id for me to activate.').setColor('#b50909'));
+                message.WaffleResponse('Sorry, you didn\'t supply a server id for me to activate.');
             }
         } else {
             //Update this current discord
@@ -40,7 +38,7 @@ exports.run = (bot, guild, message, command, args) => {
             bot.con.query(update_cmd, (error, results, fields) => {
                 if (error) return console.error(error); //Return error and return
                 //Message
-                message.channel.send(new Discord.MessageEmbed().setDescription(`${message.guild.toString()} translation capabilities have been **activated**.`).setColor('#09b50c'));
+                message.WaffleResponse(`${message.guild.toString()} translation capabilities have been **activated**.`, MTYPE.Sucess);
             });
         }
     }

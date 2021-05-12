@@ -43,13 +43,7 @@ function StartAkinator(region, bot, guild, message, player) {
 
 //Functions
 function HelpMessage(bot, guild, message, args) {
-    var embeddedHelpMessage = new Discord.MessageEmbed()
-        .setColor('#b50909')
-        .setAuthor(bot.user.username, bot.user.avatarURL())
-        .setDescription(`This is the Akinator game in discord. Please use *${guild.Prefix}akinator start / s* to start a game.`)
-        .setTimestamp()
-        .setFooter('Thanks, and have a good day');
-
-    //Send embedded message
-    message.channel.send(embeddedHelpMessage);
+    message.WaffleResponse(
+        `This is the Akinator game in discord. Please use *${guild.Prefix}akinator [:?start / object / animal]* to start a game.`,
+        MTYPE.Error, null, true, 'Thanks, and have a good day');
 }

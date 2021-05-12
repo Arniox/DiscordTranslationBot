@@ -2,6 +2,19 @@
 const Discord = require('discord.js');
 
 module.exports = function () {
+    //Enums
+    this.const = MTYPE = {
+        Error: "Error",
+        Information: "Information",
+        Loading: "Loading",
+        Success: "Success"
+    };
+    this.const = ATYPE = {
+        None: "None",
+        Sender: "Message Sender as Author",
+        Bot: "Bot as Author"
+    }
+
     this.ListMessage = function (message, text, color, arrayPromise, chunk = 10, endColour = '#09b50c') {
         arrayPromise.then((array) => {
             //Cut the array into chunks
@@ -87,6 +100,54 @@ module.exports = function () {
     //Return a promise of an array
     this.MessageToArray = function (runme, split = '\n') {
         return new Promise((resolve, reject) => resolve(runme().split(split).filter(i => i)));
+    }
+
+    Discord.Message.prototype.WaffleResponse = function (
+        text,
+        messageType = MTYPE.Error,
+        fieldsArray = null,
+        setTimeStamp = false,
+        footer = null,
+        authorType = ATYPE.Bot
+    ) {
+        //Create message
+        const tosend = new Discord.MessageEmbed();
+        const sender = this.member.user;
+        const bot = this.guild.me.user;
+        const channel = this.channel;
+
+        //Set description
+        tosend.setDescription(text);
+        //Switch case on author type
+        switch (authorType) {
+            case ATYPE.Sender:
+                tosend.setAuthor(sender.username, sender.avatarURL());
+                break;
+            case ATYPE.Bot:
+                tosend.setAuthor(bot.username, bot.avatarURL());
+                break;
+            default: break;
+        }
+        //Add fields
+        if (fieldsArray) tosend.addFields(fieldsArray);
+        //Switch case on messageType
+        switch (messageType) {
+            case MTYPE.Error: tosend.setColor('#b50909');
+                break;
+            case MTYPE.Information: tosend.setColor('#0099ff');
+                break;
+            case MTYPE.Loading: tosend.setColor('#FFCC00');
+                break;
+            case MTYPE.Success: tosend.setColor('#09b50c');
+                break;
+        }
+        //Add time stamp
+        if (setTimeStamp) tosend.setTimestamp();
+        //Add footer
+        if (footer) tosend.setFooter(footer);
+
+        //Return send promise
+        return channel.send(tosend);
     }
 
     //Custom join
