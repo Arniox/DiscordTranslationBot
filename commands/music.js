@@ -271,9 +271,15 @@ exports.run = (bot, guild, message, command, args) => {
         case 'nowplaying': case 'nowp': case 'now': case 'np':
             //Check if bot is not in voice
             if (botVoice && (serverQueue && serverQueue.songs.length > 0)) {
-                message.channel.send(new Discord.MessageEmbed().setDescription(`Now playing [${serverQueue.songs[0].song.title}](${serverQueue.songs[0].song.url})` +
-                    ` [${serverQueue.songs[0].queuedBy.toString()}]\n\n` +
-                    `**Song Duration:**\n${(serverQueue.songs[0].song.duration_ms / 1000).toString().toTimeString()}`).setColor('#0099ff'));
+                //Create details
+                const title = serverQueue.songs[0].song.title.replace(/(\*|_|`|~|\\|\[|])/g, '');
+                const url = serverQueue.songs[0].song.url;
+                const duration = (serverQueue.songs[0].song.duration_ms / 1000).toString().toTimeString();
+                const currentTime = (serverQueue.connection.dispatcher.streamTime / 1000).toString().toTimeString();
+                const queuedBy = serverQueue.songs[0].queuedBy.toString();
+
+                message.channel.send(new Discord.MessageEmbed().setDescription(`Now playing [${title}](${url}) [${queuedBy}]\n\n` +
+                    `**Song Duration:**\n${currentTime} - ${duration}`).setColor('#0099ff'));
             } else {
                 message.channel.send(new Discord.MessageEmbed().setDescription('I am not playing anything right now...').setColor('#0099ff'));
             }
@@ -281,18 +287,24 @@ exports.run = (bot, guild, message, command, args) => {
         case 'queue': case 'q':
             //Check if bot is not in voice
             if (botVoice && serverQueue) {
+                //Get main details
+                const totalDuration = (serverQueue.songs.map(v => v.song.duration_ms).reduce((a, b) => a + b) / 1000).toString().toTimeString(true);
                 //Send message
-                ListMessage(message, `Songs\nMusic Queue:\n\n**Total Queue Duration:**\n` +
-                    `${(serverQueue.songs.map(v => v.song.duration_ms).reduce((a, b) => a + b) / 1000).toString().toTimeString(true)}\n\n`, '#0099ff', MessageToArray(() => {
-                        //For loop them into an output
-                        var output = '';
-                        for (var i = 0; i < serverQueue.songs.length; i++) {
-                            //Create output per song
-                            output += `${i} - [${(`${serverQueue.songs[i].song.title}`).trimString(35)}](${serverQueue.songs[i].song.url})` +
-                                ` [${serverQueue.songs[i].queuedBy.toString()}]\n`;
-                        }
-                        return output;
-                    }), 10, '#0099ff');
+                ListMessage(message, `Songs in Music Queue:\n\n**Total Queue Duration:**\n${totalDuration}\n\n`, '#0099ff', MessageToArray(() => {
+                    //For loop them into an output
+                    var output = '';
+                    for (var i = 0; i < serverQueue.songs.length; i++) {
+                        //Create details
+                        const title = (`${serverQueue.songs[i].song.title.replace(/(\*|_|`|~|\\|\[|])/g, '')}`).trimString(25);
+                        const url = serverQueue.songs[i].song.url;
+                        const duration = (serverQueue.songs[i].song.duration_ms / 1000).toString().toTimeString();
+                        const queuedBy = serverQueue.songs[i].queuedBy.toString();
+
+                        //Create output per song
+                        output += `${(i > 0 ? `${i}` : '▶️')} - [${title}](${url}) ${duration} ${queuedBy}\n`;
+                    }
+                    return output;
+                }), 10, '#0099ff');
             } else {
                 message.channel.send(new Discord.MessageEmbed().setDescription('I am not playing anything right now...').setColor('#0099ff'));
             }
@@ -369,7 +381,8 @@ async function play(bot, message, guild, song) {
             .play(readable, { highWaterMark: 1, bitrate: 'auto', fec: true, volume: 0.1 })
             .on('start', () => {
                 //Send message
-                serverQueue.textChannel.send(new Discord.MessageEmbed().setDescription(`Started playing [${title}](${url})` +
+                serverQueue.textChannel.send(new Discord.MessageEmbed().setDescription(`Started playing` +
+                    ` [${title.replace(/(\*|_|`|~|\\|\[|])/g, '')}](${url})` +
                     ` [${queuedBy}]\n\n**Song Duration:**\n${(duration_ms / 1000).toString().toTimeString()}`).setColor('#0099ff'));
             }).on("finish", () => {
                 //Shift songs and play next recursively
