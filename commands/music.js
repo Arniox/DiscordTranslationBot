@@ -17,7 +17,7 @@ exports.run = (bot, guild, message, command, args) => {
     //Switch on music command
     switch (command) {
         case 'play': case 'p':
-            var query = args.join('');
+            var query = args.join(' ');
 
             //Check that query exists
             if (query) {
