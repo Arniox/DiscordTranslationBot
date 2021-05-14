@@ -2,7 +2,7 @@
 const Discord = require('discord.js');
 const moment = require('moment-timezone');
 
-exports.run = (bot) => {
+exports.run = (bot, guildKey) => {
     //Get connection
     bot.dbpool.then((p) => {
         return p.getConnection();
@@ -15,41 +15,39 @@ exports.run = (bot) => {
         bot.con.query(sql_cmd, (error, results, fields) => {
             if (error) return console.error(error); //Return error console log and continue
 
-            //For each server
-            bot.guilds.cache.map((value, key) => {
-                //Grab all the subscribed subreddits for this server
-                var thisServer = results.filter(i => i.ServerId == key);
+            //This is for each server
+            //Grab all the subscribed subreddits for this server
+            var thisServer = results.filter(i => i.ServerId == guildKey);
 
-                //For each subscription
-                thisServer.forEach((sub) => {
-                    bot.reddit.get(`/r/${sub.SubName}/new`, { limit: 100 })
-                        .then((res) => {
-                            //Last after save
-                            const save_cmd = `
+            //For each subscription
+            thisServer.forEach((sub) => {
+                bot.reddit.get(`/r/${sub.SubName}/new`, { limit: 100 })
+                    .then((res) => {
+                        //Last after save
+                        const save_cmd = `
                             UPDATE server_subbed_reddits
                             SET Last_After = "${moment().format('YYYY-MM-DD HH:mm:ss')}"
                             WHERE ServerId = "${sub.ServerId}"
                             AND Id = "${sub.Id}"
                             `;
-                            bot.con.query(save_cmd, (error, results, fields) => {
-                                if (error) return console.error(error); //Throw error and return
-                            });
-
-                            //Found posts from this sub reddit
-                            //Get variables to use
-                            var channelToPostTo = bot.guilds.cache.get(sub.ServerId).channels.cache.get(sub.ChannelId);
-                            var flairFilter = sub.Flair_Filter;
-                            //Filter the posts
-                            var filteredbyTime = res.data.children.filter(i => moment(i.data.created_utc * 1000).isAfter(moment(sub.Last_After)));
-                            var filteredRes = (flairFilter ? filteredbyTime.filter(i => i.data.link_flair_text == flairFilter) : filteredbyTime);
-
-                            //Post sequentially with promise loop
-                            redditPost(channelToPostTo, sub.SubImage, filteredRes, 0)
-                                .then(() => { });
-                        }).catch((err) => {
-                            throw err; //Throw error
+                        bot.con.query(save_cmd, (error, results, fields) => {
+                            if (error) return console.error(error); //Throw error and return
                         });
-                });
+
+                        //Found posts from this sub reddit
+                        //Get variables to use
+                        var channelToPostTo = bot.guilds.cache.get(sub.ServerId).channels.cache.get(sub.ChannelId);
+                        var flairFilter = sub.Flair_Filter;
+                        //Filter the posts
+                        var filteredbyTime = res.data.children.filter(i => moment(i.data.created_utc * 1000).isAfter(moment(sub.Last_After)));
+                        var filteredRes = (flairFilter ? filteredbyTime.filter(i => i.data.link_flair_text == flairFilter) : filteredbyTime);
+
+                        //Post sequentially with promise loop
+                        redditPost(channelToPostTo, sub.SubImage, filteredRes, 0)
+                            .then(() => { });
+                    }).catch((err) => {
+                        throw err; //Throw error
+                    });
             });
         });
 

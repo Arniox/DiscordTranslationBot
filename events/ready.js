@@ -1,13 +1,21 @@
 //Include
 const mysql = require('promise-mysql');
+const JobManager = require('../classes/jobs.js');
 
 module.exports = (bot) => {
+    //Create main jobs manager
+    const mainJobsManager = new JobManager();
+    //Attach to ID of 'main'
+    bot.jobsManager.set('main', mainJobsManager);
+
     //Get connection
     bot.dbpool.then((p) => {
         return p.getConnection();
     }).then((connection) => {
         //Attach connection to bot
         bot.con = connection;
+        //Get redditpost command
+        const redditcmd = bot.commands.get("redditpost");
 
         //Check all guilds
         const sql_cmd = `SELECT * FROM servers`;
@@ -16,6 +24,19 @@ module.exports = (bot) => {
 
             //Check all guilds
             bot.guilds.cache.map((value, key) => {
+                //Create job manager per server
+                const newJobManager = new JobManager();
+                //Attach job manager to guild
+                bot.jobsManager.set(key, newJobManager);
+
+                //If command doesn't exist, do nothing
+                if (redditcmd) {
+                    //Create job for every 30m
+                    bot.jobsManager.get(key).CreateJob('30m', () => {
+                        redditcmd.run(bot, key);
+                    }, 'Reddit Post');
+                }
+
                 //If this guild isn't in database, then add
                 if (!results.map(v => v.ServerId).includes(key)) {
                     //Create default server controller
@@ -29,7 +50,7 @@ module.exports = (bot) => {
                     });
                 }
 
-                //Set 
+                //Set
                 const activate_cmd = `
                 UPDATE servers
                 SET Active = 1
@@ -86,15 +107,8 @@ module.exports = (bot) => {
     //Set global bot activity
     bot.user.setActivity(`the $ prefix`, { type: 'WATCHING' });
 
-    //Get redditpost command
-    const redditcmd = bot.commands.get("redditpost");
-    //If command doesn't exist, exit and do nothing
-    if (redditcmd) {
-        //Function variables / Globals
-        const minutes = 30, interval = minutes * 60 * 1000;
-        setInterval(function () {
-            //Post
-            redditcmd.run(bot);
-        }, interval);
-    }
+    //Ping bot
+    bot.jobsManager.get('main').CreateJob('10m', () => {
+        console.log('I am currently alive.');
+    }, 'Ping Server');
 };

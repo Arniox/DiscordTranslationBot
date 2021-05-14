@@ -84,7 +84,7 @@ String.prototype.toWordsConverted = function () {
 }
 
 //Format the string seconds to the full HHMMSS time format
-String.prototype.toTimeString = function (en = false) {
+String.prototype.toTimeString = function (en = false, array = false) {
     var sec_num = parseInt(this, 10); // don't forget the second param
 
     //Get all time
@@ -97,25 +97,55 @@ String.prototype.toTimeString = function (en = false) {
     var seconds = sec_num;
 
     //Output
-    var output = '';
-    if (!en) {
-        output = `${seconds.pad(2)}${output}`; //Add seconds
-        output = `${(minutes > 0 || hours > 0 || days > 0 || weeks > 0 || months > 0 || years > 0 ? `${minutes.pad(2)}:` : '')}${output}`; //Add minutes
-        output = `${(hours > 0 || days > 0 || weeks > 0 || months > 0 || years > 0 ? `${hours.pad(2)}:` : '')}${output}`; //Add hours
-        output = `${(days > 0 || weeks > 0 || months > 0 || years > 0 ? `${days.pad(1)} - ` : '')}${output}`; //Add days
-        output = `${(weeks > 0 || months > 0 || years > 0 ? `${weeks.pad(1)}/` : '')}${output}`; //Add weeks
-        output = `${(months > 0 || years > 0 ? `${months.pad(1)}/` : '')}${output}`; //Add months
-        output = `${years > 0 ? `${years.pad(1)}/` : ''}${output}`; //Add years
+    if (!array) {
+        var output = '';
+        if (!en) {
+            output = `${seconds.pad(2)}${output}`; //Add seconds
+            output = `${(minutes > 0 || hours > 0 || days > 0 || weeks > 0 || months > 0 || years > 0 ? `${minutes.pad(2)}:` : '')}${output}`; //Add minutes
+            output = `${(hours > 0 || days > 0 || weeks > 0 || months > 0 || years > 0 ? `${hours.pad(2)}:` : '')}${output}`; //Add hours
+            output = `${(days > 0 || weeks > 0 || months > 0 || years > 0 ? `${days.pad(1)} - ` : '')}${output}`; //Add days
+            output = `${(weeks > 0 || months > 0 || years > 0 ? `${weeks.pad(1)}/` : '')}${output}`; //Add weeks
+            output = `${(months > 0 || years > 0 ? `${months.pad(1)}/` : '')}${output}`; //Add months
+            output = `${years > 0 ? `${years.pad(1)}/` : ''}${output}`; //Add years
+        } else {
+            output = `${seconds.pad(2)} seconds${output}`; //Add seconds
+            output = `${(minutes > 0 || hours > 0 || days > 0 || weeks > 0 || months > 0 || years > 0 ? `${minutes.pad(2)} minutes : ` : '')}${output}`; //Add minutes
+            output = `${(hours > 0 || days > 0 || weeks > 0 || months > 0 || years > 0 ? `${hours.pad(2)} hours : ` : '')}${output}`; //Add hours
+            output = `${(days > 0 || weeks > 0 || months > 0 || years > 0 ? `${days.pad(1)} days - ` : '')}${output}`; //Add days
+            output = `${(weeks > 0 || months > 0 || years > 0 ? `${weeks.pad(1)} weeks, ` : '')}${output}`; //Add weeks
+            output = `${(months > 0 || years > 0 ? `${months.pad(1)} months, ` : '')}${output}`; //Add months
+            output = `${years > 0 ? `${years.pad(1)} years, ` : ''}${output}`; //Add years
+        }
+        return output;
     } else {
-        output = `${seconds.pad(2)} seconds${output}`; //Add seconds
-        output = `${(minutes > 0 || hours > 0 || days > 0 || weeks > 0 || months > 0 || years > 0 ? `${minutes.pad(2)} minutes : ` : '')}${output}`; //Add minutes
-        output = `${(hours > 0 || days > 0 || weeks > 0 || months > 0 || years > 0 ? `${hours.pad(2)} hours : ` : '')}${output}`; //Add hours
-        output = `${(days > 0 || weeks > 0 || months > 0 || years > 0 ? `${days.pad(1)} days - ` : '')}${output}`; //Add days
-        output = `${(weeks > 0 || months > 0 || years > 0 ? `${weeks.pad(1)} weeks, ` : '')}${output}`; //Add weeks
-        output = `${(months > 0 || years > 0 ? `${months.pad(1)} months, ` : '')}${output}`; //Add months
-        output = `${years > 0 ? `${years.pad(1)} years, ` : ''}${output}`; //Add years
+        var output = new Array();
+        if (en == true) {
+            output.push(seconds); //Seconds
+            output.push(minutes); //Minutes
+            output.push(hours); //Hours
+            output.push(days); //Days
+            output.push(weeks); //Weeks
+            output.push(months); //Months
+            output.push(years); //Years
+        } else if (en == 'cron') {
+            output.push(minutes > 0 || hours > 0 || days > 0 || weeks > 0 || months > 0 || years > 0 ? (seconds > 0 ? seconds : -1) : seconds); //Seconds
+            output.push(hours > 0 || days > 0 || weeks > 0 || months > 0 || years > 0 ? (minutes > 0 ? minutes : -1) : minutes); //Minutes
+            output.push(days > 0 || weeks > 0 || months > 0 || years > 0 ? (hours > 0 ? hours : -1) : hours); //Hours
+            output.push(weeks > 0 || months > 0 || years > 0 ? (days > 0 ? days : -1) : days); //Days
+            output.push(months > 0 || years > 0 ? (weeks > 0 ? weeks : -1) : weeks); //Weeks
+            output.push(years > 0 ? (months > 0 ? months : -1) : months); //Months
+            output.push(years); //Years
+        } else {
+            output.push(seconds); //Seconds
+            if (minutes > 0 || hours > 0 || days > 0 || weeks > 0 || months > 0 || years > 0) output.push(minutes); //Minutes
+            if (hours > 0 || days > 0 || weeks > 0 || months > 0 || years > 0) output.push(hours); //Hours
+            if (days > 0 || weeks > 0 || months > 0 || years > 0) output.push(days); //Days
+            if (weeks > 0 || months > 0 || years > 0) output.push(weeks); //Weeks
+            if (months > 0 || years > 0) output.push(months); //Months
+            if (years > 0) output.push(years); //Years
+        }
+        return output;
     }
-    return output;
 }
 
 //Cut string shorter

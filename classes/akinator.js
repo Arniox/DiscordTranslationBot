@@ -17,12 +17,6 @@ module.exports = class AkinatorGame {
         this.gameState;
         this.failures = 0;
         this.bot = bot;
-
-        // console.log('\n\n\n', this.region, '\n\n\n');
-        // console.log(this.aki, '\n\n\n');
-        // console.log(this.guild, '\n\n\n');
-        // console.log(this.message, '\n\n\n');
-        // console.log(this.player, '\n\n\n');
     }
 
     //Start game
