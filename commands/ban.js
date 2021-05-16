@@ -101,13 +101,12 @@ exports.run = (bot, guild, message, command, args) => {
                                     //Send message
                                     value.send(`You where hard banned from ${message.guild.name} ${timeAnswer}\nReason: ${reasonAnswer}`)
                                         .then(() => {
-                                            message.guild.members.ban(value, { reason: `${timeAnswer} - ${reasonAnswer}` }); //Ban
                                             //Ban
+                                            message.guild.members.ban(value, { reason: `${timeAnswer} - ${reasonAnswer}` }); //Ban
                                             if (timedBan) {
                                                 //Unban after time
                                                 //Create job
                                                 bot.jobsManager.get(message.guild.id).CreateJob(time, () => {
-                                                    console.log('unban');
                                                     message.guild.members.unban(personId); //Unban
                                                     //Stop job
                                                     bot.jobsManager.get(message.guild.id).StopJop(`Ban ${personId}`);

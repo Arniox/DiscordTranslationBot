@@ -29,7 +29,7 @@ exports.run = (bot, guild, message, command, args) => {
                                     resolve();
                                 });
                                 //Send message to say finished
-                                currentChannel.send(new Discord.MessageEmbed().setDescription(`Deleting ${numToDelete} messages...`).setColor('#0099ff'))
+                                message.WaffleResponse(`Deleting ${numToDelete} messages...`, MTYPE.Information, null, false, null, currentChannel)
                                     .then((newMessage) => {
                                         //Delete sent message after 4 seconds
                                         newMessage.delete({ timeout: 4000 });
@@ -38,13 +38,13 @@ exports.run = (bot, guild, message, command, args) => {
                                     });
                             })();
                         } else {
-                            message.channel.send(new Discord.MessageEmbed().setDescription(`Sorry, ${value} is not a valid number.`).setColor('#b50909'));
+                            message.WaffleResponse(`Sorry, ${value} is not a valid number.`);
                         }
                     } else {
-                        message.channel.send(new Discord.MessageEmbed().setDescription(`Sorry, how many messages did you want me to clean?`).setColor('#b50909'));
+                        message.WaffleResponse(`Sorry, how many messages did you want me to clean?`);
                     }
                 } else {
-                    message.channel.send(new Discord.MessageEmbed().setDescription(`Sorry, you do not have message management permissions.`).setColor('#b50909'));
+                    message.WaffleResponse(`Sorry, you do not have message management permissions.`);
                 }
             } else {
                 HelpMessage(bot, guild, message, args);
@@ -56,12 +56,11 @@ exports.run = (bot, guild, message, command, args) => {
 function HelpMessage(bot, guild, message, args) {
     //Random number
     var randNum = (Math.random() * 1000).round();
-
-    var embeddedHelpMessage = new Discord.MessageEmbed()
-        .setColor('#b50909')
-        .setAuthor(bot.user.username, bot.user.avatarURL())
-        .setDescription(`Clean command allows you to clean up a channels messages by bulk.`)
-        .addFields(
+    //Send embedded message
+    message.WaffleResponse(
+        `Clean command allows you to clean up a channels messages by bulk.`,
+        MTYPE.Error,
+        [
             { name: 'Required Permissions: ', value: 'Manage Messages' },
             {
                 name: 'Command Patterns: ',
@@ -71,12 +70,9 @@ function HelpMessage(bot, guild, message, args) {
                 name: 'Examples: ',
                 value: `${guild.Prefix}clean ${randNum}`
             }
-        )
-        .setTimestamp()
-        .setFooter('Thanks, and have a good day');
-
-    //Send embedded message
-    message.channel.send(embeddedHelpMessage);
+        ],
+        true, 'Thanks, and have a good day'
+    );
 }
 
 //Bulk Delete all messages

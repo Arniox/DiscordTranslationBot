@@ -108,13 +108,14 @@ module.exports = function () {
         fieldsArray = null,
         setTimeStamp = false,
         footer = null,
+        customChannel = null,
         authorType = ATYPE.Bot
     ) {
         //Create message
         const tosend = new Discord.MessageEmbed();
         const sender = this.member.user;
         const bot = this.guild.me.user;
-        const channel = this.channel;
+        const channel = customChannel || this.channel;
 
         //Set description
         tosend.setDescription(text);

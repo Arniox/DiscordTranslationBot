@@ -31,7 +31,7 @@ exports.run = (bot, guild, message, command, args) => {
                 bot.con.query(update_based_counter_cmd, (error, results, fields) => {
                     if (error) return console.error(error); //Throw error and return
                     //Send message
-                    outPutChannel.send(new Discord.MessageEmbed().setDescription(`Based Counter: ${counter + 1}`).setColor('#0099ff'));
+                    message.WaffleResponse(`Based Counter: ${counter + 1}`, MTYPE.Information, null, false, null, outPutChannel);
                 });
             });
             break;
@@ -78,16 +78,16 @@ exports.run = (bot, guild, message, command, args) => {
                                                     bot.con.query(update_cmd, (error, results, fields) => {
                                                         if (error) return console.error(error); //Throw error and return
                                                         //Message
-                                                        message.channel.send(new Discord.MessageEmbed().setDescription(`Changed server based counter output channel from ${basedCounterChannel} to ${channelMentions.first().toString()}`).setColor('#09b50c'));
+                                                        message.WaffleResponse(`Changed server based counter output channel from ${basedCounterChannel} to ${channelMentions.first().toString()}`, MTYPE.Success);
                                                     });
                                                 } else {
-                                                    message.channel.send(new Discord.MessageEmbed().setDescription(`Sorry, I cannot output based counter to more than 1 channel.`).setColor('#b50909'));
+                                                    message.WaffleResponse(`Sorry, I cannot output based counter to more than 1 channel.`);
                                                 }
                                             } else {
-                                                message.channel.send(new Discord.MessageEmbed().setDescription(`Sorry, you did not specify a channel to output to.`).setColor('#b50909'));
+                                                message.WaffleResponse(`Sorry, you did not specify a channel to output to.`);
                                             }
                                         } else {
-                                            message.channel.send(new Discord.MessageEmbed().setDescription(`Sorry, you need to have server management permissions to change the based counter output channel.`).setColor('#b50909'));
+                                            message.WaffleResponse(`Sorry, you need to have server management permissions to change the based counter output channel.`);
                                         }
                                         break;
                                     case 'default': case 'def': case 'd':
@@ -105,10 +105,10 @@ exports.run = (bot, guild, message, command, args) => {
                                             bot.con.query(update_cmd, (error, results, fields) => {
                                                 if (error) return console.error(error); //Throw error and return
                                                 //Message
-                                                message.channel.send(new Discord.MessageEmbed().setDescription(`Changed server based counter output channel from ${basedCounterChannel} to **Default**`).setColor('#09b50c'));
+                                                message.WaffleResponse(`Changed server based counter output channel from ${basedCounterChannel} to **Default**`, MTYPE.Success);
                                             });
                                         } else {
-                                            message.channel.send(new Discord.MessageEmbed().setDescription(`Sorry, you need to have server management permissions to change the based counter output channel.`).setColor('#b50909'));
+                                            message.WaffleResponse(`Sorry, you need to have server management permissions to change the based counter output channel.`);
                                         }
                                         break;
                                     default:
@@ -134,20 +134,16 @@ exports.run = (bot, guild, message, command, args) => {
 //Help message
 function HelpMessage(bot, guild, message, args) {
     //Reply with help message
-    var embeddedHelpMessage = new Discord.MessageEmbed()
-        .setColor('#b50909')
-        .setAuthor(bot.user.username, bot.user.avatarURL())
-        .setDescription(`The based counter auto counts the number of based messages sent over all time.\n` +
-            `Setting the output from default will make sure all based replies will post into a specific channel.`)
-        .addFields(
+    message.WaffleResponse(
+        `The based counter auto counts the number of based messages sent over all time.\n` +
+        `Setting the output from default will make sure all based replies will post into a specific channel.`,
+        MTYPE.Error,
+        [
             { name: 'Required Permissions:', value: 'Manage Server' },
             {
                 name: 'Example: ', value: `${guild.Prefix}based [channel:chan:c] [set:s:= / default:def:d]\n`
             }
-        )
-        .setTimestamp()
-        .setFooter('Thanks, and have a good day');
-
-    //Send embedded message
-    message.channel.send(embeddedHelpMessage);
+        ],
+        true, 'Thanks, and have a good day'
+    );
 }
