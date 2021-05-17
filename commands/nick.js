@@ -871,7 +871,7 @@ exports.run = (bot, guild, message, command, args) => {
                                             //Save frozen members nickname
                                             const save_sql = `
                                             INSERT INTO player_frozen_names (MemberId, ServerId, FrozenName, OriginalNickName, FrozenById)
-                                                VALUES ("${mentions.first().id}", "${message.guild.id}", "${query.substring(0, 32)}", "${NickName(mentions.first())}", "${message.author.id}")
+                                                VALUES ("${mentions.first().id}", "${message.guild.id}", "${query.replace(/([\"]*)/g, '\\"').substring(0, 32)}", "${NickName(mentions.first())}", "${message.author.id}")
                                             `;
                                             bot.con.query(save_sql, (error, results, fields) => {
                                                 if (error) return console.error(error); //Return console error
@@ -889,7 +889,7 @@ exports.run = (bot, guild, message, command, args) => {
                                             if (thisFrozenPlayer.FrozenById == message.author.id) {
                                                 const update_sql = `
                                                 UPDATE player_frozen_names
-                                                SET FrozenName = "${query.substring(0, 32)}"
+                                                SET FrozenName = "${query.replace(/([\"]*)/g, '\\"').substring(0, 32)}"
                                                 WHERE ServerId = "${message.guild.id}"
                                                 AND MemberId = "${mentions.first().id}"
                                                 `;
