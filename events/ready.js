@@ -108,7 +108,7 @@ module.exports = (bot) => {
     bot.user.setActivity(`the $ prefix`, { type: 'WATCHING' });
 
     //Ping bot
-    bot.jobsManager.get('main').CreateJob('10m', () => {
+    bot.jobsManager.get('main').CreateJob('30m', () => {
         console.log('I am currently alive.');
     }, 'Ping Server');
 };
