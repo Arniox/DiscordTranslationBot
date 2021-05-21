@@ -307,22 +307,27 @@ exports.run = (bot, guild, message, command, args) => {
             if (botVoice && serverQueue) {
                 //Get main details
                 const totalDuration = (serverQueue.songs.map(v => v.song.duration_ms).reduce((a, b) => a + b) / 1000).toString().toTimeString(true);
+                const currentDuration = (serverQueue.songs[0].song.duration_ms / 1000).toString().toTimeString();
+                const currentTime = (serverQueue.connection.dispatcher.streamTime / 1000).toString().toTimeString();
                 //Send message
-                ListMessage(message, `Songs in Music Queue:\n\n**Total Queue Duration:**\n${totalDuration}\n\n`, '#0099ff', MessageToArray(() => {
-                    //For loop them into an output
-                    var output = '';
-                    for (var i = 0; i < serverQueue.songs.length; i++) {
-                        //Create details
-                        const title = (`${serverQueue.songs[i].song.title.replace(/(\*|_|`|~|\\|\[|])/g, '')}`).trimString(25);
-                        const url = serverQueue.songs[i].song.url;
-                        const duration = (serverQueue.songs[i].song.duration_ms / 1000).toString().toTimeString();
-                        const queuedBy = serverQueue.songs[i].queuedBy.toString();
+                ListMessage(message,
+                    `Songs in Music Queue:\n\n` +
+                    `**Total Queue Duration:**\n${totalDuration}\n` +
+                    `**Current Song:**${currentTime} - ${currentDuration}\n\n`, '#0099ff', MessageToArray(() => {
+                        //For loop them into an output
+                        var output = '';
+                        for (var i = 0; i < serverQueue.songs.length; i++) {
+                            //Create details
+                            const title = (`${serverQueue.songs[i].song.title.replace(/(\*|_|`|~|\\|\[|])/g, '')}`).trimString(25);
+                            const url = serverQueue.songs[i].song.url;
+                            const duration = (serverQueue.songs[i].song.duration_ms / 1000).toString().toTimeString();
+                            const queuedBy = serverQueue.songs[i].queuedBy.toString();
 
-                        //Create output per song
-                        output += `${(i > 0 ? `${i}` : '▶️')} - [${title}](${url}) ${duration} ${queuedBy}\n`;
-                    }
-                    return output;
-                }), 10, '#0099ff');
+                            //Create output per song
+                            output += `${(i > 0 ? `${i}` : '▶️')} - [${title}](${url}) ${duration} ${queuedBy}\n`;
+                        }
+                        return output;
+                    }), 10, '#0099ff');
             } else {
                 message.WaffleResponse('I am not playing anything right now...', MTYPE.Information);
             }
