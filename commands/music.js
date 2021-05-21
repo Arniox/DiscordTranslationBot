@@ -179,7 +179,7 @@ exports.run = (bot, guild, message, command, args) => {
                                 serverQueue.skip = 0;
                                 //Fire dispatcher event end to skip song
                                 serverQueue.connection.dispatcher.end();
-                                message.WaffleResponse(`Skipped ⏩`, MTYPE.Information);
+                                message.WaffleResponse(`Skipped ⏭️`, MTYPE.Information);
                             }
 
                             //Check if the member has a role named DJ
@@ -312,8 +312,8 @@ exports.run = (bot, guild, message, command, args) => {
                 //Send message
                 ListMessage(message,
                     `Songs in Music Queue:\n\n` +
-                    `**Total Queue Duration:**\n${totalDuration}\n` +
-                    `**Current Song:**${currentTime} - ${currentDuration}\n\n`, '#0099ff', MessageToArray(() => {
+                    `**Total Queue Duration:**\n${totalDuration}\n\n` +
+                    `**Current Song:** ${currentTime} - ${currentDuration}\n\n`, '#0099ff', MessageToArray(() => {
                         //For loop them into an output
                         var output = '';
                         for (var i = 0; i < serverQueue.songs.length; i++) {
@@ -430,6 +430,8 @@ exports.run = (bot, guild, message, command, args) => {
                                 const url = serverQueue.songs[index].song.url;
                                 const queuedBy = serverQueue.songs[index].queuedBy.toString();
 
+                                //Remove song
+                                serverQueue.songs.splice(index, 1);
                                 //Message
                                 message.WaffleResponse(`Removed [${title}](${url}) ${queuedBy} ⏏️`, MTYPE.Information);
                             } else {
@@ -463,7 +465,8 @@ function HelpMessage(bot, guild, message, args) {
             { name: 'Resume:', value: `${guild.Prefix}[resume] *(Only Members with a role named \"DJ\" and server managers can resume the music)*` },
             { name: 'Now Playing:', value: `${guild.Prefix}[nowplaying:nowp:now:np]` },
             { name: 'Shuffle', value: `${guild.Prefix}[shuffle:shuff:shuf:sh]` },
-            { name: 'Move Song', value: `${guild.Prefix}[movesong:songmove] [song index] [new song index]` }
+            { name: 'Move Song', value: `${guild.Prefix}[movesong:songmove] [song index] [new song index]` },
+            { name: 'Remove Song', value: `${guild.Prefix}[removesong:songremove:remove:rem] [song index]` }
         ],
         true, 'Thanks, and have a good day'
     );
