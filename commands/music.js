@@ -363,6 +363,7 @@ exports.run = (bot, guild, message, command, args) => {
                         //Get old index
                         var oldIndex = args.shift();
                         if (oldIndex && /^\d+$/.test(oldIndex)) {
+                            oldIndex = parseInt(oldIndex);
                             //Check that it's not outside queue
                             if (oldIndex < serverQueue.songs.length) {
                                 //Get song
@@ -373,6 +374,7 @@ exports.run = (bot, guild, message, command, args) => {
                                 //Get new index
                                 var newIndex = args.shift();
                                 if (newIndex && /^\d+$/.test(newIndex)) {
+                                    newIndex = parseInt(newIndex);
                                     //Move song to end of queue if value is over server length
                                     if (newIndex > serverQueue.songs.length) newIndex = serverQueue.songs.length - 1;
 
@@ -414,6 +416,7 @@ exports.run = (bot, guild, message, command, args) => {
                             //Get index
                             var index = args.shift();
                             if (index && /^\d+$/.test(index)) {
+                                index = parseInt(index);
                                 //Remove song at the end of queue if value is over server length
                                 if (index > serverQueue.songs.length) index = serverQueue.songs.length - 1;
 
