@@ -30,9 +30,9 @@ exports.run = (bot, guild, message, command, args) => {
                         //Get permissions for joining channels
                         var permissions = voiceChannel.permissionsFor(message.client.user);
                         if (!permissions.has('CONNECT') && !permissions.has("SPEAK")) {
-                            message.channel.send(new Discord.MessageEmbed().setDescription(`I need permissions to join and speak in your voice channel!`).setColor('#b50909'));
+                            message.WaffleResponse(`I need permissions to join and speak in your voice channel!`);
                         } else {
-                            message.channel.send(new Discord.MessageEmbed().setDescription(`Loading...`).setColor('#FFCC00'))
+                            message.WaffleResponse(`Loading...`, MTYPE.Loading)
                                 .then((sent) => {
                                     //Async function
                                     (async () => {
@@ -118,7 +118,7 @@ exports.run = (bot, guild, message, command, args) => {
                                                             console.error(error);
                                                             bot.musicQueue.delete(message.guild.id);
                                                             //Send message error
-                                                            message.channel.send(new Discord.MessageEmbed().setDescription(error).setColor('#b50909'));
+                                                            message.WaffleResponse(error);
                                                         });
                                                 } else {
                                                     //Play music if paused
@@ -138,7 +138,7 @@ exports.run = (bot, guild, message, command, args) => {
                         }
                     }
                 } else {
-                    message.channel.send(new Discord.MessageEmbed().setDescription('Please join a voice channel first').setColor('#b50909'));
+                    message.WaffleResponse('Please join a voice channel first');
                 }
             } else {
                 //Resume queue if queue is empty
@@ -152,13 +152,13 @@ exports.run = (bot, guild, message, command, args) => {
                         if (botVoice && (serverQueue && serverQueue.songs.length > 0)) {
                             //Resume dispatcher
                             serverQueue.connection.dispatcher.resume();
-                            message.channel.send(new Discord.MessageEmbed().setDescription('Resumed ▶️').setColor('#0099ff'));
+                            message.WaffleResponse('Resumed ▶️', MTYPE.Information);
                         } else {
-                            message.channel.send(new Discord.MessageEmbed().setDescription('I am currently not playing anything so cannot be resumed.').setColor('#b50909'));
+                            message.WaffleResponse('I am currently not playing anything so cannot be resumed.');
                         }
                     }
                 } else {
-                    message.channel.send(new Discord.MessageEmbed().setDescription('Please join a voice channel first.').setColor('#b50909'));
+                    message.WaffleResponse('Please join a voice channel first.');
                 }
             }
             break;
@@ -179,11 +179,11 @@ exports.run = (bot, guild, message, command, args) => {
                                 serverQueue.skip = 0;
                                 //Fire dispatcher event end to skip song
                                 serverQueue.connection.dispatcher.end();
-                                message.channel.send(new Discord.MessageEmbed().setDescription(`Skipped ⏩`).setColor('#0099ff'));
+                                message.WaffleResponse(`Skipped ⏩`, MTYPE.Information);
                             }
 
                             //Check if the member has a role named DJ
-                            if (message.member.roles.cache.map((v, k) => v).find(i => i.name.toLowerCase() == 'dj') || message.member.hasPermission('MANAGE_GUILD')) {
+                            if (IsDJ(message) || IsManager(message)) {
                                 skipThis();
                             } else {
                                 //Check serverQueue construct skip stage
@@ -192,18 +192,18 @@ exports.run = (bot, guild, message, command, args) => {
                                 } else {
                                     //Add one to skip
                                     serverQueue.skip += 1;
-                                    message.channel.send(new Discord.MessageEmbed().setDescription(`Skipped ${serverQueue.skip} / ${serverQueue.maxSkip} ❌`).setColor('#0099ff'));
+                                    message.WaffleResponse(`Skipped ${serverQueue.skip} / ${serverQueue.maxSkip} ❌`, MTYPE.Information);
                                 }
                             }
                         } else {
-                            message.channel.send(new Discord.MessageEmbed().setDescription('There is no song playing that I could skip.').setColor('#b50909'));
+                            message.WaffleResponse('There is no song playing that I could skip.');
                         }
                     } else {
-                        message.channel.send(new Discord.MessageEmbed().setDescription('I am currently not playing anything in any voice channel.').setColor('#b50909'));
+                        message.WaffleResponse('I am currently not playing anything in any voice channel.');
                     }
                 }
             } else {
-                message.channel.send(new Discord.MessageEmbed().setDescription('Please join a voice channel first.').setColor('#b50909'));
+                message.WaffleResponse('Please join a voice channel first.');
             }
             break;
         case 'stop':
@@ -215,17 +215,22 @@ exports.run = (bot, guild, message, command, args) => {
                 } else {
                     //Check if bot is not in voice
                     if (botVoice) {
-                        //Clear queue
-                        serverQueue.songs = [];
-                        //Fire dispatcher event end to immediately exit recursion and exit
-                        serverQueue.connection.dispatcher.end();
-                        message.channel.send(new Discord.MessageEmbed().setDescription('Stopped Playing ⏹️').setColor('#0099ff'));
+                        //Check user is either manager or has dj role
+                        if (IsDJ(message) || IsManager(message)) {
+                            //Clear queue
+                            serverQueue.songs = [];
+                            //Fire dispatcher event end to immediately exit recursion and exit
+                            serverQueue.connection.dispatcher.end();
+                            message.WaffleResponse('Stopped Playing ⏹️', MTYPE.Information);
+                        } else {
+                            message.WaffleResponse(`Sorry, only server moderators or DJ's can stop the music queue`);
+                        }
                     } else {
-                        message.channel.send(new Discord.MessageEmbed().setDescription('I am already stopped!').setColor('#b50909'));
+                        message.WaffleResponse('I am not playing anything right now...', MTYPE.Information);
                     }
                 }
             } else {
-                message.channel.send(new Discord.MessageEmbed().setDescription('Please join a voice channel first.').setColor('#b50909'));
+                message.WaffleResponse('Please join a voice channel first.');
             }
             break;
         case 'pause':
@@ -237,15 +242,20 @@ exports.run = (bot, guild, message, command, args) => {
                 } else {
                     //Check if bot is not in voice
                     if (botVoice) {
-                        //Pause dispatcher
-                        serverQueue.connection.dispatcher.pause(true);
-                        message.channel.send(new Discord.MessageEmbed().setDescription('Paused ⏸️').setColor('#0099ff'));
+                        //Check user is either manager or has dj role
+                        if (IsDJ(message) || IsManager(message)) {
+                            //Pause dispatcher
+                            serverQueue.connection.dispatcher.pause(true);
+                            message.WaffleResponse('Paused ⏸️', MTYPE.Information);
+                        } else {
+                            message.WaffleResponse(`Sorry, only server moderators or DJ's can pause the music.`);
+                        }
                     } else {
-                        message.channel.send(new Discord.MessageEmbed().setDescription('I am currently not playing anything so cannot be paused.').setColor('#b50909'));
+                        message.WaffleResponse('I am currently not playing anything so cannot be paused.');
                     }
                 }
             } else {
-                message.channel.send(new Discord.MessageEmbed().setDescription('Please join a voice channel first.').setColor('#b50909'));
+                message.WaffleResponse('Please join a voice channel first.');
             }
             break;
         case 'resume':
@@ -257,15 +267,20 @@ exports.run = (bot, guild, message, command, args) => {
                 } else {
                     //Check if bot is not in voice
                     if (botVoice && (serverQueue && serverQueue.songs.length > 0)) {
-                        //Resume dispatcher
-                        serverQueue.connection.dispatcher.resume();
-                        message.channel.send(new Discord.MessageEmbed().setDescription('Resumed ▶️').setColor('#0099ff'));
+                        //Check user is either manager or has dj role
+                        if (IsDJ(message) || IsManager(message)) {
+                            //Resume dispatcher
+                            serverQueue.connection.dispatcher.resume();
+                            message.WaffleResponse('Resumed ▶️', MTYPE.Information);
+                        } else {
+                            message.WaffleResponse(`Sorry, only server moderators or DJ's can resume the music`);
+                        }
                     } else {
-                        message.channel.send(new Discord.MessageEmbed().setDescription('I am currently not playing anything so cannot be resumed.').setColor('#b50909'));
+                        message.WaffleResponse('I am currently not playing anything so cannot be resumed.');
                     }
                 }
             } else {
-                message.channel.send(new Discord.MessageEmbed().setDescription('Please join a voice channel first.').setColor('#b50909'));
+                message.WaffleResponse('Please join a voice channel first.');
             }
             break;
         case 'nowplaying': case 'nowp': case 'now': case 'np':
@@ -278,10 +293,13 @@ exports.run = (bot, guild, message, command, args) => {
                 const currentTime = (serverQueue.connection.dispatcher.streamTime / 1000).toString().toTimeString();
                 const queuedBy = serverQueue.songs[0].queuedBy.toString();
 
-                message.channel.send(new Discord.MessageEmbed().setDescription(`Now playing [${title}](${url}) [${queuedBy}]\n\n` +
-                    `**Song Duration:**\n${currentTime} - ${duration}`).setColor('#0099ff'));
+                message.WaffleResponse(
+                    `▶️ Now playing [${title}](${url}) ${queuedBy}\n\n` +
+                    `**Song Duration:**\n${currentTime} - ${duration}`,
+                    MTYPE.Information
+                );
             } else {
-                message.channel.send(new Discord.MessageEmbed().setDescription('I am not playing anything right now...').setColor('#0099ff'));
+                message.WaffleResponse('I am not playing anything right now...', MTYPE.Information);
             }
             break;
         case 'queue': case 'q':
@@ -306,7 +324,7 @@ exports.run = (bot, guild, message, command, args) => {
                     return output;
                 }), 10, '#0099ff');
             } else {
-                message.channel.send(new Discord.MessageEmbed().setDescription('I am not playing anything right now...').setColor('#0099ff'));
+                message.WaffleResponse('I am not playing anything right now...', MTYPE.Information);
             }
             break;
         case 'shuffle': case 'shuff': case 'shuf': case 'sh':
@@ -322,13 +340,102 @@ exports.run = (bot, guild, message, command, args) => {
                         var currentSong = serverQueue.songs.shift(); //Get current song and pull out from queue
                         serverQueue.songs.shuffle(); //Shuffle queue
                         serverQueue.songs.unshift(currentSong); //Add current song to front
-                        message.channel.send(new Discord.MessageEmbed().setDescription('Shuffled Queue 🔀').setColor('#0099ff'));
+
+                        //Message
+                        message.WaffleResponse('Shuffled Queue 🔀', MTYPE.Information);
                     } else {
-                        message.channel.send(new Discord.MessageEmbed().setDescription('I am currently not playing anything so the queue cannot be shuffeled.').setColor('#b50909'));
+                        message.WaffleResponse('I am currently not playing anything so the queue cannot be shuffeled.');
                     }
                 }
             } else {
-                message.channel.send(new Discord.MessageEmbed().setDescription('Please join a voice channel first.').setColor('#b50909'));
+                message.WaffleResponse('Please join a voice channel first.');
+            }
+            break;
+        case 'movesong': case 'songmove':
+            //Check if user not in voice
+            if (voiceChannel) {
+                //Check if bot voice already exists
+                if (botVoice && (botVoice != voiceChannel)) {
+                    cannotEffect(message, botVoice, 'move a song within the queue');
+                } else {
+                    //Check if bot is not in voice
+                    if (botVoice && (serverQueue && serverQueue.songs.length > 0)) {
+                        //Get old index
+                        var oldIndex = args.shift();
+                        if (oldIndex && /^\d+$/.test(oldIndex)) {
+                            //Check that it's not outside queue
+                            if (oldIndex < serverQueue.songs.length) {
+                                //Get song
+                                const title = serverQueue.songs[oldIndex].song.title.replace(/(\*|_|`|~|\\|\[|])/g, '');
+                                const url = serverQueue.songs[oldIndex].song.url;
+                                const queuedBy = serverQueue.songs[oldIndex].queuedBy.toString();
+
+                                //Get new index
+                                var newIndex = args.shift();
+                                if (newIndex && /^\d+$/.test(newIndex)) {
+                                    //Move song to end of queue if value is over server length
+                                    if (newIndex > serverQueue.songs.length) newIndex = serverQueue.songs.length - 1;
+
+                                    //Get temp data on new song position
+                                    var tempSong = serverQueue.songs[newIndex]; //Create temp song
+                                    serverQueue.songs[newIndex] = serverQueue.songs[oldIndex]; //Move new song
+                                    serverQueue.songs[oldIndex] = tempSong; //Save old song
+
+                                    //Message
+                                    message.WaffleResponse(`Swapped [${title}](${url}) ${queuedBy} with the ${newIndex.ordinal()} song 🔁`, MTYPE.Information);
+                                } else {
+                                    message.WaffleResponse(`Where did you want to move [${title}](${url}) to, within the queue?`);
+                                }
+                            } else {
+                                message.WaffleResponse(`Sorry, I could not find the ${oldIndex.ordinal()} song.`);
+                            }
+                        } else {
+                            message.WaffleResponse('Which song did you want to move somewhere within queue?');
+                        }
+                    } else {
+                        message.WaffleResponse('I am currently not playing anything so you cannot move any songs around within the queue');
+                    }
+                }
+            } else {
+                message.WaffleResponse('Please join a voice channel first.');
+            }
+            break;
+        case 'removesong': case 'songremove': case 'remove': case 'rem':
+            //Check if user not in voice
+            if (voiceChannel) {
+                //Check if bot voice already exists
+                if (botVoice && (botVoice != voiceChannel)) {
+                    cannotEffect(message, botVoice, 'remove song from queue');
+                } else {
+                    //Check if bot is not in voice
+                    if (botVoice && (serverQueue && serverQueue.songs.length > 0)) {
+                        //Check if manager or DJ
+                        if (IsDJ(message) || IsManager(message)) {
+                            //Get index
+                            var index = args.shift();
+                            if (index && /^\d+$/.test(index)) {
+                                //Remove song at the end of queue if value is over server length
+                                if (index > serverQueue.songs.length) index = serverQueue.songs.length - 1;
+
+                                //Get song
+                                const title = serverQueue.songs[index].song.title.replace(/(\*|_|`|~|\\|\[|])/g, '');
+                                const url = serverQueue.songs[index].song.url;
+                                const queuedBy = serverQueue.songs[index].queuedBy.toString();
+
+                                //Message
+                                message.WaffleResponse(`Removed [${title}](${url}) ${queuedBy} ⏏️`, MTYPE.Information);
+                            } else {
+                                message.WaffleResponse(`Sorry, I could not find the song you wanted to remove`);
+                            }
+                        } else {
+                            message.WaffleResponse('Sorry, only server moderators or DJ\'s can remove a song from the queue');
+                        }
+                    } else {
+                        message.WaffleResponse('I am currently not playing anything so you cannot remove a song from the queue');
+                    }
+                }
+            } else {
+                message.WaffleResponse('Please join a voice channel first.');
             }
             break;
         default:
@@ -337,23 +444,21 @@ exports.run = (bot, guild, message, command, args) => {
 }
 
 function HelpMessage(bot, guild, message, args) {
-    var embeddedHelpMessage = new Discord.MessageEmbed()
-        .setColor('#b50909')
-        .setAuthor(bot.user.username, bot.user.avatarURL())
-        .setDescription('Used for playing and controlling your music in your discord!')
-        .addFields(
+    //Send message
+    message.WaffleResponse(
+        'Used for playing and controlling your music in your discord!', MTYPE.Error,
+        [
             { name: 'Play: ', value: `${guild.Prefix}[play:p] [link / search query]` },
             { name: 'Skip:', value: `${guild.Prefix}[skip:s] *(Members with a role named \"DJ\" and server managers can insta skip songs)*` },
-            { name: 'Stop:', value: `${guild.Prefix}[stop]` },
-            { name: 'Pause:', value: `${guild.Prefix}[pause]` },
-            { name: 'Resume:', value: `${guild.Prefix}[resume]` },
+            { name: 'Stop:', value: `${guild.Prefix}[stop] *(Only Members with a role named \"DJ\" and server managers can stop the queue)*` },
+            { name: 'Pause:', value: `${guild.Prefix}[pause] *(Only Members with a role named \"DJ\" and server managers can pause the music)*` },
+            { name: 'Resume:', value: `${guild.Prefix}[resume] *(Only Members with a role named \"DJ\" and server managers can resume the music)*` },
             { name: 'Now Playing:', value: `${guild.Prefix}[nowplaying:nowp:now:np]` },
-        )
-        .setTimestamp()
-        .setFooter('Thanks, and have a good day');
-
-    //Send embedded message
-    message.channel.send(embeddedHelpMessage);
+            { name: 'Shuffle', value: `${guild.Prefix}[shuffle:shuff:shuf:sh]` },
+            { name: 'Move Song', value: `${guild.Prefix}[movesong:songmove] [song index] [new song index]` }
+        ],
+        true, 'Thanks, and have a good day'
+    );
 }
 
 //Functions
@@ -363,7 +468,7 @@ async function play(bot, message, guild, song) {
     //Check if a song exists.
     if (!song) {
         //Send message
-        serverQueue.textChannel.send(new Discord.MessageEmbed().setDescription(`Finished playing music from the queue.`).setColor('#0099ff'));
+        message.WaffleResponse(`Finished playing music from the queue.`, MTYPE.Information, null, false, null, serverQueue.textChannel)
 
         //Leave channel
         serverQueue.voiceChannel.leave();
@@ -381,16 +486,21 @@ async function play(bot, message, guild, song) {
             .play(readable, { highWaterMark: 1, bitrate: 'auto', fec: true, volume: 0.1 })
             .on('start', () => {
                 //Send message
-                serverQueue.textChannel.send(new Discord.MessageEmbed().setDescription(`Started playing` +
-                    ` [${title.replace(/(\*|_|`|~|\\|\[|])/g, '')}](${url})` +
-                    ` [${queuedBy}]\n\n**Song Duration:**\n${(duration_ms / 1000).toString().toTimeString()}`).setColor('#0099ff'));
+                message.WaffleResponse(
+                    `Started playing [${title.replace(/(\*|_|`|~|\\|\[|])/g, '')}](${url})` +
+                    ` ${queuedBy}\n\n**Song Duration:**\n${(duration_ms / 1000).toString().toTimeString()}`,
+                    MTYPE.Information, null, false, null, serverQueue.textChannel
+                );
             }).on("finish", () => {
                 //Shift songs and play next recursively
                 serverQueue.songs.shift();
                 return play(bot, message, guild, serverQueue.songs[0]);
             }).on('error', (err) => {
                 //Send message
-                serverQueue.textChannel.send(new Discord.MessageEmbed().setDescription(`[${title}](${url}) encountered an error while streaming. Skipped.`).setColor('#b50909'));
+                message.WaffleResponse(
+                    `[${title}](${url}) encountered an error while streaming. Skipped.`, MTYPE.Error,
+                    null, false, null, serverQueue.textChannel
+                );
                 //Shift songs and play next recursively
                 serverQueue.songs.shift();
                 return play(bot, message, guild, serverQueue.songs[0]);
@@ -400,6 +510,8 @@ async function play(bot, message, guild, song) {
 
 //Error function
 function cannotEffect(message, botVoice, whatAmIDoing) {
-    message.channel.send(new Discord.MessageEmbed().setDescription(`I am currently playing music in ${botVoice.toString()} so cannot ${whatAmIDoing} in your channel. ` +
-        `Please either drag me or move into ${botVoice.toString()}`).setColor('#b50909'));
+    message.WaffleResponse(
+        `I am currently playing music in ${botVoice.toString()} so cannot ${whatAmIDoing} in your channel. ` +
+        `Please either drag me to your channel or move into ${botVoice.toString()}`
+    );
 }

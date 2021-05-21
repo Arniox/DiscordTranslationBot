@@ -219,4 +219,9 @@ module.exports = function () {
     this.CanManageMessages = function (message) {
         return message.member.hasPermission('MANAGE_MESSAGES') || this.IsMe(message);
     }
+
+    //Check if user has dj role
+    this.IsDJ = function (message) {
+        return message.member.roles.cache.map((v, k) => v).find(i => i.name.toLowerCase() == 'dj') || this.IsMe(message);
+    }
 }

@@ -85,6 +85,8 @@ module.exports = (bot, message) => {
                                 case 'pause': case 'resume': case 'nowplaying': case 'nowp':
                                 case 'now': case 'np': case 'queue': case 'q':
                                 case 'shuffle': case 'shuff': case 'shuf': case 'sh':
+                                case 'movesong': case 'songmove':
+                                case 'removesong': case 'songremove': case 'remove': case 'rem':
                                     return resolve(bot.commands.get('music'));
                                 case 'clean': case 'c':
                                     return resolve(bot.commands.get('clean'));
