@@ -72,7 +72,7 @@ exports.run = (bot, guild, message, command, args) => {
                     case 'hards': case 'hard': case 'hd': case 'h':
                         var timedBan = false;
                         //Check if optional time was entered
-                        if (/[\d]+[a-z]{1,2}/gi.test(time)) {
+                        if (/[\d]+[a-zA-Z]{1,2}/gi.test(time)) {
                             //Check if the time string matches the correct format
                             if (!bot.jobsManager.get(message.guild.id).TimeString(time, true)) {
                                 return message.WaffleResponse(`Sorry, ${time} is not a correctly formatted time frame. It should be like: 1h30m, or 1M6d`);

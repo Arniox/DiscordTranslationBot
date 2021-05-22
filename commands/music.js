@@ -2,6 +2,7 @@
 const Discord = require('discord.js');
 const ytdl = require('ytdl-core');
 const ytpl = require('ytpl');
+const { v4: uuidv4 } = require('uuid');
 const axios = require('axios');
 //Import functions
 require('../message-commands.js')();
@@ -149,12 +150,12 @@ exports.run = (bot, guild, message, command, args) => {
                         cannotEffect(message, botVoice, 'resume playing music');
                     } else {
                         //Check if bot is not in voice
-                        if (botVoice && (serverQueue && serverQueue.songs.length > 0)) {
+                        if (botVoice && serverQueue && serverQueue.songs.length > 0) {
                             //Resume dispatcher
                             serverQueue.connection.dispatcher.resume();
                             message.WaffleResponse('Resumed ▶️', MTYPE.Information);
                         } else {
-                            message.WaffleResponse('I am currently not playing anything so cannot be resumed.');
+                            message.WaffleResponse('I am currently not playing anything so cannot be resumed.', MTYPE.Information);
                         }
                     }
                 } else {
@@ -169,37 +170,32 @@ exports.run = (bot, guild, message, command, args) => {
                 if (botVoice && (botVoice != voiceChannel)) {
                     cannotEffect(message, botVoice, 'skip any music');
                 } else {
-                    //Check if bot is not in voice
-                    if (botVoice) {
-                        //Check if there are any songs queued
-                        if (serverQueue && serverQueue.songs.length > 0) {
-                            //Create end function
-                            skipThis = () => {
-                                //Set skip to 0
-                                serverQueue.skip = 0;
-                                //Fire dispatcher event end to skip song
-                                serverQueue.connection.dispatcher.end();
-                                message.WaffleResponse(`Skipped ⏭️`, MTYPE.Information);
-                            }
+                    //Check if there are any songs queued
+                    if (botVoice && serverQueue && serverQueue.songs.length > 0) {
+                        //Create end function
+                        skipThis = () => {
+                            //Set skip to 0
+                            serverQueue.skip = 0;
+                            //Fire dispatcher event end to skip song
+                            serverQueue.connection.dispatcher.end();
+                            message.WaffleResponse(`Skipped ⏭️`, MTYPE.Information);
+                        }
 
-                            //Check if the member has a role named DJ
-                            if (IsDJ(message) || IsManager(message)) {
+                        //Check if the member has a role named DJ
+                        if (IsDJ(message) || IsManager(message)) {
+                            skipThis();
+                        } else {
+                            //Check serverQueue construct skip stage
+                            if (serverQueue.skip >= serverQueue.maxSkip) {
                                 skipThis();
                             } else {
-                                //Check serverQueue construct skip stage
-                                if (serverQueue.skip >= serverQueue.maxSkip) {
-                                    skipThis();
-                                } else {
-                                    //Add one to skip
-                                    serverQueue.skip += 1;
-                                    message.WaffleResponse(`Skipped ${serverQueue.skip} / ${serverQueue.maxSkip} ❌`, MTYPE.Information);
-                                }
+                                //Add one to skip
+                                serverQueue.skip += 1;
+                                message.WaffleResponse(`Skipped ${serverQueue.skip} / ${serverQueue.maxSkip} ❌`, MTYPE.Information);
                             }
-                        } else {
-                            message.WaffleResponse('There is no song playing that I could skip.');
                         }
                     } else {
-                        message.WaffleResponse('I am currently not playing anything in any voice channel.');
+                        message.WaffleResponse('There is no song playing that I could skip.', MTYPE.Information);
                     }
                 }
             } else {
@@ -214,14 +210,14 @@ exports.run = (bot, guild, message, command, args) => {
                     cannotEffect(message, botVoice, 'stop playing music');
                 } else {
                     //Check if bot is not in voice
-                    if (botVoice) {
+                    if (botVoice && serverQueue && serverQueue.songs.length > 0) {
                         //Check user is either manager or has dj role
                         if (IsDJ(message) || IsManager(message)) {
                             //Clear queue
                             serverQueue.songs = [];
                             //Fire dispatcher event end to immediately exit recursion and exit
                             serverQueue.connection.dispatcher.end();
-                            message.WaffleResponse('Stopped Playing ⏹️', MTYPE.Information);
+                            message.WaffleResponse('Stopped Playing & Cleared Queue ⏹️', MTYPE.Information);
                         } else {
                             message.WaffleResponse(`Sorry, only server moderators or DJ's can stop the music queue`);
                         }
@@ -241,7 +237,7 @@ exports.run = (bot, guild, message, command, args) => {
                     cannotEffect(message, botVoice, 'pause the music');
                 } else {
                     //Check if bot is not in voice
-                    if (botVoice) {
+                    if (botVoice && serverQueue && serverQueue.songs.length > 0) {
                         //Check user is either manager or has dj role
                         if (IsDJ(message) || IsManager(message)) {
                             //Pause dispatcher
@@ -251,7 +247,7 @@ exports.run = (bot, guild, message, command, args) => {
                             message.WaffleResponse(`Sorry, only server moderators or DJ's can pause the music.`);
                         }
                     } else {
-                        message.WaffleResponse('I am currently not playing anything so cannot be paused.');
+                        message.WaffleResponse('I am currently not playing anything so cannot be paused.', MTYPE.Information);
                     }
                 }
             } else {
@@ -266,7 +262,7 @@ exports.run = (bot, guild, message, command, args) => {
                     cannotEffect(message, botVoice, 'resume playing music');
                 } else {
                     //Check if bot is not in voice
-                    if (botVoice && (serverQueue && serverQueue.songs.length > 0)) {
+                    if (botVoice && serverQueue && serverQueue.songs.length > 0) {
                         //Check user is either manager or has dj role
                         if (IsDJ(message) || IsManager(message)) {
                             //Resume dispatcher
@@ -276,7 +272,7 @@ exports.run = (bot, guild, message, command, args) => {
                             message.WaffleResponse(`Sorry, only server moderators or DJ's can resume the music`);
                         }
                     } else {
-                        message.WaffleResponse('I am currently not playing anything so cannot be resumed.');
+                        message.WaffleResponse('I am currently not playing anything so cannot be resumed.', MTYPE.Information);
                     }
                 }
             } else {
@@ -285,7 +281,7 @@ exports.run = (bot, guild, message, command, args) => {
             break;
         case 'nowplaying': case 'nowp': case 'now': case 'np':
             //Check if bot is not in voice
-            if (botVoice && (serverQueue && serverQueue.songs.length > 0)) {
+            if (botVoice && serverQueue && serverQueue.songs.length > 0) {
                 //Create details
                 const title = serverQueue.songs[0].song.title.replace(/(\*|_|`|~|\\|\[|])/g, '');
                 const url = serverQueue.songs[0].song.url;
@@ -304,7 +300,7 @@ exports.run = (bot, guild, message, command, args) => {
             break;
         case 'queue': case 'q':
             //Check if bot is not in voice
-            if (botVoice && serverQueue) {
+            if (botVoice && serverQueue && serverQueue.songs.length > 0) {
                 //Get main details
                 const totalDuration = (serverQueue.songs.map(v => v.song.duration_ms).reduce((a, b) => a + b) / 1000).toString().toTimeString(true);
                 const currentDuration = (serverQueue.songs[0].song.duration_ms / 1000).toString().toTimeString();
@@ -340,7 +336,7 @@ exports.run = (bot, guild, message, command, args) => {
                     cannotEffect(message, botVoice, 'shuffle the queue');
                 } else {
                     //Check if bot is not in voice
-                    if (botVoice && (serverQueue && serverQueue.songs.length > 0)) {
+                    if (botVoice && serverQueue && serverQueue.songs.length > 0) {
                         //Shuffle queue but keep playing current song
                         var currentSong = serverQueue.songs.shift(); //Get current song and pull out from queue
                         serverQueue.songs.shuffle(); //Shuffle queue
@@ -364,7 +360,7 @@ exports.run = (bot, guild, message, command, args) => {
                     cannotEffect(message, botVoice, 'move a song within the queue');
                 } else {
                     //Check if bot is not in voice
-                    if (botVoice && (serverQueue && serverQueue.songs.length > 0)) {
+                    if (botVoice && serverQueue && serverQueue.songs.length > 0) {
                         //Get old index
                         var oldIndex = args.shift();
                         if (oldIndex && /^\d+$/.test(oldIndex)) {
@@ -400,7 +396,7 @@ exports.run = (bot, guild, message, command, args) => {
                             message.WaffleResponse('Which song did you want to move somewhere within queue?');
                         }
                     } else {
-                        message.WaffleResponse('I am currently not playing anything so you cannot move any songs around within the queue');
+                        message.WaffleResponse('I am currently not playing anything so you cannot move any songs around within the queue', MTYPE.Information);
                     }
                 }
             } else {
@@ -415,7 +411,7 @@ exports.run = (bot, guild, message, command, args) => {
                     cannotEffect(message, botVoice, 'remove song from queue');
                 } else {
                     //Check if bot is not in voice
-                    if (botVoice && (serverQueue && serverQueue.songs.length > 0)) {
+                    if (botVoice && serverQueue && serverQueue.songs.length > 0) {
                         //Check if manager or DJ
                         if (IsDJ(message) || IsManager(message)) {
                             //Get index
@@ -441,7 +437,7 @@ exports.run = (bot, guild, message, command, args) => {
                             message.WaffleResponse('Sorry, only server moderators or DJ\'s can remove a song from the queue');
                         }
                     } else {
-                        message.WaffleResponse('I am currently not playing anything so you cannot remove a song from the queue');
+                        message.WaffleResponse('I am currently not playing anything so you cannot remove a song from the queue', MTYPE.Information);
                     }
                 }
             } else {
@@ -478,12 +474,8 @@ async function play(bot, message, guild, song) {
 
     //Check if a song exists.
     if (!song) {
-        //Send message
-        message.WaffleResponse(`Finished playing music from the queue.`, MTYPE.Information, null, false, null, serverQueue.textChannel)
-
-        //Leave channel
-        serverQueue.voiceChannel.leave();
-        bot.musicQueue.delete(guild.id);
+        //Leave on end of music after 5 minutes
+        leaveChannelOnNoSong(bot, message, serverQueue);
         return;
     } else {
         //Song details
@@ -525,4 +517,29 @@ function cannotEffect(message, botVoice, whatAmIDoing) {
         `I am currently playing music in ${botVoice.toString()} so cannot ${whatAmIDoing} in your channel. ` +
         `Please either drag me to your channel or move into ${botVoice.toString()}`
     );
+}
+
+//Leave Channel after some time if no new songs are queued
+function leaveChannelOnNoSong(bot, message, serverQueue) {
+    //Set job uuid
+    const jobUUID = uuidv4();
+
+    bot.jobsManager.get(message.guild.id).CreateJob('5m', () => {
+        //Check if serverQueue is empty
+        if (serverQueue.songs.length < 1) {
+            //Send message
+            message.WaffleResponse(
+                'Finished playing music from the queue and 5 minutes of idle time has passed.',
+                MTYPE.Information, null, false, null, serverQueue.textChannel);
+
+            //Leave channel
+            serverQueue.voiceChannel.leave();
+            bot.musicQueue.delete(guild.id);
+
+            //Undeafen
+            message.guild.me.voice.setDeaf(false);
+        }
+        //Delete job
+        bot.jobsManager.get(message.guild.id).StopJob(`leaveNoSong ${jobUUID}`);
+    }, `leaveNoSong ${jobUUID}`, true);
 }
