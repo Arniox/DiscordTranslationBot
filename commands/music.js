@@ -89,6 +89,8 @@ exports.run = (bot, guild, message, command, args) => {
                                                     voiceChannel: voiceChannel,
                                                     connection: null,
                                                     songs: [],
+                                                    finishedSongs: [],
+                                                    loop: false,
                                                     volume: 0.1,
                                                     playing: true,
                                                     skip: 0,
@@ -302,13 +304,15 @@ exports.run = (bot, guild, message, command, args) => {
             //Check if bot is not in voice
             if (botVoice && serverQueue && serverQueue.songs.length > 0) {
                 //Get main details
-                const totalDuration = (serverQueue.songs.map(v => v.song.duration_ms).reduce((a, b) => a + b) / 1000).toString().toTimeString(true);
                 const currentDuration = (serverQueue.songs[0].song.duration_ms / 1000).toString().toTimeString();
+                const totalFinishedDuration = (serverQueue.finishedSongs.length > 0 ?
+                    (serverQueue.finishedSongs.map(v => v.song.duration_ms).reduce((a, b) => a + b) / 1000).toString().toTimeString(true) : '0');
+                const totalDuration = (serverQueue.songs.map(v => v.song.duration_ms).reduce((a, b) => a + b) / 1000).toString().toTimeString(true);
                 const currentTime = (serverQueue.connection.dispatcher.streamTime / 1000).toString().toTimeString();
                 //Send message
                 ListMessage(message,
                     `Songs in Music Queue:\n\n` +
-                    `**Total Queue Duration:**\n${totalDuration}\n\n` +
+                    `**Total Queue Duration:**\n${totalFinishedDuration} - ${totalDuration}\n\n` +
                     `**Current Song:** ${currentTime} - ${currentDuration}\n\n`, '#0099ff', MessageToArray(() => {
                         //For loop them into an output
                         var output = '';
@@ -444,6 +448,33 @@ exports.run = (bot, guild, message, command, args) => {
                 message.WaffleResponse('Please join a voice channel first.');
             }
             break;
+        case 'loop': case 'lo': case 'l':
+            //Check if user not in voice
+            if (voiceChannel) {
+                //Check if bot voice already exists
+                if (botVoice && (botVoice != voiceChannel)) {
+                    cannotEffect(message, botVoice, 'loop the queue');
+                } else {
+                    //Check if bot is not in voice
+                    if (botVoice && serverQueue && serverQueue.songs.length > 0) {
+                        //Check if manager or DJ
+                        if (IsDJ(message) || IsManager(message)) {
+                            //Change server loop status
+                            serverQueue.loop = !serverQueue.loop;
+
+                            //Message
+                            message.WaffleResponse(`${serverQueue.loop ? 'Looped' : 'Unlooped'} Song Queue 🔄`, MTYPE.Information);
+                        } else {
+                            message.WaffleResponse('Sorry, only server moderators or DJ\'s can loop or unloop the queue.');
+                        }
+                    } else {
+                        message.WaffleResponse('I am currently not playing anything so you cannot loop or unloop the queue', MTYPE.Information);
+                    }
+                }
+            } else {
+                message.WaffleResponse('Please join a voice channel first.');
+            }
+            break;
         default:
             HelpMessage(bot, guild, message, args);
     }
@@ -462,7 +493,8 @@ function HelpMessage(bot, guild, message, args) {
             { name: 'Now Playing:', value: `${guild.Prefix}[nowplaying:nowp:now:np]` },
             { name: 'Shuffle', value: `${guild.Prefix}[shuffle:shuff:shuf:sh]` },
             { name: 'Move Song', value: `${guild.Prefix}[movesong:songmove] [song index] [new song index]` },
-            { name: 'Remove Song', value: `${guild.Prefix}[removesong:songremove:remove:rem] [song index]` }
+            { name: 'Remove Song', value: `${guild.Prefix}[removesong:songremove:remove:rem] [song index]` },
+            { name: 'Loop Queue', value: `${guild.Prefix}[loop:lo:l] *(Only Members with a role named \"DJ\" and server managers can loop the queue)*` }
         ],
         true, 'Thanks, and have a good day'
     );
@@ -474,8 +506,18 @@ async function play(bot, message, guild, song) {
 
     //Check if a song exists.
     if (!song) {
-        //Leave on end of music after 5 minutes
-        leaveChannelOnNoSong(bot, message, serverQueue);
+        if (serverQueue.loop) {
+            //Copy finished songs back to songs
+            serverQueue.songs = serverQueue.songs.concat(serverQueue.finishedSongs);
+            serverQueue.finishedSongs = []; //Clear finished songs
+
+            //Play again and message
+            message.WaffleResponse(`Looped 🔄`, MTYPE.Information);
+            return play(bot, message, guild, serverQueue.songs[0]);
+        } else {
+            //Leave on end of music after 5 minutes
+            leaveChannelOnNoSong(bot, message, serverQueue);
+        }
         return;
     } else {
         //Song details
@@ -496,7 +538,7 @@ async function play(bot, message, guild, song) {
                 );
             }).on("finish", () => {
                 //Shift songs and play next recursively
-                serverQueue.songs.shift();
+                serverQueue.finishedSongs.push(serverQueue.songs.shift());
                 return play(bot, message, guild, serverQueue.songs[0]);
             }).on('error', (err) => {
                 //Send message
