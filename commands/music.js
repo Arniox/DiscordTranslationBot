@@ -311,7 +311,7 @@ exports.run = (bot, guild, message, command, args) => {
                 const currentTime = (serverQueue.connection.dispatcher.streamTime / 1000).toString().toTimeString();
                 //Send message
                 ListMessage(message,
-                    `Songs in Music Queue:\n\n` +
+                    `Songs in Music Queue ${serverQueue.loop ? `(Looped)` : ''}:\n\n` +
                     `**Total Queue Duration:**\n${totalFinishedDuration} - ${totalDuration}\n\n` +
                     `**Current Song:** ${currentTime} - ${currentDuration}\n\n`, '#0099ff', MessageToArray(() => {
                         //For loop them into an output
