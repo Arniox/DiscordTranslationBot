@@ -31,7 +31,7 @@ exports.run = (bot, guild, message, command, args) => {
                 bot.con.query(update_based_counter_cmd, (error, results, fields) => {
                     if (error) return console.error(error); //Throw error and return
                     //Send message
-                    message.WaffleResponse(`Based Counter: ${counter + 1}`, MTYPE.Information, null, false, null, outPutChannel);
+                    message.WaffleResponse(`Based Counter: ${counter + 1}`, MTYPE.Information, null, false, null, outPutChannel, ATYPE.None);
                 });
             });
             break;
