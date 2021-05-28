@@ -55,8 +55,7 @@ exports.run = (bot, guild, message, command, args) => {
                                             var discludedMembers = message.guild.members.cache.filter(i => !i.user.bot && (!results || !results.length ? false : results.map(v => v.PlayerId).includes(i.id)));
 
                                             //Send message
-                                            message.channel
-                                                .send(new Discord.MessageEmbed().setDescription(`Translating 0 / ${members.size} members nicknames into ${value.name}`).setColor('#FFCC00'))
+                                            message.WaffleResponse(`Translating 0 / ${members.size} members nicknames into ${value.name}`, MTYPE.Loading)
                                                 .then((sent) => {
                                                     var count = 0;
 
@@ -81,17 +80,17 @@ exports.run = (bot, guild, message, command, args) => {
                                                                     sent.edit(new Discord.MessageEmbed().setDescription(`Translating ${count} / ${members.size} members nicknames into ${value.name}`).setColor('#FFCC00'));
                                                             });
                                                         } else {
-                                                            message.channel.send(new Discord.MessageEmbed().setDescription(`I had problem translating ${v.toString()}\'s` +
-                                                                ` nickname due to Missing Permissions`).setColor('#b50909'));
+                                                            message.WaffleResponse(`I had problem translating ${v.toString()}\'s` +
+                                                                ` nickname due to Missing Permissions`);
                                                         }
                                                     });
                                                 });
                                         });
                                     }).catch((err) => {
-                                        message.channel.send(new Discord.MessageEmbed().setDescription(`${err}`).setColor('#b50909'));
+                                        message.WaffleResponse(`${err}`);
                                     });
                                 } else {
-                                    message.channel.send(new Discord.MessageEmbed().setDescription('Sorry, you need management perms to run this command.').setColor('#b50909'));
+                                    message.WaffleResponse('Sorry, you need management perms to run this command.');
                                 }
                                 break;
                             case 'me': case 'm':
@@ -120,14 +119,14 @@ exports.run = (bot, guild, message, command, args) => {
                                             //Change name
                                             message.member.setNickname(translation.translatedText.substring(0, 32), `Translating name from ${currentUserNickName}, to ${translation.translatedText} in ${value.name}`);
                                             //Send message
-                                            message.channel.send(new Discord.MessageEmbed().setDescription(`I have translated your nickname, ${currentUserNickName}, to ${translation.translatedText}` +
-                                                ` in ${value.name}`).setColor('#09b50c'));
+                                            message.WaffleResponse(`I have translated your nickname, ${currentUserNickName}, to ${translation.translatedText}` +
+                                                ` in ${value.name}`, MTYPE.Success);
                                         });
                                     }).catch((err) => {
-                                        message.channel.send(new Discord.MessageEmbed().setDescription(`${err}`).setColor('#b50909'));
+                                        message.WaffleResponse(`${err}`);
                                     });
                                 } else {
-                                    message.channel.send(new Discord.MessageEmbed().setDescription(`I cannot translate your nickname ${message.member.toString()} due to Missing Permissions`).setColor('#b50909'));
+                                    message.WaffleResponse(`I cannot translate your nickname ${message.member.toString()} due to Missing Permissions`);
                                 }
                                 break;
                             case 'someone': case 'some': case 'one': case 's':
@@ -172,28 +171,28 @@ exports.run = (bot, guild, message, command, args) => {
                                                                 //Change name
                                                                 v.setNickname(translation.translatedText.substring(0, 32), `Translating name from ${currentUserNickName} to ${translation.translatedText} in ${value.name}`);
                                                                 //Send message
-                                                                message.channel.send(new Discord.MessageEmbed().setDescription(`I have translated ${v.user.username}\'s nickname from ${currentUserNickName} to ${translation.translatedText}` +
-                                                                    ` in ${value.name}`).setColor('#09b50c'));
+                                                                message.WaffleResponse(`I have translated ${v.user.username}\'s nickname from ${currentUserNickName} to ${translation.translatedText}` +
+                                                                    ` in ${value.name}`, MTYPE.Success);
                                                             });
                                                         }).catch((err) => {
-                                                            message.channel.send(new Discord.MessageEmbed().setDescription(`${err}`).setColor('#b50909'));
+                                                            message.WaffleResponse(`${err}`);
                                                         });
                                                     } else {
-                                                        message.channel.send(new Discord.MessageEmbed().setDescription(`${v.toString()} has chosen to ignore his nickname from translation.` +
-                                                            ` You cannot change his nickname unfortunately. Sorry.`).setColor('#b50909'));
+                                                        message.WaffleResponse(`${v.toString()} has chosen to ignore his nickname from translation.` +
+                                                            ` You cannot change his nickname unfortunately. Sorry.`);
                                                     }
                                                 });
                                             } else {
-                                                message.channel.send(new Discord.MessageEmbed().setDescription(`I hade problem translating ${v.toString()}\'s` +
-                                                    ` nickname due to Missing Permissions`).setColor('#b50909'));
+                                                message.WaffleResponse(`I hade problem translating ${v.toString()}\'s` +
+                                                    ` nickname due to Missing Permissions`);
                                             }
                                         });
                                     } else {
-                                        message.channel.send(new Discord.MessageEmbed().setDescription('Sorry, you either didn\'t select anyone or you selected too many people to run this command on.' +
-                                            'I can only translate one person at a time.').setColor('#b50909'));
+                                        message.WaffleResponse('Sorry, you either didn\'t select anyone or you selected too many people to run this command on.' +
+                                            'I can only translate one person at a time.');
                                     }
                                 } else {
-                                    message.channel.send(new Discord.MessageEmbed().setDescription('Sorry, you need nick naming perms to run this command.').setColor('#b50909'));
+                                    message.WaffleResponse('Sorry, you need nick naming perms to run this command.');
                                 }
                                 break;
                             case 'whisper': case 'whis': case 'wis': case 'w':
@@ -235,9 +234,8 @@ exports.run = (bot, guild, message, command, args) => {
 
                                                             //Get all supported languages
                                                             googleTranslate.getSupportedLanguages('en', function (err, languageCodes) {
-                                                                //Send message and uodate
-                                                                message.channel
-                                                                    .send(new Discord.MessageEmbed().setDescription(`Playing Chinese whispers with ${v.toString()}\'s nickname...`).setColor('#FFCC00'))
+                                                                //Send message and update
+                                                                message.WaffleResponse(`Playing Chinese whispers with ${v.toString()}\'s nickname...`, MTYPE.Loading)
                                                                     .then((sent) => {
                                                                         var langCount = 0;
                                                                         var previousLanguage = '***Auto Detected***';
@@ -307,24 +305,24 @@ exports.run = (bot, guild, message, command, args) => {
                                                                     });
                                                             });
                                                         }).catch((err) => {
-                                                            message.channel.send(new Discord.MessageEmbed().setDescription(`${err}`).setColor('#b50909'));
+                                                            message.WaffleResponse(`${err}`);
                                                         });
                                                     } else {
-                                                        message.channel.send(new Discord.MessageEmbed().setDescription(`${v.toString()} has chosen to ignore his nickname from translation.` +
-                                                            ` You cannot change his nickname unfortunately.Sorry.`).setColor('#b50909'));
+                                                        message.WaffleResponse(`${v.toString()} has chosen to ignore his nickname from translation.` +
+                                                            ` You cannot change his nickname unfortunately.Sorry.`);
                                                     }
                                                 });
                                             } else {
-                                                message.channel.send(new Discord.MessageEmbed().setDescription(`I hade problem translating ${v.toString()}\'s` +
-                                                    ` nickname due to Missing Permissions`).setColor('#b50909'));
+                                                message.WaffleResponse(`I hade problem translating ${v.toString()}\'s` +
+                                                    ` nickname due to Missing Permissions`);
                                             }
                                         });
                                     } else {
-                                        message.channel.send(new Discord.MessageEmbed().setDescription('Sorry, you either didn\'t select anyone or you selected too many people to run this command on.' +
-                                            'I can only translate one person at a time.').setColor('#b50909'));
+                                        message.WaffleResponse('Sorry, you either didn\'t select anyone or you selected too many people to run this command on.' +
+                                            'I can only translate one person at a time.');
                                     }
                                 } else {
-                                    message.channel.send(new Discord.MessageEmbed().setDescription('Sorry, you need nick naming perms to run this command.').setColor('#b50909'));
+                                    message.WaffleResponse('Sorry, you need nick naming perms to run this command.');
                                 }
                                 break;
                             default:
@@ -335,7 +333,7 @@ exports.run = (bot, guild, message, command, args) => {
                         HelpMessage(bot, guild, message, args);
                     }
                 } else {
-                    message.channel.send(new Discord.MessageEmbed().setDescription(`Sorry, your discord server is dissallowed to use translation commands. This is a premium service.`).setColor('#b50909'));
+                    message.WaffleResponse(`Sorry, your discord server is dissallowed to use translation commands. This is a premium service.`);
                 }
                 break;
             case 'set': case 's':
@@ -364,8 +362,7 @@ exports.run = (bot, guild, message, command, args) => {
                                         var discludedMembers = message.guild.members.cache.filter(i => !i.user.bot && (!results || !results.length ? false : results.map(v => v.PlayerId).includes(i.id)));
 
                                         //Send message
-                                        message.channel
-                                            .send(new Discord.MessageEmbed().setDescription(`Setting 0 / ${members.size} members nicknames to ${query}`).setColor('#FFCC00'))
+                                        message.WaffleResponse(`Setting 0 / ${members.size} members nicknames to ${query}`, MTYPE.Loading)
                                             .then((sent) => {
                                                 var count = 0;
 
@@ -386,16 +383,16 @@ exports.run = (bot, guild, message, command, args) => {
                                                         else
                                                             sent.edit(new Discord.MessageEmbed().setDescription(`Setting ${count} / ${members.size} members nicknames to ${query}`).setColor('#FFCC00'));
                                                     } else {
-                                                        message.channel.send(new Discord.MessageEmbed().setDescription(`I had a problem setting ${value.toString()}\'s nickname due to Missing Permissions.`).setColor('#b50909'));
+                                                        message.WaffleResponse(`I had a problem setting ${value.toString()}\'s nickname due to Missing Permissions.`);
                                                     }
                                                 });
                                             });
                                     });
                                 } else {
-                                    message.channel.send(new Discord.MessageEmbed().setDescription('Sorry, you cannot set everyone\'s name to nothing.').setColor('#b50909'));
+                                    message.WaffleResponse('Sorry, you cannot set everyone\'s name to nothing.');
                                 }
                             } else {
-                                message.channel.send(new Discord.MessageEmbed().setDescription('Sorry, you need management perms to run this command.').setColor('#b50909'));
+                                message.WaffleResponse('Sorry, you need management perms to run this command.');
                             }
                             break;
                         case 'me': case 'm':
@@ -409,12 +406,12 @@ exports.run = (bot, guild, message, command, args) => {
                                     //Change nickname
                                     message.member.setNickname(query.substring(0, 32), `Set ${message.member.user.username}\'s nickname to ${query}.`);
                                     //send message
-                                    message.channel.send(new Discord.MessageEmbed().setDescription(`I have changed your name, ${currentUserNickName}, to ${query}`).setColor('#09b50c'));
+                                    message.WaffleResponse(`I have changed your name, ${currentUserNickName}, to ${query}`, MTYPE.Success);
                                 } else {
-                                    message.channel.send(new Discord.MessageEmbed().setDescription(`I cannot set your nickname ${message.member.toString()} due to Missing Permissions`).setColor('#b50909'));
+                                    message.WaffleResponse(`I cannot set your nickname ${message.member.toString()} due to Missing Permissions`);
                                 }
                             } else {
-                                message.channel.send(new Discord.MessageEmbed().setDescription('Sorry, you cannot set your own name to nothing.').setColor('#b50909'));
+                                message.WaffleResponse('Sorry, you cannot set your own name to nothing.');
                             }
                             break;
                         case 'someone': case 'some': case 'one': case 's':
@@ -431,19 +428,19 @@ exports.run = (bot, guild, message, command, args) => {
                                             //Change nickname
                                             mentions.first().setNickname(query.substring(0, 32), `Set ${mentions.first().user.username}\'s nickname to ${query}.`);
                                             //send message
-                                            message.channel.send(new Discord.MessageEmbed().setDescription(`I have changed ${mentions.first().toString()}\'s nickname to ${query}`).setColor('#09b50c'));
+                                            message.WaffleResponse(`I have changed ${mentions.first().toString()}\'s nickname to ${query}`, MTYPE.Success);
                                         } else {
-                                            message.channel.send(new Discord.MessageEmbed().setDescription(`Sorry, I cannot set ${mentions.first().toString()}\'s nickname to nothing.`).setColor('#b50909'));
+                                            message.WaffleResponse(`Sorry, I cannot set ${mentions.first().toString()}\'s nickname to nothing.`);
                                         }
                                     } else {
-                                        message.channel.send(new Discord.MessageEmbed().setDescription(`I had a problem setting ${mentions.first().toString()}\'s nickname due to Missing Permissions.`).setColor('#b50909'));
+                                        message.WaffleResponse(`I had a problem setting ${mentions.first().toString()}\'s nickname due to Missing Permissions.`);
                                     }
                                 } else {
-                                    message.channel.send(new Discord.MessageEmbed().setDescription('Sorry, you either didn\'t select anyone or you selected too many people to run this command on.' +
-                                        'I can only set one person at a time.').setColor('#b50909'));
+                                    message.WaffleResponse('Sorry, you either didn\'t select anyone or you selected too many people to run this command on.' +
+                                        'I can only set one person at a time.');
                                 }
                             } else {
-                                message.channel.send(new Discord.MessageEmbed().setDescription('Sorry, you need nick naming perms to run this command.').setColor('#b50909'));
+                                message.WaffleResponse('Sorry, you need nick naming perms to run this command.');
                             }
                             break;
                         default:
@@ -480,8 +477,7 @@ exports.run = (bot, guild, message, command, args) => {
                                         var discludedMembers = message.guild.members.cache.filter(i => !i.user.bot && (!results || !results.length ? false : results.map(v => v.PlayerId).includes(i.id)));
 
                                         //Send message
-                                        message.channel
-                                            .send(new Discord.MessageEmbed().setDescription(`Appending 0 / ${members.size} members nicknames with ${query}`).setColor('#FFCC00'))
+                                        message.WaffleResponse(`Appending 0 / ${members.size} members nicknames with ${query}`, MTYPE.Loading)
                                             .then((sent) => {
                                                 var count = 0;
 
@@ -502,16 +498,16 @@ exports.run = (bot, guild, message, command, args) => {
                                                         else
                                                             sent.edit(new Discord.MessageEmbed().setDescription(`Appending ${count} / ${members.size} members nicknames with ${query}`).setColor('#FFCC00'));
                                                     } else {
-                                                        message.channel.send(new Discord.MessageEmbed().setDescription(`I had a problem appending ${value.toString()}\'s nickname due to Missing Permissions.`).setColor('#b50909'));
+                                                        message.WaffleResponse(`I had a problem appending ${value.toString()}\'s nickname due to Missing Permissions.`);
                                                     }
                                                 });
                                             });
                                     });
                                 } else {
-                                    message.channel.send(new Discord.MessageEmbed().setDescription('Sorry, you cannot append everyone\'s name with nothing.').setColor('#b50909'));
+                                    message.WaffleResponse('Sorry, you cannot append everyone\'s name with nothing.');
                                 }
                             } else {
-                                message.channel.send(new Discord.MessageEmbed().setDescription('Sorry, you need management perms to run this command.').setColor('#b50909'));
+                                message.WaffleResponse('Sorry, you need management perms to run this command.');
                             }
                             break;
                         case 'me': case 'm':
@@ -525,12 +521,12 @@ exports.run = (bot, guild, message, command, args) => {
                                     //Change nickname
                                     message.member.setNickname((NickName(message.member) + query), `Appended ${message.member.user.username}\'s nickname with ${query}.`);
                                     //Send message
-                                    message.channel.send(new Discord.MessageEmbed().setDescription(`I have appended your name, ${currentUserNickName}, with ${query}`).setColor('#09b50c'));
+                                    message.WaffleResponse(`I have appended your name, ${currentUserNickName}, with ${query}`, MTYPE.Success);
                                 } else {
-                                    message.channel.send(new Discord.MessageEmbed().setDescription(`I cannot append your nickname ${message.member.toString()} due to Missing Permissions.`).setColor('#b50909'));
+                                    message.WaffleResponse(`I cannot append your nickname ${message.member.toString()} due to Missing Permissions.`);
                                 }
                             } else {
-                                message.channel.send(new Discord.MessageEmbed().setDescription(`Sorry, you cannot set yor own name to nothing.`).setColor('#b50909'));
+                                message.WaffleResponse(`Sorry, you cannot set yor own name to nothing.`);
                             }
                             break;
                         case 'someone': case 'some': case 'one': case 's':
@@ -547,19 +543,19 @@ exports.run = (bot, guild, message, command, args) => {
                                             //Change nickname
                                             mentions.first().setNickname((NickName(mentions.first()) + query), `Appended ${mentions.first().user.username}\'s nickname with ${query}`);
                                             //Send message
-                                            message.channel.send(new Discord.MessageEmbed().setDescription(`I have appended ${mentions.first().toString()}\'s nickname with ${query}`).setColor('#09b50c'));
+                                            message.WaffleResponse(`I have appended ${mentions.first().toString()}\'s nickname with ${query}`, MTYPE.Success);
                                         } else {
-                                            message.channel.send(new Discord.MessageEmbed().setDescription(`Sorry, I cannot append ${mentions.first().toString()}\'s nickname with nothing.`).setColor('#b50909'));
+                                            message.WaffleResponse(`Sorry, I cannot append ${mentions.first().toString()}\'s nickname with nothing.`);
                                         }
                                     } else {
-                                        message.channel.send(new Discord.MessageEmbed().setDescription(`I had a problem appending ${mentions.first().toString()}\'s nickname due to Missing Permissions.`).setColor('#b50909'));
+                                        message.WaffleResponse(`I had a problem appending ${mentions.first().toString()}\'s nickname due to Missing Permissions.`);
                                     }
                                 } else {
-                                    message.channel.send(new Discord.MessageEmbed().setDescription('Sorry, you either didn\'t select anyone or you selected too many people to run this command on.' +
-                                        'I can only set one person at a time.').setColor('#b50909'));
+                                    message.WaffleResponse('Sorry, you either didn\'t select anyone or you selected too many people to run this command on.' +
+                                        'I can only set one person at a time.');
                                 }
                             } else {
-                                message.channel.send(new Discord.MessageEmbed().setDescription('Sorry, you need nick naming perms to run this command.').setColor('#b50909'));
+                                message.WaffleResponse('Sorry, you need nick naming perms to run this command.');
                             }
                             break;
                         default:
@@ -596,8 +592,7 @@ exports.run = (bot, guild, message, command, args) => {
                                         var discludedMembers = message.guild.members.cache.filter(i => !i.user.bot && (!results || !results.length ? false : results.map(v => v.PlayerId).includes(i.id)));
 
                                         //Send message
-                                        message.channel
-                                            .send(new Discord.MessageEmbed().setDescription(`Prepending 0 / ${members.size} members nicknames with ${query}`).setColor('#FFCC00'))
+                                        message.WaffleResponse(`Prepending 0 / ${members.size} members nicknames with ${query}`, MTYPE.Loading)
                                             .then((sent) => {
                                                 var count = 0;
 
@@ -618,16 +613,16 @@ exports.run = (bot, guild, message, command, args) => {
                                                         else
                                                             sent.edit(new Discord.MessageEmbed().setDescription(`Prepending ${count} / ${members.size} members nicknames with ${query}`).setColor('#FFCC00'));
                                                     } else {
-                                                        message.channel.send(new Discord.MessageEmbed().setDescription(`I had a problem prepending ${value.toString()}\'s nickname due to Missing Permissions.`).setColor('#b50909'));
+                                                        message.WaffleResponse(`I had a problem prepending ${value.toString()}\'s nickname due to Missing Permissions.`);
                                                     }
                                                 });
                                             });
                                     });
                                 } else {
-                                    message.channel.send(new Discord.MessageEmbed().setDescription('Sorry, you cannot prepend everyone\'s name with nothing.').setColor('#b50909'));
+                                    message.WaffleResponse('Sorry, you cannot prepend everyone\'s name with nothing.');
                                 }
                             } else {
-                                message.channel.send(new Discord.MessageEmbed().setDescription('Sorry, you need management perms to run this command.').setColor('#b50909'));
+                                message.WaffleResponse('Sorry, you need management perms to run this command.');
                             }
                             break;
                         case 'me': case 'm':
@@ -641,12 +636,12 @@ exports.run = (bot, guild, message, command, args) => {
                                     //Change nickname
                                     message.member.setNickname((query + NickName(message.member)), `Prepended ${message.member.user.username}\'s nickname with ${query}.`);
                                     //Send message
-                                    message.channel.send(new Discord.MessageEmbed().setDescription(`I have prepended your name, ${currentUserNickName}, with ${query}`).setColor('#09b50c'));
+                                    message.WaffleResponse(`I have prepended your name, ${currentUserNickName}, with ${query}`, MTYPE.Success);
                                 } else {
-                                    message.channel.send(new Discord.MessageEmbed().setDescription(`I cannot prepend your nickname ${message.member.toString()} due to Missing Permissions.`).setColor('#b50909'));
+                                    message.WaffleResponse(`I cannot prepend your nickname ${message.member.toString()} due to Missing Permissions.`);
                                 }
                             } else {
-                                message.channel.send(new Discord.MessageEmbed().setDescription(`Sorry, you cannot set yor own name to nothing.`).setColor('#b50909'));
+                                message.WaffleResponse(`Sorry, you cannot set yor own name to nothing.`);
                             }
                             break;
                         case 'someone': case 'some': case 'one': case 's':
@@ -663,19 +658,19 @@ exports.run = (bot, guild, message, command, args) => {
                                             //Change nickname
                                             mentions.first().setNickname((query + NickName(mentions.first())), `Prepended ${mentions.first().user.username}\'s nickname with ${query}`);
                                             //Send message
-                                            message.channel.send(new Discord.MessageEmbed().setDescription(`I have prepended ${mentions.first().toString()}\'s nickname with ${query}`).setColor('#09b50c'));
+                                            message.WaffleResponse(`I have prepended ${mentions.first().toString()}\'s nickname with ${query}`, MTYPE.Success);
                                         } else {
-                                            message.channel.send(new Discord.MessageEmbed().setDescription(`Sorry, I cannot prepend ${mentions.first().toString()}\'s nickname with nothing.`).setColor('#b50909'));
+                                            message.WaffleResponse(`Sorry, I cannot prepend ${mentions.first().toString()}\'s nickname with nothing.`);
                                         }
                                     } else {
-                                        message.channel.send(new Discord.MessageEmbed().setDescription(`I had a problem prepending ${mentions.first().toString()}\'s nickname due to Missing Permissions.`).setColor('#b50909'));
+                                        message.WaffleResponse(`I had a problem prepending ${mentions.first().toString()}\'s nickname due to Missing Permissions.`);
                                     }
                                 } else {
-                                    message.channel.send(new Discord.MessageEmbed().setDescription('Sorry, you either didn\'t select anyone or you selected too many people to run this command on.' +
-                                        'I can only set one person at a time.').setColor('#b50909'));
+                                    message.WaffleResponse('Sorry, you either didn\'t select anyone or you selected too many people to run this command on.' +
+                                        'I can only set one person at a time.');
                                 }
                             } else {
-                                message.channel.send(new Discord.MessageEmbed().setDescription('Sorry, you need nick naming perms to run this command.').setColor('#b50909'));
+                                message.WaffleResponse('Sorry, you need nick naming perms to run this command.');
                             }
                             break;
                         default:
@@ -708,8 +703,7 @@ exports.run = (bot, guild, message, command, args) => {
                                     var discludedMembers = message.guild.members.cache.filter(i => !i.user.bot && (!results || !results.length ? false : results.map(v => v.PlayerId).includes(i.id)));
 
                                     //Send message
-                                    message.channel
-                                        .send(new Discord.MessageEmbed().setDescription(`Resetting 0 / ${members.size} members usernames.`).setColor('#FFCC00'))
+                                    message.WaffleResponse(`Resetting 0 / ${members.size} members usernames.`, MTYPE.Loading)
                                         .then((sent) => {
                                             var count = 0;
 
@@ -731,13 +725,13 @@ exports.run = (bot, guild, message, command, args) => {
                                                     else
                                                         sent.edit(new Discord.MessageEmbed().setDescription(`Resetting ${count} / ${members.size} members usernames.`).setColor('#FFCC00'));
                                                 } else {
-                                                    message.channel.send(new Discord.MessageEmbed().setDescription(`I had a problem resetting ${value.toString()}\'s nickname due to Missing Permissions.`).setColor('#b50909'));
+                                                    message.WaffleResponse(`I had a problem resetting ${value.toString()}\'s nickname due to Missing Permissions.`);
                                                 }
                                             });
                                         });
                                 });
                             } else {
-                                message.channel.send(new Discord.MessageEmbed().setDescription('Sorry, you need management perms to run this command.').setColor('#b50909'));
+                                message.WaffleResponse('Sorry, you need management perms to run this command.');
                             }
                             break;
                         case 'me': case 'm':
@@ -747,9 +741,9 @@ exports.run = (bot, guild, message, command, args) => {
                                 //Change nickanme
                                 message.member.setNickname(message.member.user.username, `Reset ${currentUserNickName}\'s nickname to default username (${message.member.user.username})`);
                                 //Send message
-                                message.channel.send(new Discord.MessageEmbed().setDescription(`I have reset your nickname, ${currentUserNickName}, to your default username (${message.member.user.username})`).setColor('#09b50c'));
+                                message.WaffleResponse(`I have reset your nickname, ${currentUserNickName}, to your default username (${message.member.user.username})`, MTYPE.Success);
                             } else {
-                                message.channel.send(new Discord.MessageEmbed().setDescription(`I cannot reset your nickname ${message.member.toString()} due to Missing Permissions`).setColor('#b50909'));
+                                message.WaffleResponse(`I cannot reset your nickname ${message.member.toString()} due to Missing Permissions`);
                             }
                             break;
                         case 'someone': case 'some': case 'one': case 's':
@@ -763,18 +757,18 @@ exports.run = (bot, guild, message, command, args) => {
                                             //Change nickname
                                             value.setNickname(value.user.username, `Reset ${currentUserNickName}\'s nickname to default username (${value.user.username})`);
                                             //Send message
-                                            message.channel.send(new Discord.MessageEmbed().setDescription(`I have reset ${currentUserNickName}\'s nickname to their default username (${value.user.username})`).setColor('#09b50c'));
+                                            message.WaffleResponse(`I have reset ${currentUserNickName}\'s nickname to their default username (${value.user.username})`, MTYPE.Success);
                                         } else {
-                                            message.channel.send(new Discord.MessageEmbed().setDescription(`I hade problem translating ${value.toString()}\'s` +
-                                                ` nickname due to Missing Permissions`).setColor('#b50909'));
+                                            message.WaffleResponse(`I hade problem translating ${value.toString()}\'s` +
+                                                ` nickname due to Missing Permissions`);
                                         }
                                     });
                                 } else {
-                                    message.channel.send(new Discord.MessageEmbed().setDescription('Sorry, you either didn\'t select anyone or you selected too many people to run this command on.' +
-                                        'I can only translate one person at a time.').setColor('#b50909'));
+                                    message.WaffleResponse('Sorry, you either didn\'t select anyone or you selected too many people to run this command on.' +
+                                        'I can only translate one person at a time.');
                                 }
                             } else {
-                                message.channel.send(new Discord.MessageEmbed().setDescription('Sorry, you need nick naming perms to run this command.').setColor('#b50909'));
+                                message.WaffleResponse('Sorry, you need nick naming perms to run this command.');
                             }
                             break;
                         default:
@@ -801,13 +795,14 @@ exports.run = (bot, guild, message, command, args) => {
                         //Switch on option
                         switch (option) {
                             case 'lists': case 'list': case 'lis': case 'li': case 'l':
-                                //List out members
-                                var membersList = message.guild.members.cache
-                                    .filter((value, key) => results.map(v => v.PlayerId).includes(key))
-                                    .map((value, key) => value.toString());
                                 //Send message
-                                message.channel.send(new Discord.MessageEmbed().setDescription(`${membersList.length} members are being nickname ignored.\n` +
-                                    `${membersList.join(`\n`)}`).setColor('#0099ff'));
+                                ListMessage(message, 'members are being nickname ignored.\n', '#0099ff', MessageToArray(() => {
+                                    //List out members
+                                    var membersList = message.guild.members.cache
+                                        .filter((value, key) => results.map(v => v.PlayerId).includes(key))
+                                        .map((value, key) => value.toString());
+                                    return membersList.join('\n');
+                                }), 10, '#0099ff');
                                 break;
                             default:
                                 HelpMessage(bot, guild, message, args);
@@ -823,9 +818,8 @@ exports.run = (bot, guild, message, command, args) => {
                             `;
                             bot.con.query(addme_cmd, (error, results, fields) => {
                                 if (error) return console.error(error); //Throw error and return
-
                                 //Message
-                                message.channel.send(new Discord.MessageEmbed().setDescription(`I have added you, ${message.member.toString()} to the nickname ignored members list.`).setColor('#09b50c'));
+                                message.WaffleResponse(`I have added you, ${message.member.toString()} to the nickname ignored members list.`, MTYPE.Success);
                             });
                         } else {
                             //Remove user from database
@@ -836,9 +830,8 @@ exports.run = (bot, guild, message, command, args) => {
                             `;
                             bot.con.query(removeme_cmd, (error, results, fields) => {
                                 if (error) return console.error(error); //Throw error and return
-
                                 //Message
-                                message.channel.send(new Discord.MessageEmbed().setDescription(`I have removed you, ${message.member.toString()} from the nickname ignored members list.`).setColor('#09b50c'));
+                                message.WaffleResponse(`I have removed you, ${message.member.toString()} from the nickname ignored members list.`, MTYPE.Success);
                             });
                         }
                     }
@@ -879,7 +872,7 @@ exports.run = (bot, guild, message, command, args) => {
                                                 //Change nickname
                                                 mentions.first().setNickname(query.substring(0, 32), `Frozen ${mentions.first().user.username}\'s nickname as ${query}`);
                                                 //Send message
-                                                message.channel.send(new Discord.MessageEmbed().setDescription(`I have frozen ${mentions.first().toString()}\'s nickname as ${query}`).setColor('#09b50c'));
+                                                message.WaffleResponse(`I have frozen ${mentions.first().toString()}\'s nickname as ${query}`, MTYPE.Success);
                                             });
                                         } else {
                                             //Player already exists as frozen member. So update with new name
@@ -899,26 +892,25 @@ exports.run = (bot, guild, message, command, args) => {
                                                     //Change nickname
                                                     mentions.first().setNickname(query.substring(0, 32), `Updated frozen nickname of ${mentions.first().user.username} to ${query}`);
                                                     //Send message
-                                                    message.channel.send(new Discord.MessageEmbed().setDescription(`I have updated the frozen nickname of ${mentions.first().toString()} to ${query}`).setColor('#09b50c'));
+                                                    message.WaffleResponse(`I have updated the frozen nickname of ${mentions.first().toString()} to ${query}`, MTYPE.Success);
                                                 });
                                             } else {
-                                                message.channel.send(new Discord.MessageEmbed().setDescription(`Sorry, ${message.guild.members.cache.get(thisFrozenPlayer.FrozenById)}` +
-                                                    ` nickname froze ${mentions.first().toString()} and only they can update the frozen nickname of ${mentions.first().user.username}`).setColor('#b50909'));
+                                                message.WaffleResponse(`Sorry, ${message.guild.members.cache.get(thisFrozenPlayer.FrozenById)}` +
+                                                    ` nickname froze ${mentions.first().toString()} and only they can update the frozen nickname of ${mentions.first().user.username}`);
                                             }
                                         }
                                     });
                                 } else {
-                                    message.channel.send(new Discord.MessageEmbed().setDescription(`Sorry, I cannot freeze ${mentions.first().toString()}\'s nickname as nothing.`).setColor('#b50909'));
+                                    message.WaffleResponse(`Sorry, I cannot freeze ${mentions.first().toString()}\'s nickname as nothing.`);
                                 }
                             } else {
-                                message.channel.send(new Discord.MessageEmbed().setDescription(`I had a problem freezing ${mentions.first().toString()}\'s` +
-                                    ` nickname due to Missing Permissions.`).setColor('#b50909'));
+                                message.WaffleResponse(`I had a problem freezing ${mentions.first().toString()}\'s nickname due to Missing Permissions.`);
                             }
                         } else {
-                            message.channel.send(new Discord.MessageEmbed().setDescription(`Sorry, you need nick naming perms to run this command.`).setColor('#b50909'));
+                            message.WaffleResponse(`Sorry, you need nick naming perms to run this command.`);
                         }
                     } else {
-                        message.channel.send(new Discord.MessageEmbed().setDescription(`Sorry, you can only freeze one members nickname at once.`).setColor('#b50909'));
+                        message.WaffleResponse(`Sorry, you can only freeze one members nickname at a time.`);
                     }
                 } else {
                     //Check if you mean a list of frozen members
@@ -933,19 +925,20 @@ exports.run = (bot, guild, message, command, args) => {
                             `;
                             bot.con.query(sql_cmd, (error, results, fields) => {
                                 if (error) return console.error(error);
-
-                                //For loop them into an output
-                                var output = "";
-                                for (var i = 0; i < results.length; i++) {
-                                    //Create output per frozen membere
-                                    output += `**${results[i].Id}** - ${message.guild.members.cache.get(results[i].MemberId).toString()} frozen as **${results[i].FrozenName}**\n`;
-                                }
                                 //Send message
-                                message.channel.send(new Discord.MessageEmbed().setDescription(`${results.length} Frozen Members.\n${output}`).setColor('#0099ff'));
+                                ListMessage(message, 'Nickname-Frozen Members.\n', '#0099ff', MessageToArray(() => {
+                                    //For loop them into an output
+                                    var output = "";
+                                    for (var i = 0; i < results.length; i++) {
+                                        //Create output per frozen membere
+                                        output += `**${results[i].Id}** - ${message.guild.members.cache.get(results[i].MemberId).toString()} frozen as **${results[i].FrozenName}**\n`;
+                                    }
+                                    return output;
+                                }), 10, '#0099ff');
                             });
                             break;
                         default:
-                            message.channel.send(new Discord.MessageEmbed().setDescription(`Sorry, you didn\'t select anyone to freeze the nickname of.`).setColor('#b50909'));
+                            message.WaffleResponse(`Sorry, you didn\'t select anyone to freeze the nickname of.`);
                             break;
                     }
                 }
@@ -990,29 +983,28 @@ exports.run = (bot, guild, message, command, args) => {
                                                     ` nickname and reset it back to default username (${mentions.first().user.username})`);
 
                                                 //Send message
-                                                message.channel.send(new Discord.MessageEmbed().setDescription(`I have unfrozen ` +
-                                                    `${mentions.first().toString()}\'s nickname and reset it back to ${thisFrozenPlayer.OriginalNickName}.`).setColor('#09b50c'));
+                                                message.WaffleResponse(`I have unfrozen ${mentions.first().toString()}\'s nickname and reset it back to ${thisFrozenPlayer.OriginalNickName}.`,
+                                                    MTYPE.Success);
                                             });
                                         } else {
-                                            message.channel.send(new Discord.MessageEmbed().setDescription(`Sorry, ${message.guild.members.cache.get(thisFrozenPlayer.FrozenById)}` +
-                                                ` nickname froze ${mentions.first().toString()} and only they can unfreeze the nickname of ${mentions.first().user.username}`).setColor('#b50909'));
+                                            message.WaffleResponse(`Sorry, ${message.guild.members.cache.get(thisFrozenPlayer.FrozenById)}` +
+                                                ` nickname froze ${mentions.first().toString()} and only they can unfreeze the nickname of ${mentions.first().user.username}`);
                                         }
                                     } else {
-                                        message.channel.send(new Discord.MessageEmbed().setDescription(`${mentions.first().toString()} does not have a frozen nickname sorry.`).setColor('#b50909'));
+                                        message.WaffleResponse(`${mentions.first().toString()} does not have a frozen nickname sorry.`);
                                     }
                                 });
                             } else {
-                                message.channel.send(new Discord.MessageEmbed().setDescription(`I had a problem unfreezing ${mentions.first().toString()}\'s` +
-                                    ` nickname due to Missing Permissions.`).setColor('#b50909'));
+                                message.WaffleResponse(`I had a problem unfreezing ${mentions.first().toString()}\'s nickname due to Missing Permissions.`);
                             }
                         } else {
-                            message.channel.send(new Discord.MessageEmbed().setDescription(`Sorry, you can only unfreeze one members nickname at once.`).setColor('#b50909'));
+                            message.WaffleResponse(`Sorry, you can only unfreeze one members nickname at once.`);
                         }
                     } else {
-                        message.channel.send(new Discord.MessageEmbed().setDescription(`Sorry, you didn\'t select anyone to unfreeze the nickname of.`).setColor('#b50909'));
+                        message.WaffleResponse(`Sorry, you didn\'t select anyone to unfreeze the nickname of.`);
                     }
                 } else {
-                    message.channel.send(new Discord.MessageEmbed().setDescription(`Sorry, you need nick naming perms to run this command.`).setColor('#b50909'));
+                    message.WaffleResponse(`Sorry, you need nick naming perms to run this command.`);
                 }
                 break;
             default:
@@ -1028,15 +1020,13 @@ exports.run = (bot, guild, message, command, args) => {
 function HelpMessage(bot, guild, message, args) {
     //Get random member
     var randomMember = message.guild.members.cache.random();
-
-    //Get all available language codes
-    var embeddedHelpMessage = new Discord.MessageEmbed()
-        .setColor('#b50909')
-        .setAuthor(bot.user.username, bot.user.avatarURL())
-        .setDescription('Nick allows you to translate (into any supported language), set, and reset either you\'re own nickname, someone specific granted you have nickname managemental permissions,' +
-            ' or everyone\'s granted you have management permissions.\n' +
-            `You can also run *${guild.Prefix}nick ignore* to add/remove yourself from being translated.`)
-        .addFields(
+    //Send message
+    message.WaffleResponse(
+        'Nick allows you to translate (into any supported language), set, and reset either you\'re own nickname, someone specific granted you have nickname managemental permissions,' +
+        ' or everyone\'s granted you have management permissions.\n' +
+        `You can also run *${guild.Prefix}nick ignore* to add/remove yourself from being translated.`,
+        MTYPE.Error,
+        [
             {
                 name: 'Required Permissions: ', value: 'Manage Server (for translating, setting, or resetting eveyone\'s nickname)\n' +
                     'Manage Nicknames (for translating, setting, or resetting someone\'s specific name.'
@@ -1087,12 +1077,8 @@ function HelpMessage(bot, guild, message, args) {
                     `${guild.Prefix}nick freeze list\n` +
                     `${guild.Prefix}nick unfreeze ${randomMember.toString()}\n`
             }
-        )
-        .setTimestamp()
-        .setFooter('Thanks, and have a good day');
-
-    //Send embedded message
-    message.channel.send(embeddedHelpMessage);
+        ],
+        true, 'Thanks, and have a good day');
 }
 
 //Random
