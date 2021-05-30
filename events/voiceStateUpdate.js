@@ -16,7 +16,7 @@ module.exports = (bot, oldVoiceState, newVoiceState) => {
                 newVoiceState.guild.me.voice.setDeaf(true);
             }
             //Check if bot was muted
-            if (!newVoiceState.mute) {
+            if (newVoiceState.mute) {
                 //Send message
                 serverQueue.textChannel.send(new Discord.MessageEmbed().setDescription('Please do not mute me while I am playing music').setColor('#b50909'));
 
