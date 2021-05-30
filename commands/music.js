@@ -515,12 +515,13 @@ async function play(bot, message, guild, song) {
             serverQueue.finishedSongs = []; //Clear finished songs
 
             //Play again and message
-            message.WaffleResponse(`Looped 🔄`, MTYPE.Information);
             if (serverQueue.songs.length > 0) {
-                serverQueue.loop = false;
+                message.WaffleResponse(`Looped 🔄`, MTYPE.Information);
                 return play(bot, message, guild, serverQueue.songs[0]);
-            } else
+            } else {
+                serverQueue.loop = false;
                 leaveChannelOnNoSong(bot, message, serverQueue);
+            }
         } else {
             //Leave on end of music after 5 minutes
             leaveChannelOnNoSong(bot, message, serverQueue);
