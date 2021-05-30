@@ -1,5 +1,6 @@
 //Import
 const Discord = require('discord.js');
+var tools = require('./extra-functions');
 
 module.exports = function () {
     //Enums
@@ -102,6 +103,21 @@ module.exports = function () {
         return new Promise((resolve, reject) => resolve(runme().split(split).filter(i => i)));
     }
 
+    //Progress bar
+    this.ProgressBar = function (value, maxValue, string = { sValue, sMax }, size = 10, progressionStyle = true) {
+        const percentage = value / maxValue; //Calc percentage of bar
+        const progress = (size * percentage).round();
+        const emptyProgress = size - progress;
+
+        const progressText = '▇'.repeat(progress - 1) + (progressionStyle ? '▇' : `${string.sValue}`);
+        const emptyProgressText = '—'.repeat(emptyProgress);
+        const percentageText = (progressionStyle ? `${(percentage * 100).round()}%` : `${string.sMax}`);
+
+        const bar = `\[${progressText}${emptyProgressText}\]${percentageText}`;
+        return bar;
+    }
+
+    //Send message with all required details
     Discord.Message.prototype.WaffleResponse = function (
         text,
         messageType = MTYPE.Error,

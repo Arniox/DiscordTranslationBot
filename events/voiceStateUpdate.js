@@ -15,6 +15,14 @@ module.exports = (bot, oldVoiceState, newVoiceState) => {
                 //Set bot to deaf
                 newVoiceState.guild.me.voice.setDeaf(true);
             }
+            //Check if bot was muted
+            if (!newVoiceState.mute) {
+                //Send message
+                serverQueue.textChannel.send(new Discord.MessageEmbed().setDescription('Please do not mute me while I am playing music').setColor('#b50909'));
+
+                //Set bot to unmute
+                newVoiceState.guild.me.voice.setMute(false);
+            }
         }
     }
 }

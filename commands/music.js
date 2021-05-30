@@ -215,6 +215,8 @@ exports.run = (bot, guild, message, command, args) => {
                     if (botVoice && serverQueue && serverQueue.songs.length > 0) {
                         //Check user is either manager or has dj role
                         if (IsDJ(message) || IsManager(message)) {
+                            //Set loop to false
+                            serverQueue.loop = false;
                             //Clear queue
                             serverQueue.songs = [];
                             //Fire dispatcher event end to immediately exit recursion and exit
@@ -514,7 +516,11 @@ async function play(bot, message, guild, song) {
 
             //Play again and message
             message.WaffleResponse(`Looped 🔄`, MTYPE.Information);
-            return play(bot, message, guild, serverQueue.songs[0]);
+            if (serverQueue.songs.length > 0) {
+                serverQueue.loop = false;
+                return play(bot, message, guild, serverQueue.songs[0]);
+            } else
+                leaveChannelOnNoSong(bot, message, serverQueue);
         } else {
             //Leave on end of music after 5 minutes
             leaveChannelOnNoSong(bot, message, serverQueue);
