@@ -308,7 +308,7 @@ exports.run = (bot, guild, message, command, args) => {
                 const currentDuration = (serverQueue.songs[0].song.duration_ms / 1000).toString().toTimeString();
                 const totalFinishedDuration = (serverQueue.finishedSongs.length > 0 ?
                     ((serverQueue.finishedSongs.map(v => v.song.duration_ms).reduce((a, b) => a + b) + serverQueue.connection.dispatcher.streamTime) / 1000)
-                        .toString().toTimeString(true) : '0');
+                        .toString().toTimeString(true) : currentTime);
                 const totalDuration = (serverQueue.songs.map(v => v.song.duration_ms).reduce((a, b) => a + b) / 1000).toString().toTimeString(true);
                 //Send message
                 ListMessage(message,
