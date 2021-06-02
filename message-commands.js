@@ -8,7 +8,8 @@ module.exports = function () {
         Error: "Error",
         Information: "Information",
         Loading: "Loading",
-        Success: "Success"
+        Success: "Success",
+        Gray: "None"
     };
     this.const = ATYPE = {
         None: "None",

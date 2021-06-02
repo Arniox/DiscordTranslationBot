@@ -5,6 +5,7 @@ const mysql = require('promise-mysql');
 const RedditJS = require('js-reddit.js/src');
 var fs = require('fs');
 var tools = require('./extra-functions');
+require('./message-commands.js')();
 
 //Load process
 if (process.env.NODE_ENV !== 'production') require('dotenv').config();
@@ -75,18 +76,25 @@ bot.dbpool.then((p) => {
 
 	//Set up commands and attach to the client
 	bot.commands = new Enmap();
-	fs.readdir('./commands/', (err, files) => {
+	fs.readdir('./commands/', (err, folders) => {
 		if (err) return console.error(err); //Throw if folder breaks
-		files.forEach(file => {
-			//if file is not js file, ignore
-			if (!file.endsWith(".js")) return;
-			//Load the command file itself
-			var props = require(`./commands/${file}`);
-			//Get just the command name from the file name
-			var commandName = file.split('.')[0];
-			console.log(`Attempting to load command ${commandName}`);
-			//Store the command in the command Enmap.
-			bot.commands.set(commandName, props);
+		//For each folder
+		folders.forEach(folder => {
+			fs.readdir(`./commands/${folder}/`, (err, files) => {
+				if (err) return console.error(err); //Throw if folder breaks
+				//For each file
+				files.forEach(file => {
+					//if file is not js file, ignore
+					if (!file.endsWith(".js")) return;
+					//Load the command file itself
+					var props = require(`./commands/${folder}/${file}`);
+					//Get just the command name from the file name
+					var commandName = file.split('.')[0];
+					console.log(`Attempting to load command ${commandName}`);
+					//Store the command in the command Enmap.
+					bot.commands.set(commandName, props);
+				});
+			});
 		});
 	});
 

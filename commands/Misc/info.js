@@ -3,7 +3,7 @@ const { EventEmitter } = require('events');
 const eventEmitter = new EventEmitter();
 const Discord = require('discord.js');
 //Import functions
-require('../message-commands.js')();
+
 
 exports.run = (bot, guild, message, command, args) => {
     if (args.length != 0) {

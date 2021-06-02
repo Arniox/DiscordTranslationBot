@@ -1,7 +1,5 @@
 //Import
 const Discord = require('discord.js');
-//Import functions
-require('../message-commands.js')();
 
 exports.run = (bot, guild, message, command, args) => {
     var mentions = message.mentions.members; //Get all mentions

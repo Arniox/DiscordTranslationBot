@@ -2,7 +2,7 @@
 const Discord = require('discord.js');
 const moment = require('moment-timezone');
 //Import functions
-require('../message-commands.js')();
+
 
 //List of all emojis
 const emojiRandomArray = [

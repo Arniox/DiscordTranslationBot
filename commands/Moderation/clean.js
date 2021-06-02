@@ -1,8 +1,6 @@
 //Import
 const Discord = require('discord.js');
-const message = require('../events/message.js');
 //Import functions
-require('../message-commands.js')();
 
 exports.run = (bot, guild, message, command, args) => {
     message.delete()

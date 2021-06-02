@@ -5,7 +5,7 @@ const ytpl = require('ytpl');
 const { v4: uuidv4 } = require('uuid');
 const axios = require('axios');
 //Import functions
-require('../message-commands.js')();
+
 
 exports.run = (bot, guild, message, command, args) => {
     //Get server queue
