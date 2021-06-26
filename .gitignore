@@ -3,3 +3,5 @@ node_modules/
 configure.json
 data-to-use.json
 .env
+ClearDB Heroku Discord Bot.session.sql
+.vscode/settings.json
