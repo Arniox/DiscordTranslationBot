@@ -584,7 +584,7 @@ function leaveChannelOnNoSong(bot, message, serverQueue) {
 
             //Leave channel
             serverQueue.voiceChannel.leave();
-            bot.musicQueue.delete(guild.id);
+            bot.musicQueue.delete(message.guild.id);
 
             //Undeafen
             message.guild.me.voice.setDeaf(false);
