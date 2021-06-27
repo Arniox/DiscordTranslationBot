@@ -554,6 +554,8 @@ async function play(bot, message, guild, song) {
                     `[${title}](${url}) encountered an error while streaming. Skipped.`, MTYPE.Error,
                     null, false, null, serverQueue.textChannel
                 );
+                //Console error
+                console.error(err);
                 //Shift songs and play next recursively
                 serverQueue.songs.shift();
                 return play(bot, message, guild, serverQueue.songs[0]);
