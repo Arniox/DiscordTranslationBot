@@ -212,7 +212,7 @@ exports.run = (bot, guild, message, command, args) => {
                     cannotEffect(message, botVoice, 'stop playing music');
                 } else {
                     //Check if bot is not in voice
-                    if (botVoice && serverQueue && serverQueue.songs.length > 0) {
+                    if (botVoice && serverQueue) {
                         //Check user is either manager or has dj role
                         if (IsDJ(message) || IsManager(message)) {
                             //Set loop to false
