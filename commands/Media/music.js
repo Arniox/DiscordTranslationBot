@@ -590,6 +590,8 @@ function leaveChannelOnNoSong(bot, message, serverQueue) {
             message.guild.me.voice.setDeaf(false);
         }
         //Delete job
-        bot.jobsManager.get(message.guild.id).StopJob(`leaveNoSong ${jobUUID}`);
+        if (bot.jobsManager.get(message.guild.id)) {
+            bot.jobsManager.get(message.guild.id).StopJob(`leaveNoSong ${jobUUID}`);
+        }
     }, `leaveNoSong ${jobUUID}`, true);
 }
