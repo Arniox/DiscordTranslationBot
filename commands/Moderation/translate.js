@@ -122,9 +122,9 @@ exports.run = (bot, guild, message, command, args) => {
 
                                             //Look for existing patterns
                                             const sql_cmd = `
-                                        SELECT * FROM translation_ignored_patterns
-                                            WHERE ServerId = "${message.guild.id}"
-                                        `;
+                                            SELECT * FROM translation_ignored_patterns
+                                                WHERE ServerId = "${message.guild.id}"
+                                            `;
                                             bot.con.query(sql_cmd, (error, results, fields) => {
                                                 if (error) return console.error(error); //Return error console log
 
@@ -135,10 +135,10 @@ exports.run = (bot, guild, message, command, args) => {
 
                                                     //Delete existing pattern
                                                     const delete_cmd = `
-                                                DELETE FROM translation_ignored_patterns
-                                                    WHERE Id = "${numberSelector}"
-                                                    AND ServerId = "${message.guild.id}"
-                                                `;
+                                                    DELETE FROM translation_ignored_patterns
+                                                        WHERE Id = "${numberSelector}"
+                                                        AND ServerId = "${message.guild.id}"
+                                                    `;
                                                     bot.con.query(delete_cmd, (error, results, fields) => {
                                                         if (error) return console.error(error); //Return error console log
 
@@ -162,9 +162,9 @@ exports.run = (bot, guild, message, command, args) => {
                             case 'list': case 'l': //List all patterns
                                 //Look for existing patterns
                                 const sql_cmd = `
-                            SELECT * FROM translation_ignored_patterns
-                                WHERE ServerId = "${message.guild.id}"
-                            `;
+                                SELECT * FROM translation_ignored_patterns
+                                    WHERE ServerId = "${message.guild.id}"
+                                `;
                                 bot.con.query(sql_cmd, (error, results, fields) => {
                                     if (error) return console.error(error); //Return error console log
 
@@ -275,9 +275,9 @@ exports.run = (bot, guild, message, command, args) => {
 
                                                 //Look for existing channels
                                                 const sql_cmd = `
-                                            SELECT * FROM translation_ignored_channels
-                                                WHERE ServerId = "${message.guild.id}"
-                                            `;
+                                                SELECT * FROM translation_ignored_channels
+                                                    WHERE ServerId = "${message.guild.id}"
+                                                `;
                                                 bot.con.query(sql_cmd, (error, results, fields) => {
                                                     if (error) return console.error(error); //Return error console log
 
@@ -290,10 +290,10 @@ exports.run = (bot, guild, message, command, args) => {
                                                         if (results.map(v => v.ChannelId).includes(c.id)) {
                                                             //Remove channel from database
                                                             const remove_sql = `
-                                                        DELETE FROM translation_ignored_channels
-                                                            WHERE ChannelId = "${c.id}"
-                                                            AND ServerId = "${message.guild.id}"
-                                                        `;
+                                                            DELETE FROM translation_ignored_channels
+                                                                WHERE ChannelId = "${c.id}"
+                                                                AND ServerId = "${message.guild.id}"
+                                                            `;
                                                             bot.con.query(remove_sql, (error, results, fields) => {
                                                                 if (error) return console.error(error); //Return error console log
                                                             });
@@ -326,9 +326,9 @@ exports.run = (bot, guild, message, command, args) => {
                             case 'list': case 'l': //List all channels
                                 //Get list of channels
                                 const sql_cmd = `
-                            SELECT * FROM translation_ignored_channels
-                                WHERE ServerId = "${message.guild.id}"
-                            `;
+                                SELECT * FROM translation_ignored_channels
+                                    WHERE ServerId = "${message.guild.id}"
+                                `;
                                 bot.con.query(sql_cmd, (error, results, fields) => {
                                     if (error) return console.error(error); //Return error console log
 

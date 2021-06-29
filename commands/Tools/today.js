@@ -263,6 +263,10 @@ exports.run = (bot, guild, message, command, args) => {
                     message.channel.send(new Discord.MessageEmbed().setDescription(`Sorry, I did not understand the time range you wanted.`).setColor('#b50909'));
                 }
                 break;
+            case 'difference': case 'different': case 'diff':
+                //Get date object
+
+                break;
             default:
                 HelpMessage(bot, guild, message, args);
                 break;
