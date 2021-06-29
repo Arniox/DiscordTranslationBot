@@ -11,7 +11,7 @@ exports.run = (bot, guild, message, command, args) => {
         //Get time
         var time = args.shift();
         //Get reason
-        var reason = args.join(' ').split('-')[1];
+        var reason = args.join(' ').split('-')[1].substring(0, 200);
 
         //Check permissions
         if (CanBan(message)) {
