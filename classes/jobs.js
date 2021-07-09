@@ -31,7 +31,10 @@ module.exports = class JobManager {
 
     //Stop job
     StopJop(name) {
-        this.jobs.get(name).stop();
+        if (this.jobs.get(name))
+            this.jobs.get(name).stop();
+        else
+            console.error(new Error(`Job: ${name} does not exist.`));
     }
 
     //Create time string

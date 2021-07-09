@@ -5,7 +5,7 @@ const ytpl = require('ytpl');
 const { v4: uuidv4 } = require('uuid');
 const axios = require('axios');
 //Import functions
-
+const JobManager = require('../../classes/jobs.js');
 
 exports.run = (bot, guild, message, command, args) => {
     //Get server queue
@@ -106,7 +106,7 @@ exports.run = (bot, guild, message, command, args) => {
                                                 }
 
                                                 //Check if bot is in voice or not
-                                                if (!botVoice || !tempServerQueue.connection) {
+                                                if (!botVoice || !tempServerQueue.connection || !tempServerQueue.connection.dispatcher) {
                                                     //Defean the bot
                                                     message.guild.me.voice.setDeaf(true);
                                                     //Join voice channel
@@ -219,8 +219,10 @@ exports.run = (bot, guild, message, command, args) => {
                             serverQueue.loop = false;
                             //Clear queue
                             serverQueue.songs = [];
-                            //Fire dispatcher event end to immediately exit recursion and exit
-                            serverQueue.connection.dispatcher.end();
+                            if (serverQueue.connection.dispatcher) {
+                                //Fire dispatcher event end to immediately exit recursion and exit
+                                serverQueue.connection.dispatcher.end();
+                            }
                             message.WaffleResponse('Stopped Playing & Cleared Queue ⏹️', MTYPE.Information);
                         } else {
                             message.WaffleResponse(`Sorry, only server moderators or DJ's can stop the music queue`);
