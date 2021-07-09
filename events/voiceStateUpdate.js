@@ -6,9 +6,10 @@ module.exports = (bot, oldVoiceState, newVoiceState) => {
     if (oldVoiceState.guild.me == oldVoiceState.member) {
         //Check if the bot has any active serverQueue for this guild
         const serverQueue = bot.musicQueue.get(oldVoiceState.guild.id);
-        if (serverQueue && serverQueue.textChannel) {
+
+        if (serverQueue && serverQueue.textChannel && serverQueue.voiceChannel) {
             //Check if the bot was undeafened
-            if (!newVoiceState.deaf) {
+            if (newVoiceState.deaf != true) {
                 //Send message
                 serverQueue.textChannel.send(new Discord.MessageEmbed().setDescription('Please do not undeafen me while I am playing music').setColor('#b50909'));
 

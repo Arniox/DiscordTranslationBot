@@ -30,7 +30,7 @@ module.exports = class JobManager {
     }
 
     //Stop job
-    StopJop(name) {
+    StopJob(name) {
         if (this.jobs.get(name))
             this.jobs.get(name).stop();
         else

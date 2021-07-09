@@ -4,8 +4,6 @@ const ytdl = require('ytdl-core');
 const ytpl = require('ytpl');
 const { v4: uuidv4 } = require('uuid');
 const axios = require('axios');
-//Import functions
-const JobManager = require('../../classes/jobs.js');
 
 exports.run = (bot, guild, message, command, args) => {
     //Get server queue
@@ -107,16 +105,16 @@ exports.run = (bot, guild, message, command, args) => {
 
                                                 //Check if bot is in voice or not
                                                 if (!botVoice || !tempServerQueue.connection || !tempServerQueue.connection.dispatcher) {
-                                                    //Defean the bot
-                                                    message.guild.me.voice.setDeaf(true);
                                                     //Join voice channel
                                                     voiceChannel
                                                         .join()
                                                         .then((connection) => {
                                                             //Attach connection to the queue
                                                             tempServerQueue.connection = connection;
+                                                            //Defean the bot
+                                                            message.guild.me.voice.setDeaf(true);
                                                             //Play music
-                                                            play(bot, message, message.guild, tempServerQueue.songs[0]);
+                                                            return play(bot, message, message.guild, tempServerQueue.songs[0]);
                                                         }).catch((error) => {
                                                             console.error(error);
                                                             bot.musicQueue.delete(message.guild.id);
@@ -522,11 +520,11 @@ async function play(bot, message, guild, song) {
                 return play(bot, message, guild, serverQueue.songs[0]);
             } else {
                 serverQueue.loop = false;
-                leaveChannelOnNoSong(bot, message, serverQueue);
+                return leaveChannelOnNoSong(bot, message, serverQueue);
             }
         } else {
             //Leave on end of music after 5 minutes
-            leaveChannelOnNoSong(bot, message, serverQueue);
+            return leaveChannelOnNoSong(bot, message, serverQueue);
         }
         return;
     } else {
@@ -586,16 +584,16 @@ function leaveChannelOnNoSong(bot, message, serverQueue) {
                 'Finished playing music from the queue and 5 minutes of idle time has passed.',
                 MTYPE.Information, null, false, null, serverQueue.textChannel);
 
-            //Leave channel
-            serverQueue.voiceChannel.leave();
+            //Delete music queue
             bot.musicQueue.delete(message.guild.id);
 
             //Undeafen
-            message.guild.me.voice.setDeaf(false);
+            message.guild.me.voice.setDeaf(false).then(() => {
+                //Leave channel
+                serverQueue.voiceChannel.leave();
+            }).catch((err) => { });
         }
         //Delete job
-        if (bot.jobsManager.get(message.guild.id)) {
-            bot.jobsManager.get(message.guild.id).StopJob(`leaveNoSong ${jobUUID}`);
-        }
+        bot.jobsManager.get(message.guild.id).StopJob(`leaveNoSong ${jobUUID}`);
     }, `leaveNoSong ${jobUUID}`, true);
 }
