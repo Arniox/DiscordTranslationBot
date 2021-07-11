@@ -581,7 +581,7 @@ function leaveChannelOnNoSong(bot, message, serverQueue) {
         if (serverQueue.songs.length < 1) {
             //Send message
             message.WaffleResponse(
-                'Finished playing music from the queue and 5 minutes of idle time has passed.',
+                'Looks like I haven\'t played anything in a while. You can call me back with !play',
                 MTYPE.Information, null, false, null, serverQueue.textChannel);
 
             //Delete music queue
