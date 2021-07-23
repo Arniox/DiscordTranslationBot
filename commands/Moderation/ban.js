@@ -75,10 +75,8 @@ exports.run = (bot, guild, message, command, args) => {
                                 timedBan = true;
                             }
                         }
-                        //Get reason and time
+                        //Get time
                         var timeAnswer = timedBan ? `For ${time}` : 'Indefinitely';
-                        var reasonAnswer = reason ? `${reason}` : `No Reason Given`;
-
                         //Hard Ban members with message
                         message.WaffleResponse(
                             `Hard banning 0 / ${mentions.size} members ${timeAnswer}\n**Reason: ${reasonAnswer}**\n`, MTYPE.Loading
