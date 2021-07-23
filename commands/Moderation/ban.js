@@ -152,7 +152,7 @@ function HelpMessage(bot, guild, message, args) {
             {
                 name: 'Command Patterns: ',
                 value: `${guild.Prefix}ban [softs:soft:sf:s] [mention(s)] - [:?reason]\n` +
-                    `${guild.Prefix}ban [hards:hard:hd:h] [:?time as 1s/1m/1h/1d/1M] [mention(s)] - [:?reason]`
+                    `${guild.Prefix}ban [hards:hard:hd:h] [:?time as 1s/1m/1h/1d/1M/1Q/1y] [mention(s)] - [:?reason]`
             },
             {
                 name: 'Examples: ', value: `${guild.Prefix}ban hard 1h30m ${randomMember.toString()} - optional reason\n` +
