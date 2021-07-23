@@ -11,7 +11,7 @@ exports.run = (bot, guild, message, command, args) => {
         //Get time
         var time = args.shift();
         //Get reason
-        var reason = args.join(' ').split('-')[1].substring(0, 200);
+        var reasonAnswer = (args.join(' ').split('-')[1] ? `${args.join(' ').split('-')[1]}` : 'No Reason Given').substring(0, 200);
 
         //Check permissions
         if (CanBan(message)) {
@@ -20,9 +20,6 @@ exports.run = (bot, guild, message, command, args) => {
                 //Switch case on command
                 switch (command) {
                     case 'softs': case 'soft': case 'sf': case 's':
-                        //Get reason
-                        var reasonAnswer = reason ? `${reason}` : `No Reason Given`;
-
                         //Soft Ban members with message
                         message.WaffleResponse(
                             `Soft banning 0 / ${mentions.size} members\n**Reason: ${reasonAnswer}**`, MTYPE.Loading
