@@ -102,8 +102,8 @@ exports.run = (bot, guild, message, command, args) => {
                                                 bot.jobsManager.get(message.guild.id).CreateJob(time, () => {
                                                     message.guild.members.unban(personId); //Unban
                                                     //Stop job
-                                                    bot.jobsManager.get(message.guild.id).StopJob(`Ban ${personId}`);
-                                                }, `Ban ${personId}`, true);
+                                                    bot.jobsManager.get(message.guild.id).StopJob(`Ban ${personId}|${message.guild.id}`);
+                                                }, `Ban ${personId}|${message.guild.id}`, true);
                                             }
                                         }).catch((err) => {
                                             return; //Ignore error

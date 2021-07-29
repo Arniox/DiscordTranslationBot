@@ -973,7 +973,7 @@ function HelpMessage(bot, guild, message, args) {
             { name: 'Required Permissions: ', value: 'Manage Server (for adding and removing. Everyone else can use the list commands).' },
             {
                 name: 'Command Patterns: ',
-                value: `${guild.Prefix}translate [settings:setting:sett:set:se:s]` +
+                value: `${guild.Prefix}translate [settings:setting:sett:set:se:s]\n` +
                     `${guild.Prefix}translate [patterns:pattern:pat:p] [add:+:a / remove:-:r / list:l]\n` +
                     `${guild.Prefix}translate [channels:channel:chan:ch:c] [add:+:a / remove:-:r / list:l]\n` +
                     `${guild.Prefix}translate [languages:language:lang:l]\n` +
@@ -990,7 +990,8 @@ function HelpMessage(bot, guild, message, args) {
             },
             {
                 name: 'Examples: ',
-                value: `${guild.Prefix}translate settings` +
+                value: `${guild.Prefix}translate settings\n` +
+                    `${guild.Prefix}translate languages\n` +
                     `${guild.Prefix}translate pattern add /(<:[A-Za-z]+:\d+>)/gi\n` +
                     `${guild.Prefix}translate pattern remove 1\n` +
                     `${guild.Prefix}translate pattern list\n` +

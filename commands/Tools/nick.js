@@ -151,7 +151,9 @@ exports.run = (bot, guild, message, command, args) => {
                                                         new Promise((resolve, reject) => {
                                                             if (query) {
                                                                 googleTranslate.getSupportedLanguages('en', function (err, languageCodes) {
-                                                                    var language = languageCodes.find(i => i.language == query);
+                                                                    var language = languageCodes.find(i => i.language.toLowerCase() == query.toLowerCase());
+                                                                    //Check if exists in names
+                                                                    if (!language) language = languageCodes.find(i => i.name.toLowerCase() == query.toLowerCase());
                                                                     //Return actual language or error
                                                                     if (language) resolve(language);
                                                                     else reject(`Unfortunately, my translation capabilities do not support ${query} as a language.`);

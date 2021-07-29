@@ -6,20 +6,22 @@ const Discord = require('discord.js');
 exports.run = (bot, guild, message, command, args) => {
     if (args.length != 0) {
         var person = message.mentions.members;
+        var channel = message.mentions.channels;
 
-        //Check moving permissions
-        if (CanMoveMembers(message)) {
-            if (args.length != 0 && person.size != 0) {
-                if (person.size < 2) {
-                    args.shift(); //Shift down past mention
+        //Check if 1 person is mentioned
+        if (person.size != 0 && channel.size == 0) {
+            if (person.size < 2) {
+                args.shift(); //Shift down past mention
 
-                    if (args.length != 0) {
-                        //Check whether you want to spam them or spam move them.
-                        var spamSelector = args.shift().toLowerCase();
+                if (args.length != 0) {
+                    //Check whether you want to spam them or spam move them.
+                    var spamSelector = args.shift().toLowerCase();
 
-                        //Switch case on spamSelector
-                        switch (spamSelector) {
-                            case 'move': case 'mov': case 'mo': case 'mv': case 'm':
+                    //Switch case on spamSelector
+                    switch (spamSelector) {
+                        case 'move': case 'mov': case 'mo': case 'mv': case 'm':
+                            //Check moving permissions
+                            if (CanMoveMembers(message)) {
                                 //Check that the user is in a voice channel.
                                 if (person.first().voice.channel) {
                                     //Spam move the member.
@@ -28,8 +30,7 @@ exports.run = (bot, guild, message, command, args) => {
                                     var channelsTo = [Sample(message.guild.channels.cache.filter(i => i.type == 'voice').map((value, key) => value)), currentChannel];
 
                                     //Send message
-                                    message.channel
-                                        .send(new Discord.MessageEmbed().setDescription(`Spam Moving ${person.first().toString()}. React with ⏸️ to stop spam moving the user.`).setColor('#FFCC00'))
+                                    message.WaffleResponse(`Spam Moving ${person.first().toString()}. React with ⏸️ to stop spam moving the user.`, MTYPE.Loading)
                                         .then((sent) => {
                                             sent.react('⏸️')
                                                 .then(() => {
@@ -58,24 +59,27 @@ exports.run = (bot, guild, message, command, args) => {
                                                 });
                                         });
                                 } else {
-                                    message.channel.send(new Discord.MessageEmbed().setDescription(`Sorry, ${person.first().toString()} is not currently in a voice channel.`).setColor('#b50909'));
+                                    message.WaffleResponse(`Sorry, ${person.first().toString()} is not currently in a voice channel.`);
                                 }
-                                break;
-                            default:
-                                //Check if message.member has admin power
-                                if (IsManager(message)) {
-                                    //Check if spamSelector is actually a number
-                                    if (/^\d+$/.test(spamSelector)) {
-                                        //Grab number from string
-                                        var numberOfSpam = parseInt(spamSelector);
-
+                            } else {
+                                message.WaffleResponse('Sorry, you need move members powers for this command.');
+                            }
+                            break;
+                        default:
+                            //Check if message.member has admin power
+                            if (IsManager(message)) {
+                                //Check if spamSelector is actually a number or time
+                                if (/^\d+$/.test(spamSelector)) {
+                                    //Grab number from string
+                                    var numberOfSpam = parseInt(spamSelector);
+                                    //Check if number is too big
+                                    if (numberOfSpam <= 1000) {
                                         if (args.length != 0) {
                                             //Get message
                                             var messageToSpam = args.join(' ');
 
-                                            message.channel
-                                                .send(new Discord.MessageEmbed().setDescription(`Harrassing ${person.first().toString()} with 0 / ${numberOfSpam} messages.\n\n` +
-                                                    `Content of message: ***${messageToSpam}***`).setColor('#FFCC00'))
+                                            message.WaffleResponse(`Harrassing ${person.first().toString()} with 0 / ${numberOfSpam} messages.\n\n` +
+                                                `Content of message: ***${messageToSpam}***`, MTYPE.Loading)
                                                 .then((sent) => {
                                                     //For loop
                                                     for (var i = 0; i < numberOfSpam; ++i) {
@@ -90,27 +94,47 @@ exports.run = (bot, guild, message, command, args) => {
                                                         `with ${i} / ${numberOfSpam} messages.\n\nContent of message: ***${messageToSpam}***`).setColor('#09b50c'));
                                                 });
                                         } else {
-                                            message.channel.send(new Discord.MessageEmbed().setDescription(`Sorry, I cannot harrass ${person.first().toString()} with an empty message.`).setColor('#b50909'));
+                                            message.WaffleResponse(`Sorry, I cannot harrass ${person.first().toString()} with an empty message.`);
                                         }
                                     } else {
-                                        message.channel.send(new Discord.MessageEmbed().setDescription(`Sorry, ${spamSelector} is not a number.`).setColor('#b50909'));
+                                        message.WaffleResponse(`Sorry ${numberOfSpam} is too large of a number.`);
                                     }
+                                } else if (/[\d]+[a-zA-Z]{1,2}/gi.test(spamSelector)) {
+                                    //Spam selector was a time selector
+                                    //Grab time from string and check if time string matches the correct format
+                                    if (!bot.jobsManager.get(message.guild.id).TimeString(time, false)) {
+                                        return message.WaffleResponse(`Sorry, ${spamSelector} is not a correctly formatted time frame. It should be like: 1h30m, or 1m6d`);
+                                    }
+
+                                    //Get message
+                                    var messageToSpam = args.join(' ');
+                                    //Set up message
+                                    message.WaffleResponse(`I will now spam ${person.first().toString()} every ${spamSelector}.\n\nContent of message: ***${messageToSpam}***`, MTYPE.Success)
+                                        .then((sent) => {
+                                            //Create job
+                                            bot.jobsManager.get(message.guild.id).CreateJob(spamSelector, () => {
+                                                //Send message
+                                                person.first().send(`${messageToSpam}`);
+                                            }, `Harrass ${person.first().id}|${message.guild.id}`, false);
+                                        });
                                 } else {
-                                    message.channel.send(new Discord.MessageEmbed().setDescription('Sorry, you need administrative powers for this command.').setColor('#b50909'));
+                                    message.WaffleResponse(`Sorry, ${spamSelector} is not a valid selector.`);
                                 }
-                                break;
-                        }
-                    } else {
-                        message.channel.send(new Discord.MessageEmbed().setDescription(`Sorry, you didn\'t select the number of spam messages to send.`).setColor('#b50909'));
+                            } else {
+                                message.WaffleResponse('Sorry, you need administrative powers for this command.');
+                            }
+                            break;
                     }
                 } else {
-                    message.channel.send(new Discord.MessageEmbed().setDescription('Sorry, you can only harrass one person at a time.').setColor('#b50909'));
+                    message.WaffleResponse(`Sorry, you didn\'t select the number of spam messages to send.`);
                 }
             } else {
-                message.channel.send(new Discord.MessageEmbed().setDescription('Sorry, you didn\'t select anyone to harrass.').setColor('#b50909'));
+                message.WaffleResponse('Sorry, you can only harrass one person at a time.');
             }
+        } else if (person.size == 0 && channel.size != 0) {
+            //Harrassing channel
         } else {
-            message.channel.send(new Discord.MessageEmbed().setDescription('Sorry, you need move members powers for this command.').setColor('#b50909'));
+            message.WaffleResponse(`Sorry, you didn't select any person or channel to harrass`);
         }
     } else {
         Helpmessage(bot, guild, message, args);
@@ -120,13 +144,13 @@ exports.run = (bot, guild, message, command, args) => {
 //Functions
 function Helpmessage(bot, guild, message, args) {
     //Get random person
-    var randomPerson = message.guild.members.cache.random();
-
-    var embeddedHelpMessage = new Discord.MessageEmbed()
-        .setColor('#b50909')
-        .setAuthor(bot.user.username, bot.user.avatarURL())
-        .setDescription(`Use this command to harrass a specific person. You can either spam them with messages or spam move them between two channels. Useful to get them to listen to you. Only available to high permissions.`)
-        .addFields(
+    const randomPerson = message.guild.members.cache.random();
+    //Send
+    message.WaffleResponse(
+        `Use this command to harrass a specific person. You can either spam them with messages or spam move them between two channels. ` +
+        `Useful to get them to listen to you. Only available to high permissions.`,
+        MTYPE.Error,
+        [
             { name: 'Required Permissions: ', value: 'Server Manager, Administrator' },
             {
                 name: 'Command Patterns: ',
@@ -138,12 +162,8 @@ function Helpmessage(bot, guild, message, args) {
                 value: `${guild.Prefix}harrass ${randomPerson.toString()} 10 Hello, wake up. It's wakey wakey time!\n` +
                     `${guild.Prefix}harrass ${randomPerson.toString()} move`
             }
-        )
-        .setTimestamp()
-        .setFooter('Thanks, and have a good day');
-
-    //Set embedded message
-    message.channel.send(embeddedHelpMessage);
+        ],
+        true, 'Thanks, and have a good day');
 }
 
 //function for random item from array
