@@ -24,7 +24,7 @@ exports.run = (bot, guild, message, command, args) => {
                             case 'all': case 'a':
                                 //Check if correct perms
                                 if (IsManager(message)) {
-                                    var query = args.shift();
+                                    var query = args.join(" ");
 
                                     //Check if query eixsts
                                     new Promise((resolve, reject) => {
@@ -95,7 +95,7 @@ exports.run = (bot, guild, message, command, args) => {
                                 }
                                 break;
                             case 'me': case 'm':
-                                var query = args.shift();
+                                var query = args.join(" ");
                                 if (IsLowerRoles(message, message.member)) {
                                     //Check if query exists
                                     new Promise((resolve, reject) => {
@@ -149,7 +149,7 @@ exports.run = (bot, guild, message, command, args) => {
                                                     if ((!results || !results.length ? true : !results.map(v => v.PlayerId).includes(key))) {
                                                         //Get query
                                                         args.shift(); //Remove mention
-                                                        var query = args.shift();
+                                                        var query = args.join(" ");
 
                                                         //Check if query exists
                                                         new Promise((resolve, reject) => {
@@ -217,7 +217,7 @@ exports.run = (bot, guild, message, command, args) => {
                                                     if ((!results || !results.length ? true : !results.map(v => v.PlayerId).includes(key))) {
                                                         //Get query
                                                         args.shift(); //Remove mention
-                                                        var query = args.shift().toLowerCase();
+                                                        var query = args.join(" ");
 
                                                         //Check if query exists
                                                         new Promise((resolve, reject) => {
