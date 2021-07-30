@@ -30,7 +30,7 @@ exports.run = (bot, guild, message, command, args) => {
                                 message.WaffleResponse(`Deleting ${numToDelete} messages...`, MTYPE.Information, null, false, null, currentChannel)
                                     .then((newMessage) => {
                                         //Delete sent message after 4 seconds
-                                        newMessage.delete({ timeout: 4000 });
+                                        newMessage.delete({ timeout: 4000 }).catch(() => { });
                                     }).catch(() => {
                                         return console.log('I think a channel was deleted during a clean command.');
                                     });
