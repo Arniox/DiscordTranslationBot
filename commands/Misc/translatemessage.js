@@ -33,8 +33,13 @@ exports.run = (bot, guild, message, args) => {
                     .replace(/<[@]?[!]?d+>/g, '') //Get rid of tagging members
                     .replace(/<[#]?[!]?d+>/g, ''); //Get rid of tagging channels
                 results.map(v => v.Pattern).forEach((e) => {
+                    //Try catch validate the regex
+                    var isValid = true;
+                    try { new RegExp(e, 'g'); }
+                    catch (e) { isValid = false; }
+
                     //Replace the text
-                    messy = messy.replace(new RegExp(e, 'g'), '');
+                    messy = messy.replace((isValid ? new RegExp(e, 'g') : e), '');
                 });
 
                 //If the message no longer exists after being sliced appart
