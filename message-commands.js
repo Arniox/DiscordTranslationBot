@@ -182,6 +182,16 @@ module.exports = function () {
         }
     }
 
+    //Random int
+    this.randInt = function (min, max) {
+        return Math.floor(Math.random() * (max - min + 1)) + min;
+    }
+
+    //Random float
+    this.randFloat = function (min, max) {
+        return (Math.random() * (max - min + 1)) + min;
+    }
+
     //Get nickname / name of member
     this.NickName = function (member) {
         return member.nickname || member.user.username;
