@@ -531,7 +531,7 @@ async function play(bot, message, guild, song) {
     if (!song) {
         if (serverQueue.loop) {
             //Copy finished songs back to songs
-            serverQueue.songs = serverQueue.songs.concat(serverQueue.finishedSongs);
+            serverQueue.songs = (serverQueue.finishedSongs.length > 0 && serverQueue.finishedSongs[0] ? serverQueue.songs.concat(serverQueue.finishedSongs) : []);
             serverQueue.finishedSongs = []; //Clear finished songs
 
             //Play again and message
