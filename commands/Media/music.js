@@ -297,7 +297,7 @@ exports.run = (bot, guild, message, command, args) => {
                 message.WaffleResponse(
                     `▶️ Now playing [${title}](${url}) ${queuedBy}\n\n` +
                     `**Song Duration:**\n${currentTime} - ${duration}`,
-                    MTYPE.Information, null, false, null, null, ATYPE.Bot, null, imageUrl
+                    MTYPE.Information, null, false, null, null, ATYPE.Bot, imageUrl
                 );
             } else {
                 message.WaffleResponse('I am not playing anything right now...', MTYPE.Information);
@@ -560,7 +560,7 @@ async function play(bot, message, guild, song) {
                 message.WaffleResponse(
                     `Started playing [${title.replace(/(\*|_|`|~|\\|\[|])/g, '')}](${url})` +
                     ` ${queuedBy}\n\n**Song Duration:**\n${(duration_ms / 1000).toString().toTimeString()}`,
-                    MTYPE.Information, null, false, null, serverQueue.textChannel, ATYPE.Bot, null, thumbnail
+                    MTYPE.Information, null, false, null, serverQueue.textChannel, ATYPE.Bot, thumbnail
                 );
             }).on("finish", () => {
                 //Shift songs and play next recursively
