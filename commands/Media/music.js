@@ -306,7 +306,7 @@ exports.run = (bot, guild, message, command, args) => {
             //Check if bot is not in voice
             if (botVoice && serverQueue && serverQueue.songs.length > 0) {
                 //Get main details
-                const currentTime = (serverQueue.connection.dispatcher.streamTime / 1000).toString().toTimeString();
+                const currentTime = (serverQueue.connection.dispatcher.streamTime / 1000).toString();
                 const currentDuration = (serverQueue.songs[0].song.duration_ms / 1000).toString().toTimeString();
 
                 //Get total finished duration
@@ -315,7 +315,7 @@ exports.run = (bot, guild, message, command, args) => {
                         var totalms = serverQueue.finishedSongs.map(v => v.song.duration_ms).reduce((a, b) => a + b) + serverQueue.connection.dispatcher.streamTime;
                         return (totalms / 1000).toString().toTimeString(true);
                     } else
-                        return currentTime;
+                        return currentTime.toTimeString(true);
 
                 })();
                 //Get total duration
@@ -334,7 +334,7 @@ exports.run = (bot, guild, message, command, args) => {
                 ListMessage(message,
                     `Songs in Music Queue ${serverQueue.loop ? `(Looped)` : ''}:\n\n` +
                     `**Total Queue Duration:**\n${totalFinishedDuration} out of\n${totalDuration}\n\n` +
-                    `**Current Song:** ${currentTime} - ${currentDuration}\n\n`, '#0099ff', MessageToArray(() => {
+                    `**Current Song:** ${currentTime.toTimeString()} - ${currentDuration}\n\n`, '#0099ff', MessageToArray(() => {
                         //For loop them into an output
                         var output = '';
                         for (var i = 0; i < serverQueue.songs.length; i++) {
