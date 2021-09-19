@@ -126,7 +126,9 @@ module.exports = function () {
         setTimeStamp = false,
         footer = null,
         customChannel = null,
-        authorType = ATYPE.Bot
+        authorType = ATYPE.Bot,
+        thumbnail = null,
+        imageUrl = null
     ) {
         //Create message
         const tosend = new Discord.MessageEmbed();
@@ -163,6 +165,10 @@ module.exports = function () {
         if (setTimeStamp) tosend.setTimestamp();
         //Add footer
         if (footer) tosend.setFooter(footer);
+        //Add thumbnail
+        if (thumbnail) tosend.setThumbnail(thumbnail);
+        //Add image
+        if (imageUrl) tosend.setImage(imageUrl);
 
         //Return send promise
         return channel.send(tosend);

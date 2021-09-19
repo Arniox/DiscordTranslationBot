@@ -63,7 +63,7 @@ exports.run = (bot, guild, message, command, args) => {
                                                     messageToSend = new Discord.MessageEmbed()
                                                         .setDescription(`Queued **${playListData.Array[0].title}** - [${message.member.toString()}]`)
                                                         .setColor('#09b50c')
-                                                        .addField('Song Duration: ', duration, true);
+                                                        .addField('Song Duration: ', duration, true)
                                                     //Create playListArray
                                                     playListArray = playListData.Array;
                                                     break;
@@ -73,11 +73,15 @@ exports.run = (bot, guild, message, command, args) => {
                                                     messageToSend = new Discord.MessageEmbed()
                                                         .setDescription(`Found and Queued **${playListData.Array[0].title}** - [${message.member.toString()}]`)
                                                         .setColor('#09b50c')
-                                                        .addField('Song Duration: ', duration, true);
+                                                        .addField('Song Duration: ', duration, true)
                                                     //Create playListArray
                                                     playListArray = [playListData.Array[0]];
                                                     break;
                                             }
+
+                                            //Add image if exists
+                                            if (playListData.Array[0].thumbnail)
+                                                messageToSend.setImage(playListData.Array[0].thumbnail);
 
                                             //Edit message
                                             sent.edit(messageToSend).then((sent) => {
@@ -292,11 +296,12 @@ exports.run = (bot, guild, message, command, args) => {
                 const duration = (serverQueue.songs[0].song.duration_ms / 1000).toString().toTimeString();
                 const currentTime = (serverQueue.connection.dispatcher.streamTime / 1000).toString().toTimeString();
                 const queuedBy = serverQueue.songs[0].queuedBy.toString();
+                const imageUrl = serverQueue.songs[0].song.thumbnail;
 
                 message.WaffleResponse(
                     `▶️ Now playing [${title}](${url}) ${queuedBy}\n\n` +
                     `**Song Duration:**\n${currentTime} - ${duration}`,
-                    MTYPE.Information
+                    MTYPE.Information, null, false, null, null, ATYPE.Bot, null, imageUrl
                 );
             } else {
                 message.WaffleResponse('I am not playing anything right now...', MTYPE.Information);
