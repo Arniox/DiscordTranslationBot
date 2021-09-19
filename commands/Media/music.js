@@ -79,10 +79,6 @@ exports.run = (bot, guild, message, command, args) => {
                                                     break;
                                             }
 
-                                            //Add image if exists
-                                            if (playListData.Array[0].thumbnail)
-                                                messageToSend.setImage(playListData.Array[0].thumbnail);
-
                                             //Edit message
                                             sent.edit(messageToSend).then((sent) => {
                                                 //Create queue construct
@@ -551,7 +547,7 @@ async function play(bot, message, guild, song) {
         }
     } else {
         //Song details
-        const { title, url, duration_ms } = song.song;
+        const { title, url, duration_ms, thumbnail } = song.song;
         const queuedBy = song.queuedBy.toString();
 
         //Create readable video object
@@ -564,7 +560,7 @@ async function play(bot, message, guild, song) {
                 message.WaffleResponse(
                     `Started playing [${title.replace(/(\*|_|`|~|\\|\[|])/g, '')}](${url})` +
                     ` ${queuedBy}\n\n**Song Duration:**\n${(duration_ms / 1000).toString().toTimeString()}`,
-                    MTYPE.Information, null, false, null, serverQueue.textChannel
+                    MTYPE.Information, null, false, null, serverQueue.textChannel, ATYPE.Bot, null, thumbnail
                 );
             }).on("finish", () => {
                 //Shift songs and play next recursively
