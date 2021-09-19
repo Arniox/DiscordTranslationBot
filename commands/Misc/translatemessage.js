@@ -60,32 +60,45 @@ exports.run = (bot, guild, message, args) => {
                                 if (results.find(i => i.Channel_From == message.channel.id)) {
                                     //For each custom translation link
                                     results.filter(i => i.Channel_From == message.channel.id).forEach(channelLink => {
-                                        //Get current language and detected language
-                                        var { currentLang, detectedLang } = GetLanguages(languageCodes, (channelLink.Language_To || guild.Default_Language_Code), detection.language);
+                                        //Check if channel to exists
+                                        if (!(message.guild.channels.cache.get(channelLink.Channel_To))) {
+                                            //If not exist, delete from db and return
+                                            const remove_custom_trans_cmd = `
+                                            DELETE FROM custom_translation_channels
+                                                WHERE (Channel_To = "${channelLink.Channel_To}")
+                                                AND ServerId = "${message.guild.id}"
+                                            `;
+                                            bot.con.query(remove_custom_trans_cmd, (error, results, fields) => {
+                                                if (error) return console.error(error); //Return error console log
+                                            });
+                                        } else {
+                                            //Get current language and detected language
+                                            var { currentLang, detectedLang } = GetLanguages(languageCodes, (channelLink.Language_To || guild.Default_Language_Code), detection.language);
 
-                                        //Translate if not in the output language or link or confidence
-                                        if (detection.language != (channelLink.Language_To || guild.Default_Language_Code) && detection.language != 'und' && detection.confidence > guild.Translation_Confidence) {
-                                            //Translate
-                                            googleTranslate.translate(message.content, detection.language, (channelLink.Language_To || guild.Default_Language_Code), function (err, translation) {
-                                                //Ignore the fact that some text will be the exact same and still post as this is custom translated
-                                                //Linked channels
+                                            //Translate if not in the output language or link or confidence
+                                            if (detection.language != (channelLink.Language_To || guild.Default_Language_Code) && detection.language != 'und' && detection.confidence > guild.Translation_Confidence) {
+                                                //Translate
+                                                googleTranslate.translate(message.content, detection.language, (channelLink.Language_To || guild.Default_Language_Code), function (err, translation) {
+                                                    //Ignore the fact that some text will be the exact same and still post as this is custom translated
+                                                    //Linked channels
+                                                    //Auto delete message if turned on
+                                                    //Also, only delete message if the channel it's posted in is the same as the output channel
+                                                    if (guild.Auto_Delete_Translation == 1 && channelLink.Channel_To == message.channel.id) message.delete({ timeout: 100 }); //Delete message
+
+                                                    //Send message
+                                                    message.guild.channels.cache.get(channelLink.Channel_To).send(
+                                                        SendTranslation(guild, message, translation, detectedLang, currentLang, detection));
+                                                });
+                                            } else if (detection.language == (channelLink.Language_To || guild.Default_Language_Code)) {
+                                                //Simply post message
                                                 //Auto delete message if turned on
                                                 //Also, only delete message if the channel it's posted in is the same as the output channel
                                                 if (guild.Auto_Delete_Translation == 1 && channelLink.Channel_To == message.channel.id) message.delete({ timeout: 100 }); //Delete message
 
                                                 //Send message
                                                 message.guild.channels.cache.get(channelLink.Channel_To).send(
-                                                    SendTranslation(guild, message, translation, detectedLang, currentLang, detection));
-                                            });
-                                        } else if (detection.language == (channelLink.Language_To || guild.Default_Language_Code)) {
-                                            //Simply post message
-                                            //Auto delete message if turned on
-                                            //Also, only delete message if the channel it's posted in is the same as the output channel
-                                            if (guild.Auto_Delete_Translation == 1 && channelLink.Channel_To == message.channel.id) message.delete({ timeout: 100 }); //Delete message
-
-                                            //Send message
-                                            message.guild.channels.cache.get(channelLink.Channel_To).send(
-                                                SendTranslation(guild, message, { translatedText: message.content }, detectedLang, currentLang, detection));
+                                                    SendTranslation(guild, message, { translatedText: message.content }, detectedLang, currentLang, detection));
+                                            }
                                         }
                                     });
                                 } else {

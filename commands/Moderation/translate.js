@@ -883,8 +883,8 @@ exports.run = (bot, guild, message, command, args) => {
                                                             if (error) return console.error(error); //Return error console log
 
                                                             //Get channel_from, channel_to, and language_to
-                                                            var channelFrom = message.guild.channels.cache.get(existingChannelLink.Channel_From).toString();
-                                                            var channelTo = message.guild.channels.cache.get(existingChannelLink.Channel_To).toString();
+                                                            var channelFrom = message.guild.channels.cache.get(existingChannelLink.Channel_From);
+                                                            var channelTo = message.guild.channels.cache.get(existingChannelLink.Channel_To);
                                                             var languageTo = (existingChannelLink.Language_To ? `*${value.find(i => i.language == existingChannelLink.Language_To).name}*` : '**Default**');
 
                                                             //Message

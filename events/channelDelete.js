@@ -32,7 +32,7 @@ module.exports = (bot, channel) => {
 
         //Delete from database for server_subbed_reddits
         const remove_subbed_cmd = `
-        DELETE FROM translation_ignored_channels
+        DELETE FROM server_subbed_reddits
             WHERE ChannelId = "${channel.id}"
             AND ServerId = "${channel.guild.id}"
         `;
