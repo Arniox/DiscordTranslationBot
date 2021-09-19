@@ -591,9 +591,6 @@ function cannotEffect(message, botVoice, whatAmIDoing) {
 
 //Leave Channel after some time if no new songs are queued
 function leaveChannelOnNoSong(bot, message, serverQueue) {
-    //Set job uuid
-    const jobUUID = uuidv4();
-
     bot.jobsManager.get(message.guild.id).CreateJob('5m', () => {
         //Check if serverQueue is empty
         if (serverQueue.songs.length < 1) {
@@ -612,6 +609,6 @@ function leaveChannelOnNoSong(bot, message, serverQueue) {
             }).catch((err) => { });
         }
         //Delete job
-        bot.jobsManager.get(message.guild.id).StopJob(`leaveNoSong ${jobUUID}`);
-    }, `leaveNoSong ${jobUUID}`, true);
+        bot.jobsManager.get(message.guild.id).StopJob(`leaveNoSong`);
+    }, `leaveNoSong`, true);
 }
