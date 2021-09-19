@@ -309,15 +309,26 @@ exports.run = (bot, guild, message, command, args) => {
                 const currentTime = (serverQueue.connection.dispatcher.streamTime / 1000).toString().toTimeString();
                 const currentDuration = (serverQueue.songs[0].song.duration_ms / 1000).toString().toTimeString();
 
-                console.log(serverQueue.finishedSongs, serverQueue.finishedSongs.length);
+                //Get total finished duration
+                const totalFinishedDuration = (function () {
+                    if (serverQueue.finishedSongs.length > 0) {
+                        var totalms = serverQueue.finishedSongs.map(v => v.song.duration_ms).reduce((a, b) => a + b) + serverQueue.connection.dispatcher.streamTime;
+                        return (totalms / 1000).toString().toTimeString(true);
+                    } else
+                        return currentTime;
 
-                const totalFinishedDuration = (serverQueue.finishedSongs.length > 0 ?
-                    ((serverQueue.finishedSongs.map(v => v.song.duration_ms).reduce((a, b) => a + b) + serverQueue.connection.dispatcher.streamTime) / 1000)
-                        .toString().toTimeString(true) : currentTime);
-                const totalDuration = (
-                    (serverQueue.songs.map(v => v.song.duration_ms).reduce((a, b) => a + b) / 1000) +
-                    (serverQueue.finishedSongs.map(v => v.song.duration_ms).reduce((a, b) => a + b) / 1000)
-                ).toString().toTimeString(true);
+                })();
+                //Get total duration
+                const totalDuration = (function () {
+                    var totalNewDuration = serverQueue.songs.map(v => v.song.duration_ms).reduce((a, b) => a + b) / 1000;
+                    var totalFinDuration = 0;
+                    if (serverQueue.finishedSongs.length > 0)
+                        totalFinDuration = serverQueue.finishedSongs.map(v => v.song.duration_ms).reduce((a, b) => a + b) / 1000;
+                    else
+                        totalFinDuration = serverQueue.connection.dispatcher.streamTime / 1000;
+
+                    return (totalNewDuration + totalFinDuration).toString().toTimeString(true);
+                })();
 
                 //Send message
                 ListMessage(message,
@@ -533,7 +544,6 @@ async function play(bot, message, guild, song) {
             //Leave on end of music after 5 minutes
             return leaveChannelOnNoSong(bot, message, serverQueue);
         }
-        return;
     } else {
         //Song details
         const { title, url, duration_ms } = song.song;
