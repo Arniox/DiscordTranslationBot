@@ -217,6 +217,7 @@ exports.run = (bot, guild, message, command, args) => {
                             serverQueue.loop = false;
                             //Clear queue
                             serverQueue.songs = [];
+                            serverQueue.finishedSongs = [];
                             if (serverQueue.connection.dispatcher) {
                                 //Fire dispatcher event end to immediately exit recursion and exit
                                 serverQueue.connection.dispatcher.end();
