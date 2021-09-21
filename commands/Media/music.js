@@ -326,8 +326,6 @@ exports.run = (bot, guild, message, command, args) => {
                     var totalFinDuration = 0;
                     if (serverQueue.finishedSongs.length > 0)
                         totalFinDuration = serverQueue.finishedSongs.map(v => v.song.duration_ms).reduce((a, b) => a + b) / 1000;
-                    else
-                        totalFinDuration = serverQueue.connection.dispatcher.streamTime / 1000;
 
                     return (totalNewDuration + totalFinDuration).toString().toTimeString(true);
                 })();
