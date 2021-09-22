@@ -95,6 +95,8 @@ module.exports = (bot, message) => {
                                     return resolve(bot.commands.get('basedcounter'));
                                 case 'akinator': case 'aki':
                                     return resolve(bot.commands.get('akinator'));
+                                case 'scoreboard': case 'score': case 'board': case 'sb':
+                                    return resolve(bot.commands.get('scoreboard'));
                                 case 'conjecture': case 'collatz': case 'collats': case 'collat':
                                     return resolve(bot.commands.get('collatz'));
                                 default:

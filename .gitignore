@@ -5,3 +5,4 @@ data-to-use.json
 .env
 ClearDB Heroku Discord Bot.session.sql
 .vscode/settings.json
+googleAPIKeys.json
