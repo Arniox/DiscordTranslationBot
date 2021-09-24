@@ -363,3 +363,8 @@ Array.prototype.removeThese = function (elementsToRemove) {
 Array.prototype.dumpAll = function () {
     console.dir(this, { 'maxArrayLength': null });
 }
+
+//Random item in array
+Array.prototype.random = function () {
+    return this[Math.floor((Math.random() * this.length))];
+}

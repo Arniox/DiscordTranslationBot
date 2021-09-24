@@ -160,6 +160,9 @@ module.exports = function () {
                 break;
             case MTYPE.Success: tosend.setColor('#09b50c');
                 break;
+            default:
+                tosend.setColor(messageType);
+                break;
         }
         //Add time stamp
         if (setTimeStamp) tosend.setTimestamp();
@@ -196,6 +199,17 @@ module.exports = function () {
     //Random float
     this.randFloat = function (min, max) {
         return (Math.random() * (max - min + 1)) + min;
+    }
+
+    //Rgb to hex
+    this.rgbToHex = function (r, g, b) {
+        return "#" + this.componentToHex(r) + this.componentToHex(g) + this.componentToHex(b);
+    }
+
+    //Component to hex
+    this.componentToHex = function (c) {
+        var hex = c.toString(16);
+        return hex.length == 1 ? "0" + hex : hex;
     }
 
     //Get nickname / name of member
