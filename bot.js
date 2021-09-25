@@ -34,6 +34,8 @@ const bot = new Discord.Client();
 const queue = new Map();
 //Akinator game queue
 const gameQueue = new Map();
+//Card game queue
+const cardGameQueue = new Map();
 //Jobs map
 const jobsManager = new Map();
 
@@ -41,6 +43,7 @@ bot.dbpool = pool; //Attach pool to bot
 bot.reddit = reddit; //Attach reddit to bot
 bot.musicQueue = queue; //Attach music queue to bot
 bot.akinatorGames = gameQueue; //Attach game queue to bot
+bot.cardGames = cardGameQueue; //Attach card game queue to bot
 bot.jobsManager = jobsManager; //Attach job manager to bot
 
 //Test connection to database

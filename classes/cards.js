@@ -28,21 +28,20 @@ module.exports = class CardGame {
     //Construct game
     ConstructGame() {
         //Send message
-        this.message.channel.WaffleResponse(
+        this.message.WaffleResponse(
             `Preparing New Card Game For ${this.player.toString()}`, MTYPE.Loading,
             [
                 {
                     name: 'Join Up',
-                    value: `To join this game, please react with ✅. To leave a game in preperation phase, simply remove your reaction.`,
+                    value: `To join this game, please react with ✅\nTo leave a game in preperation phase, simply remove your reaction.`,
                     inline: true
                 }, {
                     name: `Start Game`,
-                    value: `When you're ready, ${this.player.toString()} react with ▶️ to start the game`,
+                    value: `When you're ready:\n${this.player.toString()} react with ▶️ to start the game`,
                     inline: true
                 }, {
                     name: 'How Many Cards?',
-                    value: `${this.player.toString()} please type how many cards you want each player to start with?`,
-                    inline: true
+                    value: `${this.player.toString()} please type how many cards you want each player to start with?`
                 }, this.GetPlayersList()
             ], true, `Game Id: ${this.gameId}`
         ).then((sent) => {
@@ -67,7 +66,7 @@ module.exports = class CardGame {
 
                         //Create error message
                         var errorMessage = (text) => {
-                            this.message.channel.WaffleResponse(text)
+                            this.message.WaffleResponse(text)
                                 .then((errorSent) => {
                                     errorSent.delete({ timeout: 3000 }).catch(() => { });
                                 });
@@ -88,8 +87,7 @@ module.exports = class CardGame {
                                     const embed = sent.embeds[0];
                                     embed.fields[2] = {
                                         name: 'How Many Decks?',
-                                        value: `There will be ${this.numberOfCards} delt to each player!`,
-                                        inline: true
+                                        value: `There will be ${this.numberOfCards} cards delt to each player!`
                                     }
                                     sent.edit(embed);
 
@@ -187,14 +185,14 @@ module.exports = class CardGame {
                                 });
                             }).catch((error) => {
                                 console.error(error);
-                                this.message.channel.WaffleResponse('There was an error in the creation of this card game. Please try again');
+                                this.message.WaffleResponse('There was an error in the creation of this card game. Please try again');
                                 return;
                             });
                     });
                 });
         }).catch(error => {
             console.error(error);
-            this.message.channel.WaffleResponse('There was an error in the creation of this card game. Please try again');
+            this.message.WaffleResponse('There was an error in the creation of this card game. Please try again');
         });
     }
 
@@ -203,10 +201,10 @@ module.exports = class CardGame {
         //Generate the deck and piles
         axios.get('https://deckofcardsapi.com/api/deck/new/shuffle/?deck_count=1')
             .then(async (newDeck) => {
-                this.deck = newDeck;
+                this.deck = newDeck.data;
                 this.turnIndex = randInt(0, this.numberOfPlayers - 1);
                 //Send message
-                this.message.channel.WaffleResponse(
+                this.message.WaffleResponse(
                     `Started New Card Game With ${this.numberOfCards} Each!`,
                     MTYPE.Success,
                     [
@@ -223,6 +221,9 @@ module.exports = class CardGame {
 
                 //Deal all cards to players
                 await this.DrawAllCards();
+            }).catch((error) => {
+                console.error(error);
+                this.message.WaffleResponse(`There was an error: ${error.message}`);
             });
     }
 
@@ -250,26 +251,26 @@ module.exports = class CardGame {
             if (this.players.map(ply => ply.id).indexOf(`${player.id}`) == this.turnIndex) {
                 //Deal to self
                 try {
-                    var sent = await this.message.channel.WaffleResponse(`Dealing 1 Card to ${player.toString()}`,
+                    var sent = await this.message.WaffleResponse(`Dealing 1 Card to ${player.toString()}`,
                         MTYPE.Loading, null, false, `Game Id: ${this.gameId} - Deck Id: ${this.deck.deck_id}`, null,
                         {
                             name: this.player.user.username,
                             url: this.player.user.avatarURL()
                         });
 
-                    const returnedCards = await axios.get(
-                        `https://deckofcardsapi.com/api/deck/${this.deck.deck_id}/draw/?count=1`);
+                    const returnedCards = (await axios.get(
+                        `https://deckofcardsapi.com/api/deck/${this.deck.deck_id}/draw/?count=1`)).data;
 
                     //Send cards to players pile
                     var cardIds = returnedCards.cards.map(v => v.code),
                         playerName = player.user.username.replace(/[^a-zA-Z0-9]/gm, ''),
                         existingPile = this.piles.filter(v => v.playerId === player.id);
-                    const sentCards = await axios.get(
-                        `https://deckofcardsapi.com/api/deck/${this.deck.deck_id}/pile/${playerName}/add/?cards=${cardIds.join(',')}`);
+                    const sentCards = (await axios.get(
+                        `https://deckofcardsapi.com/api/deck/${this.deck.deck_id}/pile/${playerName}/add/?cards=${cardIds.join(',')}`)).data;
 
                     //Get list of cards
-                    const listOfCards = await axios.get(
-                        `https://deckofcardsapi.com/api/deck/${this.deck.deck_id}/pile/${playerName}/list/`);
+                    const listOfCards = (await axios.get(
+                        `https://deckofcardsapi.com/api/deck/${this.deck.deck_id}/pile/${playerName}/list/`)).data;
                     cardIds = listOfCards.piles[`${playerName}`].cards.map(v => ({
                         id: v.code,
                         name: `${v.value} ${v.suit}`
@@ -299,10 +300,10 @@ module.exports = class CardGame {
                         .setFooter(`Game Id: ${this.gameId} - Deck Id: ${this.deck.deck_id}`));
                 } catch (error) {
                     console.error(error);
-                    this.message.channel.WaffleResponse(`There was an error: ${error.message}`);
+                    this.message.WaffleResponse(`There was an error: ${error.message}`);
                 }
             } else {
-                this.message.channel.WaffleResponse(
+                this.message.WaffleResponse(
                     `${player.toString()} it is not your turn!`, MTYPE.Error,
                     null, false, `Game Id: ${this.gameId} - Deck Id: ${this.deck.deck_id}`, null,
                     {
@@ -322,7 +323,7 @@ module.exports = class CardGame {
             //Deal to all players
             try {
                 //Send loading message
-                var sent = await this.message.channel.WaffleResponse(
+                var sent = await this.message.WaffleResponse(
                     `Dealing ${(numberEach | this.numberOfCards)} Cards to ${this.numberOfPlayers} players...`,
                     MTYPE.Loading, null, false, `Game Id: ${this.gameId} - Deck Id: ${this.deck.deck_id}`, null,
                     {
@@ -331,19 +332,19 @@ module.exports = class CardGame {
                     });
 
                 for (var index = 0; index < this.numberOfPlayers; index++) {
-                    const returnedCards = await axios.get(
-                        `https://deckofcardsapi.com/api/deck/${this.deck.deck_id}/draw/?count=${(numberEach | this.numberOfCards)}`);
+                    const returnedCards = (await axios.get(
+                        `https://deckofcardsapi.com/api/deck/${this.deck.deck_id}/draw/?count=${(numberEach | this.numberOfCards)}`)).data;
 
                     //Send cards to players pile
                     var cardIds = returnedCards.cards.map(v => v.code),
                         playerName = this.players[index].user.username.replace(/[^a-zA-Z0-9]/gm, ''),
                         existingPile = this.piles.filter(v => v.playerId === this.players[index].id);
-                    const sentCards = await axios.get(
-                        `https://deckofcardsapi.com/api/deck/${this.deck.deck_id}/pile/${playerName}/add/?cards=${cardIds.join(',')}`);
+                    const sentCards = (await axios.get(
+                        `https://deckofcardsapi.com/api/deck/${this.deck.deck_id}/pile/${playerName}/add/?cards=${cardIds.join(',')}`)).data;
 
                     //Get list of cards
-                    const listOfCards = await axios.get(
-                        `https://deckofcardsapi.com/api/deck/${this.deck.deck_id}/pile/${playerName}/list/`);
+                    const listOfCards = (await axios.get(
+                        `https://deckofcardsapi.com/api/deck/${this.deck.deck_id}/pile/${playerName}/list/`)).data;
                     cardIds = listOfCards.piles[`${playerName}`].cards.map(v => ({
                         id: v.code,
                         name: `${v.value} ${v.suit}`
@@ -368,13 +369,13 @@ module.exports = class CardGame {
 
                 //Edit message
                 sent.edit(new Discord.MessageEmbed()
-                    .setDescription(`Finished Dealing Cards to ${this.numberOfPlayers} players.`)
+                    .setDescription(`Finished Dealing ${this.numberOfCards} Cards to ${this.numberOfPlayers} players.`)
                     .setAuthor(this.player.user.username, this.player.user.avatarURL())
                     .setColor('#09b50c')
                     .setFooter(`Game Id: ${this.gameId} - Deck Id: ${this.deck.deck_id}`));
             } catch (error) {
                 console.error(error);
-                this.message.channel.WaffleResponse(`There was an error: ${error.message}`);
+                this.message.WaffleResponse(`There was an error: ${error.message}`);
             }
         } else {
             //Divide all cards to every player
@@ -397,7 +398,7 @@ module.exports = class CardGame {
     //Turn
     TurnMessage = () => {
         //Send channel message
-        this.message.channel.WaffleResponse(
+        this.message.WaffleResponse(
             `It Is ${this.players[this.turnIndex]} Turn!`, MTYPE.Information,
             null, false, `Game Id: ${this.gameId} - Deck Id: ${this.deck.deck_id}`, null,
             {
