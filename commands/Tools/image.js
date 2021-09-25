@@ -116,13 +116,13 @@ exports.run = (bot, guild, message, command, args) => {
                                     //Edit message
                                     sent.edit(editNow);
                                 }).catch((error) => {
-                                    message.WaffleResponse(error, MTYPE.Error);
+                                    message.WaffleResponse(error);
                                 });
                             }).catch((error) => {
-                                message.WaffleResponse(`Sorry, I couldn't find the top colour's name!`, MTYPE.Error);
+                                message.WaffleResponse(`Sorry, I couldn't find the top colour's name!`);
                             });
                         }).catch((error) => {
-                            message.WaffleResponse(`Couldn't process ${name} for some reason. Please try again`, MTYPE.Error);
+                            message.WaffleResponse(`Couldn't process ${name} for some reason. Please try again`);
                         });
                     break;
                 case 'what_is_this': case 'whatisthis': case 'whatis': case 'whatthis':
@@ -157,7 +157,7 @@ exports.run = (bot, guild, message, command, args) => {
                             }
                         }).catch((error) => {
                             console.error(error);
-                            message.WaffleResponse(`Couldn't process ${name} for some reason. Please try again`, MTYPE.Error);
+                            message.WaffleResponse(`Couldn't process ${name} for some reason. Please try again`);
                         });
                     break;
                 case 'where_is_this': case 'whereisthis': case 'whereis': case 'wherethis':
@@ -210,7 +210,7 @@ exports.run = (bot, guild, message, command, args) => {
                             }
                         }).catch((error) => {
                             console.error(error);
-                            message.WaffleResponse(`Couldn't process ${name} for some reason. Please try again`, MTYPE.Error);
+                            message.WaffleResponse(`Couldn't process ${name} for some reason. Please try again`);
                         });
                     break;
                 case 'describe_this': case 'describe_me': case 'describethis': case 'describeme': case 'describe': case 'this':
@@ -264,7 +264,7 @@ exports.run = (bot, guild, message, command, args) => {
                             });
                         }).catch((error) => {
                             console.error(error);
-                            message.WaffleResponse(`Couldn't process ${name} for some reason. Please try again`, MTYPE.Error);
+                            message.WaffleResponse(`Couldn't process ${name} for some reason. Please try again`);
                         });
                     break;
                 default:

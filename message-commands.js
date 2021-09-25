@@ -146,7 +146,9 @@ module.exports = function () {
             case ATYPE.Bot:
                 tosend.setAuthor(bot.username, bot.avatarURL());
                 break;
-            default: break;
+            default:
+                tosend.setAuthor(authorType.name, authorType.url);
+                break;
         }
         //Add fields
         if (fieldsArray) tosend.addFields(fieldsArray);
