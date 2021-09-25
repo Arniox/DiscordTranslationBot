@@ -302,27 +302,29 @@ var drawBox = (ctx, AA, AB, AC, AD, detail) => {
     ctx.stroke();
 }
 //Draw text
-var drawText = (ctx, AA, AB, AC, AD, detail) => {
+var drawText = (ctx, AA, AB, AC, AD, detail, index) => {
     //Write text
     ctx.font = '900 15px Sans';
     //Write highlight for text
     var measurement = ctx.measureText(`${detail.name} - ${(detail.score * 100).toFixedCut(2)}%`),
-        highLightX = AA.x - measurement.actualBoundingBoxLeft,
-        highLightY = (AA.y - 5) - (measurement.actualBoundingBoxAscent + measurement.actualBoundingBoxDescent),
         highLightWidth = measurement.actualBoundingBoxRight + measurement.actualBoundingBoxLeft,
-        highLightHeight = measurement.actualBoundingBoxAscent + measurement.actualBoundingBoxDescent;
+        highLightHeight = measurement.actualBoundingBoxAscent + measurement.actualBoundingBoxDescent,
+        X = (index % 2 == 0 ? AA.x : AC.x),
+        Y = (index % 2 == 0 ? AA.y - (5 + measurement.actualBoundingBoxDescent) : AC.y + (5 + measurement.actualBoundingBoxAscent)),
+        highLightX = X - measurement.actualBoundingBoxLeft,
+        highLightY = Y - (measurement.actualBoundingBoxAscent + measurement.actualBoundingBoxDescent);
     ctx.beginPath();
     ctx.lineWidth = 0;
     ctx.rect(highLightX, highLightY, highLightWidth, highLightHeight);
     ctx.fillStyle = 'rgba(255, 255, 255, 1)';
     ctx.fill();
     ctx.fillStyle = 'rgba(0, 0, 255, 1)';
-    ctx.fillText(`${detail.name} - ${(detail.score * 100).toFixedCut(2)}%`, AA.x, (AA.y - 5));
+    ctx.fillText(`${detail.name} - ${(detail.score * 100).toFixedCut(2)}%`, X, Y);
 }
 //Draw for all
 var drawForAll = (ctx, objects, canvasWidth, canvasHeight) => {
     //For each object
-    objects.forEach((object) => {
+    objects.forEach((object, index) => {
         var detail = { name: object.name, score: object.score },
             vertices = object.boundingPoly.normalizedVertices.map((v) => {
                 v.x = v.x * canvasWidth;
@@ -336,7 +338,7 @@ var drawForAll = (ctx, objects, canvasWidth, canvasHeight) => {
 
         //Draw
         drawBox(ctx, AA, AB, AC, AD, detail);
-        drawText(ctx, AA, AB, AC, AD, detail);
+        drawText(ctx, AA, AB, AC, AD, detail, index);
     });
 }
 
