@@ -19,7 +19,23 @@ exports.run = (bot, guild, message, command, args) => {
     //Check that an image exists
     if (attachments.length > 0) {
         //Image stats
-        const { name, id, size, url, height, width } = attachments[0];
+        const { name, id, size, url } = attachments[0];
+        var tempHeight = attachments[0].height,
+            tempWidth = attachments[0].width;
+        const height =
+            (tempHeight * tempWidth > 2073600 ? //1080p (1k) 1920x1080
+                (tempHeight * tempWidth > 3686400 ? //1440p (2k) 2560x1440
+                    (tempHeight * tempWidth > 8294400 ? //2160p (4k) 3840x2160
+                        (tempHeight * tempWidth > 33177600 ? //4320p (8k) 7680x4320
+                            (tempHeight * tempWidth > 132710400 ? //8640p (16k) 15360x8640
+                                tempHeight / 16 : tempHeight / 8) : tempHeight / 4) : tempHeight / 2) : (tempHeight / 1.5).floor()) : tempHeight);
+        const width =
+            (tempHeight * tempWidth > 2073600 ?
+                (tempHeight * tempWidth > 3686400 ?
+                    (tempHeight * tempWidth > 8294400 ?
+                        (tempHeight * tempWidth > 33177600 ?
+                            (tempHeight * tempWidth > 132710400 ?
+                                tempWidth / 16 : tempWidth / 8) : tempWidth / 4) : tempWidth / 2) : (tempWidth / 1.5).floor()) : tempWidth);
 
         //Check args
         if (args.length != 0) {
@@ -350,7 +366,7 @@ var drawForAll = (ctx, objects, canvasWidth, canvasHeight) => {
 var drawCanvas = (ctx, url, img, objects, canvasWidth, canvasHeight) => {
     return new Promise((resolve, reject) => {
         img.onload = () => {
-            ctx.drawImage(img, 0, 0);
+            ctx.drawImage(img, 0, 0, canvasWidth, canvasHeight);
             drawForAll(ctx, objects, canvasWidth, canvasHeight);
             resolve();
         }
