@@ -2,6 +2,7 @@
 const Discord = require('discord.js');
 const vision = require('@google-cloud/vision');
 const axios = require('axios');
+const { createCanvas, Image } = require('canvas');
 //Create vision client
 const client = new vision.ImageAnnotatorClient({
     credentials: {
@@ -196,6 +197,60 @@ exports.run = (bot, guild, message, command, args) => {
                             message.WaffleResponse(`Couldn't process ${name} for some reason. Please try again`, MTYPE.Error);
                         });
                     break;
+                case 'describe_this': case 'describe_me': case 'describethis': case 'describeme': case 'describe': case 'this':
+                    //Load message
+                    message.WaffleResponse(`Processing Image __${name}__...`, MTYPE.Loading)
+                        .then(async (sent) => {
+                            //Recognise object locations
+                            const [results] = await client.objectLocalization(`${url}`);
+                            const objects = results.localizedObjectAnnotations;
+
+                            //Create canvas and image
+                            const canvas = createCanvas(width, height);
+                            const ctx = canvas.getContext('2d');
+                            const img = new Image();
+                            img.dataMode = Image.MODE_IMAGE;
+
+                            //Loading
+                            sent.edit(new Discord.MessageEmbed()
+                                .setDescription(`Finding Objects in __${name}__...`)
+                                .setAuthor(message.guild.me.user.username, message.guild.me.user.avatarURL())
+                                .setColor('#FFCC00'));
+                            drawCanvas(ctx, url, img, objects, width, height).then(() => {
+                                //Edit loading
+                                sent.edit(new Discord.MessageEmbed()
+                                    .setDescription(`Saving Image __${name}__...`)
+                                    .setAuthor(message.guild.me.user.username, message.guild.me.user.avatarURL())
+                                    .setColor('#FFCC00'));
+
+                                //Get attachments
+                                var newAttachmentName = `describe-me-${name.replace(/\.[^/.]+$/, "")}.png`,
+                                    newAttachment = new Discord.MessageAttachment(canvas.toBuffer(), newAttachmentName);
+                                const newEmbed = new Discord.MessageEmbed()
+                                    .setDescription(`Finished Processing __${name}__. I've described as many things as I can see.`)
+                                    .setAuthor(message.guild.me.user.username, message.guild.me.user.avatarURL())
+                                    .setColor('#09b50c')
+                                    .setImage(`attachment://${newAttachmentName}`);
+
+                                //If found objects
+                                if (objects.length > 0)
+                                    newEmbed.addFields(
+                                        {
+                                            name: 'List of things found:',
+                                            value: `${objects.map((v, i) => `${i + 1} - **${v.name}** - ` +
+                                                `${(v.score * 100).toFixedCut(2)}%`).join('\n')}`,
+                                            inline: true
+                                        });
+
+                                //Send final message
+                                sent.delete({ timeout: 200 }).catch(() => { return; }); //Delete message
+                                message.channel.send({ embed: newEmbed, files: [newAttachment] }).catch((error) => console.error(error));
+                            });
+                        }).catch((error) => {
+                            console.error(error);
+                            message.WaffleResponse(`Couldn't process ${name} for some reason. Please try again`, MTYPE.Error);
+                        });
+                    break;
                 default:
                     HelpMessage(bot, guild, message, args);
                     break;
@@ -219,14 +274,81 @@ function HelpMessage(bot, guild, message, args) {
                 name: 'Command Patterns: ',
                 value: `${guild.Prefix}image [dominate_colour:dominate_color:dominate:colour:color:dom:col:domcol] {uploaded image}\n` +
                     `${guild.Prefix}image [what_is_this:whatisthis:whatis:whatthis:what:whati:wutis:wutisthis:wutthis] {upload image}\n` +
-                    `${guild.Prefix}image [where_is_this:whereisthis:whereis:wherethis:where:wherei:findthis:findwhere:find] {upload image}`
+                    `${guild.Prefix}image [where_is_this:whereisthis:whereis:wherethis:where:wherei:findthis:findwhere:find] {upload image}\n` +
+                    `${guild.Prefix}image [describe_this:describe_me:describethis:describeme:describe:this:] {upload image}`
             },
             {
                 name: 'Examples: ',
                 value: `${guild.Prefix}image dominate_colour\n` +
                     `${guild.Prefix}image what_is_this\n` +
-                    `${guild.Prefix}image where_is_this`
+                    `${guild.Prefix}image where_is_this\n` +
+                    `${guild.Prefix}image describe_this`
             }
         ],
         true, 'Thanks, and have a good day');
+}
+
+//Draw boxes
+var drawBox = (ctx, AA, AB, AC, AD, detail) => {
+    // AA   AB
+    // 
+    // AC   AD
+    var rectWidth = AB.x - AA.x,
+        rectHeight = AC.y - AA.y;
+    ctx.beginPath();
+    ctx.lineWidth = 3;
+    ctx.strokeStyle = 'rgba(255, 0, 0, 1)';
+    ctx.rect(AA.x, AA.y, rectWidth, rectHeight);
+    ctx.stroke();
+}
+//Draw text
+var drawText = (ctx, AA, AB, AC, AD, detail) => {
+    //Write text
+    ctx.font = '900 15px Sans';
+    //Write highlight for text
+    var measurement = ctx.measureText(`${detail.name} - ${(detail.score * 100).toFixedCut(2)}%`),
+        highLightX = AA.x - measurement.actualBoundingBoxLeft,
+        highLightY = (AA.y - 5) - (measurement.actualBoundingBoxAscent + measurement.actualBoundingBoxDescent),
+        highLightWidth = measurement.actualBoundingBoxRight + measurement.actualBoundingBoxLeft,
+        highLightHeight = measurement.actualBoundingBoxAscent + measurement.actualBoundingBoxDescent;
+    ctx.beginPath();
+    ctx.lineWidth = 0;
+    ctx.rect(highLightX, highLightY, highLightWidth, highLightHeight);
+    ctx.fillStyle = 'rgba(255, 255, 255, 1)';
+    ctx.fill();
+    ctx.fillStyle = 'rgba(0, 0, 255, 1)';
+    ctx.fillText(`${detail.name} - ${(detail.score * 100).toFixedCut(2)}%`, AA.x, (AA.y - 5));
+}
+//Draw for all
+var drawForAll = (ctx, objects, canvasWidth, canvasHeight) => {
+    //For each object
+    objects.forEach((object) => {
+        var detail = { name: object.name, score: object.score },
+            vertices = object.boundingPoly.normalizedVertices.map((v) => {
+                v.x = v.x * canvasWidth;
+                v.y = v.y * canvasHeight;
+                return v;
+            }),
+            AA = vertices[0],
+            AB = vertices[1],
+            AC = vertices[3],
+            AD = vertices[2];
+
+        //Draw
+        drawBox(ctx, AA, AB, AC, AD, detail);
+        drawText(ctx, AA, AB, AC, AD, detail);
+    });
+}
+
+//Draw image
+var drawCanvas = (ctx, url, img, objects, canvasWidth, canvasHeight) => {
+    return new Promise((resolve, reject) => {
+        img.onload = () => {
+            ctx.drawImage(img, 0, 0);
+            drawForAll(ctx, objects, canvasWidth, canvasHeight);
+            resolve();
+        }
+        //Set image url
+        img.src = url;
+    });
 }
