@@ -314,7 +314,7 @@ var drawText = (ctx, AA, AB, AC, AD, detail, index, canvasHeight) => {
         X = (index % 2 == 0 ? AA.x : AC.x), //Always place text on the far left of box
         Y = (index % 2 == 0 && (placementTopY - measurement.actualBoundingBoxAscent) > 0 ? placementTopY : //Place top if can fit in canvas
             ((placementBottomY + measurement.actualBoundingBoxDescent) < canvasHeight ? placementBottomY : //Otherwise place bottom if can fit in canvas
-                placementBottomY - (5 + measurement.actualBoundingBoxDescent + 3 /*Line Width*/))), //Otherwise place bottom INSIDE box
+                placementBottomY - (5 + measurement.actualBoundingBoxAscent + 3 /*Line Width*/))), //Otherwise place bottom INSIDE box
         highLightX = X - measurement.actualBoundingBoxLeft, //Highlight X + 1 pixel left side
         highLightY = Y - (measurement.actualBoundingBoxAscent + measurement.actualBoundingBoxDescent); //High light Y + 1 pixel bottom
     ctx.beginPath();
