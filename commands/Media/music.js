@@ -243,14 +243,9 @@ exports.run = (bot, guild, message, command, args) => {
                 } else {
                     //Check if bot is not in voice
                     if (botVoice && serverQueue && serverQueue.songs.length > 0) {
-                        //Check user is either manager or has dj role
-                        if (IsDJ(message) || IsManager(message)) {
-                            //Pause dispatcher
-                            serverQueue.connection.dispatcher.pause(true);
-                            message.WaffleResponse('Paused ⏸️', MTYPE.Information);
-                        } else {
-                            message.WaffleResponse(`Sorry, only server moderators or DJ's can pause the music.`);
-                        }
+                        //Pause dispatcher
+                        serverQueue.connection.dispatcher.pause(true);
+                        message.WaffleResponse('Paused ⏸️', MTYPE.Information);
                     } else {
                         message.WaffleResponse('I am currently not playing anything so cannot be paused.', MTYPE.Information);
                     }
@@ -268,14 +263,9 @@ exports.run = (bot, guild, message, command, args) => {
                 } else {
                     //Check if bot is not in voice
                     if (botVoice && serverQueue && serverQueue.songs.length > 0) {
-                        //Check user is either manager or has dj role
-                        if (IsDJ(message) || IsManager(message)) {
-                            //Resume dispatcher
-                            serverQueue.connection.dispatcher.resume();
-                            message.WaffleResponse('Resumed ▶️', MTYPE.Information);
-                        } else {
-                            message.WaffleResponse(`Sorry, only server moderators or DJ's can resume the music`);
-                        }
+                        //Resume dispatcher
+                        serverQueue.connection.dispatcher.resume();
+                        message.WaffleResponse('Resumed ▶️', MTYPE.Information);
                     } else {
                         message.WaffleResponse('I am currently not playing anything so cannot be resumed.', MTYPE.Information);
                     }
