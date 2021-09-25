@@ -302,15 +302,17 @@ var drawBox = (ctx, AA, AB, AC, AD, detail) => {
     ctx.stroke();
 }
 //Draw text
-var drawText = (ctx, AA, AB, AC, AD, detail, index) => {
+var drawText = (ctx, AA, AB, AC, AD, detail, index, canvasHeight) => {
     //Write text
     ctx.font = '900 15px Sans';
     //Write highlight for text
     var measurement = ctx.measureText(`${detail.name} - ${(detail.score * 100).toFixedCut(2)}%`),
         highLightWidth = measurement.actualBoundingBoxRight + measurement.actualBoundingBoxLeft,
         highLightHeight = measurement.actualBoundingBoxAscent + measurement.actualBoundingBoxDescent,
+        placementTopY = AA.y - (5 + measurement.actualBoundingBoxDescent),
+        placementBottomY = AC.y + (5 + measurement.actualBoundingBoxAscent),
         X = (index % 2 == 0 ? AA.x : AC.x),
-        Y = (index % 2 == 0 ? AA.y - (5 + measurement.actualBoundingBoxDescent) : AC.y + (5 + measurement.actualBoundingBoxAscent)),
+        Y = (index % 2 == 0 && placementTopY > 0 ? placementTopY : (placementBottomY < canvasHeight ? placementBottomY : placementTopY)),
         highLightX = X - measurement.actualBoundingBoxLeft,
         highLightY = Y - (measurement.actualBoundingBoxAscent + measurement.actualBoundingBoxDescent);
     ctx.beginPath();
@@ -338,7 +340,7 @@ var drawForAll = (ctx, objects, canvasWidth, canvasHeight) => {
 
         //Draw
         drawBox(ctx, AA, AB, AC, AD, detail);
-        drawText(ctx, AA, AB, AC, AD, detail, index);
+        drawText(ctx, AA, AB, AC, AD, detail, index, canvasHeight);
     });
 }
 
