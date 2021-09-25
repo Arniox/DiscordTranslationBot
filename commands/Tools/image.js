@@ -307,14 +307,16 @@ var drawText = (ctx, AA, AB, AC, AD, detail, index, canvasHeight) => {
     ctx.font = '900 15px Sans';
     //Write highlight for text
     var measurement = ctx.measureText(`${detail.name} - ${(detail.score * 100).toFixedCut(2)}%`),
-        highLightWidth = measurement.actualBoundingBoxRight + measurement.actualBoundingBoxLeft,
-        highLightHeight = measurement.actualBoundingBoxAscent + measurement.actualBoundingBoxDescent,
-        placementTopY = AA.y - (5 + measurement.actualBoundingBoxDescent),
-        placementBottomY = AC.y + (5 + measurement.actualBoundingBoxAscent),
-        X = (index % 2 == 0 ? AA.x : AC.x),
-        Y = (index % 2 == 0 && placementTopY > 0 ? placementTopY : (placementBottomY < canvasHeight ? placementBottomY : placementTopY)),
-        highLightX = X - measurement.actualBoundingBoxLeft,
-        highLightY = Y - (measurement.actualBoundingBoxAscent + measurement.actualBoundingBoxDescent);
+        highLightWidth = measurement.actualBoundingBoxRight + measurement.actualBoundingBoxLeft, //Width of text + 1 pixel right side
+        highLightHeight = measurement.actualBoundingBoxAscent + measurement.actualBoundingBoxDescent, //Height of text + 1 pixel top
+        placementTopY = AA.y - (5 + measurement.actualBoundingBoxDescent), //Place top position
+        placementBottomY = AC.y + (5 + measurement.actualBoundingBoxAscent), //Place bottom position
+        X = (index % 2 == 0 ? AA.x : AC.x), //Always place text on the far left of box
+        Y = (index % 2 == 0 && (placementTopY - measurement.actualBoundingBoxAscent) > 0 ? placementTopY : //Place top if can fit in canvas
+            ((placementBottomY + measurement.actualBoundingBoxDescent) < canvasHeight ? placementBottomY : //Otherwise place bottom if can fit in canvas
+                placementBottomY - (5 + measurement.actualBoundingBoxDescent + 3 /*Line Width*/))), //Otherwise place bottom INSIDE box
+        highLightX = X - measurement.actualBoundingBoxLeft, //Highlight X + 1 pixel left side
+        highLightY = Y - (measurement.actualBoundingBoxAscent + measurement.actualBoundingBoxDescent); //High light Y + 1 pixel bottom
     ctx.beginPath();
     ctx.lineWidth = 0;
     ctx.rect(highLightX, highLightY, highLightWidth, highLightHeight);
@@ -332,7 +334,7 @@ var drawForAll = (ctx, objects, canvasWidth, canvasHeight) => {
                 v.x = v.x * canvasWidth;
                 v.y = v.y * canvasHeight;
                 return v;
-            }),
+            }), //Un-normalize the vertexes
             AA = vertices[0],
             AB = vertices[1],
             AC = vertices[3],
