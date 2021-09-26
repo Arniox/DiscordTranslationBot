@@ -67,7 +67,7 @@ module.exports = class CardGame {
 
                     //Await message collector collect
                     messageCollector.on('collect', m => {
-                        m.delete({ timeout: 100 }); //Delete message
+                        m.delete({ timeout: 100 }).catch(() => { }); //Delete message
                         var mess = m.content.toLowerCase();
 
                         //Create error message
@@ -370,7 +370,7 @@ module.exports = class CardGame {
                             } else {
                                 this.message.WaffleResponse(`I Couldn't find **${cardToDiscard}** in your Hand`)
                                     .then((sent) => {
-                                        sent.delete({ timeout: 3000 }).catch((error) => { });
+                                        sent.delete({ timeout: 3000 }).catch(() => { });
                                     });
                                 return null;
                             }
