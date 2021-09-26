@@ -113,7 +113,8 @@ module.exports = class CardGame {
                     //Await reaction
                     reactionCollector.on('collect', (reaction, user) => {
                         if (reaction.emoji.name === '✅' && user.id != this.player.id) {
-                            this.players.push(user);
+                            const player = this.guild.members.cache.get(user.id);
+                            this.players.push(player);
                             this.numberOfPlayers = this.players.length;
 
                             //Edit message
@@ -155,7 +156,8 @@ module.exports = class CardGame {
                     //Await remove
                     reactionCollector.on('remove', (reaction, user) => {
                         if (reaction.emoji.name === '✅' && user.id != this.player.id) {
-                            this.players = this.players.removeElement(user);
+                            const player = this.guild.members.cache.get(user.id);
+                            this.players = this.players.removeElement(player);
                             this.numberOfPlayers = this.players.length;
 
                             //Edit message
