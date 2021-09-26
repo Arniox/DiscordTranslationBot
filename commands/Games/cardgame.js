@@ -1,6 +1,6 @@
 //Import classes
 const Discord = require('discord.js');
-const CardGame = require('../../Classes/cards.js');
+const CardGame = require('../../classes/cards.js');
 //Import functions
 
 exports.run = (bot, guild, message, command, args) => {

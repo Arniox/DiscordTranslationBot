@@ -3,7 +3,6 @@ const Discord = require('discord.js');
 const AkinatorGame = require('../../classes/akinator.js');
 //Import functions
 
-
 exports.run = (bot, guild, message, command, args) => {
     //Get player
     var player = message.member;
