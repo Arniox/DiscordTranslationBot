@@ -22,7 +22,7 @@ exports.run = (bot, guild, message, command, args) => {
 //Start Card Game
 function StartCardGame(bot, guild, message, player) {
     //Create new game
-    const newCardGame = new CardGame(bot, guild, message, player);
+    const newCardGame = new CardGame(bot, message.guild, message, player);
     //Attach game and server
     bot.cardGames.set(`${newCardGame.gameId}`, newCardGame);
 
