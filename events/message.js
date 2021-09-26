@@ -116,7 +116,7 @@ module.exports = (bot, message) => {
                             //Return console error
                             return console.error(error || 'Unknown command');
                         });
-                    } else if (evaluate(message.content) && !message.content.includes('true')) {
+                    } else if (evaluate(message.content)) {
                         message.channel.send(new Discord.MessageEmbed().setDescription(`> ${message.member.toString()}: **${message.content}**\n = ${evaluate(message.content)}`.trimString(2048)).setColor('#0099ff'));
                     } else {
                         if (!bot.akinatorGames.get(message.member.id)) {
@@ -154,7 +154,8 @@ module.exports = (bot, message) => {
 //Function evaluate the calculation
 function evaluate(expr) {
     try {
-        return `${maths.format(maths.evaluate(expr), { notation: 'fixed' })}`;
+        const eval = `${maths.format(maths.evaluate(expr), { notation: 'fixed' })}`
+        return (eval === expr ? '' : eval);
     } catch (err) {
         return '';
     }
