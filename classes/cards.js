@@ -157,7 +157,8 @@ module.exports = class CardGame {
                     reactionCollector.on('remove', (reaction, user) => {
                         if (reaction.emoji.name === '✅' && user.id != this.player.id) {
                             const player = this.guild.members.cache.get(user.id);
-                            this.players = this.players.removeElement(player);
+
+                            this.players = this.players.filter(v => v.id !== player.id)
                             this.numberOfPlayers = this.players.length;
 
                             //Edit message
@@ -445,7 +446,7 @@ module.exports = class CardGame {
                         //Send
                         this.message.channel.send({ embed: newEmbed, files: [messageAttachment] }).catch((error) => console.error(error));
                         //Delete pile
-                        this.pile.removeElement(pile);
+                        this.pile = this.pile.filter(v => v.pileName !== pile.pileName);
                     });
             } catch (error) {
                 console.error(error);
@@ -545,7 +546,7 @@ module.exports = class CardGame {
                         //Send
                         this.message.channel.send({ embed: newEmbed, files: [messageAttachment] }).catch((error) => console.error(error));
                         //Delete pile
-                        this.pile.removeElement(pile);
+                        this.pile = this.pile.filter(v => v.pileName !== pile.pileName);
                     });
             } catch (error) {
                 console.error(error);
