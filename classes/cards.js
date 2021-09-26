@@ -114,21 +114,22 @@ module.exports = class CardGame {
                     reactionCollector.on('collect', (reaction, user) => {
                         if (reaction.emoji.name === '✅' && user.id != this.player.id) {
                             const player = this.guild.members.cache.get(user.id);
-                            this.players.push(player);
-                            this.numberOfPlayers = this.players.length;
+                            if (this.players.filter(v => v.id == player.id).length == 0) {
+                                this.players.push(player);
+                                this.numberOfPlayers = this.players.length;
 
-                            //Edit message
-                            const embed = sent.embeds[0];
-                            embed.fields[3] = this.GetPlayersList();
-                            sent.edit(embed);
+                                //Edit message
+                                const embed = sent.embeds[0];
+                                embed.fields[3] = this.GetPlayersList();
+                                sent.edit(embed);
 
-                            //Send message to player
-                            user.send(new Discord.MessageEmbed()
-                                .setDescription('You have joined the new Card Game! Please wait for the game to start.')
-                                .setColor('#0099ff')
-                                .setTimestamp()
-                                .setFooter(`Game Id: ${this.gameId}`));
-
+                                //Send message to player
+                                user.send(new Discord.MessageEmbed()
+                                    .setDescription('You have joined the new Card Game! Please wait for the game to start.')
+                                    .setColor('#0099ff')
+                                    .setTimestamp()
+                                    .setFooter(`Game Id: ${this.gameId}`));
+                            }
                             //Reset timer and empty collector
                             reactionCollector.empty();
                             reactionCollector.resetTimer(); messageCollector.resetTimer();
@@ -158,7 +159,7 @@ module.exports = class CardGame {
                         if (reaction.emoji.name === '✅' && user.id != this.player.id) {
                             const player = this.guild.members.cache.get(user.id);
 
-                            this.players = this.players.filter(v => v.id !== player.id)
+                            this.players = this.players.filter(v => v.id != player.id)
                             this.numberOfPlayers = this.players.length;
 
                             //Edit message
@@ -446,7 +447,7 @@ module.exports = class CardGame {
                         //Send
                         this.message.channel.send({ embed: newEmbed, files: [messageAttachment] }).catch((error) => console.error(error));
                         //Delete pile
-                        this.pile = this.pile.filter(v => v.pileName !== pile.pileName);
+                        this.piles = this.piles.filter(v => v.pileName != pile.pileName);
                     });
             } catch (error) {
                 console.error(error);
@@ -546,7 +547,7 @@ module.exports = class CardGame {
                         //Send
                         this.message.channel.send({ embed: newEmbed, files: [messageAttachment] }).catch((error) => console.error(error));
                         //Delete pile
-                        this.pile = this.pile.filter(v => v.pileName !== pile.pileName);
+                        this.piles = this.piles.filter(v => v.pileName != pile.pileName);
                     });
             } catch (error) {
                 console.error(error);
