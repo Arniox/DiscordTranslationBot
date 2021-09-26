@@ -230,30 +230,108 @@ module.exports = class CardGame {
 
                 //Deal all cards to players
                 await this.DrawAllCards();
-                //Send all players their deck
-                this.players.forEach((player) => {
-                    var playerName = player.user.username.replace(/[^a-zA-Z0-9]/gm, '');
-                    //Draw Deck
-                    this.PenDrawPile(`${playerName}-${player.id}`).then((messageAttachment) => {
-                        const newEmbed = new Discord.MessageEmbed()
-                            .setDescription('Your Hand:')
-                            .setColor('#000000')
-                            .setTimestamp()
-                            .setFooter(`Game Id: ${this.gameId}`)
-                            .setImage(`attachment://${messageAttachment.name}`);
-
-                        //Send
-                        player.send({ embed: newEmbed, files: [messageAttachment] }).catch((error) => console.error(error));
-                    }).catch((error) => {
-                        console.error(error);
-                        this.message.WaffleResponse(`There was an error: ${error}`);
-                    });
-                })
-
             }).catch((error) => {
                 console.error(error);
                 this.message.WaffleResponse(`There was an error: ${error.message}`);
             });
+    }
+
+    //Reveal Hand
+    RevealHand(player = null, pileName = null, message, numberOfCardsToShow = 1, checkTurn = true) {
+        //Check if player
+        const pileNameToUse = (() => {
+            if (player) {
+                //Check that the player is playing
+                if (this.players.map(v => v.id).includes(player.id)) {
+                    //Check that it's the players turn
+                    if (!checkTurn || this.players.map(v => v.id).indexOf(`${player.id}`) == this.turnIndex) {
+                        return this.GetPileId(player);
+                    } else {
+                        this.NotTurnMessage(player, message);
+                        return null;
+                    }
+                } else return null;
+            } else if (pileName) {
+                return pileName;
+            } else return null;
+        })();
+
+        if (pileNameToUse) {
+            //Draw Deck
+            this.PenDrawPile(pileNameToUse, false, numberOfCardsToShow)
+                .then((messageAttachment) => {
+                    const newEmbed = new Discord.MessageEmbed()
+                        .setDescription(`Here is ${numberOfCardsToShow} of ${(player ? 'My Cards' : `the ${pileNameToUse} Pile's Cards`)}:`)
+                        .setColor('#000000')
+                        .setFooter(`Game Id: ${this.gameId} - Deck Id: ${this.deck.deck_id}`)
+                        .setImage(`attachment://${messageAttachment.name}`);
+
+                    if (player) newEmbed.setAuthor(player.user.username, player.user.avatarURL());
+                    else if (pileName) newEmbed.setAuthor(this.player.user.username, this.player.user.avatarURL());
+
+                    //Send
+                    message.channel.send({ embed: newEmbed, files: [messageAttachment] }).catch((error) => console.error(error));
+                }).catch((error) => {
+                    console.error(error);
+                    this.message.WaffleResponse(`There was an error: ${error}`);
+                });
+        }
+    }
+
+    //Create pile
+    async CreateNewPile(pileName, numberOfCards = 1) {
+        try {
+            //Loading message
+            var sent = await this.message.WaffleResponse(`Dealing ${numberOfCards} Card(s) to a new Pile ${pileName}`,
+                MTYPE.Loading, null, false, `Game Id: ${this.gameId} - Deck Id: ${this.deck.deck_id}`, null,
+                {
+                    name: this.player.user.username,
+                    url: this.player.user.avatarURL()
+                });
+
+            //Draw cards from deck
+            const returnedCards = (await axios.get(`https://deckofcardsapi.com/api/deck/${this.deck.deck_id}/draw/?count=${numberOfCards}`)).data;
+            //Send cards to new pile
+            var cardIds = returnedCards.cards.map(v => v.code),
+                existingPile = this.piles.filter(v => v.pileName == pileName);
+            await axios.get(`https://deckofcardsapi.com/api/deck/${this.deck.deck_id}/pile/${pileName}/add/?cards=${cardIds.join(',')}`);
+
+            //Get list of cards
+            const listOfCards = (await axios.get(`https://deckofcardsapi.com/api/deck/${this.deck.deck_id}/pile/${pileName}/list/`)).data;
+            cardIds = listOfCards.piles[`${pileName}`].cards.map(v => ({
+                id: v.code,
+                name: `${v.value} ${v.suit}`,
+                image: v.image,
+                revealed: false
+            }));
+
+            //Edit piles
+            const pile = {
+                player: this.player,
+                pileName: this.GetPileId(player),
+                pileData: {
+                    remaining: listOfCards.piles[`${pileName}`].remaining,
+                    listIds: cardIds
+                }
+            };
+
+            //Check if pile already exists
+            if (existingPile[0])
+                this.piles.filter(v => v.pileName == pileName)[0].pileData.listIds = cardIds;
+            else
+                this.piles.push(pile);
+
+            //Edit message
+            if (sent)
+                sent.edit(new Discord.MessageEmbed()
+                    .setDescription(`Dealt ${numberOfCards} Cards(s) to the new Pile ${pileName}`)
+                    .setAuthor(this.player.user.username, this.player.user.avatarURL())
+                    .setColor('#09b50c')
+                    .setFooter(`Game Id: ${this.gameId} - Deck Id: ${this.deck.deck_id}`));
+        } catch (error) {
+            console.error(error);
+            this.message.WaffleResponse(`There was an error: ${error.message}`);
+        }
     }
 
     //Get players
@@ -272,81 +350,309 @@ module.exports = class CardGame {
         }
     }
 
-    //Draw card
-    async DrawCard(player, numberToDraw = 1, multiDraw = false, checkTurn = true) {
-        //Check that player is playing
-        if (this.players.map(v => v.id).includes(player.id)) {
-            //Check that it's the players turn
-            if (!checkTurn || this.players.map(v => v.id).indexOf(`${player.id}`) == this.turnIndex) {
-                try {
-                    //Check if multi draw
-                    var sent = await (async () => {
-                        if (!multiDraw) {
-                            return await this.message.WaffleResponse(`Dealing ${numberToDraw} Card(s) to ${player.toString()}`,
-                                MTYPE.Loading, null, false, `Game Id: ${this.gameId} - Deck Id: ${this.deck.deck_id}`, null,
-                                {
-                                    name: this.player.user.username,
-                                    url: this.player.user.avatarURL()
-                                });
+    //Discard specific card
+    async DiscardCard(player = null, pileName = null, cardToDiscard, revealCard = true, checkTurn = true) {
+        //Check if player
+        const pileNameToUse = (() => {
+            if (player) {
+                //Check that the player is playing
+                if (this.players.map(v => v.id).includes(player.id)) {
+                    //Check that it's the players turn
+                    if (!checkTurn || this.players.map(v => v.id).indexOf(`${player.id}`) == this.turnIndex) {
+                        //Check that there's cards to discard
+                        if (this.piles.filter(v => v.pileName == this.GetPileId(player))[0].pileData.remaining > 0) {
+                            //Find card to remove
+                            if (this.piles.filter(v => v.pileName == this.GetPileId(player))[0].pileData.listIds.filter(
+                                o => o.code.toLowerCase() == cardToDiscard.toLowerCase() || o.name.toLowerCase() == cardToDiscard.toLowerCase())) {
+                                return this.GetPileId(player);
+                            } else {
+                                this.message.WaffleResponse(`I Couldn't find **${cardToDiscard}** in your Hand`)
+                                    .then((sent) => {
+                                        sent.delete({ timeout: 3000 }).catch((error) => { });
+                                    });
+                                return null;
+                            }
                         } else {
+                            this.NoCardsToDiscardMessage();
                             return null;
                         }
-                    })();
+                    } else {
+                        this.NotTurnMessage(player);
+                        return null;
+                    }
+                } else return null;
+            } else if (pileName) {
+                return pileName;
+            } else return null;
+        })();
 
-                    //Draw Cards from deck
-                    const returnedCards = (await axios.get(`https://deckofcardsapi.com/api/deck/${this.deck.deck_id}/draw/?count=${numberToDraw}`)).data;
-                    //Send cards to players pil
-                    var cardIds = returnedCards.cards.map(v => v.code),
-                        playerName = player.user.username.replace(/[^a-zA-Z0-9]/gm, ''),
-                        existingPile = this.piles.filter(v => v.pileName == `${playerName}-${player.id}`);
-                    const sentCards = (await axios.get(`https://deckofcardsapi.com/api/deck/${this.deck.deck_id}/pile/${playerName}${player.id}/add/?cards=${cardIds.join(',')}`)).data;
+        if (pileNameToUse) {
+            try {
+                //Remove "-" from pileName
+                var pileNameCleaned = pileNameToUse.replace(/[- ]/gm, '');
 
-                    //Get list of cards
-                    const listOfCards = (await axios.get(`https://deckofcardsapi.com/api/deck/${this.deck.deck_id}/pile/${playerName}${player.id}/list/`)).data;
-                    cardIds = listOfCards.piles[`${playerName}${player.id}`].cards.map(v => ({
+                //Get card to remove
+                const removedCard = this.piles.filter(v => v.pileName == pileNameToUse)[0].pileData.listIds.filter(
+                    o => o.code.toLowerCase() == cardToDiscard.toLowerCase() || o.name.toLowerCase() == cardToDiscard.toLowerCase())[0];
+
+                //Draw cards from pile
+                const returnedCards = (await axios.get(`https://deckofcardsapi.com/api/deck/${this.deck.deck_id}/pile/${pileNameCleaned}/draw/?cards=${removedCard.code}`)).data;
+                //Send cards to players discard pile then to discard pile
+                var cardIds = returnedCards.cards.map(v => ({
+                    id: v.code,
+                    name: `${v.value} ${v.suit}`,
+                    image: v.image,
+                    revealed: revealCard
+                }));
+
+                //Add to discard pile
+                await axios.get(`https://deckofcardsapi.com/api/deck/${this.deck.deck_id}/pile/${`discardpile`}/add/?cards=${cardIds.map(v => v.id).join(',')}`);
+                //Get list of cards and update the piles card ids
+                const listOfCards = (await axios.get(`https://deckofcardsapi.com/api/deck/${this.deck.deck_id}/pile/${pileNameCleaned}/list/`)).data;
+                this.piles.filter(v => v.pileName == pileNameToUse)[0].pileData.listIds =
+                    listOfCards.piles[`${pileNameCleaned}`].cards.map(v => ({
                         id: v.code,
                         name: `${v.value} ${v.suit}`,
                         image: v.image,
                         revealed: false
                     }));
 
-                    //Edit piles
-                    const pile = {
-                        player: player,
-                        pileName: `${playerName}-${player.id}`,
-                        pileData: {
-                            remaining: listOfCards.piles[`${playerName}${player.id}`].remaining,
-                            listIds: cardIds
-                        }
-                    };
+                //Create pile
+                const pile = {
+                    player: player,
+                    pileName: `discard${this.GetPileId(player)}`,
+                    pileData: {
+                        remaining: returnedCards.piles[`${pileNameCleaned}`].remaining,
+                        listIds: cardIds
+                    }
+                };
+                this.piles.push(pile);
 
-                    //Check if player already exists
-                    if (existingPile[0])
-                        existingPile[0].pileData.listIds = cardIds;
-                    else
-                        this.piles.push(pile);
+                //Draw discard pile image
+                this.PenDrawPile(`discard${this.GetPileId(player)}`, false, pile.pileData.remaining)
+                    .then((messageAttachment) => {
+                        const newEmbed = new Discord.MessageEmbed()
+                            .setDescription(`Discard 1 Card from ${(player ? 'My Hand' : `this pile ${pileNameToUse}`)}:`)
+                            .setColor('#000000')
+                            .setFooter(`Game Id: ${this.gameId} - Deck Id: ${this.deck.deck_id}`)
+                            .setImage(`attachment://${messageAttachment.name}`);
 
-                    //Edit message
-                    if (sent)
-                        sent.edit(new Discord.MessageEmbed()
-                            .setDescription(`Dealt ${numberToDraw} Card to ${player.toString()}`)
-                            .setAuthor(this.player.user.username, this.player.user.avatarURL())
-                            .setColor('#09b50c')
-                            .setFooter(`Game Id: ${this.gameId} - Deck Id: ${this.deck.deck_id}`));
-                } catch (error) {
-                    console.error(error);
-                    this.message.WaffleResponse(`There was an error: ${error.message}`);
-                }
-            } else {
-                this.message.WaffleResponse(
-                    `${player.toString()} it is not your turn!`, MTYPE.Error,
-                    null, false, `Game Id: ${this.gameId} - Deck Id: ${this.deck.deck_id}`, null,
-                    {
-                        name: this.player.user.username,
-                        url: this.player.user.avatarURL()
-                    }).then((sent) => {
-                        sent.delete({ timeout: 3000 }).catch(() => { });
+                        if (player) newEmbed.setAuthor(player.user.username, player.user.avatarURL());
+                        else if (pileName) newEmbed.setAuthor(this.player.user.username, this.player.user.avatarURL());
+
+                        //Send
+                        this.message.channel.send({ embed: newEmbed, files: [messageAttachment] }).catch((error) => console.error(error));
+                        //Delete pile
+                        this.pile.removeElement(pile);
                     });
+            } catch (error) {
+                console.error(error);
+                this.message.WaffleResponse(`There was an error: ${error.message}`);
+            }
+        }
+    }
+
+    //Discard cards
+    async DiscardCardsFromTop(player = null, pileName = null, numberToDiscard = 1, revealCardNumber = 'all', checkTurn = true) {
+        //Check if player
+        const pileNameToUse = (() => {
+            if (player) {
+                //Check that the player is playing
+                if (this.players.map(v => v.id).includes(player.id)) {
+                    //Check that it's the players turn
+                    if (!checkTurn || this.players.map(v => v.id).indexOf(`${player.id}`) == this.turnIndex) {
+                        //Check that there's cards to discard
+                        if (this.piles.filter(v => v.pileName == this.GetPileId(player))[0].pileData.remaining > 0) {
+                            return this.GetPileId(player);
+                        } else {
+                            this.NoCardsToDiscardMessage();
+                            return null;
+                        }
+                    } else {
+                        this.NotTurnMessage(player);
+                        return null;
+                    }
+                } else return null;
+            } else if (pileName) {
+                return pileName;
+            } else return null;
+        })();
+
+        if (pileNameToUse) {
+            try {
+                //Remove "-" from pileName
+                var pileNameCleaned = pileNameToUse.replace(/[- ]/gm, '');
+                var revealCardNumberCount = (!isNaN(revealCardNumber) ? revealCardNumber + 0 : 0);
+
+                //Draw cards from pile
+                const returnedCards = (await axios.get(`https://deckofcardsapi.com/api/deck/${this.deck.deck_id}/pile/${pileNameCleaned}/draw/?count=${numberToDiscard}`)).data;
+                //Send cards to piles discard pile then to discard pile
+                var cardIds = (() => {
+                    if (!isNaN(revealCardNumber)) {
+                        return returnedCards.cards.map(v => ({
+                            id: v.code,
+                            name: `${v.value} ${v.suit}`,
+                            image: v.image,
+                            revealed: ((revealCardNumberCount -= 1) > 0 ? true : false)
+                        }));
+                    } else {
+                        return returnedCards.cards.map(v => ({
+                            id: v.code,
+                            name: `${v.value} ${v.suit}`,
+                            image: v.image,
+                            revealed: true
+                        }));
+                    }
+                })();
+
+                //Add to discard pilke
+                await axios.get(`https://deckofcardsapi.com/api/deck/${this.deck.deck_id}/pile/${`discardpile`}/add/?cards=${cardIds.map(v => v.id).join(',')}`);
+                //Get list of cards and update the piles card ids
+                const listOfCards = (await axios.get(`https://deckofcardsapi.com/api/deck/${this.deck.deck_id}/pile/${pileNameCleaned}/list/`)).data;
+                this.piles.filter(v => v.pileName == pileNameToUse)[0].pileData.listIds =
+                    listOfCards.piles[`${pileNameCleaned}`].cards.map(v => ({
+                        id: v.code,
+                        name: `${v.value} ${v.suit}`,
+                        image: v.image,
+                        revealed: false
+                    }));
+
+                //Create pile
+                const pile = {
+                    player: player,
+                    pileName: `discard${pileNameToUse}`,
+                    pileData: {
+                        remaining: returnedCards.piles[`${pileNameCleaned}`].remaining,
+                        listIds: cardIds
+                    }
+                };
+                this.piles.push(pile);
+
+                //Draw discard pile image
+                this.PenDrawPile(pileNameToUse, false, (!isNaN(revealCardNumber) ? revealCardNumber : pile.pileData.remaining))
+                    .then((messageAttachment) => {
+                        const newEmbed = new Discord.MessageEmbed()
+                            .setDescription(`Discard ${numberToDiscard} Cards from ${(player ? 'My Hand' : `the Pile ${pileNameToUse}`)}:`)
+                            .setColor('#000000')
+                            .setFooter(`Game Id: ${this.gameId} - Deck Id: ${this.deck.deck_id}`)
+                            .setImage(`attachment://${messageAttachment.name}`);
+
+                        if (player) newEmbed.setAuthor(player.user.username, player.user.avatarURL());
+                        else if (pileName) newEmbed.setAuthor(this.player.user.username, this.player.user.avatarURL());
+
+                        //Send
+                        this.message.channel.send({ embed: newEmbed, files: [messageAttachment] }).catch((error) => console.error(error));
+                        //Delete pile
+                        this.pile.removeElement(pile);
+                    });
+            } catch (error) {
+                console.error(error);
+                this.message.WaffleResponse(`There was an error: ${error.message}`);
+            }
+        }
+    }
+
+    //Draw card
+    async DrawCard(player = null, pileName = null, numberToDraw = 1, multiDraw = false, checkTurn = true) {
+        //Check if player
+        const pileNameToUse = (() => {
+            if (player) {
+                //Check that player is playing
+                if (this.players.map(v => v.id).includes(player.id)) {
+                    //Check that it's the players turn
+                    if (!checkTurn || this.players.map(v => v.id).indexOf(`${player.id}`) == this.turnIndex) {
+                        return this.GetPileId(player);
+                    } else {
+                        this.NotTurnMessage(player);
+                        return null;
+                    }
+                } else return null;
+            } else if (pileName) {
+                return pileName;
+            } else return null;
+        })();
+
+        if (pileNameToUse) {
+            try {
+                //Check if multi draw
+                var sent = await (async () => {
+                    if (!multiDraw) {
+                        return await this.message.WaffleResponse(
+                            `Dealing ${numberToDraw} Card(s) to ${(player ? player.toString() : ` the Pile ${pileNameToUse}`)}`,
+                            MTYPE.Loading, null, false, `Game Id: ${this.gameId} - Deck Id: ${this.deck.deck_id}`, null,
+                            {
+                                name: this.player.user.username,
+                                url: this.player.user.avatarURL()
+                            });
+                    } else {
+                        return null;
+                    }
+                })();
+
+                //Remove "-" from pileName
+                var pileNameCleaned = pileNameToUse.replace(/[- ]/gm, '');
+
+                //Draw cards from deck
+                const returnedCards = (await axios.get(`https://deckofcardsapi.com/api/deck/${this.deck.deck_id}/draw/?count=${numberToDraw}`)).data;
+                //Send cards to pile
+                var cardIds = returnedCards.cards.map(v => v.code),
+                    existingPile = this.piles.filter(v => v.pileName == pileNameToUse);
+                await axios.get(`https://deckofcardsapi.com/api/deck/${this.deck.deck_id}/pile/${pileNameCleaned}/add/?cards=${cardIds.join(',')}`);
+
+                //Get list of cards
+                const listOfCards = (await axios.get(`https://deckofcardsapi.com/api/deck/${this.deck.deck_id}/pile/${pileNameCleaned}/list/`)).data;
+                cardIds = listOfCards.piles[`${pileNameCleaned}`].cards.map(v => ({
+                    id: v.code,
+                    name: `${v.value} ${v.suit}`,
+                    image: v.image,
+                    revealed: false
+                }));
+
+                //Edit piles
+                const pile = {
+                    player: player,
+                    pileName: pileNameToUse,
+                    pileData: {
+                        remaining: listOfCards.piles[`${pileNameCleaned}`].remaining,
+                        listIds: cardIds
+                    }
+                };
+
+                //Check if player already eixsts
+                if (existingPile[0])
+                    this.piles.filter(v => v.pileName == pileNameToUse)[0].pileData.listIds = cardIds;
+                else
+                    this.piles.push(pile);
+
+                //Edit message
+                if (sent)
+                    sent.edit(new Discord.MessageEmbed()
+                        .setDescription(`Dealt ${numberToDraw} Card(s) ${(player ? player.toString() : ` the Pile ${pileNameToUse}`)}`)
+                        .setAuthor(this.player.user.username, this.player.user.avatarURL())
+                        .setColor('#09b50c')
+                        .setFooter(`Game Id: ${this.gameId} - Deck Id: ${this.deck.deck_id}`));
+
+                //Send message to user
+                if (player && !multiDraw) {
+                    //Draw Deck
+                    this.PenDrawPile(this.GetPileId(player), true).then((messageAttachment) => {
+                        const newEmbed = new Discord.MessageEmbed()
+                            .setDescription('Your Hand:')
+                            .setColor('#000000')
+                            .setTimestamp()
+                            .setFooter(`Game Id: ${this.gameId}`)
+                            .setImage(`attachment://${messageAttachment.name}`);
+
+                        //Send
+                        player.send({ embed: newEmbed, files: [messageAttachment] }).catch((error) => console.error(error));
+                    }).catch((error) => {
+                        console.error(error);
+                        this.message.WaffleResponse(`There was an error: ${error}`);
+                    });
+                }
+            } catch (error) {
+                console.error(error);
+                this.message.WaffleResponse(`There was an error: ${error.message}`);
             }
         }
     }
@@ -367,7 +673,19 @@ module.exports = class CardGame {
                     });
 
                 for (var index = 0; index < this.numberOfPlayers; index++) {
-                    await this.DrawCard(this.players[index], (numberEach || this.numberOfCards), true, false);
+                    await this.DrawCard(this.players[index], null, (numberEach || this.numberOfCards), true, false);
+
+                    //Draw deck to each user
+                    var messageAttachment = await this.PenDrawPile(this.GetPileId(this.players[index]), true);
+                    const newEmbed = new Discord.MessageEmbed()
+                        .setDescription('Your Hand:')
+                        .setColor('#000000')
+                        .setTimestamp()
+                        .setFooter(`Game Id: ${this.gameId}`)
+                        .setImage(`attachment://${messageAttachment.name}`);
+
+                    //Send
+                    await this.players[index].send({ embed: newEmbed, files: [messageAttachment] });
                 }
 
                 //Edit message
@@ -390,12 +708,14 @@ module.exports = class CardGame {
     TurnPlus() {
         if (this.turnIndex >= this.numberOfPlayers - 1) this.turnIndex = 0;
         else this.turnIndex += 1;
+        this.TurnMessage();
     }
 
     //Reverse turn
     TurnMinus() {
         if (this.turnIndex == 0) this.turnIndex == this.numberOfPlayers - 1;
         else this.turnIndex -= 1;
+        this.TurnMessage();
     }
 
     //Turn
@@ -416,65 +736,95 @@ module.exports = class CardGame {
             .setFooter(`Game Id: ${this.gameId} - Deck Id: ${this.deck.deck_id}`));
     }
 
+    //Not your turn
+    NotTurnMessage(player, message = null) {
+        (message ? message : this.message).WaffleResponse(
+            `${player.toString()} it is not your turn!`, MTYPE.Error,
+            null, false, `Game Id: ${this.gameId} - Deck Id: ${this.deck.deck_id}`, null,
+            {
+                name: this.player.user.username,
+                url: this.player.user.avatarURL()
+            }).then((sent) => {
+                sent.delete({ timeout: 3000 }).catch(() => { });
+            });
+    }
+
+    //No cards to discard
+    NoCardsToDiscardMessage(message = null) {
+        (message ? message : this.message).WaffleResponse(`I have no Cards to Discard.`,
+            '#000000', null, false, `Game Id: ${this.gameId} - Deck Id: ${this.deck.deck_id}`, null, ATYPE.Sender);
+    }
+
+    //Get Player Pile ID
+    GetPileId(player) {
+        const playerName = player.user.username.replace(/[^a-zA-Z0-9]/gm, '');
+        return `${playerName}-${player.id}`;
+    }
+
     //Draw Pile
-    PenDrawPile(pileToFindName, showCards = 0) {
+    PenDrawPile(pileToFindName, forPlayer = true, showCards = 0) {
         return new Promise(async (resolve, reject) => {
-            const specificPile = this.piles.filter(v => v.pileName == pileToFindName)[0],
-                player = specificPile.player,
-                pileName = specificPile.pileName,
-                pileData = specificPile.pileData,
-                forPlayer = (player ? true : false)
+            const specificPile = this.piles.filter(v => v.pileName == pileToFindName)[0];
+            if (specificPile) {
+                const player = specificPile.player,
+                    pileName = specificPile.pileName,
+                    pileData = specificPile.pileData;
 
-            const { width, height, columnCount, rowCount } = this.CalculateSizeOfPile(pileData.remaining);
-            var vector = { X: 0 + this.cardSpacing, Y: 0 + this.cardSpacing };
-            var showCardsCount = 0;
-            var rowCurrentCount = 0;
+                const { width, height, columnCount, rowCount } = this.CalculateSizeOfPile(pileData.remaining);
+                var vector = { X: 0 + this.cardSpacing, Y: 0 + this.cardSpacing };
+                var showCardsCount = showCards + 0;
+                var rowCurrentCount = 0;
 
-            //Create canvas and image
-            const canvas = createCanvas(width, height);
-            const ctx = canvas.getContext('2d');
-            const images = [];
+                //Create canvas and image
+                const canvas = createCanvas(width, height);
+                const ctx = canvas.getContext('2d');
+                const images = [];
 
-            //Create all images
-            for (var i = 0; i < pileData.listIds.length; i++) {
-                //Set up image
-                const img = new Image();
-                img.dataMode = Image.MODE_IMAGE;
+                //Create all images
+                for (var i = 0; i < pileData.listIds.length; i++) {
+                    //Set up image
+                    const img = new Image();
+                    img.dataMode = Image.MODE_IMAGE;
 
-                //Get rowCount counting
-                rowCurrentCount += (i % columnCount == 0 && rowCurrentCount < rowCount ? 1 : 0);
-                //Calculate x and y
-                vector = this.ShiftCardsOnCanvas(vector.X, vector.Y, columnCount, rowCurrentCount - 1, i);
-                //Set up revealed status
-                var revealed = (() => {
-                    if (forPlayer) return true;
-                    else {
-                        if (showCardsCount < showCards) {
-                            showCardsCount += 1;
-                            return true;
-                        } else return false;
-                    }
-                })();
+                    //Get rowCount counting
+                    rowCurrentCount += (i % columnCount == 0 && rowCurrentCount < rowCount ? 1 : 0);
+                    //Calculate x and y
+                    vector = this.ShiftCardsOnCanvas(vector.X, vector.Y, columnCount, rowCurrentCount - 1, i);
+                    //Set up revealed status
+                    (() => {
+                        if (forPlayer) pileData.listIds[i].revealed = true;
+                        else {
+                            if (!isNaN(showCards)) {
+                                pileData.listIds[i].revealed = ((showCardsCount -= 1) > 0 ? true : false);
+                            } else {
+                                //If showCards is text like 'all' then show all
+                                pileData.listIds[i].revealed = true;
+                            }
+                        }
+                    })();
 
-                //Set up object
-                images.push({
-                    img: img,
-                    src: pileData.listIds[i].image,
-                    placement: vector,
-                    revealed: revealed
-                });
+                    //Set up object
+                    images.push({
+                        img: img,
+                        src: pileData.listIds[i].image,
+                        placement: vector,
+                        revealed: pileData.listIds[i].revealed
+                    });
+                }
+
+                //Draw black background
+                ctx.fillStyle = "rgba(0, 0, 0, 1)";
+                ctx.fillRect(0, 0, width, height);
+                //Draw Canvas
+                await this.DrawCanvas(ctx, images);
+                //Create attachment
+                var newAttachmentName = `Canvas-Pile-${this.gameId}-${this.deck.deck_id}-${pileName}.png`,
+                    newAttachment = new Discord.MessageAttachment(canvas.toBuffer(), newAttachmentName);
+
+                resolve(newAttachment);
+            } else {
+                reject(`Couldn't find the card pile for ${pileToFindName}`);
             }
-
-            //Draw black background
-            ctx.fillStyle = "rgba(0, 0, 0, 1)";
-            ctx.fillRect(0, 0, width, height);
-            //Draw Canvas
-            await this.DrawCanvas(ctx, images);
-            //Create attachment
-            var newAttachmentName = `Canvas-Pile-${this.gameId}-${this.deck.deck_id}-${pileName}.png`,
-                newAttachment = new Discord.MessageAttachment(canvas.toBuffer(), newAttachmentName);
-
-            resolve(newAttachment);
         });
     }
 
