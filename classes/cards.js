@@ -449,8 +449,8 @@ module.exports = class CardGame {
                 var revealed = (() => {
                     if (forPlayer) return true;
                     else {
-                        if (showCardsCount < showCards && showCardsCount != showCards) {
-                            showCardsCount + 1;
+                        if (showCardsCount < showCards) {
+                            showCardsCount += 1;
                             return true;
                         } else return false;
                     }
