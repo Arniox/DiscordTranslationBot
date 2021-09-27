@@ -49,7 +49,7 @@ module.exports = class CardGame {
                     name: 'How Many Cards?',
                     value: `${this.player.toString()} please type how many cards you want each player to start with?`
                 }, this.GetPlayersList()
-            ], true, `Game Id: ${this.gameId}`
+            ], false, `Game Id: ${this.gameId}`
         ).then((sent) => {
             sent.react('✅')
                 .then(() => sent.react('▶️'))
@@ -185,17 +185,9 @@ module.exports = class CardGame {
                         messageCollector.stop();
 
                         //Remove reactions and then start game
-                        sent.reactions.removeAll()
+                        sent.delete({ timeout: 3000 })
                             .then(() => {
-                                sent.edit(new Discord.MessageEmbed()
-                                    .setDescription(`Finished Preparing New Card Game For ${this.player.toString()}`)
-                                    .setAuthor(this.player.user.username, this.player.user.avatarURL())
-                                    .addFields([this.GetPlayersList()])
-                                    .setColor('#0099ff')
-                                    .setFooter(`Game Id: ${this.gameId}`)
-                                ).then(() => {
-                                    this.StartGame();
-                                });
+                                this.StartGame();
                             }).catch((error) => {
                                 console.error(error);
                                 this.message.WaffleResponse('There was an error in the creation of this card game. Please try again');
@@ -218,7 +210,7 @@ module.exports = class CardGame {
                 this.turnIndex = randInt(0, this.numberOfPlayers - 1);
                 //Send message
                 this.message.WaffleResponse(
-                    `Started New Card Game With ${this.numberOfCards} Each!`,
+                    `Started New Card Game With ${this.numberOfCards} Cards Each!`,
                     MTYPE.Success,
                     [
                         {
@@ -226,7 +218,7 @@ module.exports = class CardGame {
                             value: `It is ${this.players[this.turnIndex].toString()} Turn First!`
                         }, this.GetPlayersList()
                     ],
-                    true, `Game Id: ${this.gameId} - Deck Id: ${this.deck.deck_id}`, null,
+                    false, `Game Id: ${this.gameId} - Deck Id: ${this.deck.deck_id}`, null,
                     {
                         name: this.player.user.username,
                         url: this.player.user.avatarURL()
