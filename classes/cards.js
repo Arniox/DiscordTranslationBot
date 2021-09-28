@@ -232,6 +232,31 @@ module.exports = class CardGame {
             });
     }
 
+    //Reshuffle Deck
+    async ShuffleDeck(player, checkTurn = true) {
+        if (this.IsPlayerGo(player, checkTurn)) {
+            axios.get(`https://deckofcardsapi.com/api/deck/${this.deck.deck_id}/shuffle/`)
+                .then((shuffledOldDeck) => {
+                    this.deck = shuffledOldDeck.data;
+                    //Send message
+                    this.message.WaffleResponse(
+                        `Shuffled The Deck\n${this.deck.remaining} Cards left in the Deck`,
+                        MTYPE.Success,
+                        [
+                            {
+                                name: `Who's Turn is it?`,
+                                value: `It is ${this.players[this.turnIndex].toString()} Turn!`
+                            }
+                        ],
+                        true, `Game Id: ${this.gameId} - Deck Id: ${this.deck.deck_id}`, null,
+                        {
+                            name: this.player.user.username,
+                            url: this.player.user.avatarURL()
+                        });
+                }).catch((error) => console.error(error));
+        }
+    }
+
     //Reveal Hand
     RevealHand(player = null, pileName = null, message, numberOfCardsToShow = 'all', checkTurn = true) {
         //Check if player
@@ -388,24 +413,7 @@ module.exports = class CardGame {
                     .setColor('#09b50c')
                     .setFooter(`Game Id: ${this.gameId} - Deck Id: ${this.deck.deck_id}`));
         } catch (error) {
-            console.error(error);
-            this.message.WaffleResponse(`There was an error: ${error.message}`);
-        }
-    }
-
-    //Get players
-    GetPlayersList() {
-        //Check number of players
-        if (this.numberOfPlayers <= 10) {
-            return {
-                name: 'Players:',
-                value: `Total ${this.numberOfPlayers}\n${this.players.map((v, i) => `${i + 1} - ${v.toString()}`).join('\n')}`
-            }
-        } else {
-            return {
-                name: 'Players:',
-                value: `Total ${this.numberOfPlayers}\n${this.players.slice(0, 9).map((v, i) => `${i + 1} - ${v.toString()}`).join('\n')}\n.....`
-            }
+            await this.EndOfDeck_CallBack(error);
         }
     }
 
@@ -486,8 +494,7 @@ module.exports = class CardGame {
                         this.piles = this.piles.filter(v => v.pileName != pile.pileName);
                     });
             } catch (error) {
-                console.error(error);
-                this.message.WaffleResponse(`There was an error: ${error.message}`);
+                await this.EndOfDeck_CallBack(error);
             }
         }
     }
@@ -575,8 +582,7 @@ module.exports = class CardGame {
                         this.piles = this.piles.filter(v => v.pileName != pile.pileName);
                     });
             } catch (error) {
-                console.error(error);
-                this.message.WaffleResponse(`There was an error: ${error.message}`);
+                await this.EndOfDeck_CallBack(error);
             }
         }
     }
@@ -673,8 +679,7 @@ module.exports = class CardGame {
                     });
                 }
             } catch (error) {
-                console.error(error);
-                this.message.WaffleResponse(`There was an error: ${error.message}`);
+                await this.EndOfDeck_CallBack(error);
             }
         }
     }
@@ -717,12 +722,45 @@ module.exports = class CardGame {
                     .setColor('#09b50c')
                     .setFooter(`Game Id: ${this.gameId} - Deck Id: ${this.deck.deck_id}`));
             } catch (error) {
-                console.error(error);
-                this.message.WaffleResponse(`There was an error: ${error.message}`);
+                await this.EndOfDeck_CallBack(error);
             }
         } else {
             //Divide all cards to every player
             await this.DrawAllCards((this.deck.remaining / this.numberOfPlayers).floor());
+        }
+    }
+
+    //No Cards left
+    async EndOfDeck_CallBack(error) {
+        if (error == 'Not enough cards remaining to draw 1 additional') {
+            try {
+                //Switch cards from discarded back to deck
+                const pileName = 'discardpile';
+
+                //Get cards to remove
+                const removedCards = this.piles.filter(v => v.pileName == pileName)[0].pileData.listIds.map(v => v.code);
+                //Draw cards from pile
+                const returnedCards = (await axios.get(`https://deckofcardsapi.com/api/deck/${this.deck.deck_id}/pile/${pileName}/draw/?cards=${removedCards.join(',')}`)).data;
+                //Insert cards into deck
+                await axios.get(`https://deckofcardsapi.com/api/deck/${this.deck.deck_id}/shuffle/?cards=${returnedCards.cards.map(v => v.code).join(',')}`);
+
+                //Get list of cards and update the piles card ids
+                const listOfCards = (await axios.get(`https://deckofcardsapi.com/api/deck/${this.deck.deck_id}/pile/${pileName}/list/`)).data;
+                this.piles.filter(v => v.pileName == pileName)[0].pileData.listIds =
+                    listOfCards.piles[`${pileName}`].cards.map(v => ({
+                        id: v.code,
+                        name: pileName,
+                        image: v.image,
+                        revealed: false
+                    }));
+
+                //Send message
+                this.message.WaffleResponse(`Deck ran out. Re-suffleing Discard Pile back into Deck`, MTYPE.Information);
+            } catch (error) {
+                await this.EndOfDeck_CallBack(error);
+            }
+        } else {
+            return this.message.WaffleResponse(`There was an error: ${error}`);
         }
     }
 
@@ -785,6 +823,22 @@ module.exports = class CardGame {
         } else if (pileName) {
             return pileName;
         } else return null;
+    }
+
+    //Get players
+    GetPlayersList() {
+        //Check number of players
+        if (this.numberOfPlayers <= 10) {
+            return {
+                name: 'Players:',
+                value: `Total ${this.numberOfPlayers}\n${this.players.map((v, i) => `${i + 1} - ${v.toString()}`).join('\n')}`
+            }
+        } else {
+            return {
+                name: 'Players:',
+                value: `Total ${this.numberOfPlayers}\n${this.players.slice(0, 9).map((v, i) => `${i + 1} - ${v.toString()}`).join('\n')}\n.....`
+            }
+        }
     }
 
     //Draw Pile
@@ -850,8 +904,7 @@ module.exports = class CardGame {
                 await this.DrawImage(ctx, img);
             }
         } catch (error) {
-            console.error(error);
-            this.message.WaffleResponse(`There was an error: ${error.message}`);
+            await this.EndOfDeck_CallBack(error);
         }
     }
 
