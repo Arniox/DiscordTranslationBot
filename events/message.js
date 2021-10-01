@@ -18,7 +18,7 @@ module.exports = (bot, message) => {
         bot.con = connection;
 
         //Check that the message still exists
-        if (message || message.guild || message.guild.id) {
+        if (message && message.guild && message.guild.id) {
             //Get servers
             const sql_cmd = `
             SELECT *

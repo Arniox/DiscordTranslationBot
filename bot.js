@@ -63,7 +63,7 @@ bot.dbpool.then((p) => {
 	//Attaches all event files to event
 	fs.readdir('./events/', (err, files) => {
 		if (err) return console.error(err); //Throw if file breaks
-		files.forEach(file => {
+		files.forEach((file, i) => {
 			//if file is not js file, ignore
 			if (!file.endsWith(".js")) return;
 			//Load event file
@@ -74,6 +74,9 @@ bot.dbpool.then((p) => {
 			//Bind all found events to client
 			bot.on(eventName, event.bind(null, bot));
 			delete require.cache[require.resolve(`./events/${file}`)]; //Remove from memory
+
+			//Log
+			if (i == files.length - 1) console.log('-------------');
 		});
 	});
 
@@ -82,11 +85,11 @@ bot.dbpool.then((p) => {
 	fs.readdir('./commands/', (err, folders) => {
 		if (err) return console.error(err); //Throw if folder breaks
 		//For each folder
-		folders.forEach(folder => {
+		folders.forEach((folder, i) => {
 			fs.readdir(`./commands/${folder}/`, (err, files) => {
 				if (err) return console.error(err); //Throw if folder breaks
 				//For each file
-				files.forEach(file => {
+				files.forEach((file, o) => {
 					//if file is not js file, ignore
 					if (!file.endsWith(".js")) return;
 					//Load the command file itself
@@ -96,8 +99,31 @@ bot.dbpool.then((p) => {
 					console.log(`Attempting to load command ${commandName}`);
 					//Store the command in the command Enmap.
 					bot.commands.set(commandName, props);
+
+					//Log
+					if (i == folders.length - 1 && o == files.length - 1) console.log('-------------');
 				});
 			});
+		});
+	});
+
+	//Set up GameData and attach to the cliebt
+	bot.GameRuleSets = new Enmap();
+	fs.readdir('./GameData/', (err, files) => {
+		if (err) return console.error(err); //Throw if file breaks
+		files.forEach((file, i) => {
+			//if file is not json file, ignore
+			if (!file.endsWith(".json")) return;
+			//Load game data
+			var ruleSet = require(`./GameData/${file}`);
+			//Get the rule set from the file name
+			var ruleName = file.split('.')[0];
+			console.log(`Attempting to load Game Rule Set ${ruleName}`);
+			//Bind all found rule sets to client
+			bot.GameRuleSets.set(ruleName, ruleSet);
+
+			//Log
+			if (i == files.length - 1) console.log('-------------');
 		});
 	});
 

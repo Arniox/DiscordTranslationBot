@@ -1,0 +1,27 @@
+{
+    "backOfDeck": null,
+    "cardsToStartWith": 2,
+    "drawDeckOnStart": false,
+    "startingPiles": [
+        {
+            "pileName": "River",
+            "numberOfCards": 3,
+            "revealed": 0
+        }
+    ],
+    "drawPileOnStart": "River",
+    "stepDescription": [
+        {
+            "case": "play",
+            "required": true
+        },
+        {
+            "case": "shuffle",
+            "required": false
+        },
+        {
+            "case": "draw",
+            "required": false
+        }
+    ]
+}
