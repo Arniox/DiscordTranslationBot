@@ -6,22 +6,31 @@
         {
             "pileName": "River",
             "numberOfCards": 3,
-            "revealed": 0
+            "revealed": 0,
+            "onRound": 2
         }
     ],
     "drawPileOnStart": "River",
     "stepDescription": [
         {
             "case": "play",
-            "required": true
+            "required": true,
+            "maxUses": 1
         },
         {
             "case": "shuffle",
-            "required": false
+            "required": false,
+            "maxUses": -1
         },
         {
             "case": "draw",
-            "required": false
+            "required": false,
+            "maxUses": 1
+        },
+        {
+            "case": "turn",
+            "required": false,
+            "maxUses": -1
         }
     ]
 }

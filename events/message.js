@@ -93,12 +93,24 @@ module.exports = (bot, message) => {
                                     return resolve(bot.commands.get('clean'));
                                 case 'basedcounter': case 'based':
                                     return resolve(bot.commands.get('basedcounter'));
-                                case 'akinator': case 'aki':
-                                    return resolve(bot.commands.get('akinator'));
+                                case 'akinator': case 'aki': {
+                                    if (!bot.cardGames.get(GetGameId(message))) {
+                                        return resolve(bot.commands.get('akinator'));
+                                    } else {
+                                        return reject(`Please end your Card Game in ` +
+                                            `${message.channel.toString()} before starting an Akinator game`);
+                                    }
+                                }
                                 case 'images': case 'image': case 'img':
                                     return resolve(bot.commands.get('image'));
-                                case 'cardgame': case 'cards': case 'card':
-                                    return resolve(bot.commands.get('cardgame'));
+                                case 'cardgame': case 'cards': case 'card': {
+                                    if (!bot.akinatorGames.get(message.member.id)) {
+                                        return resolve(bot.commands.get('cardgame'));
+                                    } else {
+                                        return reject(`Please end your Akinator game in ` +
+                                            `${message.channel.toString()} before starting a Card Game game`);
+                                    }
+                                }
                                 // case 'scoreboard': case 'score': case 'board': case 'sb':
                                 //     return resolve(bot.commands.get('scoreboard'));
                                 case 'conjecture': case 'collatz': case 'collats': case 'collat':
@@ -116,29 +128,47 @@ module.exports = (bot, message) => {
                             //Return console error
                             return console.error(error || 'Unknown command');
                         });
-                    } else if (evaluate(message.content)) {
+                    }
+
+                    //Math evaulation
+                    if (evaluate(message.content)) {
                         message.channel.send(new Discord.MessageEmbed().setDescription(`> ${message.member.toString()}: **${message.content}**\n = ${evaluate(message.content)}`.trimString(2048)).setColor('#0099ff'));
-                    } else {
-                        if (!bot.akinatorGames.get(message.member.id)) {
-                            //Get the specific translatemessage command data from client.commands Enmap
-                            const trans = bot.commands.get("translatemessage");
+                    }
+                    //Everything else
+                    if (!bot.akinatorGames.get(message.member.id) && !bot.cardGames.get(GetGameId(message))) {
+                        //Get the specific translatemessage command data from client.commands Enmap
+                        const trans = bot.commands.get("translatemessage");
+                        //If command doesn't exist, exit and do nothing
+                        if (!trans) return;
+
+                        //Run translation
+                        trans.run(bot, results[0], message, args);
+
+                        //Check if message is based
+                        if (message.content.toLowerCase().includes("based")) {
+                            //Get the specific basedcounter command data from client.commands Enmap
+                            const based = bot.commands.get("basedcounter");
                             //If command doesn't exist, exit and do nothing
-                            if (!trans) return;
+                            if (!based) return;
 
-                            //Run translation
-                            trans.run(bot, results[0], message, args);
-
-                            //Check if message is based
-                            if (message.content.toLowerCase().includes("based")) {
-                                //Get the specific basedcounter command data from client.commands Enmap
-                                const based = bot.commands.get("basedcounter");
-                                //If command doesn't exist, exit and do nothing
-                                if (!based) return;
-
-                                //Run based counter
-                                based.run(bot, results[0], message, 'count', args);
-                            }
+                            //Run based counter
+                            based.run(bot, results[0], message, 'count', args);
                         }
+                    }
+                    //Card game
+                    if (!bot.akinatorGames.get(message.member.id) && bot.cardGames.get(GetGameId(message))) {
+                        //Get the specific command
+                        const cardGame = bot.commands.get("cardgame");
+                        //If command doesn't exist, exit and do nothing
+                        if (!cardGame) return;
+
+                        //Argument/command name definition.
+                        var args = message.content.split(' ');
+                        var command = args.shift().toLowerCase();
+                        args.push(command);
+
+                        //Run command
+                        cardGame.run(bot, results[0], message, command, args);
                     }
                 }
             });
@@ -159,4 +189,9 @@ function evaluate(expr) {
     } catch (err) {
         return '';
     }
+}
+
+//Function get game id
+function GetGameId(message) {
+    return `${message.guild.id}-${message.channel.id}`;
 }

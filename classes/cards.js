@@ -3,8 +3,311 @@ const axios = require('axios');
 const Discord = require('discord.js');
 const { v4: uuidv4 } = require('uuid');
 const { createCanvas, Image } = require('canvas');
+const EventEmitter = require('events');
 //Import functions
 require('../message-commands.js')();
+
+class UserInterface {
+    constructor(bot, guild, message, player) {
+        //Set all
+        this.guild = guild;
+        this.message = message;
+        this.player = player;
+        this.bot = bot;
+        //Systems
+        this.CardGame
+
+        return this;
+    }
+
+    //Construct game call
+    Get() {
+        this.CardGame = new CardGame(this.bot, this.guild, this.message, this.player);
+        return this;
+    }
+    SetRules(rules) {
+        this.CardGame.SetRules(rules);
+        return this;
+    }
+    Build() {
+        this.CardGame.Build();
+        return this;
+    }
+    Start() {
+        this.CardGame.ConstructGame();
+        return this;
+    }
+
+    //Play card
+    Play(player, roughStep, args, mentions) {
+        //Check if player is in this game
+        if (this.IsPlayerPlaying(player)) {
+            //Get actual step
+            const step = Object.values(this.CardGame.CardSystem.CallBacks).filter(v => v.command.filter(i => i == roughStep.toLowerCase())[0])[0];
+
+            //Check if stepsDirection exists and then check step
+            const go = (() => {
+                //Check if step exists in the commands at all
+                if (step) {
+                    //Check if step allowed in current game
+                    if (this.CardGame.CardSystem.stepDescription) {
+                        const pileName = this.CardGame.CardSystem.GetPileId(player),
+                            pile = this.CardGame.CardSystem.piles.filter(v => v.pileName == pileName)[0];
+                        //Check if pile was found
+                        if (pile) {
+                            //Check if step exists
+                            if (pile.stepDescription.filter(v => v.case == step.name)[0]) {
+                                return true;
+                            } else return false;
+                        } else {
+                            this.message.WaffleResponse(`I couldn't find your hand ${player.toString()}. Try restart this game.`)
+                                .then((sent) => {
+                                    sent.delete({ timeout: 3000 }).catch(error => { });
+                                });
+                            return false;
+                        }
+                    } else return true;
+                } else return false;
+            })();
+
+            if (go) {
+                const parsedArgs = this.ParseArgs(player, step, args, mentions);
+                //Only play if parsedArgs exists
+                if (parsedArgs) {
+                    this.CardGame.CardSystem.AggregateStep(player, step.name, parsedArgs);
+                }
+            } else {
+                this.CardGame.CardSystem.StepDoesntExist(roughStep);
+            }
+        }
+    }
+
+    //Parse args
+    ParseArgs(player, step, args, mentions) {
+        const parsedArgs = (() => {
+            if (mentions.size == 0 || this.IsGameOwner(player, step)) {
+                switch (step.name) {
+                    case 'play':
+                        //Get cards
+                        var cards = args.filter(v => /^([AJQK2-9]+[HCDS])$/gi.test(v));
+                        //Remove cards from args
+                        args = args.filter(v => !/^([AJQK2-9]+[HCDS])$/gi.test(v));
+                        var showStatus = args.shift(),
+                            showStatusBool = showStatus ?
+                                showStatus.toLowerCase() == 'hide' || showStatus.toLowerCase() == 'h' :
+                                true;
+
+                        if (cards.length > 0 && (showStatus || !showStatus)) {
+                            return [
+                                /*player*/ player,
+                                /*pileName*/ null,
+                                /*cardToDiscard*/ cards,
+                                /*revealCard*/ showStatusBool,
+                                /*checkTurn*/ true,
+                                /*goToDiscardPile*/ true,
+                                /*play*/ true
+                            ];
+                        } else return null;
+                    case 'shuffle':
+                        //Check if owner
+                        if (this.IsGameOwner(player, step)) {
+                            return [
+                                /*player*/ player,
+                                /*checkTurn*/ false
+                            ];
+                        } else return null;
+                    case 'reveal':
+                        //Get number/all
+                        var getStatus = args.filter(v => /^((all)|[0-9]+)$/gi.test(v))[0];
+                        //Remove from args
+                        args = args.filter(v => !/^((all)|[0-9]+)$/gi.test(v));
+                        var pileReq = mentions.size > 0 ? mentions.first() : args.shift(),
+                            playerInsert = pileReq ? null : player,
+                            pileInsert = pileReq ? mentions.size > 0 ?
+                                this.CardGame.CardSystem.GetPileId(pileReq) :
+                                this.CardGame.CardSystem.GetPileId(null, pileReq) : null,
+                            getValue = getStatus ? /^\d+$/.test(getStatus) ? parseInt(getStatus) : getStatus : 'all',
+                            checkTurn = this.IsGameOwner(player, step) ? false : true;
+
+                        //If user is trying to reveal another pile or player, check it's the owner
+                        if (!pileInsert || this.IsGameOwner(player, step)) {
+                            if (getValue && (playerInsert || pileInsert)) {
+                                return [
+                                    /*player*/ playerInsert,
+                                    /*pileName*/ pileInsert,
+                                    /*numberOfCardsToShow*/ getValue,
+                                    /*checkTurn*/ checkTurn
+                                ];
+                            } else return null;
+                        } else return null;
+                    case 'show':
+                        //Get cards
+                        var cards = args.filter(v => /^([AJQK2-9]+[HCDS])$/gi.test(v));
+                        //Remove cards from args
+                        args = args.filter(v => !/^([AJQK2-9]+[HCDS])$/gi.test(v));
+
+                        if (cards.length > 0) {
+                            return [
+                                /*player*/ player,
+                                /*pileName*/ null,
+                                /*cardToShow*/ cards,
+                                /*checkTurn*/ true
+                            ];
+                        } else return null;
+                    case 'create':
+                        //Check if owner
+                        if (this.IsGameOwner(player, step)) {
+                            //Get pilename
+                            var pileReq = args.filter(v => /^([A-Z]+)$/gi.test(v))[0];
+                            //Remove froms args
+                            args = args.filter(v => !/^([A-Z]+)$/gi.test(v));
+                            var numberCardReq = args.shift(),
+                                numberParsed = numberCardReq ? numberCardReq : '1',
+                                numberValue = /^\d+$/.test(numberParsed) ? parseInt(numberValue) : 1;
+
+                            if (pileReq && numberValue) {
+                                return [
+                                    /*pileName*/ pileReq,
+                                    /*numberOfCards*/ numberValue,
+                                    /*showMessage*/ true
+                                ];
+                            } else return null;
+                        } else return null;
+                    case 'clearcards':
+                        //Get number/all & show/hide
+                        var getStatus = args.filter(v => /^((all)|[0-9]+)$/gi.test(v))[0],
+                            showStatus = args.filter(v => /^((show)|(s)|(hide)|(h))$/gi.test(v))[0]
+                        //Remove from args
+                        args = args.filter(v => !/^((all)|[0-9]+)$/gi.test(v));
+                        args = args.filter(v => !/^((show)|(s)|(hide)|(h))$/gi.test(v));
+                        var pileReq = mentions.size > 0 ? mentions.first() : args.shift(),
+                            playerInsert = pileReq ? null : player,
+                            pileInsert = pileReq ? mentions.size > 0 ?
+                                this.CardGame.CardSystem.GetPileId(pileReq) :
+                                this.CardGame.CardSystem.GetPileId(null, pileReq) : null,
+                            getValue = getStatus ? /^\d+$/.test(getStatus) ? parseInt(getStatus) : getStatus : 'all',
+                            showValue = showStatus ?
+                                (showStatus.toLowerCase() == 'hide' || showStatus.toLowerCase() == 'h' ? 0 : 'all') :
+                                'all',
+                            checkTurn = this.IsGameOwner(player, step) ? false : true;
+
+                        //If user is trying to clear cards from another pile or player, check it's the owner
+                        if (!pileInsert || this.IsGameOwner(player, step)) {
+                            if (getValue && (playerInsert || pileInsert)) {
+                                return [
+                                    /*player*/ playerInsert,
+                                    /*pileName*/ pileInsert,
+                                    /*numberToDiscard*/ getValue,
+                                    /*revealCardNumber*/ showValue,
+                                    /*checkTurn*/ checkTurn,
+                                    /*goToDiscardPile*/ false,
+                                    /*play*/ null
+                                ];
+                            } else return null;
+                        } else return null;
+                    case 'discardcards':
+                        //IDENTICAL to play but with play option set to false
+                        //Get cards
+                        var cards = args.filter(v => /^([AJQK2-9]+[HCDS])$/gi.test(v));
+                        //Remove cards from args
+                        args = args.filter(v => !/^([AJQK2-9]+[HCDS])$/gi.test(v));
+                        var showStatus = args.shift(),
+                            showStatusBool = showStatus ?
+                                showStatus.toLowerCase() == 'hide' || showStatus.toLowerCase() == 'h' :
+                                true;
+
+                        if (cards.length > 0 && (showStatus || !showStatus)) {
+                            return [
+                                /*player*/ player,
+                                /*pileName*/ null,
+                                /*cardToDiscard*/ cards,
+                                /*revealCard*/ showStatusBool,
+                                /*checkTurn*/ true,
+                                /*goToDiscardPile*/ true,
+                                /*play*/ null
+                            ];
+                        } else return null;
+                    case 'draw':
+                        //Get number
+                        var getStatus = args.filter(v => /^([0-9]+)$/gi.test(v))[0];
+                        //Remove from args
+                        args = args.filter(v => !/^([0-9]+)$/gi.test(v));
+                        var pileReq = mentions.size > 0 ? mentions.first() : args.shift(),
+                            playerInsert = pileReq ? null : player,
+                            pileInsert = pileReq ? mentions.size > 0 ?
+                                this.CardGame.CardSystem.GetPileId(pileReq) :
+                                this.CardGame.CardSystem.GetPileId(null, pileReq) : null,
+                            getValue = getStatus ? /^\d+$/.test(getStatus) ? parseInt(getStatus) : 1 : 1,
+                            checkTurn = this.IsGameOwner(player, step) ? false : true;
+
+                        if (!pileInsert || this.IsGameOwner(player, step)) {
+                            if (getValue && (playerInsert || pileInsert)) {
+                                return [
+                                    /*player*/ playerInsert,
+                                    /*pileName*/ pileInsert,
+                                    /*numberToDraw*/ getValue,
+                                    /*multiDraw*/ false,
+                                    /*checkTurn*/ checkTurn
+                                ];
+                            } else return null;
+                        } else return null;
+                    case 'drawallcards':
+                        //Check if owner
+                        if (this.IsGameOwner(player, step)) {
+                            //Get number
+                            var getStatus = args.filter(v => /^([0-9]+)$/gi.test(v))[0];
+                            //Remove from args
+                            args = args.filter(v => !/^([0-9]+)$/gi.test(v));
+                            var getValue = getStatus ? /^\d+$/.test(getStatus) ? parseInt(getStatus) : 1 : 1;
+
+                            if (getValue) {
+                                return [
+                                    /*numberEach*/ getValue
+                                ];
+                            } else return null;
+                        } else return null;
+                    case 'turn':
+                        //Plus turn
+                        return [];
+                    case 'reverseturn':
+                        //Minus turn
+                        return [];
+                    case 'deck':
+                        //Draw deck
+                        return [];
+                    default: return null;
+                }
+            } else {
+                this.message.WaffleResponse(`Sorry, ${step.name} is only an game Owner command`).then((sent) => {
+                    sent.delete({ timeout: 3000 }).catch(() => { });
+                });
+                return null;
+            };
+        })();
+
+        //Return
+        if (!parsedArgs) this.message.WaffleResponse(`Sorry, Couldn't parse your command`)
+            .then((sent) => {
+                sent.delete({ timeout: 3000 }).catch(() => { });
+            });
+        return parsedArgs;
+    }
+
+    //Is owner
+    IsGameOwner(player, step) {
+        return this.CardGame.CardSystem.player.id == player.id ||
+            (step.whocan ? step.whocan.id == player.id : true);
+    }
+
+    //Is player playing
+    IsPlayerPlaying(player) {
+        if (this.CardGame)
+            if (this.CardGame.CardSystem)
+                return this.CardGame.CardSystem.IsPlayerPlaying(player);
+            else return false;
+        else return false;
+    }
+}
 
 class CardGame {
     //Card game constructor
@@ -14,16 +317,15 @@ class CardGame {
         this.message = message;
         this.player = player;
         this.bot = bot;
-        //Rule set values
+        //Systems
         this.CardSystem;
+        //Rule set values
         this.backOfDeck;
         this.cardsToStartWith;
         this.drawDeckOnStart = true;
         this.startingPiles;
         this.drawPileOnStart;
         this.stepDescription;
-
-        return this;
     }
 
     //Construct game
@@ -49,20 +351,21 @@ class CardGame {
         //Send message
         this.CardSystem.message.WaffleResponse(
             `Preparing New Card Game For ${this.CardSystem.player.toString()}`, MTYPE.Loading,
-            messageFields, false, `Game Id: ${this.gameId}`
+            messageFields, false, `Game Id: ${this.CardSystem.gameId}`
         ).then((sent) => {
             sent.react('✅')
                 .then(() => sent.react('▶️'))
                 .then(() => {
                     //Message filter and collector
                     const reactionFilter = (reaction, user) => {
-                        return ['✅', '▶️'].includes(reaction.emoji.name);
+                        return ['✅', '▶️'].includes(reaction.emoji.name) && user.id != this.guild.me.id;
                     }
                     //Create reaction collector
                     const reactionCollector = sent.createReactionCollector(reactionFilter, { max: 1, time: 100000, dispose: true });
 
                     //Message filter and collector
-                    const messageFilter = m => m.member.id == this.CardSystem.player.id && m.content;
+                    const messageFilter = m => m.member.id == this.CardSystem.player.id &&
+                        m.member.id != this.guild.me.id && m.content;
                     const messageCollector = sent.channel.createMessageCollector(messageFilter, { time: 100000, dispose: true });
 
                     //Await message collector collect
@@ -124,7 +427,7 @@ class CardGame {
 
                                 //Edit message
                                 const embed = sent.embeds[0];
-                                embed.fields[3] = this.GetPlayersList();
+                                embed.fields[3] = this.CardSystem.GetPlayersList();
                                 sent.edit(embed);
 
                                 //Send message to player
@@ -139,7 +442,8 @@ class CardGame {
                             reactionCollector.resetTimer(); messageCollector.resetTimer();
                         } else if ((reaction.emoji.name === '✅' && user.id == this.CardSystem.player.id) || (reaction.emoji.name === '▶️' && user.id != this.CardSystem.player.id)) {
                             //Remove reactions by this user
-                            sent.reactions.cache.map((v, k) => v).filter(reaction => reaction.users.cache.has(user.id)).first().users.remove(user.id);
+                            sent.reactions.cache.map((v, k) => v)
+                                .filter(re => re.users.cache.has(user.id) && re.emoji.name == reaction.emoji.name).first().users.remove(user.id);
 
                             //Reset timer and empty collector
                             reactionCollector.empty();
@@ -221,8 +525,6 @@ class CardGame {
         this.startingPiles = rules.startingPiles;
         this.drawPileOnStart = rules.drawPileOnStart;
         this.stepDescription = rules.stepDescription;
-
-        return this;
     }
 
     //Build
@@ -233,8 +535,6 @@ class CardGame {
             this.cardsToStartWith,
             this.drawDeckOnStart,
             this.stepDescription);
-
-        return this;
     }
 
     //Enforce rules
@@ -243,22 +543,57 @@ class CardGame {
             //Starting piles
             if (this.startingPiles) {
                 for (var i = 0; i < this.startingPiles.length; i++) {
-                    await this.CardSystem.CreateNewPile(
-                        this.startingPiles[i].pileName,
-                        this.startingPiles[i].numberOfCards,
-                        false
-                    );
+                    //If on event
+                    if (this.startingPiles[i].onRound == 1) {
+                        await this.CardSystem.CreateNewPile(
+                            this.startingPiles[i].pileName,
+                            this.startingPiles[i].numberOfCards,
+                            false
+                        );
+                    } else {
+                        const thisStartingPile = this.startingPiles[i];
+                        //Add after certain round
+                        this.CardSystem.RoundEvent.on('RoundCounter', async (round) => {
+                            //If round is equal
+                            if (round >= thisStartingPile.onRound) {
+                                //Create
+                                await this.CardSystem.CreateNewPile(
+                                    thisStartingPile.pileName,
+                                    thisStartingPile.numberOfCards,
+                                    false
+                                );
+
+                                //Draw pile on creation
+                                if (this.drawPileOnStart) {
+                                    if (this.drawPileOnStart == thisStartingPile.pileName) {
+                                        const numberToReveal = thisStartingPile.revealed;
+                                        //Draw hand
+                                        this.CardSystem.RevealHand(null,
+                                            this.drawPileOnStart,
+                                            numberToReveal,
+                                            false);
+                                    }
+                                }
+                            }
+                        });
+                    }
                 }
             }
             //Draw a pile on start
             if (this.drawPileOnStart) {
-                const numberToReveal = this.startingPiles.filter(v => v.pileName == this.drawPileOnStart)[0].revealed;
-
-                this.CardSystem.RevealHand(null,
-                    this.drawPileOnStart,
-                    this.message,
-                    numberToReveal,
-                    false);
+                //Get piles
+                const pilesToDraw = this.startingPiles.filter(v => v.pileName == this.drawPileOnStart);
+                if (pilesToDraw.length > 0) {
+                    //If pile is to be drawn on round 1
+                    if (pilesToDraw[0].onRound == 1) {
+                        const numberToReveal = pilesToDraw[0].revealed;
+                        //Draw hand
+                        this.CardSystem.RevealHand(null,
+                            this.drawPileOnStart,
+                            numberToReveal,
+                            false);
+                    }
+                }
             }
         } catch (error) {
             console.error(error);
@@ -283,7 +618,7 @@ class CardSystem {
         this.players = [];
         this.turnIndex = 0;
         this.turnCounter = 0;
-        this.roundIndex = 0
+        this.roundIndex = 1;
         //Card details
         this.cardWidth = 226;
         this.cardHeight = 314;
@@ -294,8 +629,86 @@ class CardSystem {
         this.backOfDeck = backOfDeck;
         this.drawDeckOnStart = drawDeckOnStart;
         this.stepDescription = stepDescription;
+        //Events
+        this.RoundEvent = new EventEmitter();
 
         this.players.push(this.player);
+    }
+
+    //Enum
+    CallBacks = {
+        PLAY: {
+            name: 'play',
+            command: ['playcard', 'cardplay', 'play', 'pl'],
+            callback: ((args) => { this.DiscardCard(...args) }),
+            whocan: null
+        },
+        SHUFFLE: {
+            name: 'shuffle',
+            command: ['shuffledeck', 'shufflecards', 'shuffle', 'shuff', 'shuf', 'sh'],
+            callback: ((args) => { this.ShuffleDeck(...args) }),
+            whocan: this.player
+        },
+        REVEAL: {
+            name: 'reveal',
+            command: ['revealhand', 'revealcards', 'reveal', 'rev'],
+            callback: ((args) => { this.RevealHand(...args) }),
+            whocan: null
+        },
+        SHOW: {
+            name: 'show',
+            command: ['showhand', 'showcards', 'show', 'sho'],
+            callback: ((args) => { this.RevealSpecificHand(...args) }),
+            whocan: null
+        },
+        CREATE: {
+            name: 'create',
+            command: ['createpile', 'createcards', 'create', 'cre'],
+            callback: ((args) => { this.CreateNewPile(...args) }),
+            whocan: this.player
+        },
+        CLEARCARDS: {
+            name: 'clearcards',
+            command: ['clearcards', 'clearhand', 'deletecards', 'deletehand', 'clear', 'delete', 'del', 'cl'],
+            callback: ((args) => { this.DiscardCardsFromTop(...args) }),
+            whocan: null
+        },
+        DISCARDCARDS: {
+            name: 'discardcards',
+            command: ['discardcards', 'discardhand', 'discard', 'dis'],
+            callback: ((args) => { this.DiscardCard(...args) }),
+            whocan: this.player
+        },
+        DRAW: {
+            name: 'draw',
+            command: ['drawcard', 'carddraw', 'pickupcard', 'cardpickup', 'pickup', 'card', 'pick', 'pi', 'ca'],
+            callback: ((args) => { this.DrawCard(...args) }),
+            whocan: null
+        },
+        DRAWALLCARDS: {
+            name: 'drawallcards',
+            command: ['dealoutcards', 'dealout', 'dealcards', 'deal', 'dealt', 'de'],
+            callback: ((args) => { this.DrawAllCards(...args) }),
+            whocan: this.player
+        },
+        DECK: {
+            name: 'deck',
+            command: ['showdeck', 'deckshow', 'deck'],
+            callback: ((args) => { this.DrawDeckAndDiscard(...args) }),
+            whocan: null
+        },
+        TURN: {
+            name: 'turn',
+            command: ['goturn', 'turngo', 'go', 'turn', 'tur', 'tu', 't', 'plus', 'turnplus', 'plusturn'],
+            callback: ((args) => { this.TurnPlus(...args) }),
+            whocan: null
+        },
+        REVERSE: {
+            name: 'reverseturn',
+            command: ['backturn', 'turnback', 'back', 'reverse', 'minus', 'turnminus', 'minusturn'],
+            callback: ((args) => { this.TurnMinus(...args) }),
+            whocan: null
+        }
     }
 
     //Start Game
@@ -327,7 +740,7 @@ class CardSystem {
 
     //Reshuffle Deck
     async ShuffleDeck(player, checkTurn = true) {
-        if (this.IsPlayerGo(player, checkTurn)) {
+        if (this.IsPlayerGo(player, (this.player.id == player.id || checkTurn))) {
             axios.get(`https://deckofcardsapi.com/api/deck/${this.deck.deck_id}/shuffle/`)
                 .then((shuffledOldDeck) => {
                     this.deck = shuffledOldDeck.data;
@@ -351,7 +764,7 @@ class CardSystem {
     }
 
     //Reveal Hand
-    RevealHand(player = null, pileName = null, message, numberOfCardsToShow = 'all', checkTurn = true) {
+    async RevealHand(player = null, pileName = null, numberOfCardsToShow = 'all', checkTurn = true) {
         //Check if player
         const pileNameToUse = (() => {
             if (player)
@@ -364,50 +777,62 @@ class CardSystem {
         })();
 
         if (pileNameToUse) {
-            //Get pile
-            var numberOfCardsToShowCount = (!isNaN(numberOfCardsToShow) ? numberOfCardsToShow + 0 : 0);
-            //Set pile revealed cards
-            this.piles.filter(v => v.pileName == pileNameToUse)[0].pileData.listIds = (() => {
-                if (!isNaN(numberOfCardsToShow)) {
-                    return this.piles.filter(v => v.pileName == pileNameToUse)[0].pileData.listIds.map(v => ({
-                        id: v.id,
-                        name: v.name,
-                        image: v.image,
-                        revealed: ((numberOfCardsToShowCount -= 1) > 0 ? true : false)
-                    }));
-                } else {
-                    return this.piles.filter(v => v.pileName == pileNameToUse)[0].pileData.listIds.map(v => ({
-                        id: v.id,
-                        name: v.name,
-                        image: v.image,
-                        revealed: true
-                    }));
-                }
-            })();
+            if (this.piles.filter(v => v.pileName == pileNameToUse).length > 0) {
+                //Get pile
+                var numberOfCardsToShowCount = 0,
+                    pileLength = this.piles.filter(v => v.pileName == pileNameToUse)[0].pileData.listIds.length;
 
-            //Draw Deck
-            this.PenDrawPile(pileNameToUse, false)
-                .then((messageAttachment) => {
-                    const newEmbed = new Discord.MessageEmbed()
-                        .setDescription(`Here is ${(player ? 'My Cards' : `the ${pileNameToUse} Pile's Cards`)}:`)
-                        .setColor('#000000')
-                        .setFooter(`Game Id: ${this.gameId} - Deck Id: ${this.deck.deck_id}`)
-                        .setImage(`attachment://${messageAttachment.name}`);
+                //Cap number of cards to show
+                numberOfCardsToShow = (!isNaN(numberOfCardsToShow) ?
+                    numberOfCardsToShow > pileLength ? pileLength : numberOfCardsToShow : numberOfCardsToShow);
+                //Set pile revealed cards
+                this.piles.filter(v => v.pileName == pileNameToUse)[0].pileData.listIds = (() => {
+                    if (!isNaN(numberOfCardsToShow)) {
+                        return this.piles.filter(v => v.pileName == pileNameToUse)[0].pileData.listIds.map(v => ({
+                            id: v.id,
+                            name: v.name,
+                            image: v.image,
+                            revealed: ((numberOfCardsToShowCount += 1) <= numberOfCardsToShow ? true : false)
+                        }));
+                    } else {
+                        return this.piles.filter(v => v.pileName == pileNameToUse)[0].pileData.listIds.map(v => ({
+                            id: v.id,
+                            name: v.name,
+                            image: v.image,
+                            revealed: true
+                        }));
+                    }
+                })();
 
-                    if (player) newEmbed.setAuthor(player.user.username, player.user.avatarURL());
-                    else if (pileName) newEmbed.setAuthor(this.player.user.username, this.player.user.avatarURL());
+                //Draw Deck
+                this.PenDrawPile(pileNameToUse, false)
+                    .then((messageAttachment) => {
+                        const newEmbed = new Discord.MessageEmbed()
+                            .setDescription(`Here is ${(player ? 'My Cards' : `the ${pileNameToUse}'s Cards`)}:`)
+                            .setColor('#000000')
+                            .setFooter(`Game Id: ${this.gameId} - Deck Id: ${this.deck.deck_id}`)
+                            .setImage(`attachment://${messageAttachment.name}`);
 
-                    //Send
-                    message.channel.send({ embed: newEmbed, files: [messageAttachment] }).catch((error) => console.error(error));
-                }).catch((error) => {
-                    console.error(error);
-                    this.message.WaffleResponse(`There was an error: ${error}`);
-                });
+                        if (player) newEmbed.setAuthor(player.user.username, player.user.avatarURL());
+                        else if (pileName) newEmbed.setAuthor(this.player.user.username, this.player.user.avatarURL());
+
+                        //Send
+                        this.message.channel.send({ embed: newEmbed, files: [messageAttachment] }).catch((error) => console.error(error));
+                    }).catch((error) => {
+                        console.error(error);
+                        this.message.WaffleResponse(`There was an error: ${error}`);
+                    });
+            } else {
+                this.message.WaffleResponse(`${pileNameToUse} wasn't found. The discard pile is created dynamically when cards are in play`)
+                    .then((sent) => {
+                        sent.delete({ timeout: 3000 }).catch(error => { });
+                    });
+            }
         }
     }
 
     //Reveal Specific Card
-    RevealSpecificHand(player = null, pileName = null, message, cardToShow = [], checkTurn = true) {
+    async RevealSpecificHand(player = null, pileName = null, cardToShow = [], checkTurn = true) {
         //Check if player
         const pileNameToUse = (() => {
             if (cardToShow.length > 0)
@@ -437,8 +862,7 @@ class CardSystem {
             this.PenDrawPile(pileNameToUse, false)
                 .then((messageAttachment) => {
                     const newEmbed = new Discord.MessageAttachment()
-                        .setDescription(`Here is some Cards ${(player ? 'I have Chosen to Reveal to you' : `from the ` +
-                            `${pileNameToUse} Pile that are now Revealed to you`)}:`)
+                        .setDescription(`Here is some ${(player ? 'of my cards.' : `cards from ${pileNameToUse}`)}:`)
                         .setColor('#000000')
                         .setFooter(`Game Id: ${this.gameId} - Deck Id: ${this.deck.deck_id}`)
                         .setImage(`attachment://${messageAttachment.name}`);
@@ -447,7 +871,7 @@ class CardSystem {
                     else if (pileName) newEmbed.setAuthor(this.player.user.username, this.player.user.avatarURL());
 
                     //Send
-                    message.channel.send({ embed: newEmbed, files: [messageAttachment] }).catch((error) => console.error(error));
+                    this.message.channel.send({ embed: newEmbed, files: [messageAttachment] }).catch((error) => console.error(error));
                 }).catch((error) => {
                     console.error(error);
                     this.message.WaffleResponse(`There was an error: ${error}`);
@@ -516,7 +940,7 @@ class CardSystem {
     }
 
     //Discard specific card
-    async DiscardCard(player = null, pileName = null, cardToDiscard = [], revealCard = true, checkTurn = true, goToDiscardPile = false) {
+    async DiscardCard(player = null, pileName = null, cardToDiscard = [], revealCard = true, checkTurn = true, goToDiscardPile = false, play = null) {
         //Check if player
         const pileNameToUse = (() => {
             if (cardToDiscard.length > 0)
@@ -545,7 +969,7 @@ class CardSystem {
                 const returnedCards = (await axios.get(`https://deckofcardsapi.com/api/deck/${this.deck.deck_id}/pile/${pileNameCleaned}/draw/?cards=${removedCard.join('\n')}`)).data;
                 //Send cards to players discard pile then to discard pile
                 if (goToDiscardPile)
-                    this.AddToPersonalDiscardPile(player, pileNameToUse, returnedCards, null, revealCard);
+                    this.AddToPersonalDiscardPile(player, pileNameToUse, returnedCards, null, null, revealCard, play);
 
                 //Add to discard pile
                 await axios.get(`https://deckofcardsapi.com/api/deck/${this.deck.deck_id}/pile/${`discardpile`}/add/?cards=${cardIds.map(v => v.id).join(',')}`);
@@ -569,7 +993,7 @@ class CardSystem {
     }
 
     //Discard cards
-    async DiscardCardsFromTop(player = null, pileName = null, numberToDiscard = 1, revealCardNumber = 'all', checkTurn = true, goToDiscardPile = false) {
+    async DiscardCardsFromTop(player = null, pileName = null, numberToDiscard = 1, revealCardNumber = 'all', checkTurn = true, goToDiscardPile = false, play = null) {
         //Check if player
         const pileNameToUse = (() => {
             if (player)
@@ -586,14 +1010,19 @@ class CardSystem {
         if (pileNameToUse) {
             try {
                 //Remove "-" from pileName
-                var pileNameCleaned = pileNameToUse.replace(/[- ]/gm, '');
-                var revealCardNumberCount = (!isNaN(revealCardNumber) ? revealCardNumber + 0 : 0);
+                var pileNameCleaned = pileNameToUse.replace(/[- ]/gm, ''),
+                    revealCardNumberCount = 0,
+                    pileLength = this.piles.filter(v => v.pileName == pileNameToUse)[0].pileData.listIds.length;
+
+                //Cap number of cards to show
+                revealCardNumber = (!isNaN(revealCardNumber) ?
+                    revealCardNumber > pileLength ? pileLength : revealCardNumber : revealCardNumber);
 
                 //Draw cards from pile
                 const returnedCards = (await axios.get(`https://deckofcardsapi.com/api/deck/${this.deck.deck_id}/pile/${pileNameCleaned}/draw/?count=${numberToDiscard}`)).data;
                 //Send cards to piles discard pile then to discard pile
                 if (goToDiscardPile)
-                    this.AddToPersonalDiscardPile(player, pileNameToUse, returnedCards, revealCardNumberCount);
+                    this.AddToPersonalDiscardPile(player, pileNameToUse, returnedCards, revealCardNumber, revealCardNumberCount, play);
 
                 //Add to discard pile
                 await axios.get(`https://deckofcardsapi.com/api/deck/${this.deck.deck_id}/pile/${`discardpile`}/add/?cards=${cardIds.map(v => v.id).join(',')}`);
@@ -635,7 +1064,7 @@ class CardSystem {
                 var sent = await (async () => {
                     if (!multiDraw) {
                         return await this.message.WaffleResponse(
-                            `Dealing ${numberToDraw} Card(s) to Each ${(player ? player.toString() : ` the Pile ${pileNameToUse}`)}`,
+                            `Dealing ${numberToDraw} Card(s) to ${(player ? player.toString() : ` ${pileNameToUse}`)}`,
                             MTYPE.Loading, null, false, `Game Id: ${this.gameId} - Deck Id: ${this.deck.deck_id}`, null,
                             {
                                 name: this.player.user.username,
@@ -684,7 +1113,7 @@ class CardSystem {
                 //Edit message
                 if (sent)
                     sent.edit(new Discord.MessageEmbed()
-                        .setDescription(`Dealt ${numberToDraw} Card(s) ${(player ? player.toString() : ` the Pile ${pileNameToUse}`)}`)
+                        .setDescription(`Dealt ${numberToDraw} Card(s) to ${(player ? player.toString() : ` ${pileNameToUse}`)}`)
                         .setAuthor(this.player.user.username, this.player.user.avatarURL())
                         .setColor('#09b50c')
                         .setFooter(`Game Id: ${this.gameId} - Deck Id: ${this.deck.deck_id}`));
@@ -746,7 +1175,7 @@ class CardSystem {
 
                 //Edit message
                 sent.edit(new Discord.MessageEmbed()
-                    .setDescription(`Finished Dealing ${(numberEach || this.numberOfCards)} Cards each to ${this.numberOfPlayers} players.`)
+                    .setDescription(`Finished Dealing ${(numberEach || this.numberOfCards)} Cards each to ${this.numberOfPlayers} player(s).`)
                     .setAuthor(this.player.user.username, this.player.user.avatarURL())
                     .setColor('#09b50c')
                     .setFooter(`Game Id: ${this.gameId} - Deck Id: ${this.deck.deck_id}`));
@@ -820,7 +1249,7 @@ class CardSystem {
     }
 
     //Add to personal discard pile
-    AddToPersonalDiscardPile(player = null, pileNameToUse, returnedCards, revealCardNumber = null, revealCard = null) {
+    AddToPersonalDiscardPile(player = null, pileNameToUse, returnedCards, revealCardNumber = null, revealCardCount = null, revealCard = null, play = null) {
         //Remove "-" from pileName
         var pileNameCleaned = pileNameToUse.replace(/[- ]/gm, '');
 
@@ -832,7 +1261,7 @@ class CardSystem {
                         id: v.code,
                         name: `${v.value} ${v.suit}`,
                         image: v.image,
-                        revealed: ((revealCardNumberCount -= 1) > 0 ? true : false)
+                        revealed: ((revealCardCount += 1) <= revealCardNumber ? true : false)
                     }));
                 } else {
                     return returnedCards.cards.map(v => ({
@@ -842,14 +1271,14 @@ class CardSystem {
                         revealed: true
                     }));
                 }
-            } else if (revealCard) { //Reveal single cards
+            } else { //Reveal single cards
                 return returnedCards.cards.map(v => ({
                     id: v.code,
                     name: `${v.value} ${v.suit}`,
                     image: v.image,
                     revealed: revealCard
                 }));
-            } else null;
+            }
         })();
 
         //Create pile
@@ -863,26 +1292,45 @@ class CardSystem {
         };
         this.piles.push(pile);
 
-        //Draw discard pile image
-        this.PenDrawPile(pileNameToUse, false)
-            .then((messageAttachment) => {
-                const newEmbed = new Discord.MessageEmbed()
-                    .setDescription(`Discard ${pile.remaining} Card(s) from ${(player ? 'My Hand' : `this pile ${pileNameToUse}`)}:`)
-                    .setColor('#000000')
-                    .setFooter(`Game Id: ${this.gameId} - Deck Id: ${this.deck.deck_id}`)
-                    .setImage(`attachment://${messageAttachment.name}`);
+        if (play) {
+            //Play discard pile image
+            this.PenDrawPile(pileNameToUse, false)
+                .then((messageAttachment) => {
+                    const newEmbed = new Discord.MessageEmbed()
+                        .setColor('#000000')
+                        .setImage(`attachment://${messageAttachment.name}`);
 
-                if (player) newEmbed.setAuthor(player.user.username, player.user.avatarURL());
-                else newEmbed.setAuthor(this.player.user.username, this.player.user.avatarURL());
+                    //Send
+                    this.message.channel.send({ embed: newEmbed, files: [messageAttachment] }).catch((error) => console.error(error));
+                    //Delete pile
+                    this.piles = this.piles.filter(v => v.pileName != pile.pileName);
+                }).catch((error) => {
+                    console.error(error);
+                    this.message.WaffleResponse(`There was an error: ${error}`);
+                });
+        } else {
+            //Draw discard pile image
+            this.PenDrawPile(pileNameToUse, false)
+                .then((messageAttachment) => {
+                    const newEmbed = new Discord.MessageEmbed()
+                        .setDescription(`Discarded ${pile.remaining} Card(s) from ${(player ? 'My Hand' : `${pileNameToUse}`)}:`)
+                        .setColor('#000000')
+                        .setFooter(`Game Id: ${this.gameId} - Deck Id: ${this.deck.deck_id}`)
+                        .setImage(`attachment://${messageAttachment.name}`);
 
-                //Send
-                this.message.channel.send({ embed: newEmbed, files: [messageAttachment] }).catch((error) => console.error(error));
-                //Delete pile
-                this.piles = this.piles.filter(v => v.pileName != pile.pileName);
-            }).catch((error) => {
-                console.error(error);
-                this.message.WaffleResponse(`There was an error: ${error}`);
-            });
+                    if (player) newEmbed.setAuthor(player.user.username, player.user.avatarURL());
+                    else newEmbed.setAuthor(this.player.user.username, this.player.user.avatarURL());
+
+                    //Send
+                    this.message.channel.send({ embed: newEmbed, files: [messageAttachment] }).catch((error) => console.error(error));
+                    //Delete pile
+                    this.piles = this.piles.filter(v => v.pileName != pile.pileName);
+                }).catch((error) => {
+                    console.error(error);
+                    this.message.WaffleResponse(`There was an error: ${error}`);
+                });
+        }
+
     }
 
     //Draw Pile
@@ -1009,11 +1457,11 @@ class CardSystem {
     }
 
     //Draw Deck
-    DrawDeckAndDiscard() {
+    async DrawDeckAndDiscard() {
         //Draw Deck and discard pile
         this.PenDrawDeckAndDiscard().then((messageAttachment) => {
             const newEmbed = new Discord.MessageEmbed()
-                .setDescription(`Deck - ${this.GetTurn()}`)
+                .setDescription(`Deck - Round ${this.roundIndex} - ${this.GetTurn()}`)
                 .setColor('#000000')
                 .setFooter(`Game Id: ${this.gameId} - Deck Id: ${this.deck.deck_id}`)
                 .setImage(`attachment://${messageAttachment.name}`);
@@ -1096,7 +1544,9 @@ class CardSystem {
                     pile.stepDescription.push(({
                         case: step.case,
                         used: false,
-                        require: step.required
+                        required: step.required,
+                        maxUses: step.maxUses,
+                        usesCount: 0
                     }));
                 });
             });
@@ -1110,8 +1560,59 @@ class CardSystem {
             //Turn off used
             this.piles.filter(v => v.pileName = pileName)[0].stepDescription.forEach((step) => {
                 step.used = false;
+                step.usesCount = 0;
             });
         }
+    }
+
+    //Aggregate step
+    AggregateStep(player, step, args) {
+        //Get actual step
+        const CallBackStep = Object.values(this.CallBacks).filter(v => v.name == step)[0];
+
+        //Check if creater or players turn
+        if ((CallBackStep.whocan ? CallBackStep.whocan.id == player.id : false) || this.IsPlayerGo(player, true)) {
+            //Check if stepDescription exists
+            if (this.stepDescription) {
+                const pileName = this.GetPileId(player),
+                    pile = this.piles.filter(v => v.pileName == pileName)[0],
+                    stepDescription = pile.stepDescription.filter(v => v.case == step)[0],
+                    maxUses = stepDescription.maxUses,
+                    usesCount = stepDescription.usesCount,
+                    required = stepDescription.required,
+                    unlimitedUses = (usesCount < 0 && !required);
+
+                //Check if step was already taken
+                if (stepDescription && stepDescription.used == false) {
+                    //Aggregate the step
+                    //Play call back
+                    this.PlayCallBack(CallBackStep, args);
+
+                    //Cap uses of ability
+                    stepDescription.usesCount += 1;
+                    if (!unlimitedUses) {
+                        if ((usesCount + 1) > maxUses) {
+                            stepDescription.used = true;
+                            stepDescription.usesCount = 0;
+                        }
+                    }
+
+                    //Increase turn if all steps are complete
+                    if (pile.stepDescription.filter(v => v.used == false && v.required == true).length == 0) {
+                        this.TurnPlus();
+                    }
+                } else
+                    this.StepAlreadyTaken(step);
+            } else {
+                //Play call back
+                this.PlayCallBack(CallBackStep, args);
+            }
+        }
+    }
+
+    //Play callback
+    PlayCallBack(step, args) {
+        step.callback(args);
     }
 
     //Get turn
@@ -1119,18 +1620,22 @@ class CardSystem {
         return `It is ${this.players[this.turnIndex].toString()} Turn`;
     }
 
+    //Increase round
+    RoundPlus() {
+        this.roundIndex += 1;
+        this.RoundEvent.emit('RoundCounter', this.roundIndex);
+    }
+
     //Increase turn
     TurnPlus() {
         if (this.turnIndex >= this.numberOfPlayers - 1) this.turnIndex = 0;
         else this.turnIndex += 1;
         //Increment round
-        this.turnCounter = (() => {
-            if (this.turnCounter > this.numberOfPlayers) {
-                this.turnCounter = 0;
-                this.roundIndex += 1;
-            } else
-                this.turnCounter += 1;
-        })();
+        if (this.turnCounter >= this.numberOfPlayers - 1) {
+            this.turnCounter = 0;
+            this.RoundPlus();
+        } else
+            this.turnCounter += 1;
 
         //Clear player steps
         this.ClearPlayerSteps();
@@ -1142,13 +1647,11 @@ class CardSystem {
         if (this.turnIndex == 0) this.turnIndex == this.numberOfPlayers - 1;
         else this.turnIndex -= 1;
         //Increment round
-        this.turnCounter = (() => {
-            if (this.turnCounter > this.numberOfPlayers) {
-                this.turnCounter = 0;
-                this.roundIndex += 1;
-            } else
-                this.turnCounter += 1;
-        })();
+        if (this.turnCounter >= this.numberOfPlayers - 1) {
+            this.turnCounter = 0;
+            this.RoundPlus();
+        } else
+            this.turnCounter += 1;
 
         //Clear player steps
         this.ClearPlayerSteps();
@@ -1159,7 +1662,7 @@ class CardSystem {
     TurnMessage() {
         //Send channel message
         this.message.WaffleResponse(
-            `It Is ${this.players[this.turnIndex].toString()} Turn`, MTYPE.Information,
+            `Round ${this.roundIndex} - It Is ${this.players[this.turnIndex].toString()} Turn`, MTYPE.Information,
             null, false, `Game Id: ${this.gameId} - Deck Id: ${this.deck.deck_id}`, null,
             {
                 name: this.player.user.username,
@@ -1171,6 +1674,20 @@ class CardSystem {
             .setAuthor(this.player.user.username, this.player.user.avatarURL())
             .setColor('#0099ff')
             .setFooter(`Game Id: ${this.gameId} - Deck Id: ${this.deck.deck_id}`));
+    }
+
+    //Turn doesn't exist
+    StepDoesntExist(step) {
+        this.message.WaffleResponse(`${step} is not an option in this game.`).then((sent) => {
+            sent.delete({ timeout: 3000 }).catch(() => { });
+        });
+    }
+
+    //Step already taken
+    StepAlreadyTaken(step) {
+        this.message.WaffleResponse(`${step} was already taken as much as it was allowed.`).then((sent) => {
+            sent.delete({ timeout: 3000 }).catch(() => { });
+        });
     }
 
     //Not your turn
@@ -1189,7 +1706,10 @@ class CardSystem {
     //No cards to discard
     NoCardsToDiscardMessage(message = null) {
         (message ? message : this.message).WaffleResponse(`I have no Cards to Discard.`,
-            '#000000', null, false, `Game Id: ${this.gameId} - Deck Id: ${this.deck.deck_id}`, null, ATYPE.Sender);
+            '#000000', null, false, `Game Id: ${this.gameId} - Deck Id: ${this.deck.deck_id}`, null, ATYPE.Sender)
+            .then((sent) => {
+                sent.delete({ timeout: 3000 }).catch(() => { });
+            });
     }
 
     //Get Pile ID
@@ -1284,5 +1804,6 @@ class CardSystem {
 //Export classes
 module.exports = {
     CardGame: CardGame,
-    CardSystem: CardSystem
+    CardSystem: CardSystem,
+    UserInterface: UserInterface
 }
