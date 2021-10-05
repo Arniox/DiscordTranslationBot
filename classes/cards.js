@@ -89,9 +89,9 @@ class UserInterface {
                 switch (step.name) {
                     case 'play':
                         //Get cards
-                        var cards = args.filter(v => /^([AJQK2-9]+[HCDS])$/gi.test(v));
+                        var cards = args.filter(v => /^([AJQK0-9]+[HCDS])$/gi.test(v));
                         //Remove cards from args
-                        args = args.filter(v => !/^([AJQK2-9]+[HCDS])$/gi.test(v));
+                        args = args.filter(v => !/^([AJQK0-9]+[HCDS])$/gi.test(v));
                         var showStatus = args.shift(),
                             showStatusBool = showStatus ?
                                 showStatus.toLowerCase() == 'hide' || showStatus.toLowerCase() == 'h' :
@@ -142,9 +142,9 @@ class UserInterface {
                         } else return null;
                     case 'show':
                         //Get cards
-                        var cards = args.filter(v => /^([AJQK2-9]+[HCDS])$/gi.test(v));
+                        var cards = args.filter(v => /^([AJQK0-9]+[HCDS])$/gi.test(v));
                         //Remove cards from args
-                        args = args.filter(v => !/^([AJQK2-9]+[HCDS])$/gi.test(v));
+                        args = args.filter(v => !/^([AJQK0-9]+[HCDS])$/gi.test(v));
 
                         if (cards.length > 0) {
                             return [
@@ -208,9 +208,9 @@ class UserInterface {
                     case 'discardcards':
                         //IDENTICAL to play but with play option set to false
                         //Get cards
-                        var cards = args.filter(v => /^([AJQK2-9]+[HCDS])$/gi.test(v));
+                        var cards = args.filter(v => /^([AJQK0-9]+[HCDS])$/gi.test(v));
                         //Remove cards from args
-                        args = args.filter(v => !/^([AJQK2-9]+[HCDS])$/gi.test(v));
+                        args = args.filter(v => !/^([AJQK0-9]+[HCDS])$/gi.test(v));
                         var showStatus = args.shift(),
                             showStatusBool = showStatus ?
                                 showStatus.toLowerCase() == 'hide' || showStatus.toLowerCase() == 'h' :
@@ -449,6 +449,12 @@ class CardGame {
                             reactionCollector.empty();
                             reactionCollector.resetTimer(); messageCollector.resetTimer();
                         } else if (reaction.emoji.name === '▶️' && user.id == this.CardSystem.player.id) {
+                            //Loading message
+                            sent.edit(new Discord.MessageEmbed()
+                                .setDescription('Loading...')
+                                .setColor('#FFCC00')
+                                .setFooter(`Game Id: ${this.CardSystem.gameId}`));
+
                             //Message all users
                             this.CardSystem.players.forEach(async ply => {
                                 await ply.send(new Discord.MessageEmbed()
@@ -733,6 +739,7 @@ class CardSystem {
 
                 resolve();
             } catch (error) {
+                console.error(error);
                 reject(error);
             }
         });
@@ -741,25 +748,25 @@ class CardSystem {
     //Reshuffle Deck
     async ShuffleDeck(player, checkTurn = true) {
         if (this.IsPlayerGo(player, (this.player.id == player.id || checkTurn))) {
-            axios.get(`https://deckofcardsapi.com/api/deck/${this.deck.deck_id}/shuffle/`)
-                .then((shuffledOldDeck) => {
-                    this.deck = shuffledOldDeck.data;
-                    //Send message
-                    this.message.WaffleResponse(
-                        `Shuffled The Deck\n${this.deck.remaining} Cards left in the Deck`,
-                        MTYPE.Success,
-                        [
-                            {
-                                name: `Who's Turn is it?`,
-                                value: `It is ${this.players[this.turnIndex].toString()} Turn!`
-                            }
-                        ],
-                        true, `Game Id: ${this.gameId} - Deck Id: ${this.deck.deck_id}`, null,
-                        {
-                            name: this.player.user.username,
-                            url: this.player.user.avatarURL()
-                        });
-                }).catch((error) => console.error(error));
+            //Draw cards from deck
+            const allCards = (await axios.get(`https://deckofcardsapi.com/api/deck/${this.deck.deck_id}/draw/?count=${this.deck.remaining}`)).data,
+                cardIdsPrior = allCards.map(v => v.code),
+                cardIdsAfterShuffle = cardIdsPrior.shuffle();
+
+            //Enter cards backinto deck
+            const shuffledOldDeck = await axios.get(`https://deckofcardsapi.com/api/deck/${this.deck.deck_id}/shuffle/?cards=${cardIdsAfterShuffle.join(',')}`);
+            //Update deck
+            this.deck = shuffledOldDeck.data;
+
+            //Send message
+            this.message.WaffleResponse(
+                `Shuffled The Deck\n${this.deck.remaining} Cards left in the Deck`,
+                MTYPE.Success, null, false,
+                `Game Id: ${this.gameId} - Deck Id: ${this.deck.deck_id}`, null,
+                {
+                    name: this.player.user.username,
+                    url: this.player.user.avatarURL()
+                });
         }
     }
 
@@ -909,6 +916,8 @@ class CardSystem {
                 image: v.image,
                 revealed: false
             }));
+            //Update deck remaining
+            this.deck.remaining = listOfCards.remaining;
 
             //Edit piles
             const pile = {
@@ -963,17 +972,17 @@ class CardSystem {
 
                 //Get card to remove
                 const removedCard = this.piles.filter(v => v.pileName == pileNameToUse)[0].pileData.listIds
-                    .filter(o => this.FindCardsInPile_CallBack(o, cardToDiscard))[0].map(v => v.code);
+                    .filter(o => this.FindCardsInPile_CallBack(o, cardToDiscard)).map(v => v.id);
 
                 //Draw cards from pile
-                const returnedCards = (await axios.get(`https://deckofcardsapi.com/api/deck/${this.deck.deck_id}/pile/${pileNameCleaned}/draw/?cards=${removedCard.join('\n')}`)).data;
+                const returnedCards = (await axios.get(`https://deckofcardsapi.com/api/deck/${this.deck.deck_id}/pile/${pileNameCleaned}/draw/?cards=${removedCard.join(',')}`)).data;
                 //Send cards to players discard pile then to discard pile
                 if (goToDiscardPile)
                     this.AddToPersonalDiscardPile(player, pileNameToUse, returnedCards, null, null, revealCard, play);
 
                 //Add to discard pile
-                await axios.get(`https://deckofcardsapi.com/api/deck/${this.deck.deck_id}/pile/${`discardpile`}/add/?cards=${cardIds.map(v => v.id).join(',')}`);
-                await AddToDiscardPile();
+                await axios.get(`https://deckofcardsapi.com/api/deck/${this.deck.deck_id}/pile/${`discardpile`}/add/?cards=${returnedCards.cards.map(v => v.code).join(',')}`);
+                await this.AddToDiscardPile();
                 //Get list of cards and update the piles card ids
                 const listOfCards = (await axios.get(`https://deckofcardsapi.com/api/deck/${this.deck.deck_id}/pile/${pileNameCleaned}/list/`)).data;
                 this.piles.filter(v => v.pileName == pileNameToUse)[0].pileData.listIds =
@@ -983,10 +992,16 @@ class CardSystem {
                         image: v.image,
                         revealed: false
                     }));
+                //Update deck remaining
+                this.deck.remaining = listOfCards.remaining;
+                //Update remaining
+                this.piles.filter(v => v.pileName == pileNameToUse)[0].pileData.remaining =
+                    listOfCards.piles[`${pileNameCleaned}`].remaining;
 
                 //Draw deck and discard pile
                 this.DrawDeckAndDiscard();
             } catch (error) {
+                console.error(error);
                 await this.EndOfDeck_CallBack(error);
             }
         }
@@ -1017,6 +1032,8 @@ class CardSystem {
                 //Cap number of cards to show
                 revealCardNumber = (!isNaN(revealCardNumber) ?
                     revealCardNumber > pileLength ? pileLength : revealCardNumber : revealCardNumber);
+                //Fix numberToDiscard
+                numberToDiscard = (!isNaN(numberToDiscard) ? numberToDiscard : pileLength);
 
                 //Draw cards from pile
                 const returnedCards = (await axios.get(`https://deckofcardsapi.com/api/deck/${this.deck.deck_id}/pile/${pileNameCleaned}/draw/?count=${numberToDiscard}`)).data;
@@ -1025,8 +1042,8 @@ class CardSystem {
                     this.AddToPersonalDiscardPile(player, pileNameToUse, returnedCards, revealCardNumber, revealCardNumberCount, play);
 
                 //Add to discard pile
-                await axios.get(`https://deckofcardsapi.com/api/deck/${this.deck.deck_id}/pile/${`discardpile`}/add/?cards=${cardIds.map(v => v.id).join(',')}`);
-                await AddToDiscardPile();
+                await axios.get(`https://deckofcardsapi.com/api/deck/${this.deck.deck_id}/pile/${`discardpile`}/add/?cards=${returnedCards.cards.map(v => v.code).join(',')}`);
+                await this.AddToDiscardPile();
                 //Get list of cards and update the piles card ids
                 const listOfCards = (await axios.get(`https://deckofcardsapi.com/api/deck/${this.deck.deck_id}/pile/${pileNameCleaned}/list/`)).data;
                 this.piles.filter(v => v.pileName == pileNameToUse)[0].pileData.listIds =
@@ -1036,10 +1053,16 @@ class CardSystem {
                         image: v.image,
                         revealed: false
                     }));
+                //Update deck remaining
+                this.deck.remaining = listOfCards.remaining;
+                //Update remaining
+                this.piles.filter(v => v.pileName == pileNameToUse)[0].pileData.remaining =
+                    listOfCards.piles[`${pileNameCleaned}`].remaining;
 
                 //Draw deck and discard pile
                 this.DrawDeckAndDiscard();
             } catch (error) {
+                console.error(error);
                 await this.EndOfDeck_CallBack(error);
             }
         }
@@ -1093,6 +1116,8 @@ class CardSystem {
                     image: v.image,
                     revealed: false
                 }));
+                //Update deck remaining
+                this.deck.remaining = listOfCards.remaining;
 
                 //Edit piles
                 const pile = {
@@ -1137,6 +1162,7 @@ class CardSystem {
                     });
                 }
             } catch (error) {
+                console.error(error);
                 await this.EndOfDeck_CallBack(error);
             }
         }
@@ -1180,6 +1206,7 @@ class CardSystem {
                     .setColor('#09b50c')
                     .setFooter(`Game Id: ${this.gameId} - Deck Id: ${this.deck.deck_id}`));
             } catch (error) {
+                console.error(error);
                 await this.EndOfDeck_CallBack(error);
             }
         } else {
@@ -1203,15 +1230,16 @@ class CardSystem {
                 await axios.get(`https://deckofcardsapi.com/api/deck/${this.deck.deck_id}/shuffle/?cards=${returnedCards.cards.map(v => v.code).join(',')}`);
 
                 //Get list of cards and update the piles card ids
-                await axios.get(`https://deckofcardsapi.com/api/deck/${this.deck.deck_id}/pile/${pileName}/list/`)
-                await AddToDiscardPile();
+                await this.AddToDiscardPile();
 
                 //Send message
                 this.message.WaffleResponse(`Deck ran out. Re-suffleing Discard Pile back into Deck`, MTYPE.Information);
             } catch (error) {
+                console.error(error);
                 await this.EndOfDeck_CallBack(error);
             }
         } else {
+            console.error(error);
             return this.message.WaffleResponse(`There was an error: ${error}`);
         }
     }
@@ -1227,8 +1255,11 @@ class CardSystem {
                 image: v.image,
                 revealed: true
             }));
-            var existingDiscardPile = this.piles.filter(v => v.pileName == 'discardpile');
+            //Update deck remaining
+            this.deck.remaining = listOfDiscards.remaining;
 
+            //Get existing pile
+            var existingDiscardPile = this.piles.filter(v => v.pileName == 'discardpile');
             //Create discard pile
             const discardPile = {
                 player: null,
@@ -1244,15 +1275,13 @@ class CardSystem {
             else
                 this.piles.push(discardPile);
         } catch (error) {
+            console.error(error);
             await this.EndOfDeck_CallBack(error);
         }
     }
 
     //Add to personal discard pile
     AddToPersonalDiscardPile(player = null, pileNameToUse, returnedCards, revealCardNumber = null, revealCardCount = null, revealCard = null, play = null) {
-        //Remove "-" from pileName
-        var pileNameCleaned = pileNameToUse.replace(/[- ]/gm, '');
-
         //Send cards to piles personal discard pile then to discard pile
         var cardIds = (() => {
             if (revealCardNumber) {
@@ -1286,7 +1315,7 @@ class CardSystem {
             player: player,
             pileName: `discard${pileNameToUse}`,
             pileData: {
-                remaining: returnedCards.piles[`${pileNameCleaned}`].remaining,
+                remaining: cardIds.length,
                 listIds: cardIds
             }
         };
@@ -1294,7 +1323,7 @@ class CardSystem {
 
         if (play) {
             //Play discard pile image
-            this.PenDrawPile(pileNameToUse, false)
+            this.PenDrawPile(`discard${pileNameToUse}`, false)
                 .then((messageAttachment) => {
                     const newEmbed = new Discord.MessageEmbed()
                         .setColor('#000000')
@@ -1310,7 +1339,7 @@ class CardSystem {
                 });
         } else {
             //Draw discard pile image
-            this.PenDrawPile(pileNameToUse, false)
+            this.PenDrawPile(`discard${pileNameToUse}`, false)
                 .then((messageAttachment) => {
                     const newEmbed = new Discord.MessageEmbed()
                         .setDescription(`Discarded ${pile.remaining} Card(s) from ${(player ? 'My Hand' : `${pileNameToUse}`)}:`)
@@ -1385,6 +1414,7 @@ class CardSystem {
                     reject(`Couldn't find the card pile for ${pileToFindName}`);
                 }
             } catch (error) {
+                console.error(error);
                 reject(error);
             }
         });
@@ -1451,6 +1481,7 @@ class CardSystem {
 
                 resolve(newAttachment);
             } catch (error) {
+                console.error(error);
                 reject(error);
             }
         });
@@ -1482,6 +1513,7 @@ class CardSystem {
                 await this.DrawImage(ctx, img);
             }
         } catch (error) {
+            console.error(error);
             await this.EndOfDeck_CallBack(error);
         }
     }
@@ -1781,7 +1813,8 @@ class CardSystem {
     //Do cards exist
     DoCardsExistInPile(pileName, cards = []) {
         return (() => {
-            if (this.piles.filter(v => v.pileName == pileName)[0].pileData.listIds.filter(o => this.FindCardsInPile_CallBack(o, cards)).length > 0) {
+            if (this.piles.filter(v => v.pileName == pileName)[0].pileData.listIds
+                .filter(o => this.FindCardsInPile_CallBack(o, cards)).length > 0) {
                 return true;
             } else {
                 this.message.WaffleResponse(`I Couldn't find **${cards.join(', ')}** in this Pile`)
@@ -1795,9 +1828,10 @@ class CardSystem {
 
     //Filter to find cards callBack function
     FindCardsInPile_CallBack(cardObject, cards = []) {
-        return cards.map(v => v.toLowerCase()).includes(cardObject.code.toLowerCase()) ||
+        return cards.map(v => v.toLowerCase()).includes(cardObject.id.toLowerCase()) ||
+            cards.map(v => v.toLowerCase().replace(/1(?<!0)/gi, '')).includes(cardObject.id.toLowerCase()) ||
             cards.map(v => v.toLowerCase()).includes(cardObject.name.toLowerCase()) ||
-            cards.map(v => v.toLowerCase()).includes(cardObject.name.toLowerCase().replace(/( of )/gm, ''));
+            cards.map(v => v.toLowerCase().replace(/( of )/gi, '')).includes(cardObject.name.toLowerCase());
     }
 }
 
