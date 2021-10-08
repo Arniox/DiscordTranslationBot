@@ -108,7 +108,7 @@ module.exports = (bot, message) => {
                                         return resolve(bot.commands.get('cardgame'));
                                     } else {
                                         return reject(`Please end your Akinator game in ` +
-                                            `${message.channel.toString()} before starting a Card Game game`);
+                                            `${message.channel.toString()} before starting a new Card Game`);
                                     }
                                 }
                                 // case 'scoreboard': case 'score': case 'board': case 'sb':
@@ -157,18 +157,20 @@ module.exports = (bot, message) => {
                     }
                     //Card game
                     if (!bot.akinatorGames.get(message.member.id) && bot.cardGames.get(GetGameId(message))) {
-                        //Get the specific command
-                        const cardGame = bot.commands.get("cardgame");
-                        //If command doesn't exist, exit and do nothing
-                        if (!cardGame) return;
+                        if (bot.cardGames.get(GetGameId(message)).IsGameStarted()) {
+                            //Get the specific command
+                            const cardGame = bot.commands.get("cardgame");
+                            //If command doesn't exist, exit and do nothing
+                            if (!cardGame) return;
 
-                        //Argument/command name definition.
-                        var args = message.content.split(' ');
-                        var command = args.shift().toLowerCase();
-                        args.push(command);
+                            //Argument/command name definition.
+                            var args = message.content.split(' ');
+                            var command = args.shift().toLowerCase();
+                            args.push(command);
 
-                        //Run command
-                        cardGame.run(bot, results[0], message, command, args);
+                            //Run command
+                            cardGame.run(bot, results[0], message, command, args);
+                        }
                     }
                 }
             });

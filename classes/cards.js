@@ -1,9 +1,9 @@
 //Import
-const axios = require('axios');
 const Discord = require('discord.js');
 const { v4: uuidv4 } = require('uuid');
 const { createCanvas, Image } = require('canvas');
 const EventEmitter = require('events');
+const { CardAPI } = require('./cardapi.js');
 //Import functions
 require('../message-commands.js')();
 
@@ -307,6 +307,13 @@ class UserInterface {
             else return false;
         else return false;
     }
+
+    //Is game started
+    IsGameStarted() {
+        if (this.CardGame)
+            return this.CardGame.gameStarted;
+        else return false;
+    }
 }
 
 class CardGame {
@@ -319,6 +326,7 @@ class CardGame {
         this.bot = bot;
         //Systems
         this.CardSystem;
+        this.gameStarted = false;
         //Rule set values
         this.backOfDeck;
         this.cardsToStartWith;
@@ -391,13 +399,13 @@ class CardGame {
                                     var number = parseInt(mess);
 
                                     //Check if number is under 20 (max deck count)
-                                    if (number <= 20) {
+                                    if (number <= 54) {
                                         this.CardSystem.numberOfCards = number;
                                         //Edit preperation message
                                         const embed = sent.embeds[0];
-                                        embed.fields[2] = {
+                                        embed.fields[3] = {
                                             name: 'How Many Decks?',
-                                            value: `There will be ${this.numberOfCards} cards delt to each player!`
+                                            value: `There will be ${this.CardSystem.numberOfCards} cards delt to each player!`
                                         }
                                         sent.edit(embed);
 
@@ -506,6 +514,7 @@ class CardGame {
                                 this.CardSystem.StartGame()
                                     .then(() => {
                                         this.EnforceRules(); //Enforce game rules
+                                        this.gameStarted = true;
                                     }).catch((error) => {
                                         console.error(error);
                                         this.message.WaffleResponse(`There was an error: ${error.message}`);
@@ -637,6 +646,8 @@ class CardSystem {
         this.stepDescription = stepDescription;
         //Events
         this.RoundEvent = new EventEmitter();
+        //Card api
+        this.CardAPI = new CardAPI();
 
         this.players.push(this.player);
     }
@@ -722,9 +733,10 @@ class CardSystem {
         return new Promise(async (resolve, reject) => {
             try {
                 //Generate the deck and piles
-                var newDeck = (await axios.get('https://deckofcardsapi.com/api/deck/new/shuffle/?deck_count=1'));
+                var newDeck = this.CardAPI.New();
+
                 //Set up new deck
-                this.deck = newDeck.data;
+                this.deck = newDeck;
                 this.turnIndex = randInt(0, this.numberOfPlayers - 1);
 
                 //Deal all cards to players
@@ -748,16 +760,8 @@ class CardSystem {
     //Reshuffle Deck
     async ShuffleDeck(player, checkTurn = true) {
         if (this.IsPlayerGo(player, (this.player.id == player.id || checkTurn))) {
-            //Draw cards from deck
-            const allCards = (await axios.get(`https://deckofcardsapi.com/api/deck/${this.deck.deck_id}/draw/?count=${this.deck.remaining}`)).data,
-                cardIdsPrior = allCards.map(v => v.code),
-                cardIdsAfterShuffle = cardIdsPrior.shuffle();
-
-            //Enter cards backinto deck
-            const shuffledOldDeck = await axios.get(`https://deckofcardsapi.com/api/deck/${this.deck.deck_id}/shuffle/?cards=${cardIdsAfterShuffle.join(',')}`);
-            //Update deck
-            this.deck = shuffledOldDeck.data;
-
+            //Shuffle deck
+            this.CardAPI.Shuffle(this.deck.deck_id);
             //Send message
             this.message.WaffleResponse(
                 `Shuffled The Deck\n${this.deck.remaining} Cards left in the Deck`,
@@ -902,15 +906,16 @@ class CardSystem {
             })();
 
             //Draw cards from deck
-            const returnedCards = (await axios.get(`https://deckofcardsapi.com/api/deck/${this.deck.deck_id}/draw/?count=${numberOfCards}`)).data;
+            const returnedCards = this.CardAPI.Draw(this.deck.deck_id, numberOfCards);
+
             //Send cards to new pile
             var cardIds = returnedCards.cards.map(v => v.code),
                 existingPile = this.piles.filter(v => v.pileName == pileName);
-            await axios.get(`https://deckofcardsapi.com/api/deck/${this.deck.deck_id}/pile/${pileName}/add/?cards=${cardIds.join(',')}`);
+            this.CardAPI.AddToPile(this.deck.deck_id, pileName, `${cardIds.join(',')}`);
 
             //Get list of cards
-            const listOfCards = (await axios.get(`https://deckofcardsapi.com/api/deck/${this.deck.deck_id}/pile/${pileName}/list/`)).data;
-            cardIds = listOfCards.piles[`${pileName}`].cards.map(v => ({
+            const listOfCards = this.CardAPI.ListCardsPile(this.deck.deck_id, pileName);
+            cardIds = listOfCards.piles.cards.map(v => ({
                 id: v.code,
                 name: `${v.value} ${v.suit}`,
                 image: v.image,
@@ -924,7 +929,7 @@ class CardSystem {
                 player: this.player,
                 pileName: this.GetPileId(null, pileName),
                 pileData: {
-                    remaining: listOfCards.piles[`${pileName}`].remaining,
+                    remaining: listOfCards.piles.remaining,
                     listIds: cardIds
                 }
             };
@@ -975,18 +980,18 @@ class CardSystem {
                     .filter(o => this.FindCardsInPile_CallBack(o, cardToDiscard)).map(v => v.id);
 
                 //Draw cards from pile
-                const returnedCards = (await axios.get(`https://deckofcardsapi.com/api/deck/${this.deck.deck_id}/pile/${pileNameCleaned}/draw/?cards=${removedCard.join(',')}`)).data;
+                const returnedCards = this.CardAPI.DrawFromPile(this.deck.deck_id, pileNameCleaned, null, removedCard.join(','));
                 //Send cards to players discard pile then to discard pile
                 if (goToDiscardPile)
                     this.AddToPersonalDiscardPile(player, pileNameToUse, returnedCards, null, null, revealCard, play);
 
                 //Add to discard pile
-                await axios.get(`https://deckofcardsapi.com/api/deck/${this.deck.deck_id}/pile/${`discardpile`}/add/?cards=${returnedCards.cards.map(v => v.code).join(',')}`);
+                this.CardAPI.AddToPile(this.deck.deck_id, `discardpile`, returnedCards.cards.map(v => v.code).joing(','));
                 await this.AddToDiscardPile();
                 //Get list of cards and update the piles card ids
-                const listOfCards = (await axios.get(`https://deckofcardsapi.com/api/deck/${this.deck.deck_id}/pile/${pileNameCleaned}/list/`)).data;
+                const listOfCards = this.CardAPI.ListCardsPile(this.deck.deck_id, pileNameCleaned);
                 this.piles.filter(v => v.pileName == pileNameToUse)[0].pileData.listIds =
-                    listOfCards.piles[`${pileNameCleaned}`].cards.map(v => ({
+                    listOfCards.piles.cards.map(v => ({
                         id: v.code,
                         name: `${v.value} ${v.suit}`,
                         image: v.image,
@@ -995,8 +1000,7 @@ class CardSystem {
                 //Update deck remaining
                 this.deck.remaining = listOfCards.remaining;
                 //Update remaining
-                this.piles.filter(v => v.pileName == pileNameToUse)[0].pileData.remaining =
-                    listOfCards.piles[`${pileNameCleaned}`].remaining;
+                this.piles.filter(v => v.pileName == pileNameToUse)[0].pileData.remaining = listOfCards.piles.remaining;
 
                 //Draw deck and discard pile
                 this.DrawDeckAndDiscard();
@@ -1036,18 +1040,18 @@ class CardSystem {
                 numberToDiscard = (!isNaN(numberToDiscard) ? numberToDiscard : pileLength);
 
                 //Draw cards from pile
-                const returnedCards = (await axios.get(`https://deckofcardsapi.com/api/deck/${this.deck.deck_id}/pile/${pileNameCleaned}/draw/?count=${numberToDiscard}`)).data;
+                const returnedCards = this.CardAPI.DrawFromPile(this.deck.deck_id, pileNameCleaned, numberToDiscard);
                 //Send cards to piles discard pile then to discard pile
                 if (goToDiscardPile)
                     this.AddToPersonalDiscardPile(player, pileNameToUse, returnedCards, revealCardNumber, revealCardNumberCount, play);
 
                 //Add to discard pile
-                await axios.get(`https://deckofcardsapi.com/api/deck/${this.deck.deck_id}/pile/${`discardpile`}/add/?cards=${returnedCards.cards.map(v => v.code).join(',')}`);
+                this.CardAPI.AddToPile(this.deck.deck_id, `discardpile`, returnedCards.cards.map(v => v.code).join(','));
                 await this.AddToDiscardPile();
                 //Get list of cards and update the piles card ids
-                const listOfCards = (await axios.get(`https://deckofcardsapi.com/api/deck/${this.deck.deck_id}/pile/${pileNameCleaned}/list/`)).data;
+                const listOfCards = this.CardAPI.ListCardsPile(this.deck.deck_id, pileNameCleaned);
                 this.piles.filter(v => v.pileName == pileNameToUse)[0].pileData.listIds =
-                    listOfCards.piles[`${pileNameCleaned}`].cards.map(v => ({
+                    listOfCards.piles.cards.map(v => ({
                         id: v.code,
                         name: `${v.value} ${v.suit}`,
                         image: v.image,
@@ -1056,8 +1060,7 @@ class CardSystem {
                 //Update deck remaining
                 this.deck.remaining = listOfCards.remaining;
                 //Update remaining
-                this.piles.filter(v => v.pileName == pileNameToUse)[0].pileData.remaining =
-                    listOfCards.piles[`${pileNameCleaned}`].remaining;
+                this.piles.filter(v => v.pileName == pileNameToUse)[0].pileData.remaining = listOfCards.piles.remaining;
 
                 //Draw deck and discard pile
                 this.DrawDeckAndDiscard();
@@ -1102,15 +1105,15 @@ class CardSystem {
                 var pileNameCleaned = pileNameToUse.replace(/[- ]/gm, '');
 
                 //Draw cards from deck
-                const returnedCards = (await axios.get(`https://deckofcardsapi.com/api/deck/${this.deck.deck_id}/draw/?count=${numberToDraw}`)).data;
+                const returnedCards = this.CardAPI.Draw(this.deck.deck_id, numberToDraw);
                 //Send cards to pile
                 var cardIds = returnedCards.cards.map(v => v.code),
                     existingPile = this.piles.filter(v => v.pileName == pileNameToUse);
-                await axios.get(`https://deckofcardsapi.com/api/deck/${this.deck.deck_id}/pile/${pileNameCleaned}/add/?cards=${cardIds.join(',')}`);
+                this.CardAPI.AddToPile(this.deck.deck_id, pileNameCleaned, cardIds.join(','));
 
                 //Get list of cards
-                const listOfCards = (await axios.get(`https://deckofcardsapi.com/api/deck/${this.deck.deck_id}/pile/${pileNameCleaned}/list/`)).data;
-                cardIds = listOfCards.piles[`${pileNameCleaned}`].cards.map(v => ({
+                const listOfCards = this.CardAPI.ListCardsPile(this.deck.deck_id, pileNameCleaned);
+                cardIds = listOfCards.piles.cards.map(v => ({
                     id: v.code,
                     name: `${v.value} ${v.suit}`,
                     image: v.image,
@@ -1124,10 +1127,12 @@ class CardSystem {
                     player: player,
                     pileName: pileNameToUse,
                     pileData: {
-                        remaining: listOfCards.piles[`${pileNameCleaned}`].remaining,
+                        remaining: listOfCards.piles.remaining,
                         listIds: cardIds
                     }
                 };
+
+                console.log(pile);
 
                 //Check if player already eixsts
                 if (existingPile[0])
@@ -1219,19 +1224,11 @@ class CardSystem {
     async EndOfDeck_CallBack(error) {
         if (error == 'Not enough cards remaining to draw 1 additional') {
             try {
-                //Switch cards from discarded back to deck
-                const pileName = 'discardpile';
-
-                //Get cards to remove
-                const removedCards = this.piles.filter(v => v.pileName == pileName)[0].pileData.listIds.map(v => v.code);
-                //Draw cards from pile
-                const returnedCards = (await axios.get(`https://deckofcardsapi.com/api/deck/${this.deck.deck_id}/pile/${pileName}/draw/?cards=${removedCards.join(',')}`)).data;
-                //Insert cards into deck
-                await axios.get(`https://deckofcardsapi.com/api/deck/${this.deck.deck_id}/shuffle/?cards=${returnedCards.cards.map(v => v.code).join(',')}`);
+                //Reset deck
+                this.CardAPI.ResetDeck(this.deck.deck_id);
 
                 //Get list of cards and update the piles card ids
                 await this.AddToDiscardPile();
-
                 //Send message
                 this.message.WaffleResponse(`Deck ran out. Re-suffleing Discard Pile back into Deck`, MTYPE.Information);
             } catch (error) {
@@ -1248,8 +1245,8 @@ class CardSystem {
     async AddToDiscardPile() {
         try {
             //Get list of cards in discardpile
-            const listOfDiscards = (await axios.get(`https://deckofcardsapi.com/api/deck/${this.deck.deck_id}/pile/${`discardpile`}/list/`)).data;
-            var discardedIds = listOfDiscards.piles[`discardpile`].cards.map(v => ({
+            const listOfDiscards = this.CardAPI.ListCardsPile(this.deck.deck_id, `discardpile`);
+            var discardedIds = listOfDiscards.piles.cards.map(v => ({
                 id: v.code,
                 name: `${v.value} ${v.suit}`,
                 image: v.image,
@@ -1265,7 +1262,7 @@ class CardSystem {
                 player: null,
                 pileName: 'discard',
                 pileData: {
-                    remaining: listOfDiscards.piles[`discardpile`].remaining,
+                    remaining: listOfDiscards.piles.remaining,
                     listIds: discardedIds
                 }
             };
@@ -1829,7 +1826,6 @@ class CardSystem {
     //Filter to find cards callBack function
     FindCardsInPile_CallBack(cardObject, cards = []) {
         return cards.map(v => v.toLowerCase()).includes(cardObject.id.toLowerCase()) ||
-            cards.map(v => v.toLowerCase().replace(/1(?<!0)/gi, '')).includes(cardObject.id.toLowerCase()) ||
             cards.map(v => v.toLowerCase()).includes(cardObject.name.toLowerCase()) ||
             cards.map(v => v.toLowerCase().replace(/( of )/gi, '')).includes(cardObject.name.toLowerCase());
     }
