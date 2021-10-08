@@ -639,18 +639,22 @@ class CardAPI {
             const myDeck = this.GetDeck(deck_id),
                 cardsToDraw = myDeck.cards.slice(0, count);
 
-            //Put into floating
-            myDeck.floatingCards = myDeck.floatingCards.concat(cardsToDraw);
-            //Remove from cards
-            myDeck.cards = myDeck.cards.slice(0, count);
-            //Update remaining
-            myDeck.remaining = myDeck.cards.length;
+            if (myDeck.cards.length > 0) {
+                //Put into floating
+                myDeck.floatingCards = myDeck.floatingCards.concat(cardsToDraw);
+                //Remove from cards
+                myDeck.cards = myDeck.cards.slice(0, count);
+                //Update remaining
+                myDeck.remaining = myDeck.cards.length;
 
-            //Return object
-            return {
-                cards: cardsToDraw,
-                deck_id: myDeck.deck_id,
-                remaining: myDeck.remaining
+                //Return object
+                return {
+                    cards: cardsToDraw,
+                    deck_id: myDeck.deck_id,
+                    remaining: myDeck.remaining
+                }
+            } else {
+                throw 'Not enough cards remaining to draw 1 additional';
             }
         } catch (e) {
             throw e;

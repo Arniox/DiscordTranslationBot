@@ -334,6 +334,8 @@ class CardGame {
         this.startingPiles;
         this.drawPileOnStart;
         this.stepDescription;
+        this.numberOfDecksToStartWith;
+        this.jokersIncluded;
     }
 
     //Construct game
@@ -540,6 +542,9 @@ class CardGame {
         this.startingPiles = rules.startingPiles;
         this.drawPileOnStart = rules.drawPileOnStart;
         this.stepDescription = rules.stepDescription;
+        this.numberOfDecksToStartWith = rules.numberOfDecksToStartWith;
+        this.jokersIncluded = rules.jokersIncluded;
+        this.shuffledDeck = rules.shuffledDeck;
     }
 
     //Build
@@ -549,7 +554,10 @@ class CardGame {
             this.backOfDeck,
             this.cardsToStartWith,
             this.drawDeckOnStart,
-            this.stepDescription);
+            this.stepDescription,
+            this.numberOfDecksToStartWith,
+            this.jokersIncluded,
+            this.shuffledDeck);
     }
 
     //Enforce rules
@@ -619,7 +627,9 @@ class CardGame {
 
 class CardSystem {
     //Card system constructor
-    constructor(bot, guild, message, player, backOfDeck = null, cardsToStartWith = null, drawDeckOnStart = null, stepDescription = null) {
+    constructor(bot, guild, message, player,
+        backOfDeck = null, cardsToStartWith = null, drawDeckOnStart = null, stepDescription = null,
+        numberOfDecksToStartWith = null, jokersIncluded = null, shuffledDeck = null) {
         //Set all
         this.guild = guild;
         this.message = message;
@@ -641,6 +651,9 @@ class CardSystem {
         this.backOfCard = 'https://gcdn.pbrd.co/images/q08nAKRV1vH1.png?o=1';/*'../assets/back-of-card.png';*/
         //Rules
         this.numberOfCards = (cardsToStartWith ? cardsToStartWith : 5);
+        this.numberOfDecks = (numberOfDecksToStartWith ? numberOfDecksToStartWith : 1);
+        this.jokersIncluded = (jokersIncluded ? jokersIncluded : false);
+        this.shuffledDeck = (shuffledDeck ? shuffledDeck : true);
         this.backOfDeck = backOfDeck;
         this.drawDeckOnStart = drawDeckOnStart;
         this.stepDescription = stepDescription;
@@ -733,7 +746,7 @@ class CardSystem {
         return new Promise(async (resolve, reject) => {
             try {
                 //Generate the deck and piles
-                var newDeck = this.CardAPI.New();
+                var newDeck = this.CardAPI.New(this.shuffledDeck, this.numberOfDecks, this.jokersIncluded);
 
                 //Set up new deck
                 this.deck = newDeck;
@@ -1131,8 +1144,6 @@ class CardSystem {
                         listIds: cardIds
                     }
                 };
-
-                console.log(pile);
 
                 //Check if player already eixsts
                 if (existingPile[0])

@@ -1,5 +1,8 @@
 {
     "backOfDeck": null,
+    "numberOfDecksToStartWith": 1,
+    "jokersIncluded": false,
+    "shuffledDeck": true,
     "cardsToStartWith": 2,
     "drawDeckOnStart": false,
     "startingPiles": [
