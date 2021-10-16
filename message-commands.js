@@ -1,6 +1,7 @@
 //Import
 const Discord = require('discord.js');
 var tools = require('./extra-functions');
+const { createCanvas, Image } = require('canvas');
 
 module.exports = function () {
     //Enums
@@ -191,6 +192,60 @@ module.exports = function () {
             }
             return out;
         }
+    }
+
+    //Get average color of an image
+    this.AverageColorFromImage = function (imgURL) {
+        //Return promise
+        return new Promise((resolve) => {
+            //Image
+            const inputImage = new Image();
+
+            inputImage.onload = () => {
+                var blockSize = 5, //only visit every 5 pixels
+                    defaultRGB = { r: 0, g: 0, b: 0 }, //for non supporting evns
+                    canvas = createCanvas(0, 0),
+                    ctx = canvas.getContext('2d'),
+                    data, width, height,
+                    i = -4,
+                    length,
+                    rgb = { r: 0, g: 0, b: 0 },
+                    count = 0;
+                if (!ctx) return defaultRGB;
+
+                //Get height and width
+                width = canvas.width = inputImage.naturalWidth;
+                height = canvas.height = inputImage.naturalHeight;
+
+                //Draw image
+                ctx.drawImage(inputImage, 0, 0);
+                try {
+                    data = ctx.getImageData(0, 0, width, height);
+                } catch (e) {
+                    resolve(defaultRGB);
+                }
+                length = data.data.length;
+
+                //Count most common colour
+                while ((i += blockSize * 4) < length) {
+                    ++count;
+                    rgb.r += data.data[i];
+                    rgb.g += data.data[i + 1];
+                    rgb.b += data.data[i + 2];
+                }
+
+                //~~ used to floor values
+                rgb.r = ~~(rgb.r / count);
+                rgb.g = ~~(rgb.g / count);
+                rgb.b = ~~(rgb.b / count);
+
+                resolve(rgb);
+            }
+
+            //Set url
+            inputImage.crossOrigin = 'anonymous';
+            inputImage.src = imgURL;
+        });
     }
 
     //Random int

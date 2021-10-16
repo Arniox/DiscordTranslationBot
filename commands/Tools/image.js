@@ -2,6 +2,7 @@
 const Discord = require('discord.js');
 const vision = require('@google-cloud/vision');
 const axios = require('axios');
+const { v4: uuidv4 } = require('uuid');
 const { createCanvas, Image } = require('canvas');
 //Create vision client
 const client = new vision.ImageAnnotatorClient({
@@ -275,7 +276,105 @@ exports.run = (bot, guild, message, command, args) => {
             HelpMessage(bot, guild, message, args);
         }
     } else {
-        HelpMessage(bot, guild, message, args);
+        //Check args
+        if (args.length != 0) {
+            //Get option
+            var option = args.shift().toLowerCase();
+
+            switch (option) {
+                case 'processcolors':
+                    //Check if me
+                    if (IsMe(message) && false) {
+                        const cardsToProcess = DeckTypes.Standard;
+                        var cardCount = 0;
+
+                        message.WaffleResponse(`Processing [${cardCount}/${cardsToProcess.length}]...`, MTYPE.Loading)
+                            .then(async (sent) => {
+                                const pixelDescriptorID = uuidv4();
+                                //Create pixelDescriptor
+                                const create_cmd = `
+                                INSERT INTO pixel_descriptors (descriptorId, descriptorName)
+                                    VALUES ("${pixelDescriptorID}", "CardPixels")
+                                `;
+                                bot.con.query(create_cmd, (error, results, fields) => {
+                                    if (error) return console.error(error); //Return console error
+                                });
+
+                                //For each card image
+                                for (const card of cardsToProcess) {
+                                    //Create new connection
+                                    bot.con = await bot.dbpool.then((p) => { return p.getConnection(); });
+                                    //Get data
+                                    var name = `${card.value} of ${card.suit}`,
+                                        image = card.image,
+                                        averageColour = await AverageColorFromImage(image),
+                                        averageHex = rgbToHex(averageColour.r, averageColour.g, averageColour.b),
+                                        averageResult = await axios.get(`http://thecolorapi.com/id?hex=${averageHex.replace(/\#/g, '')}`),
+                                        averageName = averageResult.data.name.value,
+                                        [results] = await client.imageProperties(`${image}`),
+                                        dominateColours = results.imagePropertiesAnnotation.dominantColors.colors
+                                            .sort((a, b) => a.score < b.score ? 1 : -1),
+                                        topColor = dominateColours.shift(),
+                                        dominantHex = rgbToHex(topColor.color.red, topColor.color.green, topColor.color.blue),
+                                        dominantResult = await axios.get(`http://thecolorapi.com/id?hex=${dominantHex.replace(/\#/g, '')}`),
+                                        dominantName = dominantResult.data.name.value;
+
+                                    //Save to database
+                                    const create_pixel_cmd = `
+                                    INSERT INTO pixels (descriptorId, pixelName, pixelImage, pixelAverage, averageName, pixelDominant, dominantName)
+                                        VALUES (
+                                            "${pixelDescriptorID}", 
+                                            "${name}", 
+                                            "${image}", 
+                                            "${averageColour.r},${averageColour.g},${averageColour.b}",
+                                            "${averageName}",
+                                            "${topColor.color.red},${topColor.color.green},${topColor.color.blue}",
+                                            "${dominantName}"
+                                            )`;
+                                    bot.con.query(create_pixel_cmd, (error, results, fields) => {
+                                        if (error) return console.error(error); //Return console error
+                                    });
+
+                                    //Increment count
+                                    cardCount++;
+
+                                    sent.edit(new Discord.MessageEmbed()
+                                        .setDescription(`Processing [${cardCount}/${cardsToProcess.length}]...\n\n**${name}**`)
+                                        .setAuthor(message.guild.me.user.username, message.guild.me.user.avatarURL())
+                                        .setColor('#FFCC00')
+                                        .addFields([
+                                            {
+                                                name: `Average Colour`,
+                                                value: `${averageHex}, ${averageName}`,
+                                                inline: true
+                                            }, {
+                                                name: `Dominant Color`,
+                                                value: `${dominantHex}, ${dominantName}`
+                                            }
+                                        ])
+                                        .setThumbnail(`https://singlecolorimage.com/get/${averageHex.replace(/\#/g, '')}/500x500.png`)
+                                        .setImage(`https://singlecolorimage.com/get/${dominantHex.replace(/\#/g, '')}/500x500.png`));
+
+                                    //Release old connection
+                                    bot.con.release();
+                                }
+
+                                sent.edit(new Discord.MessageEmbed()
+                                    .setDescription(`Finished Processing all ${cardsToProcess.length} cards`)
+                                    .setAuthor(message.guild.me.user.username, message.guild.me.user.avatarURL())
+                                    .setColor('#09b50c'));
+                            });
+                    } else {
+                        HelpMessage(bot, guild, message, args);
+                    }
+                    break;
+                default:
+                    HelpMessage(bot, guild, message, args);
+                    break;
+            }
+        } else {
+            HelpMessage(bot, guild, message, args);
+        }
     }
 }
 
@@ -288,10 +387,10 @@ function HelpMessage(bot, guild, message, args) {
         [
             {
                 name: 'Command Patterns: ',
-                value: `${guild.Prefix}image [dominate_colour:dominate_color:dominate:colour:color:dom:col:domcol] {uploaded image}\n` +
-                    `${guild.Prefix}image [what_is_this:whatisthis:whatis:whatthis:what:whati:wutis:wutisthis:wutthis] {upload image}\n` +
-                    `${guild.Prefix}image [where_is_this:whereisthis:whereis:wherethis:where:wherei:findthis:findwhere:find] {upload image}\n` +
-                    `${guild.Prefix}image [describe_this:describe_me:describethis:describeme:describe:this:] {upload image}`
+                value: `${guild.Prefix}image[dominate_colour: dominate_color: dominate: colour: color: dom: col: domcol] { uploaded image }\n` +
+                    `${guild.Prefix}image[what_is_this: whatisthis: whatis: whatthis: what: whati: wutis: wutisthis: wutthis] { upload image }\n` +
+                    `${guild.Prefix}image[where_is_this: whereisthis: whereis: wherethis: where: wherei: findthis: findwhere: find] { upload image }\n` +
+                    `${guild.Prefix}image[describe_this: describe_me: describethis: describeme: describe: this:] { upload image }`
             },
             {
                 name: 'Examples: ',
@@ -322,7 +421,7 @@ var drawText = (ctx, AA, AB, AC, AD, detail, index, canvasHeight) => {
     //Write text
     ctx.font = '900 15px Sans';
     //Write highlight for text
-    var measurement = ctx.measureText(`${detail.name} - ${(detail.score * 100).toFixedCut(2)}%`),
+    var measurement = ctx.measureText(`${detail.name} - ${(detail.score * 100).toFixedCut(2)}% `),
         highLightWidth = measurement.actualBoundingBoxRight + measurement.actualBoundingBoxLeft, //Width of text + 1 pixel right side
         highLightHeight = measurement.actualBoundingBoxAscent + measurement.actualBoundingBoxDescent, //Height of text + 1 pixel top
         placementTopY = AA.y - (5 + measurement.actualBoundingBoxDescent), //Place top position
@@ -339,7 +438,7 @@ var drawText = (ctx, AA, AB, AC, AD, detail, index, canvasHeight) => {
     ctx.fillStyle = 'rgba(255, 255, 255, 1)';
     ctx.fill();
     ctx.fillStyle = 'rgba(0, 0, 255, 1)';
-    ctx.fillText(`${detail.name} - ${(detail.score * 100).toFixedCut(2)}%`, X, Y);
+    ctx.fillText(`${detail.name} - ${(detail.score * 100).toFixedCut(2)}% `, X, Y);
 }
 //Draw for all
 var drawForAll = (ctx, objects, canvasWidth, canvasHeight) => {
