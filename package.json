@@ -18,7 +18,7 @@
   "author": "Nikkolas Diehl",
   "license": "ISC",
   "engines": {
-    "node": "12.16.3"
+    "node": "16.11.1"
   },
   "dependencies": {
     "@discordjs/opus": "^0.3.3",
