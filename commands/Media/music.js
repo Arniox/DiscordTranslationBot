@@ -540,10 +540,10 @@ async function play(bot, message, guild, song) {
         const queuedBy = song.queuedBy.toString();
 
         //Create readable video object
-        var readable = await ytdl(url, { quality: "highestaudio", highWaterMark: 1 << 25, opusEncoded: true });
+        var readable = await ytdl(url, { quality: "highestaudio", highWaterMark: 1 << 25 });
         //Create dispatcher and play
         const dispatcher = serverQueue.connection
-            .play(readable, { highWaterMark: 12, bitrate: 128, fec: true, volume: 0.1, type: 'opus' })
+            .play(readable, { highWaterMark: 12, bitrate: 128, fec: true })
             .on('start', () => {
                 //Send message
                 message.WaffleResponse(
