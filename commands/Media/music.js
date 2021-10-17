@@ -543,7 +543,7 @@ async function play(bot, message, guild, song) {
         var readable = await ytdl(url, { quality: "highestaudio", highWaterMark: 1 << 25 });
         //Create dispatcher and play
         const dispatcher = serverQueue.connection
-            .play(readable, { highWaterMark: 1, bitrate: 'auto', fec: true, volume: 0.1 })
+            .play(readable, { highWaterMark: 12, bitrate: 128, fec: true, volume: 0.1, type: 'opus' })
             .on('start', () => {
                 //Send message
                 message.WaffleResponse(
