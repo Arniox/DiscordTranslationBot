@@ -21,7 +21,7 @@
     "node": "16.11.1"
   },
   "dependencies": {
-    "@discordjs/opus": "^0.3.3",
+    "@discordjs/opus": "^0.8.0",
     "@google-cloud/vision": "^2.4.0",
     "aki-api": "^5.2.1",
     "axios": "^0.21.4",
