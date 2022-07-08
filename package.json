@@ -34,7 +34,7 @@
     "google-translate": "^3.0.0",
     "js-reddit.js": "^1.0.9",
     "mathjs": "^8.1.1",
-    "moment": "^2.29.1",
+    "moment": "^2.29.4",
     "moment-timezone": "^0.5.33",
     "opusscript": "0.0.7",
     "promise-mysql": "^5.0.4",
