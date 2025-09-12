@@ -23,8 +23,8 @@
   "dependencies": {
     "@discordjs/opus": "^0.8.0",
     "@google-cloud/vision": "^5.1.0",
-    "aki-api": "^5.2.1",
-    "axios": "^0.21.4",
+    "aki-api": "^7.0.1",
+    "axios": "^1.12.1",
     "canvas": "^2.8.0",
     "cron": "^1.8.2",
     "discord.js": "^12.5.3",
